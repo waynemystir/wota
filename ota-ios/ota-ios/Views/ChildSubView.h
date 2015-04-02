@@ -1,0 +1,19 @@
+//
+//  ChildSubView.h
+//  ota-ios
+//
+//  Created by WAYNE SMALL on 3/29/15.
+//  Copyright (c) 2015 Irwin. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+
+IB_DESIGNABLE
+
+@interface ChildSubView : UIView
+
+@property (weak, nonatomic) IBOutlet UILabel *worbelOutlet;
+@property (strong, nonatomic) IBOutlet UIView *theViewOutlet;
+@property (weak, nonatomic) IBOutlet UILabel *childAbcdLabelOutlet;
+
+@end
