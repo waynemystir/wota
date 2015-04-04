@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		B0122E441AD0885D00E44319 /* EanHotelRoomAvailabilityResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = B0122E431AD0885D00E44319 /* EanHotelRoomAvailabilityResponse.m */; };
 		B0122E471AD088F800E44319 /* EanHotelRoomResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = B0122E461AD088F800E44319 /* EanHotelRoomResponse.m */; };
+		B0122E4D1AD0A88500E44319 /* EanHotelDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = B0122E4C1AD0A88500E44319 /* EanHotelDetails.m */; };
 		B032F62A1AC18F6700809395 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B032F6291AC18F6700809395 /* main.m */; };
 		B032F62D1AC18F6700809395 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B032F62C1AC18F6700809395 /* AppDelegate.m */; };
 		B032F6301AC18F6700809395 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B032F62F1AC18F6700809395 /* MainViewController.m */; };
@@ -84,6 +85,8 @@
 		B0122E431AD0885D00E44319 /* EanHotelRoomAvailabilityResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EanHotelRoomAvailabilityResponse.m; path = "ota-ios/Models/Ean/EanHotelRoomAvailabilityResponse.m"; sourceTree = SOURCE_ROOT; };
 		B0122E451AD088F800E44319 /* EanHotelRoomResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EanHotelRoomResponse.h; path = "ota-ios/Models/Ean/EanHotelRoomResponse.h"; sourceTree = SOURCE_ROOT; };
 		B0122E461AD088F800E44319 /* EanHotelRoomResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EanHotelRoomResponse.m; path = "ota-ios/Models/Ean/EanHotelRoomResponse.m"; sourceTree = SOURCE_ROOT; };
+		B0122E4B1AD0A88500E44319 /* EanHotelDetails.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanHotelDetails.h; sourceTree = "<group>"; };
+		B0122E4C1AD0A88500E44319 /* EanHotelDetails.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanHotelDetails.m; sourceTree = "<group>"; };
 		B032F6241AC18F6700809395 /* ota-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ota-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B032F6281AC18F6700809395 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B032F6291AC18F6700809395 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -223,6 +226,8 @@
 				B0122E461AD088F800E44319 /* EanHotelRoomResponse.m */,
 				B09797D51AC33D8C0014FC7C /* EanParser.h */,
 				B09797D21AC33D8C0014FC7C /* EanParser.m */,
+				B0122E4B1AD0A88500E44319 /* EanHotelDetails.h */,
+				B0122E4C1AD0A88500E44319 /* EanHotelDetails.m */,
 			);
 			path = Ean;
 			sourceTree = "<group>";
@@ -591,6 +596,7 @@
 				B09797CC1AC24BE20014FC7C /* MapViewController.m in Sources */,
 				B09797E21AC343DD0014FC7C /* HotelListingViewController.m in Sources */,
 				B0122E441AD0885D00E44319 /* EanHotelRoomAvailabilityResponse.m in Sources */,
+				B0122E4D1AD0A88500E44319 /* EanHotelDetails.m in Sources */,
 				B05BD62C1AC1FE53002C2882 /* PlaceAutoCompleteTableViewCell.m in Sources */,
 				B032F6531AC193B300809395 /* CriteriaViewController.m in Sources */,
 				B080B7CC1AC506B500075A32 /* EanHotelInformationResponse.m in Sources */,

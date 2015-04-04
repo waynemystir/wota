@@ -48,11 +48,41 @@
     hi.hotelId = [hir objectForKey:@"@hotelId"];
     hi.customerSessionId = [hir objectForKey:@"customerSessionId"];
     hi.hotelSummary = [hir objectForKey:@"HotelSummary"];
-    hi.hotelDetails = [hir objectForKey:@"HotelDetails"];
+    
+    hi.hotelDetails = [EanHotelDetails hotelDetailsFromObject:[hir objectForKey:@"HotelDetails"]];
+    
     hi.suppliers = [hir objectForKey:@"Suppliers"];
-    hi.roomTypesDict = [hir objectForKey:@"RoomTypes"];
-    hi.propertyAmenitiesDict = [hir objectForKey:@"PropertyAmenities"];
-    hi.hotelImagesDict = [hir objectForKey:@"HotelImages"];
+    
+    id rtDict = [hir objectForKey:@"RoomTypes"];
+    if (rtDict != nil && [rtDict isKindOfClass:[NSDictionary class]]) {
+        hi.roomTypesDict = rtDict;
+        hi.numberOfRoomTypes = [[hi.roomTypesDict objectForKey:@"@size"] integerValue];
+        id rtArray = [hi.roomTypesDict objectForKey:@"RoomType"];
+        if (rtArray != nil && [rtArray isKindOfClass:[NSArray class]]) {
+            hi.roomTypesArray = rtArray;
+        }
+    }
+    
+    id amenitiesDict = [hir objectForKey:@"PropertyAmenities"];
+    if (amenitiesDict != nil && [amenitiesDict isKindOfClass:[NSDictionary class]]) {
+        hi.propertyAmenitiesDict = amenitiesDict;
+        hi.numberOfPropertyAmenities = [[hi.propertyAmenitiesDict objectForKey:@"@size"] integerValue];
+        id amenitiesArray = [hi.propertyAmenitiesDict objectForKey:@"PropertyAmenity"];
+        if (amenitiesArray != nil && [amenitiesArray isKindOfClass:[NSArray class]]) {
+            hi.propertyAmenitiesArray = amenitiesArray;
+        }
+    }
+    
+    id imagesDict = [hir objectForKey:@"HotelImages"];
+    if (imagesDict != nil && [imagesDict isKindOfClass:[NSDictionary class]]) {
+        hi.hotelImagesDict = imagesDict;
+        hi.numberOfHotelImages = [[hi.hotelImagesDict objectForKey:@"@size"] integerValue];
+        id imagesArray = [hi.hotelImagesDict objectForKey:@"HotelImage"];
+        if (imagesArray != nil && [imagesArray isKindOfClass:[NSArray class]]) {
+            hi.hotelImagesArray = imagesArray;
+        }
+    }
+    
     return hi;
 }
 

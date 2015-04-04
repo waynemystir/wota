@@ -48,7 +48,7 @@
 //    NSLog(@"%@.%@ HOTEL_LIST:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), [hotelList description]);
     
     id hotelSummary = [hotelList objectForKey:@"HotelSummary"];
-    NSLog(@"%@.%@ HotelSummaryAAA:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), [hotelSummary description]);
+//    NSLog(@"%@.%@ HotelSummaryAAA:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), [hotelSummary description]);
     
     // TODO: apparently this hotelSummary could be a dictionary
     // Handle this scenario

@@ -7,17 +7,24 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "EanHotelDetails.h"
 
 @interface EanHotelInformationResponse : NSObject
 
 @property (nonatomic, strong) NSString *hotelId;
 @property (nonatomic, strong) NSString *customerSessionId;
 @property (nonatomic, strong) NSDictionary *hotelSummary;
-@property (nonatomic, strong) NSDictionary *hotelDetails;
+@property (nonatomic, strong) EanHotelDetails *hotelDetails;
 @property (nonatomic, strong) NSDictionary *suppliers;
 @property (nonatomic, strong) NSDictionary *roomTypesDict;
+@property (nonatomic) NSUInteger numberOfRoomTypes;
+@property (nonatomic, strong) NSArray *roomTypesArray;
 @property (nonatomic, strong) NSDictionary *propertyAmenitiesDict;
+@property (nonatomic) NSUInteger numberOfPropertyAmenities;
+@property (nonatomic, strong) NSArray *propertyAmenitiesArray;
 @property (nonatomic, strong) NSDictionary *hotelImagesDict;
+@property (nonatomic) NSUInteger numberOfHotelImages;
+@property (nonatomic, strong) NSArray *hotelImagesArray;
 
 + (EanHotelInformationResponse *)hotelInfoFromData:(NSData *)data;
 + (EanHotelInformationResponse *)hotelInfoFromObject:(id)object;
