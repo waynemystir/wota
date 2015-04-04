@@ -1,5 +1,5 @@
 //
-//  EanHotelInfo.m
+//  EanHotelInformationResponse.m
 //  ota-ios
 //
 //  Created by WAYNE SMALL on 3/26/15.
@@ -10,14 +10,50 @@
 
 @implementation EanHotelInformationResponse
 
-+ (EanHotelInformationResponse *)hotelInfoFromObject:(NSObject *)object {
++ (EanHotelInformationResponse *)hotelInfoFromData:(NSData *)data {
+    if (data == nil) {
+        return nil;
+    }
+    
+    NSError *error = nil;
+    id respDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+    if (error != nil) {
+        NSLog(@"ERROR:%@", error);
+        return nil;
+    }
+    
+    return [self hotelInfoFromObject:respDict];
+}
+
++ (EanHotelInformationResponse *)hotelInfoFromObject:(id)object {
     if (object == nil) {
         return nil;
     }
     
-    EanHotelInformationResponse *hotelInfo = [[EanHotelInformationResponse alloc] init];
+    if (![object isKindOfClass:[NSDictionary class]]) {
+        return nil;
+    }
     
-    return hotelInfo;
+    id hir = [object objectForKey:@"HotelInformationResponse"];
+    
+    if (hir == nil) {
+        return nil;
+    }
+    
+    if (![hir isKindOfClass:[NSDictionary class]]) {
+        return nil;
+    }
+    
+    EanHotelInformationResponse *hi = [[EanHotelInformationResponse alloc] init];
+    hi.hotelId = [hir objectForKey:@"@hotelId"];
+    hi.customerSessionId = [hir objectForKey:@"customerSessionId"];
+    hi.hotelSummary = [hir objectForKey:@"HotelSummary"];
+    hi.hotelDetails = [hir objectForKey:@"HotelDetails"];
+    hi.suppliers = [hir objectForKey:@"Suppliers"];
+    hi.roomTypesDict = [hir objectForKey:@"RoomTypes"];
+    hi.propertyAmenitiesDict = [hir objectForKey:@"PropertyAmenities"];
+    hi.hotelImagesDict = [hir objectForKey:@"HotelImages"];
+    return hi;
 }
 
 @end

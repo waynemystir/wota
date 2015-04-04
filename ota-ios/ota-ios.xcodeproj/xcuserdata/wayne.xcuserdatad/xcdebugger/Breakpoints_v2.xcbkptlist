@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ota-ios/Controllers/HotelInfoViewController.m"
-            timestampString = "449788801.55199"
+            timestampString = "449874827.825015"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "99"
-            endingLineNumber = "99"
+            startingLineNumber = "96"
+            endingLineNumber = "96"
             landmarkName = "-justPushIt:"
             landmarkType = "5">
          </BreakpointContent>

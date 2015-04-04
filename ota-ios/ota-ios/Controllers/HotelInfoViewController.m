@@ -13,6 +13,7 @@
 #import "SelectionCriteria.h"
 #import "ChildTraveler.h"
 #import "SelectRoomViewController.h"
+#import "EanHotelInformationResponse.h"
 
 @interface HotelInfoViewController () <CLLocationManagerDelegate>
 
@@ -22,6 +23,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *addressLabelOutlet;
 @property (weak, nonatomic) IBOutlet UILabel *shortDescLabelOutlet;
 @property (weak, nonatomic) IBOutlet UIButton *bookButtonOutlet;
+@property (nonatomic, strong) EanHotelInformationResponse *eanHotelInformationResponse;
 
 - (IBAction)justPushIt:(id)sender;
 
@@ -82,14 +84,9 @@
 }
 
 - (void)requestFinished:(NSData *)responseData {
-    NSError *error = nil;
-    id respDict = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:&error];
-    if (error != nil) {
-        NSLog(@"ERROR");
-    } else {
-        NSLog(@"HOTELDETAIL:%@", [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
-        self.someLabelOutlet.text = [NSString stringWithFormat:@"lat:%f long:%f", _eanHotel.latitude, _eanHotel.longitude];
-    }
+    self.eanHotelInformationResponse = [EanHotelInformationResponse hotelInfoFromData:responseData];
+//    NSLog(@"HOTELDETAIL:%@", [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
+    self.someLabelOutlet.text = [NSString stringWithFormat:@"lat:%f long:%f", _eanHotel.latitude, _eanHotel.longitude];
 }
 
 - (IBAction)justPushIt:(id)sender {
