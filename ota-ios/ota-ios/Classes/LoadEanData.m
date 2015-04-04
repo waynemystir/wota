@@ -148,14 +148,16 @@
     }
     
     for (ChildTraveler *ct in childTravelers) {
-        [roomGroup appendString:[NSString stringWithFormat:@",%lu", (unsigned long)ct.childAge]];
+        [roomGroup appendFormat:@",%lu", (unsigned long)ct.childAge];
     }
     
     return roomGroup;
 }
 
 
-- (void)bookHotelWithId:(NSString *)hotelId {
+- (void)bookHotelWithId:(NSString *)hotelId
+            arrivalDate:(NSString *)arrivalDate
+          departureDate:(NSString *)departureDate {
     
 }
 

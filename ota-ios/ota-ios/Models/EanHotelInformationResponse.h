@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-@interface EanHotelInfo : NSObject
+@interface EanHotelInformationResponse : NSObject
+
++ (EanHotelInformationResponse *)hotelInfoFromObject:(NSObject *)object;
 
 @end

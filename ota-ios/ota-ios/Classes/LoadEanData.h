@@ -32,6 +32,8 @@
                        numberOfAdults:(NSUInteger)numberOfAdults
                        childTravelers:(NSArray *)childTravelers;
 
-- (void)bookHotelWithId:(NSString *)hotelId;
+- (void)bookHotelWithId:(NSString *)hotelId
+            arrivalDate:(NSString *)arrivalDate
+          departureDate:(NSString *)departureDate;
 
 @end
