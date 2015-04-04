@@ -8,6 +8,7 @@
 
 #import "CriteriaViewController.h"
 #import "SelectionCriteria.h"
+#import "ChildTraveler.h"
 #import "LoadGooglePlacesData.h"
 #import "PlaceAutoCompleteTableViewCell.h"
 #import "GoogleParser.h"
@@ -67,7 +68,7 @@
     //***********************************************************************
     
     self.cupHolder = [[UIView alloc] initWithFrame:CGRectMake(13, 137, 300, 400)];
-    self.cupHolder.backgroundColor = [UIColor redColor];
+//    self.cupHolder.backgroundColor = [UIColor redColor];
     [self.view addSubview:self.cupHolder];
     
     self.arrivalDateOutlet = [[UIButton alloc] initWithFrame:CGRectMake(50, 20, 200, 50)];
@@ -122,8 +123,6 @@
     [_viewFormatter setDateFormat:@"MMMM dd, yyyy"];
     
     self.arrivalOrReturn = NO;
-    [SelectionCriteria singleton].arrivalDate = [self addDays:3 ToDate:[NSDate date]];
-    [SelectionCriteria singleton].returnDate = [self addDays:6 ToDate:[NSDate date]];
     [self refreshDisplayedArrivalDate];
     [self refreshDisplayedReturnDate];
     
@@ -186,9 +185,9 @@
 }
 
 - (void)setNumberOfKidsButtonLabel {
-    SelectionCriteria *sc = [SelectionCriteria singleton];
-    NSString *plural = sc.numberOfKids == 1 ? @"Child" : @"Children";
-    id numbKids = sc.numberOfKids == 0 ? @"Add" : [NSString stringWithFormat:@"%lu", (unsigned long) sc.numberOfKids];
+    NSUInteger numberOfKids = [ChildTraveler numberOfKids];
+    NSString *plural = numberOfKids == 1 ? @"Child" : @"Children";
+    id numbKids = numberOfKids == 0 ? @"Add" : [NSString stringWithFormat:@"%lu", (unsigned long) numberOfKids];
     NSString *buttonText = [NSString stringWithFormat:@"%@ %@", numbKids, plural];
     [self.kidsButton setTitle:buttonText forState:UIControlStateNormal];
 }
@@ -360,19 +359,21 @@
 }
 
 -(void)refreshDisplayedArrivalDate {
-    if([SelectionCriteria singleton].arrivalDate) {
-        [self.arrivalDateOutlet setTitle:[_viewFormatter stringFromDate:[SelectionCriteria singleton].arrivalDate] forState:UIControlStateNormal];
-    } else {
-        [self.arrivalDateOutlet setTitle:@"No date selected" forState:UIControlStateNormal];
+    SelectionCriteria *sc = [SelectionCriteria singleton];
+    if (sc.arrivalDate == nil) {
+        sc.arrivalDate = [self addDays:3 ToDate:[NSDate date]];
     }
+    
+    [self.arrivalDateOutlet setTitle:[_viewFormatter stringFromDate:sc.arrivalDate] forState:UIControlStateNormal];
 }
 
 -(void)refreshDisplayedReturnDate {
-    if([SelectionCriteria singleton].returnDate) {
-        [self.returnDateOutlet setTitle:[_viewFormatter stringFromDate:[SelectionCriteria singleton].returnDate] forState:UIControlStateNormal];
-    } else {
-        [self.returnDateOutlet setTitle:@"No date selected" forState:UIControlStateNormal];
+    SelectionCriteria *sc = [SelectionCriteria singleton];
+    if (sc.returnDate == nil) {
+        sc.returnDate = [self addDays:6 ToDate:[NSDate date]];
     }
+    
+    [self.returnDateOutlet setTitle:[_viewFormatter stringFromDate:sc.returnDate] forState:UIControlStateNormal];
 }
 
 - (NSDate *)addDays:(int)days ToDate:(NSDate *)toDate {

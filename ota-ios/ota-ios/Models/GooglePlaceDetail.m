@@ -16,6 +16,17 @@
 
 @implementation GooglePlaceDetail
 
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    if (self = [super init]) {
+        ;
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    
+}
+
 - (id)initWithDictionary:(NSDictionary *)dictionary {
     self = [super init];
     if (self != nil) {

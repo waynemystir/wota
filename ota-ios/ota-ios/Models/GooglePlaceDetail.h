@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface GooglePlaceDetail : NSObject
+@interface GooglePlaceDetail : NSObject <NSCoding>
 
 @property (nonatomic, strong) NSDictionary *googlePlaceResultDict;
 @property (nonatomic, strong) NSString *placeId;

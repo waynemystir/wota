@@ -11,6 +11,7 @@
 #import <GoogleMaps/GoogleMaps.h>
 #import "LoadEanData.h"
 #import "SelectionCriteria.h"
+#import "ChildTraveler.h"
 #import "SelectRoomViewController.h"
 
 @interface HotelInfoViewController () <CLLocationManagerDelegate>
@@ -99,7 +100,7 @@
                                                              arrivalDate:sc.arrivalDateEanString
                                                            departureDate:sc.returnDateEanString
                                                           numberOfAdults:sc.numberOfAdults
-                                                          childTravelers:sc.childTravelers];
+                                                          childTravelers:[ChildTraveler childTravelers]];
         [self.navigationController pushViewController:srvc animated:YES];
     }
 }

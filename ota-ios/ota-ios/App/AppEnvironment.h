@@ -62,3 +62,9 @@ extern NSString * kEanHotelListRequestUrl();
 extern NSString * kEanHotelInfoRequestUrl();
 extern NSString * kEanAvailableRoomsRequestUrl();
 extern NSString * kEanGeoSearchRequestUrl();
+
+/**
+ * Other stuff
+ */
+extern NSString * kWotaCacheDirectory();
+extern NSString *kWotaCacheChildTravelersDirectory();

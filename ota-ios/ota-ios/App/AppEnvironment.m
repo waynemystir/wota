@@ -23,6 +23,8 @@ NSString * const EAN_GEO_SEARCH = @"hotel/v3/geoSearch";
 NSString * const GOOGLE_API_KEY = @"AIzaSyBTMg_o0S630MntWlqDC4J9tuNrh_YkLIo";
 
 int const URL_REQUEST_TIMEOUT = 30;
+NSString * const WOTA_CACHE_DIRECTORY = @"wota_cache_directory";
+NSString * const WOTA_CACHE_CHILD_TRAVELERS_DIRECTORY = @"child_travelers";
 
 NSString * const EAN_PK_API_KEY = @"apiKey";
 NSString * const EAN_PK_CID = @"cid";
@@ -64,4 +66,25 @@ NSString * kEanAvailableRoomsRequestUrl() {
 
 NSString * kEanGeoSearchRequestUrl() {
     return [NSString stringWithFormat:@"%@/%@", kEanGeneralRequestUrl(), EAN_GEO_SEARCH];
+}
+
+NSString * kWotaCacheDirectory() {
+    NSString *path = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0]
+                      stringByAppendingFormat:@"/%@", WOTA_CACHE_DIRECTORY];
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    
+    return path;
+}
+
+NSString *kWotaCacheChildTravelersDirectory() {
+    NSString *path = [kWotaCacheDirectory() stringByAppendingFormat:@"/%@", WOTA_CACHE_CHILD_TRAVELERS_DIRECTORY];
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    
+    return path;
 }

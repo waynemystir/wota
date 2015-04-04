@@ -10,24 +10,16 @@
 #import "GooglePlaceDetail.h"
 #import "ChildTraveler.h"
 
-@interface SelectionCriteria : NSObject
+@interface SelectionCriteria : NSObject <NSCoding>
 
-@property (nonatomic, strong) NSString *whereTo;
-@property (nonatomic, strong) GooglePlaceDetail *googlePlaceDetail;
-@property (nonatomic, strong) NSDate *arrivalDate;
-@property (nonatomic, strong) NSDate *returnDate;
-@property (nonatomic) NSUInteger numberOfAdults;
-@property (nonatomic, strong) NSMutableArray *childTravelers;
+@property (nonatomic, strong, setter=setWhereTo:) NSString *whereTo;
+@property (nonatomic, strong, setter=setGooglePlaceDetail:) GooglePlaceDetail *googlePlaceDetail;
+@property (nonatomic, strong, setter=setArrivalDate:) NSDate *arrivalDate;
+@property (nonatomic, strong, setter=setReturnDate:) NSDate *returnDate;
+@property (nonatomic, setter=setNumberOfAdults:) NSUInteger numberOfAdults;
 
 - (NSString *)arrivalDateEanString;
 - (NSString *)returnDateEanString;
-- (NSUInteger)numberOfKids;
-- (NSInteger)addChildTraveler:(ChildTraveler *)childTraveler;
-- (NSInteger)removeLastChildTraveler;
-- (BOOL)moreKidsOk;
-- (BOOL)lessKidsOk;
-- (ChildTraveler *)retrieveChildTravelerByNumber:(NSUInteger)number;
-- (NSDictionary *)childTravelersWithoutAges;
 
 + (SelectionCriteria *)singleton;
 

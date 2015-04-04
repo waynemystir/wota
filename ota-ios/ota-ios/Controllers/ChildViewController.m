@@ -7,7 +7,6 @@
 //
 
 #import "ChildViewController.h"
-#import "SelectionCriteria.h"
 #import "ChildSubView.h"
 #import "ChildTraveler.h"
 #import "ChildAgeSelectorViewController.h"
@@ -67,7 +66,7 @@ NSTimeInterval const kAnimationDuration = 0.6;
     [super viewDidDisappear:animated];
     
     // Get those kids whose ages have not been set
-    NSDictionary *kidsWithoutAges = [[SelectionCriteria singleton] childTravelersWithoutAges];
+    NSDictionary *kidsWithoutAges = [ChildTraveler childTravelersWithoutAges];
     
     // And set their ages to the arbitrary value of 10
     // TODO: parameterize this value of 10 with a constant variable
@@ -81,17 +80,19 @@ NSTimeInterval const kAnimationDuration = 0.6;
 - (void)setAgeLabelsAndTapGestures {
     for (int j = 0; j < 4; j++) {
         [self setChildsAgeLabel:(j + 1)];
-        
-        UITapGestureRecognizer *tapper = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestOnChildSubs:)];
-        tapper.numberOfTapsRequired = 1;
-        tapper.numberOfTouchesRequired = 1;
-        [[self childSubOutletForInt:(j + 1)] addGestureRecognizer:tapper];
+        [[self childSubOutletForInt:(j + 1)] addGestureRecognizer:[self tapper]];
     }
 }
 
+- (UITapGestureRecognizer *)tapper  {
+    UITapGestureRecognizer *tapper = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestOnChildSubs:)];
+    tapper.numberOfTapsRequired = 1;
+    tapper.numberOfTouchesRequired = 1;
+    return tapper;
+}
+
 - (void)setChildsAgeLabel:(NSUInteger)childNumber {
-    SelectionCriteria *sc = [SelectionCriteria singleton];
-    ChildTraveler *ct = [sc retrieveChildTravelerByNumber:childNumber];
+    ChildTraveler *ct = [ChildTraveler childTravelerForId:childNumber];
     if (ct != nil) {
         NSString *plural = ct.childAge == 1 ? @"" : @"s";
         NSString *provisionAgeString = ct.childAge == 0 ? @"Less than 1" : [NSString stringWithFormat:@"%lu year%@ old", (unsigned long)ct.childAge, plural];
@@ -105,7 +106,13 @@ NSTimeInterval const kAnimationDuration = 0.6;
 }
 
 - (IBAction)tapGestOnChildSubs:(id)sender {
-    UIView *childSubView = ((UITapGestureRecognizer *)sender).view;
+    __weak UIView *childSubView = ((UITapGestureRecognizer *)sender).view;
+    
+    // We don't want to respond to a second quick tap
+    if (childSubView != nil && childSubView.gestureRecognizers != nil && [childSubView.gestureRecognizers count] > 0) {
+        ((UIGestureRecognizer *) childSubView.gestureRecognizers[0]).enabled = NO;
+    }
+    
     self.selectedChildOutlet = [self intForChildSubOutlet:childSubView];
     [self resetPickerViewSelectedRow];
     
@@ -124,11 +131,16 @@ NSTimeInterval const kAnimationDuration = 0.6;
     [self.view addSubview:asv];
     [UIView animateWithDuration:kAnimationDuration animations:^{
         asv.transform = toTransform;
+    } completion:^(BOOL finished) {
+        // Let's re-enable the gesture recognizer
+        if (childSubView != nil && childSubView.gestureRecognizers != nil && [childSubView.gestureRecognizers count] > 0) {
+            ((UIGestureRecognizer *) childSubView.gestureRecognizers[0]).enabled = YES;
+        }
     }];
 }
 
 - (void)checkIfWeCanAddKids {
-    if (![SelectionCriteria singleton].moreKidsOk) {
+    if (![ChildTraveler moreKidsOk]) {
         self.addChildButtonOutlet.userInteractionEnabled = NO;
         self.addChildButtonOutlet.enabled = NO;
     } else {
@@ -138,7 +150,7 @@ NSTimeInterval const kAnimationDuration = 0.6;
 }
 
 - (void)checkIfWeCanRemoveKids {
-    if (![SelectionCriteria singleton].lessKidsOk) {
+    if (![ChildTraveler lessKidsOk]) {
         self.minusChildButtonOutlet.userInteractionEnabled= NO;
         self.minusChildButtonOutlet.enabled = NO;
     } else {
@@ -167,7 +179,7 @@ NSTimeInterval const kAnimationDuration = 0.6;
     // Update the child's age
     NSInteger selectedAgeRow = [self.pickerView selectedRowInComponent:0] - 1;
     if (selectedAgeRow >= 0) {
-        ChildTraveler *ct = [[SelectionCriteria singleton] retrieveChildTravelerByNumber:self.selectedChildOutlet];
+        ChildTraveler *ct = [ChildTraveler childTravelerForId:self.selectedChildOutlet];
         
         if (selectedAgeRow == 0) {
             ct.isLessThanOne = YES;
@@ -196,21 +208,55 @@ NSTimeInterval const kAnimationDuration = 0.6;
 }
 
 - (void)addChildTraveler {
-    NSInteger childOrder = [[SelectionCriteria singleton] addChildTraveler:[ChildTraveler new]];
-    [self childSubOutletForInt:childOrder].hidden = NO;
+    NSInteger childOrder = [ChildTraveler addChildTraveler];
+    
+    __weak UIView *childSubView = [self childSubOutletForInt:childOrder];
+    
+    CGFloat fromX = self.numberKidsLabelOutlet.center.x - childSubView.center.x;
+    CGFloat fromY = self.numberKidsLabelOutlet.center.y - childSubView.center.y;
+    
+    CGAffineTransform fromTransform = CGAffineTransformMakeTranslation(fromX, fromY);
+    fromTransform = CGAffineTransformScale(fromTransform, 0.01f, 0.01f);
+    childSubView.transform = fromTransform;
+    childSubView.hidden = NO;
+    
+    __block CGAffineTransform toTransform = CGAffineTransformMakeTranslation(0.0f, 0.0f);
+    toTransform = CGAffineTransformScale(toTransform, 1.0f, 1.0f);
+    
+    [UIView animateWithDuration:kAnimationDuration animations:^{
+        childSubView.transform = toTransform;
+    } completion:^(BOOL finished) {
+        ;
+    }];
+    
     [self updateNumberOfKidsLabel];
 }
 
 - (void)removeChildTraveler {
-    NSInteger childOrder = [[SelectionCriteria singleton] removeLastChildTraveler];
-    [self setChildsAgeLabel:childOrder];
+    NSInteger childOrder = [ChildTraveler removeLastChildTraveler];
+    
+    __weak ChildSubView *childSubView = [self childSubOutletForInt:childOrder];
+    
+    CGFloat toX = self.numberKidsLabelOutlet.center.x - childSubView.center.x;
+    CGFloat toY = self.numberKidsLabelOutlet.center.y - childSubView.center.y;
+    
+    __block CGAffineTransform toTransform = CGAffineTransformMakeTranslation(toX, toY);
+    toTransform = CGAffineTransformScale(toTransform, 0.01f, 0.01f);
+    
+    [UIView animateWithDuration:kAnimationDuration animations:^{
+        childSubView.transform = toTransform;
+    } completion:^(BOOL finished) {
+        childSubView.worbelOutlet.text = @"Select age";
+        childSubView.hidden = YES;
+    }];
+    
     [self updateNumberOfKidsLabel];
 }
 
 - (void)updateNumberOfKidsLabel {
-    SelectionCriteria *sc = [SelectionCriteria singleton];
-    NSString *plural = sc.numberOfKids == 1 ? @"Child" : @"Children";
-    id numbKids = sc.numberOfKids == 0 ? @"Add" : [NSString stringWithFormat:@"%lu", (unsigned long) sc.numberOfKids];
+    NSUInteger numberOfKids = [ChildTraveler numberOfKids];
+    NSString *plural = numberOfKids == 1 ? @"Child" : @"Children";
+    id numbKids = numberOfKids == 0 ? @"Add" : [NSString stringWithFormat:@"%lu", (unsigned long) numberOfKids];
     self.numberKidsLabelOutlet.text = [NSString stringWithFormat:@"%@ %@", numbKids, plural];
 }
 
@@ -246,7 +292,7 @@ NSTimeInterval const kAnimationDuration = 0.6;
 #pragma mark Setup some views
 
 - (void)resetPickerViewSelectedRow {
-    ChildTraveler *kid = [[SelectionCriteria singleton] retrieveChildTravelerByNumber:self.selectedChildOutlet];
+    ChildTraveler *kid = [ChildTraveler childTravelerForId:self.selectedChildOutlet];
     if (kid.ageHasBeenSet) {
         [self.pickerView selectRow:(kid.childAge + 1) inComponent:0 animated:NO];
     } else {
