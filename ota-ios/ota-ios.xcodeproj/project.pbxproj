@@ -227,6 +227,30 @@
 			path = Ean;
 			sourceTree = "<group>";
 		};
+		B0122E491AD0945600E44319 /* Google */ = {
+			isa = PBXGroup;
+			children = (
+				B05BD62E1AC1FEE3002C2882 /* GooglePlace.h */,
+				B05BD62F1AC1FEE3002C2882 /* GooglePlace.m */,
+				B09797C71AC23C1F0014FC7C /* GoogleParser.h */,
+				B09797C81AC23C1F0014FC7C /* GoogleParser.m */,
+				B09797CF1AC321F90014FC7C /* GooglePlaceDetail.h */,
+				B09797D01AC321F90014FC7C /* GooglePlaceDetail.m */,
+			);
+			path = Google;
+			sourceTree = "<group>";
+		};
+		B0122E4A1AD096D900E44319 /* Internal */ = {
+			isa = PBXGroup;
+			children = (
+				B0963CB71AC786E3002FD859 /* SelectionCriteria.h */,
+				B0963CB81AC786E3002FD859 /* SelectionCriteria.m */,
+				B0963CBF1AC8BDC6002FD859 /* ChildTraveler.h */,
+				B0963CC01AC8BDC6002FD859 /* ChildTraveler.m */,
+			);
+			path = Internal;
+			sourceTree = "<group>";
+		};
 		B032F61B1AC18F6700809395 = {
 			isa = PBXGroup;
 			children = (
@@ -392,17 +416,9 @@
 		B05BD62D1AC1FEB2002C2882 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				B0122E4A1AD096D900E44319 /* Internal */,
 				B0122E481AD0917100E44319 /* Ean */,
-				B05BD62E1AC1FEE3002C2882 /* GooglePlace.h */,
-				B05BD62F1AC1FEE3002C2882 /* GooglePlace.m */,
-				B09797C71AC23C1F0014FC7C /* GoogleParser.h */,
-				B09797C81AC23C1F0014FC7C /* GoogleParser.m */,
-				B09797CF1AC321F90014FC7C /* GooglePlaceDetail.h */,
-				B09797D01AC321F90014FC7C /* GooglePlaceDetail.m */,
-				B0963CB71AC786E3002FD859 /* SelectionCriteria.h */,
-				B0963CB81AC786E3002FD859 /* SelectionCriteria.m */,
-				B0963CBF1AC8BDC6002FD859 /* ChildTraveler.h */,
-				B0963CC01AC8BDC6002FD859 /* ChildTraveler.m */,
+				B0122E491AD0945600E44319 /* Google */,
 			);
 			path = Models;
 			sourceTree = "<group>";
