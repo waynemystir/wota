@@ -24,7 +24,8 @@ NSString * const GOOGLE_API_KEY = @"AIzaSyBTMg_o0S630MntWlqDC4J9tuNrh_YkLIo";
 
 int const URL_REQUEST_TIMEOUT = 30;
 NSString * const WOTA_CACHE_DIRECTORY = @"wota_cache_directory";
-NSString * const WOTA_CACHE_CHILD_TRAVELERS_DIRECTORY = @"child_travelers";
+NSString * const WOTA_CACHE_CHILD_TRAVELERS_DIRECTORY = @"child_travelers_directory";
+NSString * const WOTA_CACHE_GOOGLE_PLACE_DETAIL_DIRECTORY = @"google_place_detail_directory";
 
 NSString * const EAN_PK_API_KEY = @"apiKey";
 NSString * const EAN_PK_CID = @"cid";
@@ -79,8 +80,18 @@ NSString * kWotaCacheDirectory() {
     return path;
 }
 
-NSString *kWotaCacheChildTravelersDirectory() {
+NSString * kWotaCacheChildTravelersDirectory() {
     NSString *path = [kWotaCacheDirectory() stringByAppendingFormat:@"/%@", WOTA_CACHE_CHILD_TRAVELERS_DIRECTORY];
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    
+    return path;
+}
+
+NSString * kWotaCacheGooglePlaceDetailDirectory() {
+    NSString *path = [kWotaCacheDirectory() stringByAppendingFormat:@"/%@", WOTA_CACHE_GOOGLE_PLACE_DETAIL_DIRECTORY];
     
     if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
         [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];

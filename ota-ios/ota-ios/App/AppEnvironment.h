@@ -67,4 +67,5 @@ extern NSString * kEanGeoSearchRequestUrl();
  * Other stuff
  */
 extern NSString * kWotaCacheDirectory();
-extern NSString *kWotaCacheChildTravelersDirectory();
+extern NSString * kWotaCacheChildTravelersDirectory();
+extern NSString * kWotaCacheGooglePlaceDetailDirectory();

@@ -26,13 +26,13 @@ NSString * const kKeyChildTravelers = @"childTravelers";
     static SelectionCriteria *_selectionCriteria = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _selectionCriteria = [SelectionCriteria retrieveSelectionCriteria];
+        _selectionCriteria = [SelectionCriteria unarchiveSelectionCriteria];
     });
     
     return _selectionCriteria;
 }
 
-+ (SelectionCriteria *)retrieveSelectionCriteria {
++ (SelectionCriteria *)unarchiveSelectionCriteria {
     SelectionCriteria *_selectionCriteria = nil;
     
     NSString* path = [self pathForSelectionCriteria];
@@ -59,7 +59,7 @@ NSString * const kKeyChildTravelers = @"childTravelers";
 - (id)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super init]) {
         _whereTo = [aDecoder decodeObjectForKey:kKeyWhereTo];
-//        _googlePlaceDetail = [aDecoder decodeObjectForKey:kKeyGooglePlaceDetail];
+        _googlePlaceDetail = [aDecoder decodeObjectForKey:kKeyGooglePlaceDetail];
         _arrivalDate = [aDecoder decodeObjectForKey:kKeyArrivalDate];
         _returnDate = [aDecoder decodeObjectForKey:kKeyReturnDate];
         _numberOfAdults = [aDecoder decodeIntegerForKey:kKeyNumberOfAdults];
@@ -69,7 +69,7 @@ NSString * const kKeyChildTravelers = @"childTravelers";
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [aCoder encodeObject:_whereTo forKey:kKeyWhereTo];
-//    [aCoder encodeObject:_googlePlaceDetail forKey:kKeyGooglePlaceDetail];
+    [aCoder encodeObject:_googlePlaceDetail forKey:kKeyGooglePlaceDetail];
     [aCoder encodeObject:_arrivalDate forKey:kKeyArrivalDate];
     [aCoder encodeObject:_returnDate forKey:kKeyReturnDate];
     [aCoder encodeInteger:_numberOfAdults forKey:kKeyNumberOfAdults];

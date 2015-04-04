@@ -71,6 +71,9 @@ NSString * const kKeyChildAge = @"childAge";
     NSArray* idsArray = [self allIds];
     for (NSString* identifier in idsArray) {
         NSUInteger theId = [identifier integerValue];
+        // TODO: Maybe I should do some check here that the object is,
+        // you know, actually a ChildTraveler... before adding it to
+        // the array
         ChildTraveler *childTraveler = [self childTravelerForId:theId];
         [cachedRecords addObject:childTraveler];
     }
@@ -111,6 +114,10 @@ NSString * const kKeyChildAge = @"childAge";
 #pragma mark Various helper methods
 
 + (NSUInteger)numberOfKids {
+    // I think we can probably just return [[self childTravelers] count]
+    // without these nil and zero checks... because "count" on a nil or
+    // empty array should just return zero... or so I've heard. But what
+    // the hell. A little extra checking couldn't hurt, right?
     if ([self childTravelers] == nil || [[self childTravelers] count] == 0) {
         return 0;
     }

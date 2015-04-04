@@ -51,6 +51,8 @@
 
 @implementation CriteriaViewController
 
+#pragma mark Lifecycle methods
+
 - (id)init {
     self = [super initWithNibName:@"CriteriaView" bundle:nil];
     return self;
@@ -134,9 +136,28 @@
     self.autoCompleteTableViewOutlet.sectionHeaderHeight = 0.0f;
     [self.view addSubview:self.autoCompleteTableViewOutlet];
     
+    self.whereToTextFieldOutlet.text = [SelectionCriteria singleton].whereTo;
     [self.whereToTextFieldOutlet addTarget:self action:@selector(startEnteringWhereTo) forControlEvents:UIControlEventTouchDown];
     [self.whereToTextFieldOutlet addTarget:self action:@selector(autoCompleteSomePlace) forControlEvents:UIControlEventEditingChanged];
     [self.whereToTextFieldOutlet addTarget:self action:@selector(didFinishTextFieldKeyboard) forControlEvents:UIControlEventEditingDidEndOnExit];
+}
+
+#pragma mark Various events and such
+
+- (void)startEnteringWhereTo {
+    if (!self.isAutoCompleteTableViewExpanded) {
+        [self animateTableViewExpansion];
+    }
+}
+
+- (void)autoCompleteSomePlace {
+    self.autoCompleteOrPlaceDetails = NO;
+    [[LoadGooglePlacesData sharedInstance:self] autoCompleteSomePlaces:self.whereToTextFieldOutlet.text];
+}
+
+- (void)didFinishTextFieldKeyboard {
+    [self.whereToTextFieldOutlet resignFirstResponder];
+    [self animateTableViewCompression];
 }
 
 - (IBAction)justPushIt:(id)sender {
@@ -174,14 +195,35 @@
 
 - (void)setNumberOfAdultsLabel:(NSInteger)change {
     SelectionCriteria *sc = [SelectionCriteria singleton];
+    
     if (sc.numberOfAdults > 1 || change > 0) {
         sc.numberOfAdults += change;
     }
+    
     if (sc.numberOfAdults <= 1) {
         // TODO: disable minus button
     }
+    
+    if (sc.numberOfAdults > 10) {
+        // TODO: disable add button
+    }
+    
     NSString *plural = sc.numberOfAdults == 1 ? @"" : @"s";
     self.adultsLabel.text = [NSString stringWithFormat:@"%lu Adult%@", (unsigned long)sc.numberOfAdults, plural];
+}
+
+- (void)presentKidsSelector {
+    ChildViewController *kids = [ChildViewController new];
+    [self presentSemiViewController:kids withOptions:@{
+                                                       KNSemiModalOptionKeys.pushParentBack    : @(NO),
+                                                       KNSemiModalOptionKeys.animationDuration : @(0.4),
+                                                       KNSemiModalOptionKeys.shadowOpacity     : @(0.3),
+                                                       } completion:^{
+                                                           NSLog(@"");
+                                                       } dismissBlock:^{
+                                                           NSLog(@"");
+                                                           [self setNumberOfKidsButtonLabel];
+                                                       }];
 }
 
 - (void)setNumberOfKidsButtonLabel {
@@ -190,22 +232,6 @@
     id numbKids = numberOfKids == 0 ? @"Add" : [NSString stringWithFormat:@"%lu", (unsigned long) numberOfKids];
     NSString *buttonText = [NSString stringWithFormat:@"%@ %@", numbKids, plural];
     [self.kidsButton setTitle:buttonText forState:UIControlStateNormal];
-}
-
-- (void)startEnteringWhereTo {
-    if (!self.isAutoCompleteTableViewExpanded) {
-        [self animateTableViewExpansion];
-    }
-}
-
-- (void)autoCompleteSomePlace {
-    self.autoCompleteOrPlaceDetails = NO;
-    [[LoadGooglePlacesData sharedInstance:self] autoCompleteSomePlaces:self.whereToTextFieldOutlet.text];
-}
-
-- (void)didFinishTextFieldKeyboard {
-    [self.whereToTextFieldOutlet resignFirstResponder];
-    [self animateTableViewCompression];
 }
 
 #pragma mark LoadDataProtocol methods
@@ -255,7 +281,14 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     PlaceAutoCompleteTableViewCell * cell = (PlaceAutoCompleteTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
     
-    self.whereToTextFieldOutlet.text = cell.outletPlaceName.text;
+    // TODO: I'm worried that we are setting the "where to" value here but that the
+    // Google place detail values aren't set until the "loadPlaceDetails" returns.
+    // The user could potentially click "Find Hotels" before the Google place details
+    // are returned. So we could have two potential problems from this. First, the call
+    // to LoadEanData.loadHotelsWithLatitude:longitude: could return data for the wrong
+    // place. And second, we could have mismatched data in SelectionCriteria between
+    // whereTo and googlePlaceDetail.
+    [SelectionCriteria singleton].whereTo = self.whereToTextFieldOutlet.text = cell.outletPlaceName.text;
     self.autoCompleteOrPlaceDetails = YES;
     [[LoadGooglePlacesData sharedInstance:self] loadPlaceDetails:cell.placeId];
     [self didFinishTextFieldKeyboard];
@@ -298,22 +331,6 @@
     } completion:^(BOOL finished) {
         typeof(self) strongSelf = weakSelf;
         strongSelf.isAutoCompleteTableViewExpanded = NO;
-    }];
-}
-
-#pragma mark Various Guests Selection methods
-
-- (void)presentKidsSelector {
-    ChildViewController *kids = [ChildViewController new];
-    [self presentSemiViewController:kids withOptions:@{
-                                                                            KNSemiModalOptionKeys.pushParentBack    : @(NO),
-                                                                            KNSemiModalOptionKeys.animationDuration : @(0.4),
-                                                                            KNSemiModalOptionKeys.shadowOpacity     : @(0.3),
-                                                                            } completion:^{
-        NSLog(@"");
-    } dismissBlock:^{
-        NSLog(@"");
-        [self setNumberOfKidsButtonLabel];
     }];
 }
 
@@ -379,12 +396,8 @@
 - (NSDate *)addDays:(int)days ToDate:(NSDate *)toDate {
     NSDateComponents *dayComponent = [[NSDateComponents alloc] init];
     dayComponent.day = days;
-    
     NSCalendar *theCalendar = [NSCalendar currentCalendar];
-    NSDate *nextDate = [theCalendar dateByAddingComponents:dayComponent toDate:toDate options:0];
-    
-    NSLog(@"nextDate: %@ ...", [_viewFormatter stringFromDate:nextDate]);
-    return nextDate;
+    return [theCalendar dateByAddingComponents:dayComponent toDate:toDate options:0];
 }
 
 #pragma mark THDatePickerDelegate methods

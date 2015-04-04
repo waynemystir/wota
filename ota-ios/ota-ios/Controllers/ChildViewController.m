@@ -36,12 +36,12 @@ NSTimeInterval const kAnimationDuration = 0.6;
 
 @implementation ChildViewController
 
+#pragma mark Lifecycle methods
+
 - (id)init {
     self = [super initWithNibName:@"ChildView" bundle:nil];
     return self;
 }
-
-#pragma mark View lifecycle methods
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -330,8 +330,7 @@ NSTimeInterval const kAnimationDuration = 0.6;
     self.pickerView.dataSource = self;
     self.pickerView.delegate = self;
     
-    _pickerData = [NSMutableArray array];
-    [_pickerData addObjectsFromArray:@[@"", @"Less than 1", @"1 year old"]];
+    _pickerData = [NSMutableArray arrayWithObjects:@"", @"Less than 1", @"1 year old", nil];
     
     for (int j = 2; j < 18; j++) {
         [_pickerData addObject:[NSString stringWithFormat:@"%d years old", j]];

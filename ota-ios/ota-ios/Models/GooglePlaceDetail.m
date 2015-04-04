@@ -7,6 +7,11 @@
 //
 
 #import "GooglePlaceDetail.h"
+#import "AppEnvironment.h"
+
+NSString * const kKeyPlaceId = @"placeId";
+NSString * const kKeyLatitude = @"latitude";
+NSString * const kKeyLongitude = @"longitude";
 
 @interface GooglePlaceDetail ()
 
@@ -18,13 +23,26 @@
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super init]) {
-        ;
+        _placeId = [aDecoder decodeObjectForKey:kKeyPlaceId];
+        _latitude = [aDecoder decodeFloatForKey:kKeyLatitude];
+        _longitude = [aDecoder decodeFloatForKey:kKeyLongitude];
     }
     return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
-    
+    [aCoder encodeObject:_placeId forKey:kKeyPlaceId];
+    [aCoder encodeFloat:_latitude forKey:kKeyLatitude];
+    [aCoder encodeFloat:_longitude forKey:kKeyLongitude];
+}
+
++ (NSString *)pathToGooglePlaceDetailForId:(NSString *)placeId {
+    return [kWotaCacheGooglePlaceDetailDirectory() stringByAppendingFormat:@"/%@", placeId];
+}
+
+- (BOOL)save {
+    BOOL saveResult = [NSKeyedArchiver archiveRootObject:self toFile:[[self class] pathToGooglePlaceDetailForId:_placeId]];
+    return saveResult;
 }
 
 - (id)initWithDictionary:(NSDictionary *)dictionary {
@@ -33,6 +51,17 @@
         _dictionary = dictionary;
     }
     return self;
+}
+
++ (GooglePlaceDetail *)placeDetailFromId:(NSString *)placeId {
+    GooglePlaceDetail * _gpd = nil;
+    NSString *path = [self pathToGooglePlaceDetailForId:placeId];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        _gpd = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
+    }
+    
+    return _gpd;
 }
 
 + (GooglePlaceDetail *)placeDetailFromData:(NSData *)data {
@@ -72,6 +101,9 @@
     gpd.location = [gpd.geometry objectForKey:@"location"];
     gpd.latitude = [[gpd.location objectForKey:@"lat"] doubleValue];
     gpd.longitude = [[gpd.location objectForKey:@"lng"] doubleValue];
+    
+    [gpd save];
+    
     return gpd;
 }
 
@@ -81,6 +113,23 @@
     }
     
     
+}
+
+#pragma mark Getters and Setters
+
+- (void)setPlaceId:(NSString *)placeId {
+    _placeId = placeId;
+    [self save];
+}
+
+- (void)setLatitude:(double)latitude {
+    _latitude = latitude;
+    [self save];
+}
+
+- (void)setLongitude:(double)longitude {
+    _longitude = longitude;
+    [self save];
 }
 
 @end
