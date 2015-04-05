@@ -8,12 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import "LoadDataProtocol.h"
-#import "EanHotel.h"
+#import "EanHotelListHotelSummary.h"
 
 @interface HotelInfoViewController : UIViewController <LoadDataProtocol>
 
-@property (nonatomic, strong) EanHotel *eanHotel;
+@property (nonatomic, strong) EanHotelListHotelSummary *eanHotel;
 
-- (id)initWithHotel:(EanHotel *)eanHotel;
+- (id)initWithHotel:(EanHotelListHotelSummary *)eanHotel;
 
 @end

@@ -1,21 +1,21 @@
 //
-//  EanHotelSummary.m
-//  ean-ota-ios
+//  EanHotelListHotelSummary.m
+//  ota-ios
 //
-//  Created by WAYNE SMALL on 3/21/15.
+//  Created by WAYNE SMALL on 4/5/15.
 //  Copyright (c) 2015 Irwin. All rights reserved.
 //
 
-#import "EanHotel.h"
+#import "EanHotelListHotelSummary.h"
 
-@implementation EanHotel
+@implementation EanHotelListHotelSummary
 
-+ (EanHotel *)hotelFromObject:(id)object {
++ (EanHotelListHotelSummary *)hotelFromObject:(id)object {
     if (object == nil) {
         return nil;
     }
     
-    EanHotel *hotel = [[EanHotel alloc] init];
+    EanHotelListHotelSummary *hotel = [[EanHotelListHotelSummary alloc] init];
     
     //*******************
     // TODO: handle cases where the following values are not empty or wrong data type

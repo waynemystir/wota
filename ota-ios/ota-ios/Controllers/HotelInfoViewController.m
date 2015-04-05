@@ -17,11 +17,10 @@
 #import "EanHotelInfoImage.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 
-@interface HotelInfoViewController () <CLLocationManagerDelegate, UIScrollViewDelegate>
+@interface HotelInfoViewController () <CLLocationManagerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollViewOutlet;
 @property (weak, nonatomic) IBOutlet UIScrollView *imageScrollerOutlet;
-@property (weak, nonatomic) IBOutlet UIPageControl *imagePageControlOutlet;
 @property (weak, nonatomic) IBOutlet UILabel *someLabelOutlet;
 @property (weak, nonatomic) IBOutlet UIView *mapContainerOutlet;
 @property (nonatomic, strong) CLLocationManager *locationManager;
@@ -43,7 +42,7 @@
     return self;
 }
 
-- (id)initWithHotel:(EanHotel *)eanHotel {
+- (id)initWithHotel:(EanHotelListHotelSummary *)eanHotel {
     self = [self init];
     if (self != nil) {
         _eanHotel = eanHotel;
@@ -56,7 +55,6 @@
     
     self.scrollViewOutlet.contentSize = CGSizeMake(320.0f, 900.0f);
     self.imageScrollerOutlet.contentSize = CGSizeMake(1900.0f, 195.0f);
-    self.imageScrollerOutlet.delegate = self;
     
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.distanceFilter = kCLDistanceFilterNone;

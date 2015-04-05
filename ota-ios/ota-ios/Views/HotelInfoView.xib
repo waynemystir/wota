@@ -8,7 +8,6 @@
             <connections>
                 <outlet property="addressLabelOutlet" destination="zvp-BM-nsr" id="r6V-Uf-fZT"/>
                 <outlet property="bookButtonOutlet" destination="jib-qY-9Z1" id="dFr-2B-rjt"/>
-                <outlet property="imagePageControlOutlet" destination="AOj-g4-len" id="nXc-5N-M7H"/>
                 <outlet property="imageScrollerOutlet" destination="vZH-Bf-tX6" id="bRX-Ah-4Ju"/>
                 <outlet property="mapContainerOutlet" destination="MAY-ls-PPp" id="Crl-Ua-LzV"/>
                 <outlet property="scrollViewOutlet" destination="dQe-Ib-X3Y" id="QyJ-gv-Ot8"/>
@@ -59,9 +58,6 @@
                         <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" pagingEnabled="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vZH-Bf-tX6" userLabel="imageScroller">
                             <rect key="frame" x="0.0" y="0.0" width="320" height="195"/>
                         </scrollView>
-                        <pageControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="AOj-g4-len" userLabel="imagePageControl">
-                            <rect key="frame" x="8" y="189" width="39" height="37"/>
-                        </pageControl>
                     </subviews>
                 </scrollView>
             </subviews>

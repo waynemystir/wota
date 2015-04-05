@@ -1,14 +1,14 @@
 //
-//  EanHotelSummary.h
-//  ean-ota-ios
+//  EanHotelListHotelSummary.h
+//  ota-ios
 //
-//  Created by WAYNE SMALL on 3/21/15.
+//  Created by WAYNE SMALL on 4/5/15.
 //  Copyright (c) 2015 Irwin. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 
-@interface EanHotel : NSObject
+@interface EanHotelListHotelSummary : NSObject
 
 @property (nonatomic, strong) NSString *hotelId;
 @property (nonatomic, strong) NSString *hotelName;
@@ -19,6 +19,6 @@
 @property (nonatomic) double longitude;
 @property (nonatomic, strong) NSString *shortDescription;
 
-+ (EanHotel *)hotelFromObject:(id)object;
++ (EanHotelListHotelSummary *)hotelFromObject:(id)object;
 
 @end

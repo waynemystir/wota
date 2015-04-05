@@ -7,9 +7,9 @@
 //
 
 #import "HotelListingViewController.h"
-#import "EanParser.h"
+#import "EanHotelListResponse.h"
+#import "EanHotelListHotelSummary.h"
 #import "HotelTableViewCell.h"
-#import "EanHotel.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "HotelInfoViewController.h"
 #import "LoadEanData.h"
@@ -18,7 +18,7 @@
 
 @property (weak, nonatomic) IBOutlet UITableView *tableViewHotelList;
 @property (nonatomic, strong) NSArray *hotelData;
-@property (nonatomic, strong) EanHotel *selectedHotel;
+@property (nonatomic, strong) EanHotelListHotelSummary *selectedHotel;
 
 @end
 
@@ -51,7 +51,7 @@
 }
 
 - (void)requestFinished:(NSData *)responseData {
-    NSArray *hotelList = [EanParser parseHotelListResponse:responseData];
+    NSArray *hotelList = [EanHotelListResponse hotelListFromData:responseData];
     
     if (hotelList != nil) {
         self.hotelData = hotelList;
@@ -77,7 +77,7 @@
         cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     }
     
-    EanHotel *hotel = [EanHotel hotelFromObject:[self.hotelData objectAtIndex:indexPath.row]];
+    EanHotelListHotelSummary *hotel = [EanHotelListHotelSummary hotelFromObject:[self.hotelData objectAtIndex:indexPath.row]];
     NSString *imageUrlString = [@"http://images.travelnow.com" stringByAppendingString:hotel.thumbNailUrl];    
 //    dispatch_queue_t concurrentQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
 //    //this will start the image loading in bg
@@ -118,7 +118,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     HotelTableViewCell *cell = (HotelTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
-    EanHotel *hotel = [EanHotel hotelFromObject:[self.hotelData objectAtIndex:indexPath.row]];
+    EanHotelListHotelSummary *hotel = [EanHotelListHotelSummary hotelFromObject:[self.hotelData objectAtIndex:indexPath.row]];
     HotelInfoViewController *hvc = [[HotelInfoViewController alloc] initWithHotel:hotel];
     [[LoadEanData sharedInstance:hvc] loadHotelDetailsWithId:cell.hotelId];
     [self.navigationController pushViewController:hvc animated:YES];
