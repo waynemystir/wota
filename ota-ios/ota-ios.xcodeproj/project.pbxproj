@@ -133,8 +133,8 @@
 		B080B7C51AC5057100075A32 /* HotelInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotelInfoViewController.h; sourceTree = "<group>"; };
 		B080B7C61AC5057100075A32 /* HotelInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotelInfoViewController.m; sourceTree = "<group>"; };
 		B080B7C81AC505DC00075A32 /* HotelInfoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HotelInfoView.xib; sourceTree = "<group>"; };
-		B080B7CA1AC506B500075A32 /* EanHotelInformationResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EanHotelInformationResponse.h; path = "ota-ios/Models/Ean/EanHotelInformationResponse.h"; sourceTree = SOURCE_ROOT; };
-		B080B7CB1AC506B500075A32 /* EanHotelInformationResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EanHotelInformationResponse.m; path = "ota-ios/Models/Ean/EanHotelInformationResponse.m"; sourceTree = SOURCE_ROOT; };
+		B080B7CA1AC506B500075A32 /* EanHotelInformationResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EanHotelInformationResponse.h; path = "ota-ios/Models/Ean/HotelInfoResponse/EanHotelInformationResponse.h"; sourceTree = SOURCE_ROOT; };
+		B080B7CB1AC506B500075A32 /* EanHotelInformationResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EanHotelInformationResponse.m; path = "ota-ios/Models/Ean/HotelInfoResponse/EanHotelInformationResponse.m"; sourceTree = SOURCE_ROOT; };
 		B0963CB71AC786E3002FD859 /* SelectionCriteria.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectionCriteria.h; sourceTree = "<group>"; };
 		B0963CB81AC786E3002FD859 /* SelectionCriteria.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectionCriteria.m; sourceTree = "<group>"; };
 		B0963CBA1AC89445002FD859 /* ChildViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChildViewController.h; sourceTree = "<group>"; };
@@ -219,14 +219,9 @@
 		B0122E481AD0917100E44319 /* Ean */ = {
 			isa = PBXGroup;
 			children = (
+				B0122E511AD16E4400E44319 /* HotelInfoResponse */,
 				B09797D41AC33D8C0014FC7C /* EanHotel.h */,
 				B09797D31AC33D8C0014FC7C /* EanHotel.m */,
-				B080B7CA1AC506B500075A32 /* EanHotelInformationResponse.h */,
-				B080B7CB1AC506B500075A32 /* EanHotelInformationResponse.m */,
-				B0122E4E1AD0E8C700E44319 /* EanHotelInformationSummary.h */,
-				B0122E4F1AD0E8C700E44319 /* EanHotelInformationSummary.m */,
-				B0122E4B1AD0A88500E44319 /* EanHotelDetails.h */,
-				B0122E4C1AD0A88500E44319 /* EanHotelDetails.m */,
 				B0122E421AD0885D00E44319 /* EanHotelRoomAvailabilityResponse.h */,
 				B0122E431AD0885D00E44319 /* EanHotelRoomAvailabilityResponse.m */,
 				B0122E451AD088F800E44319 /* EanHotelRoomResponse.h */,
@@ -259,6 +254,19 @@
 				B0963CC01AC8BDC6002FD859 /* ChildTraveler.m */,
 			);
 			path = Internal;
+			sourceTree = "<group>";
+		};
+		B0122E511AD16E4400E44319 /* HotelInfoResponse */ = {
+			isa = PBXGroup;
+			children = (
+				B080B7CA1AC506B500075A32 /* EanHotelInformationResponse.h */,
+				B080B7CB1AC506B500075A32 /* EanHotelInformationResponse.m */,
+				B0122E4E1AD0E8C700E44319 /* EanHotelInformationSummary.h */,
+				B0122E4F1AD0E8C700E44319 /* EanHotelInformationSummary.m */,
+				B0122E4B1AD0A88500E44319 /* EanHotelDetails.h */,
+				B0122E4C1AD0A88500E44319 /* EanHotelDetails.m */,
+			);
+			path = HotelInfoResponse;
 			sourceTree = "<group>";
 		};
 		B032F61B1AC18F6700809395 = {
