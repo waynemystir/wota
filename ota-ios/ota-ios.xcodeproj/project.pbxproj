@@ -65,6 +65,7 @@
 		B09797FA1AC3BC690014FC7C /* THDatePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B09797F21AC3BC690014FC7C /* THDatePickerViewController.m */; };
 		B09797FB1AC3BC690014FC7C /* THDatePickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B09797F31AC3BC690014FC7C /* THDatePickerViewController.xib */; };
 		B09797FC1AC3BC690014FC7C /* UIViewController+KNSemiModal.m in Sources */ = {isa = PBXBuildFile; fileRef = B09797F51AC3BC690014FC7C /* UIViewController+KNSemiModal.m */; };
+		B09C5E9F1AD1735500A3D7E8 /* EanHotelInfoImage.m in Sources */ = {isa = PBXBuildFile; fileRef = B09C5E9E1AD1735500A3D7E8 /* EanHotelInfoImage.m */; };
 		B0FE0F471AC6EB9500DAF635 /* BookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B0FE0F461AC6EB9500DAF635 /* BookViewController.m */; };
 		B0FE0F491AC6ED0000DAF635 /* BookView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0FE0F481AC6ED0000DAF635 /* BookView.xib */; };
 		B0FE0F4C1AC70A0700DAF635 /* SelectRoomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B0FE0F4B1AC70A0700DAF635 /* SelectRoomViewController.m */; };
@@ -86,9 +87,9 @@
 		B0122E431AD0885D00E44319 /* EanHotelRoomAvailabilityResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EanHotelRoomAvailabilityResponse.m; path = "ota-ios/Models/Ean/EanHotelRoomAvailabilityResponse.m"; sourceTree = SOURCE_ROOT; };
 		B0122E451AD088F800E44319 /* EanHotelRoomResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EanHotelRoomResponse.h; path = "ota-ios/Models/Ean/EanHotelRoomResponse.h"; sourceTree = SOURCE_ROOT; };
 		B0122E461AD088F800E44319 /* EanHotelRoomResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EanHotelRoomResponse.m; path = "ota-ios/Models/Ean/EanHotelRoomResponse.m"; sourceTree = SOURCE_ROOT; };
-		B0122E4B1AD0A88500E44319 /* EanHotelDetails.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanHotelDetails.h; sourceTree = "<group>"; };
-		B0122E4C1AD0A88500E44319 /* EanHotelDetails.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanHotelDetails.m; sourceTree = "<group>"; };
-		B0122E4E1AD0E8C700E44319 /* EanHotelInformationSummary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanHotelInformationSummary.h; sourceTree = "<group>"; };
+		B0122E4B1AD0A88500E44319 /* EanHotelDetails.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EanHotelDetails.h; path = "ota-ios/Models/Ean/HotelInfoResponse/EanHotelDetails.h"; sourceTree = SOURCE_ROOT; };
+		B0122E4C1AD0A88500E44319 /* EanHotelDetails.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EanHotelDetails.m; path = "ota-ios/Models/Ean/HotelInfoResponse/EanHotelDetails.m"; sourceTree = SOURCE_ROOT; };
+		B0122E4E1AD0E8C700E44319 /* EanHotelInformationSummary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EanHotelInformationSummary.h; path = "ota-ios/Models/Ean/HotelInfoResponse/EanHotelInformationSummary.h"; sourceTree = SOURCE_ROOT; };
 		B0122E4F1AD0E8C700E44319 /* EanHotelInformationSummary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanHotelInformationSummary.m; sourceTree = "<group>"; };
 		B032F6241AC18F6700809395 /* ota-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ota-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B032F6281AC18F6700809395 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -176,6 +177,8 @@
 		B09797F31AC3BC690014FC7C /* THDatePickerViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = THDatePickerViewController.xib; sourceTree = "<group>"; };
 		B09797F41AC3BC690014FC7C /* UIViewController+KNSemiModal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+KNSemiModal.h"; sourceTree = "<group>"; };
 		B09797F51AC3BC690014FC7C /* UIViewController+KNSemiModal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+KNSemiModal.m"; sourceTree = "<group>"; };
+		B09C5E9D1AD1735500A3D7E8 /* EanHotelInfoImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanHotelInfoImage.h; sourceTree = "<group>"; };
+		B09C5E9E1AD1735500A3D7E8 /* EanHotelInfoImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanHotelInfoImage.m; sourceTree = "<group>"; };
 		B0FE0F451AC6EB9500DAF635 /* BookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookViewController.h; sourceTree = "<group>"; };
 		B0FE0F461AC6EB9500DAF635 /* BookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookViewController.m; sourceTree = "<group>"; };
 		B0FE0F481AC6ED0000DAF635 /* BookView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BookView.xib; sourceTree = "<group>"; };
@@ -265,6 +268,8 @@
 				B0122E4F1AD0E8C700E44319 /* EanHotelInformationSummary.m */,
 				B0122E4B1AD0A88500E44319 /* EanHotelDetails.h */,
 				B0122E4C1AD0A88500E44319 /* EanHotelDetails.m */,
+				B09C5E9D1AD1735500A3D7E8 /* EanHotelInfoImage.h */,
+				B09C5E9E1AD1735500A3D7E8 /* EanHotelInfoImage.m */,
 			);
 			path = HotelInfoResponse;
 			sourceTree = "<group>";
@@ -597,6 +602,7 @@
 				B032F62D1AC18F6700809395 /* AppDelegate.m in Sources */,
 				B032F62A1AC18F6700809395 /* main.m in Sources */,
 				B0963CB91AC786E3002FD859 /* SelectionCriteria.m in Sources */,
+				B09C5E9F1AD1735500A3D7E8 /* EanHotelInfoImage.m in Sources */,
 				B09797E51AC344340014FC7C /* LoadEanData.m in Sources */,
 				B0FE0F471AC6EB9500DAF635 /* BookViewController.m in Sources */,
 				B09797DA1AC33E040014FC7C /* HotelTableViewCell.m in Sources */,

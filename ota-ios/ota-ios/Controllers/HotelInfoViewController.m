@@ -14,9 +14,14 @@
 #import "ChildTraveler.h"
 #import "SelectRoomViewController.h"
 #import "EanHotelInformationResponse.h"
+#import "EanHotelInfoImage.h"
+#import <SDWebImage/UIImageView+WebCache.h>
 
-@interface HotelInfoViewController () <CLLocationManagerDelegate>
+@interface HotelInfoViewController () <CLLocationManagerDelegate, UIScrollViewDelegate>
 
+@property (weak, nonatomic) IBOutlet UIScrollView *scrollViewOutlet;
+@property (weak, nonatomic) IBOutlet UIScrollView *imageScrollerOutlet;
+@property (weak, nonatomic) IBOutlet UIPageControl *imagePageControlOutlet;
 @property (weak, nonatomic) IBOutlet UILabel *someLabelOutlet;
 @property (weak, nonatomic) IBOutlet UIView *mapContainerOutlet;
 @property (nonatomic, strong) CLLocationManager *locationManager;
@@ -48,6 +53,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.scrollViewOutlet.contentSize = CGSizeMake(320.0f, 900.0f);
+    self.imageScrollerOutlet.contentSize = CGSizeMake(1900.0f, 195.0f);
+    self.imageScrollerOutlet.delegate = self;
     
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.distanceFilter = kCLDistanceFilterNone;
@@ -85,8 +94,19 @@
 
 - (void)requestFinished:(NSData *)responseData {
     self.eanHotelInformationResponse = [EanHotelInformationResponse hotelInfoFromData:responseData];
-//    NSLog(@"HOTELDETAIL:%@", [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
+    [self loadupTheImageScroller];
     self.someLabelOutlet.text = [NSString stringWithFormat:@"lat:%f long:%f", _eanHotel.latitude, _eanHotel.longitude];
+}
+
+- (void)loadupTheImageScroller {
+    NSArray *ims = self.eanHotelInformationResponse.hotelImagesArray;
+    for (int j = 0; j < [ims count]; j++) {
+        EanHotelInfoImage *image = [EanHotelInfoImage imageFromDict:ims[j]];
+        UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(j * 320, 0, 320.0f, 195.0f)];
+        [iv setImageWithURL:[NSURL URLWithString:image.url]];
+        self.imageScrollerOutlet.contentSize = CGSizeMake(320 + j * 320, 195.0f);
+        [self.imageScrollerOutlet addSubview:iv];
+    }
 }
 
 - (IBAction)justPushIt:(id)sender {
