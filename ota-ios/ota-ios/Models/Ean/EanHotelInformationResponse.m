@@ -22,6 +22,11 @@
         return nil;
     }
     
+    if (![NSJSONSerialization isValidJSONObject:respDict]) {
+        NSLog(@"%@.%@ Response is not valid JSON", NSStringFromClass(self.class), NSStringFromSelector(_cmd));
+        return nil;
+    }
+    
     return [self hotelInfoFromObject:respDict];
 }
 
@@ -47,9 +52,10 @@
     EanHotelInformationResponse *hi = [[EanHotelInformationResponse alloc] init];
     hi.hotelId = [hir objectForKey:@"@hotelId"];
     hi.customerSessionId = [hir objectForKey:@"customerSessionId"];
-    hi.hotelSummary = [hir objectForKey:@"HotelSummary"];
     
-    hi.hotelDetails = [EanHotelDetails hotelDetailsFromObject:[hir objectForKey:@"HotelDetails"]];
+    hi.hotelSummary = [EanHotelInformationSummary hotelSummaryFromDictionary:[hir objectForKey:@"HotelSummary"]];
+    
+    hi.hotelDetails = [EanHotelDetails hotelDetailsFromDictionary:[hir objectForKey:@"HotelDetails"]];
     
     hi.suppliers = [hir objectForKey:@"Suppliers"];
     
@@ -73,17 +79,35 @@
         }
     }
     
-    id imagesDict = [hir objectForKey:@"HotelImages"];
-    if (imagesDict != nil && [imagesDict isKindOfClass:[NSDictionary class]]) {
-        hi.hotelImagesDict = imagesDict;
-        hi.numberOfHotelImages = [[hi.hotelImagesDict objectForKey:@"@size"] integerValue];
-        id imagesArray = [hi.hotelImagesDict objectForKey:@"HotelImage"];
-        if (imagesArray != nil && [imagesArray isKindOfClass:[NSArray class]]) {
-            hi.hotelImagesArray = imagesArray;
-        }
-    }
+//    id imagesDict = [hir objectForKey:@"HotelImages"];
+//    if (imagesDict != nil && [imagesDict isKindOfClass:[NSDictionary class]]) {
+//        hi.hotelImagesDict = imagesDict;
+//        hi.numberOfHotelImages = [[hi.hotelImagesDict objectForKey:@"@size"] integerValue];
+//        id imagesArray = [hi.hotelImagesDict objectForKey:@"HotelImage"];
+//        if (imagesArray != nil && [imagesArray isKindOfClass:[NSArray class]]) {
+//            hi.hotelImagesArray = imagesArray;
+//        }
+//    }
+    
+    [self unwrapEanObject:[hir objectForKey:@"HotelImages"] withDict:&hi->_hotelImagesDict withSize:&hi->_numberOfHotelImages sizeKey:@"@size" withArray:&hi->_hotelImagesArray arrayKey:@"HotelImage"];
     
     return hi;
+}
+
++ (void)unwrapEanObject:(id)object
+               withDict:(NSDictionary * __strong *)dict
+               withSize:(NSUInteger *)size
+                sizeKey:(NSString *) sizeKey
+              withArray:(NSArray * __strong *) array
+               arrayKey:(NSString *) arrayKey {
+    if (object != nil && [object isKindOfClass:[NSDictionary class]]) {
+        *dict = object;
+        *size = [[*dict objectForKey:sizeKey] integerValue];
+        id tmpArray = [*dict objectForKey:arrayKey];
+        if (tmpArray != nil && [tmpArray isKindOfClass:[NSArray class]]) {
+            *array = tmpArray;
+        }
+    }
 }
 
 @end

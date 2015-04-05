@@ -11,8 +11,8 @@
 @implementation EanParser
 
 + (NSArray *)parseHotelListResponse:(NSData *)responseData {
-//    NSString *jsonResponse = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
-//    NSLog(@"%@.%@ RESPONSE:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), jsonResponse);
+    NSString *jsonResponse = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
+    NSLog(@"%@.%@ hotelListRESPONSE:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), jsonResponse);
     
     if (responseData == nil) {
         NSLog(@"%@.%@ No response data returned", NSStringFromClass(self.class), NSStringFromSelector(_cmd));

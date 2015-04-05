@@ -22,7 +22,6 @@
 @property (nonatomic, strong) NSString *drivingDirections;
 @property (nonatomic, strong) NSString *checkInInstructions;
 
-+ (EanHotelDetails *)hotelDetailsFromObject:(id)object;
 + (EanHotelDetails *)hotelDetailsFromDictionary:(NSDictionary *)dict;
 
 @end

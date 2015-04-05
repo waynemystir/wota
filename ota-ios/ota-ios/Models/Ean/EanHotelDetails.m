@@ -10,14 +10,6 @@
 
 @implementation EanHotelDetails
 
-+ (EanHotelDetails *)hotelDetailsFromObject:(id)object {
-    if (object == nil) {
-        return nil;
-    }
-    
-    return [self hotelDetailsFromDictionary:object];
-}
-
 + (EanHotelDetails *)hotelDetailsFromDictionary:(NSDictionary *)dict {
     if (dict == nil) {
         return nil;
