@@ -57,7 +57,7 @@
     
     hlr.customerSessionId = [idHlr objectForKey:@"customerSessionId"];
     hlr.numberOfRoomsRequested = [[idHlr objectForKey:@"numberOfRoomsRequested"] integerValue];
-    hlr.moreResultsAvailable = [idHlr objectForKey:@"moreResultsAvailable"];
+    hlr.moreResultsAvailable = [[idHlr objectForKey:@"moreResultsAvailable"] boolValue];
     hlr.cacheKey = [idHlr objectForKey:@"cacheKey"];
     hlr.cacheLocation = [idHlr objectForKey:@"cacheLocation"];
     hlr.hotelListDict = [idHlr objectForKey:@"HotelList"];

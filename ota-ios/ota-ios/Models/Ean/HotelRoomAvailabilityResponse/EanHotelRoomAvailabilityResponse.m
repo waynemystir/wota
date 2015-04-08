@@ -28,7 +28,6 @@
     }
     
     return [self roomsAvailableResponseFromDict:respDict];
-    
 }
 
 + (EanHotelRoomAvailabilityResponse *)roomsAvailableResponseFromDict:(NSDictionary *)dict {

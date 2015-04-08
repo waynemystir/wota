@@ -31,6 +31,8 @@
 @property (nonatomic) NSInteger quotedOccupancy;
 @property (nonatomic) NSInteger minGuestAge;
 @property (nonatomic, strong) NSDictionary *rateInfo;
+@property (nonatomic, strong) NSDictionary *chargeableRateInfo;
+@property (nonatomic) float chargeableRate;
 @property (nonatomic, strong) NSString *deepLink;
 
 + (EanAvailabilityHotelRoomResponse *)roomFromDict:(NSDictionary *)dict;

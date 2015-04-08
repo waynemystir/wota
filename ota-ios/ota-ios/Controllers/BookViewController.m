@@ -7,6 +7,7 @@
 //
 
 #import "BookViewController.h"
+#import "EanHotelRoomReservationResponse.h"
 
 @interface BookViewController ()
 
@@ -22,6 +23,16 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+}
+
+- (void)requestStarted:(NSURL *)url {
+    NSLog(@"%@.%@.:::%@", self.class, NSStringFromSelector(_cmd), url);
+}
+
+- (void)requestFinished:(NSData *)responseData {
+    NSString *respString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
+    EanHotelRoomReservationResponse *hrrr = [EanHotelRoomReservationResponse roomReservationFromData:responseData];
+    NSLog(@"%@.%@:::%@", self.class, NSStringFromSelector(_cmd), respString);
 }
 
 @end

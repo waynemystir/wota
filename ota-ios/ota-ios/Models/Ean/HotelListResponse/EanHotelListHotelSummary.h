@@ -34,7 +34,7 @@
 @property (nonatomic) double longitude;
 @property (nonatomic, strong) NSNumber *proximityDistance;
 @property (nonatomic, strong) NSString *proximityUnit;
-@property (nonatomic) id hotelInDestination;
+@property (nonatomic) BOOL hotelInDestination;
 @property (nonatomic, strong) NSString *thumbNailUrl;
 @property (nonatomic, strong) NSString *deepLink;
 @property (nonatomic, strong) NSDictionary *roomRateDetailsList;

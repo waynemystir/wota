@@ -12,7 +12,7 @@
 
 @property (nonatomic, strong) NSString *customerSessionId;
 @property (nonatomic) NSUInteger numberOfRoomsRequested;
-@property (nonatomic, strong) id moreResultsAvailable;
+@property (nonatomic) BOOL moreResultsAvailable;
 @property (nonatomic, strong) NSString *cacheKey;
 @property (nonatomic, strong) NSString *cacheLocation;
 @property (nonatomic, strong) NSDictionary *hotelListDict;

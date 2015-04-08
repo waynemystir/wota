@@ -80,21 +80,11 @@ NSString * const kKeyChildTravelers = @"childTravelers";
 }
 
 - (NSString *)arrivalDateEanString {
-    return [[SelectionCriteria EanApiDateFormatter] stringFromDate:_arrivalDate];
+    return [kEanApiDateFormatter() stringFromDate:_arrivalDate];
 }
 
 - (NSString *)returnDateEanString {
-    return [[SelectionCriteria EanApiDateFormatter] stringFromDate:_returnDate];
-}
-
-+ (NSDateFormatter *)EanApiDateFormatter {
-    static NSDateFormatter *_eanApiDateFormatter = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _eanApiDateFormatter = [[NSDateFormatter alloc] init];
-        [_eanApiDateFormatter setDateFormat:@"MM/dd/yyyy"];
-    });
-    return _eanApiDateFormatter;
+    return [kEanApiDateFormatter() stringFromDate:_returnDate];
 }
 
 #pragma mark Setters

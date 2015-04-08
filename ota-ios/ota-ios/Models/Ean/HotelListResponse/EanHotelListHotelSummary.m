@@ -44,7 +44,7 @@
     hotel.longitude = [[object objectForKey:@"longitude"] doubleValue];
     hotel.proximityDistance = [object objectForKey:@"proximityDistance"];
     hotel.proximityUnit = [object objectForKey:@"proximityUnit"];
-    hotel.hotelInDestination = [object objectForKey:@"hotelInDestination"];
+    hotel.hotelInDestination = [[object objectForKey:@"hotelInDestination"] boolValue];
     hotel.thumbNailUrl = [object objectForKey:@"thumbNailUrl"];
     hotel.deepLink = [object objectForKey:@"deepLink"];
     hotel.roomRateDetailsList = [object objectForKey:@"RoomRateDetailsList"];

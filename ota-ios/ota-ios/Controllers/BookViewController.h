@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "LoadDataProtocol.h"
 
-@interface BookViewController : UIViewController
+@interface BookViewController : UIViewController <LoadDataProtocol>
 
 @end

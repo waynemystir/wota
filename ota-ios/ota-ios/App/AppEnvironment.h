@@ -52,6 +52,31 @@ extern NSString * const EAN_PK_LONGITUDE;
 extern NSString * const EAN_PK_SEARCH_RADIUS;
 extern NSString * const EAN_PK_SEARCH_RADIUS_UNIT;
 extern NSString * const EAN_PK_GEO_SORT;
+extern NSString * const EAN_PK_HOTEL_ID;
+extern NSString * const EAN_PK_SUPPLIER_TYPE;
+extern NSString * const EAN_PK_RATE_KEY;
+extern NSString * const EAN_PK_ROOM_TYPE_CODE;
+extern NSString * const EAN_PK_RATE_CODE;
+extern NSString * const EAN_PK_CHARGEABLE_RATE;
+extern NSString * const EAN_PK_ROOM1_FIRST_NAME;
+extern NSString * const EAN_PK_ROOM1_LAST_NAME;
+extern NSString * const EAN_PK_ROOM1_BED_TYPE_ID;
+extern NSString * const EAN_PK_ROOM1_SMOKING_PREF;
+extern NSString * const EAN_PK_AFFILIATE_CONFIRMATION_ID;
+extern NSString * const EAN_PK_EMAIL;
+extern NSString * const EAN_PK_FIRST_NAME;
+extern NSString * const EAN_PK_LAST_NAME;
+extern NSString * const EAN_PK_HOME_PHONE;
+extern NSString * const EAN_PK_CC_TYPE;
+extern NSString * const EAN_PK_CC_NUMBER;
+extern NSString * const EAN_PK_CC_IDENTIFIER;
+extern NSString * const EAN_PK_CC_EXPIR_MONTH;
+extern NSString * const EAN_PK_CC_EXPIR_YEAR;
+extern NSString * const EAN_PK_CC_ADDRESS1;
+extern NSString * const EAN_PK_CC_CITY;
+extern NSString * const EAN_PK_CC_STATE_PROV_CODE;
+extern NSString * const EAN_PK_CC_COUNTRY_CODE;
+extern NSString * const EAN_PK_CC_POSTAL_CODE;
 
 /**
  * Various URL's
@@ -61,11 +86,17 @@ extern NSString * kEanGeneralRequestUrl();
 extern NSString * kEanHotelListRequestUrl();
 extern NSString * kEanHotelInfoRequestUrl();
 extern NSString * kEanAvailableRoomsRequestUrl();
+extern NSString * kEanBookReservationUrl();
 extern NSString * kEanGeoSearchRequestUrl();
 
 /**
- * Other stuff
+ * Various directories to persist the cache
  */
 extern NSString * kWotaCacheDirectory();
 extern NSString * kWotaCacheChildTravelersDirectory();
 extern NSString * kWotaCacheGooglePlaceDetailDirectory();
+
+/**
+ *
+ */
+extern NSDateFormatter * kEanApiDateFormatter();

@@ -10,8 +10,12 @@
 #import "EanHotelRoomAvailabilityResponse.h"
 #import "EanAvailabilityHotelRoomResponse.h"
 #import "AvailableRoomTableViewCell.h"
+#import "LoadEanData.h"
+#import "SelectionCriteria.h"
+#import "ChildTraveler.h"
+#import "BookViewController.h"
 
-@interface SelectRoomViewController () <UITableViewDataSource>
+@interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *roomsTableViewOutlet;
 @property (nonatomic, strong) EanHotelRoomAvailabilityResponse *eanHrar;
@@ -30,6 +34,7 @@
     [super viewDidLoad];
     
     self.roomsTableViewOutlet.dataSource = self;
+    self.roomsTableViewOutlet.delegate = self;
 }
 
 - (void)requestFinished:(NSData *)responseData {
@@ -62,6 +67,17 @@
     cell.roomTypeDescriptionOutlet.text = room.roomTypeDescription;
     
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    SelectionCriteria *sc = [SelectionCriteria singleton];
+    EanAvailabilityHotelRoomResponse *room = [EanAvailabilityHotelRoomResponse roomFromDict:[self.tableData objectAtIndex:indexPath.row]];
+    
+    BookViewController *bvc = [BookViewController new];
+    
+    [[LoadEanData sharedInstance:bvc] bookHotelRoomWithHotelId:self.eanHrar.hotelId arrivalDate:sc.arrivalDateEanString departureDate:sc.returnDateEanString supplierType:room.supplierType rateKey:self.eanHrar.rateKey roomTypeCode:room.roomTypeCode rateCode:room.rateCode chargeableRate:room.chargeableRate numberOfAdults:sc.numberOfAdults childTravelers:[ChildTraveler childTravelers] room1FirstName:@"test" room1LastName:@"testers" room1BedTypeId:@"23" room1SmokingPreference:@"NS" affiliateConfirmationId:[NSUUID UUID] email:@"test@yourSite.com" firstName:@"tester" lastName:@"testing" homePhone:@"1234567890" creditCardType:@"CA" creditCardNumber:@"5401999999999999" creditCardIdentifier:@"123" creditCardExpirationMonth:@"11" creditCardExpirationYear:@"2016" address1:@"travelnow" city:@"Bellevue" stateProvinceCode:@"WA" countryCode:@"US" postalCode:@"98004"];
+    
+    [self.navigationController pushViewController:bvc animated:YES];
 }
 
 @end

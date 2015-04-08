@@ -32,8 +32,34 @@
                        numberOfAdults:(NSUInteger)numberOfAdults
                        childTravelers:(NSArray *)childTravelers;
 
-- (void)bookHotelWithId:(NSString *)hotelId
-            arrivalDate:(NSString *)arrivalDate
-          departureDate:(NSString *)departureDate;
+- (void)bookHotelRoomWithHotelId:(NSString *)hotelId
+                     arrivalDate:(NSString *)arrivalDate
+                   departureDate:(NSString *)departureDate
+                    supplierType:(NSString *)supplierType
+                         rateKey:(NSString *)rateKey
+                    roomTypeCode:(NSString *)roomTypeCode
+                        rateCode:(NSString *)rateCode
+                  chargeableRate:(float)chargeableRate
+                  numberOfAdults:(NSUInteger)numberOfAdults
+                  childTravelers:(NSArray *)childTravelers
+                  room1FirstName:(NSString *)room1FirstName
+                   room1LastName:(NSString *)room1LastName
+                  room1BedTypeId:(NSString *)room1BedTypeId
+          room1SmokingPreference:(NSString *)room1SmokingPreference
+         affiliateConfirmationId:(NSUUID *)affiliateConfirmationId
+                           email:(NSString *)email
+                       firstName:(NSString *)firstName
+                        lastName:(NSString *)lastName
+                       homePhone:(NSString *)homePhone
+                  creditCardType:(NSString *)creditCardType
+                creditCardNumber:(NSString *)creditCardNumber
+            creditCardIdentifier:(NSString *)creditCardIdentifier
+       creditCardExpirationMonth:(NSString *)creditCardExpirationMonth
+        creditCardExpirationYear:(NSString *)creditCardExpirationYear
+                        address1:(NSString *)address1
+                            city:(NSString *)city
+               stateProvinceCode:(NSString *)stateProvinceCode
+                     countryCode:(NSString *)countryCode
+                      postalCode:(NSString *)postalCode;
 
 @end

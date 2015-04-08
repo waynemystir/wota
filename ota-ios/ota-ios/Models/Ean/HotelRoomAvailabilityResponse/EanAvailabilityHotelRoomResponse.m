@@ -21,6 +21,7 @@
     
     EanAvailabilityHotelRoomResponse *room = [[EanAvailabilityHotelRoomResponse alloc] init];
     room.cancellationPolicy = [dict objectForKey:@"cancellationPolicy"];
+    room.rateCode = [dict objectForKey:@"rateCode"];
     room.roomTypeCode = [dict objectForKey:@"roomTypeCode"];
     room.rateDescription = [dict objectForKey:@"rateDescription"];
     room.roomTypeDescription = [dict objectForKey:@"roomTypeDescription"];
@@ -40,6 +41,8 @@
     room.quotedOccupancy = [[dict objectForKey:@"quotedOccupancy"] integerValue];
     room.minGuestAge = [[dict objectForKey:@"minGuestAge"] integerValue];
     room.rateInfo = [dict objectForKey:@"RateInfo"];
+    room.chargeableRateInfo = [room.rateInfo objectForKey:@"ChargeableRateInfo"];
+    room.chargeableRate = [[room.chargeableRateInfo objectForKey:@"@total"] floatValue];
     room.deepLink = [dict objectForKey:@"deepLink"];
     return room;
 }
