@@ -46,7 +46,8 @@
     self.roomsTableViewOutlet.delegate = self;
     
     self.inputBookOutlet.hidden = YES;
-    self.inputBookOutlet.frame = CGRectMake(10.0f, 412.0f, 300.0f, 0.0f);
+//    self.inputBookOutlet.frame = CGRectMake(10.0f, 412.0f, 300.0f, 0.0f);
+    self.inputBookOutlet.transform = [self hiddenGuestInputTransform];
 }
 
 #pragma mark LoadDataProtocol methods
@@ -136,24 +137,40 @@
 - (void)expandToDetailViews {
     self.scrollViewOutlet.contentSize = CGSizeMake(320.0f, 800.0f);
     
+    __weak UIView *rtv = self.roomsTableViewOutlet;
     __weak UIView *ibo = self.inputBookOutlet;
     ibo.hidden = NO;
     [UIView animateWithDuration:0.3 animations:^{
-        ibo.frame = CGRectMake(10, 412, 300, 300);
+        rtv.frame = CGRectMake(10, 43, 300, 200);
+        ibo.transform = [self shownGuestInputTransform];
     } completion:^(BOOL finished) {
-        ;
+        ibo.hidden = NO;
     }];
 }
 
 - (void)compressFromDetailViews {
     self.scrollViewOutlet.contentSize = CGSizeMake(320.0f, 508.0f);
     
+    __weak UIView *rtv = self.roomsTableViewOutlet;
     __weak UIView *ibo = self.inputBookOutlet;
     [UIView animateWithDuration:0.3 animations:^{
-        ibo.frame = CGRectMake(10, 412, 300, 0);
+        rtv.frame = CGRectMake(10, 43, 300, 300);
+        ibo.transform = [self hiddenGuestInputTransform];
     } completion:^(BOOL finished) {
         ibo.hidden = YES;
     }];
+}
+
+- (CGAffineTransform)hiddenGuestInputTransform {
+//    CGFloat hiddenX = self.inputBookOutlet.center.x;
+//    CGFloat hiddenY = self.inputBookOutlet.center.y + 200.0f;
+    CGAffineTransform hiddenTransform = CGAffineTransformMakeTranslation(0.0f, 200.0f);
+    return CGAffineTransformScale(hiddenTransform, 0.01f, 0.01f);
+}
+
+- (CGAffineTransform)shownGuestInputTransform {
+    CGAffineTransform shownTransform = CGAffineTransformMakeTranslation(0.0f, 0.0f);
+    return CGAffineTransformScale(shownTransform, 1.0f, 1.0f);
 }
 
 - (void)bookIt {

@@ -19,25 +19,28 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Zd2-xq-Jwd" userLabel="scrollerView">
-                    <rect key="frame" x="0.0" y="60" width="320" height="508"/>
+                    <rect key="frame" x="0.0" y="10" width="320" height="508"/>
                     <subviews>
                         <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lvY-Yf-X5X" userLabel="inputBookView">
-                            <rect key="frame" x="10" y="412" width="300" height="300"/>
+                            <rect key="frame" x="10" y="267" width="300" height="158"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rqc-YR-Rdm" userLabel="guestButton">
-                                    <rect key="frame" x="31" y="18" width="119" height="30"/>
+                                    <rect key="frame" x="31" y="14" width="131" height="35"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="19"/>
                                     <state key="normal" title="Guest Details">
                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                     </state>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Aff-y2-VbT" userLabel="paymentButton">
-                                    <rect key="frame" x="31" y="68" width="126" height="30"/>
+                                    <rect key="frame" x="31" y="64" width="137" height="35"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="19"/>
                                     <state key="normal" title="Payment Details">
                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                     </state>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bAk-VO-vQt" userLabel="bookButton">
-                                    <rect key="frame" x="31" y="118" width="120" height="30"/>
+                                    <rect key="frame" x="31" y="114" width="120" height="30"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="19"/>
                                     <state key="normal" title="Book">
                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                     </state>
@@ -62,7 +65,7 @@
                 </scrollView>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-            <point key="canvasLocation" x="354" y="134"/>
+            <point key="canvasLocation" x="354" y="128.5"/>
         </view>
     </objects>
 </document>
