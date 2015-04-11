@@ -15,18 +15,20 @@
 #import "ChildTraveler.h"
 #import "BookViewController.h"
 
+NSTimeInterval const kAnimationDuration = 2.6;
+
 @interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate>
 
-@property (weak, nonatomic) IBOutlet UIScrollView *scrollViewOutlet;
 @property (weak, nonatomic) IBOutlet UITableView *roomsTableViewOutlet;
 @property (weak, nonatomic) IBOutlet UIView *inputBookOutlet;
 @property (weak, nonatomic) IBOutlet UIButton *bookButtonOutlet;
-
 
 @property (nonatomic, strong) EanHotelRoomAvailabilityResponse *eanHrar;
 @property (nonatomic, strong) EanAvailabilityHotelRoomResponse *selectedRoom;
 @property (nonatomic, strong) NSArray *tableData;
 @property (nonatomic, strong) NSIndexPath *expandedIndexPath;
+@property (nonatomic) CGRect rectOfCellInSuperview;
+@property (nonatomic, strong) UIButton *doneButton;
 
 - (IBAction)justPushIt:(id)sender;
 
@@ -42,8 +44,18 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    //**********************************************************************
+    // This is needed so that this view controller (or it's nav controller?)
+    // doesn't make room at the top of the table view's scroll view (I guess
+    // to account for the nav bar).
+    //***********************************************************************
+    self.automaticallyAdjustsScrollViewInsets = YES;
+    //***********************************************************************
+    
     self.roomsTableViewOutlet.dataSource = self;
     self.roomsTableViewOutlet.delegate = self;
+    self.roomsTableViewOutlet.layer.borderWidth = 2.0;
+    self.roomsTableViewOutlet.layer.borderColor = [UIColor blackColor].CGColor;
     
     self.inputBookOutlet.hidden = YES;
 //    self.inputBookOutlet.frame = CGRectMake(10.0f, 412.0f, 300.0f, 0.0f);
@@ -94,76 +106,113 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     //    [self bookIt];
     
+    CGRect rectOfCellInTableView = [tableView rectForRowAtIndexPath:indexPath];
+    self.rectOfCellInSuperview = [tableView convertRect:rectOfCellInTableView toView:[tableView superview]];
+    
     // If the index path of the currently expanded cell is the same as the index that
     // has just been tapped, then set the expanded index to nil so that there aren't any
     // expanded cells, otherwise, set the expanded index to the index that has just
     // been selected.
     //
     // Curtesy of 0x7fffffff from http://stackoverflow.com/questions/4635338/uitableviewcell-expand-on-click
-    
+//    [tableView beginUpdates];
     if ([indexPath compare:self.expandedIndexPath] == NSOrderedSame) {
         self.expandedIndexPath = nil;
-        [self compressFromDetailViews];
     } else {
         self.expandedIndexPath = indexPath;
         [self expandToDetailViews];
     }
-    
-    [tableView beginUpdates]; // tell the table you're about to start making changes
-    [tableView endUpdates]; // tell the table you're done making your changes
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    // If the expandedIndexPath is not nil and equals this indexPath, then return
-    // the height of the tableView
-    //
-    // Curtesy of 0x7fffffff from http://stackoverflow.com/questions/4635338/uitableviewcell-expand-on-click
-    if ([indexPath compare:self.expandedIndexPath] == NSOrderedSame) {
-        return tableView.frame.size.height;
-    }
-    
-    // Otherwise return zero if there is a selected row or the normal height if
-    // there is no selected row
-    if (nil != self.expandedIndexPath) {
-        return 0.0f;
-    } else {
-        return 44.0f;
-    }
+//    [tableView endUpdates];
 }
 
 #pragma mark Various methods
 
 - (void)expandToDetailViews {
-    self.scrollViewOutlet.contentSize = CGSizeMake(320.0f, 800.0f);
-    
+    __block UIView *tvp = [self getTableViewPopOut];
     __weak UIView *rtv = self.roomsTableViewOutlet;
     __weak UIView *ibo = self.inputBookOutlet;
+    
+//    CGFloat rcX = self.rectOfCellInSuperview.origin.x + self.rectOfCellInSuperview.size.width / 2;
+//    CGFloat ncX = rcX - tvp.center.x;
+//    CGFloat rcY = self.rectOfCellInSuperview.origin.y + self.rectOfCellInSuperview.size.height / 2;
+//    CGFloat ncY = rcY - tvp.center.y;
+//    float rcW = (float) self.rectOfCellInSuperview.size.width / tvp.frame.size.width;
+//    float rcH = (float) self.rectOfCellInSuperview.size.height / tvp.frame.size.height;
+//    
+//    CGAffineTransform startingPopoutTransform = CGAffineTransformMakeTranslation(ncX, ncY);
+//    startingPopoutTransform = CGAffineTransformScale(startingPopoutTransform, rcW, rcH);
+//    tvp.transform = startingPopoutTransform;
+    
+//    __block CGAffineTransform toTransform = CGAffineTransformMakeTranslation(0.0f, 0.0f);
+//    toTransform = CGAffineTransformScale(toTransform, 1.0f, 1.0f);
+    
+    tvp.frame = self.rectOfCellInSuperview;
+    tvp.hidden = NO;
     ibo.hidden = NO;
-    [UIView animateWithDuration:0.3 animations:^{
-        rtv.frame = CGRectMake(10, 43, 300, 200);
+    [UIView animateWithDuration:kAnimationDuration animations:^{
+//        tvp.transform = toTransform;
+        tvp.frame = CGRectMake(10, 65, 300, 200);
+        rtv.transform = CGAffineTransformMakeScale(0.1, 0.1);
         ibo.transform = [self shownGuestInputTransform];
     } completion:^(BOOL finished) {
         ibo.hidden = NO;
     }];
 }
 
-- (void)compressFromDetailViews {
-    self.scrollViewOutlet.contentSize = CGSizeMake(320.0f, 508.0f);
-    
+- (void)compressFromDetailViews:(id)sender {
+    __weak UIView *tvp = self.doneButton.superview;
     __weak UIView *rtv = self.roomsTableViewOutlet;
     __weak UIView *ibo = self.inputBookOutlet;
-    [UIView animateWithDuration:0.3 animations:^{
-        rtv.frame = CGRectMake(10, 43, 300, 300);
+    
+//    CGFloat rcX = self.rectOfCellInSuperview.origin.x + self.rectOfCellInSuperview.size.width / 2;
+//    CGFloat ncX = rcX - tvp.center.x;
+//    CGFloat rcY = self.rectOfCellInSuperview.origin.y + self.rectOfCellInSuperview.size.height / 2;
+//    CGFloat ncY = rcY - tvp.center.y;
+//    float rcW = (float) self.rectOfCellInSuperview.size.width / tvp.frame.size.width;
+//    float rcH = (float) self.rectOfCellInSuperview.size.height / tvp.frame.size.height;
+//    
+//    __block CGAffineTransform finishingPopoutTransform = CGAffineTransformMakeTranslation(ncX, ncY);
+//    finishingPopoutTransform = CGAffineTransformScale(finishingPopoutTransform, rcW, rcH);
+    
+    [UIView animateWithDuration:kAnimationDuration animations:^{
+//        tvp.transform = finishingPopoutTransform;
+        tvp.frame = self.rectOfCellInSuperview;
+        rtv.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
         ibo.transform = [self hiddenGuestInputTransform];
     } completion:^(BOOL finished) {
+        tvp.hidden = YES;
         ibo.hidden = YES;
     }];
 }
 
+- (UIView *)getTableViewPopOut {
+    UIView *tableViewPopout = [[UIView alloc] initWithFrame:self.rectOfCellInSuperview];
+    tableViewPopout.backgroundColor = [UIColor redColor];
+    tableViewPopout.hidden = YES;
+    tableViewPopout.clipsToBounds = YES;
+    [self.view addSubview:tableViewPopout];
+    
+    NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"AvailableRoomTableViewCell" owner:self options:nil];
+    if (nil != views && [views count] == 1 && [views[0] isKindOfClass:[AvailableRoomTableViewCell class]]) {
+        UIView *cv = ((AvailableRoomTableViewCell *) views[0]).contentView;
+        UILabel *rtdLabel = (UILabel *)[cv viewWithTag:11];
+        
+        EanAvailabilityHotelRoomResponse *room = [EanAvailabilityHotelRoomResponse roomFromDict:[self.tableData objectAtIndex:self.expandedIndexPath.row]];
+        
+        rtdLabel.text = room.roomTypeDescription;
+        [tableViewPopout addSubview:cv];
+    }
+    
+    self.doneButton = [[UIButton alloc] initWithFrame:CGRectMake(100, 100, 100, 50)];
+    [self.doneButton setTitle:@"Done" forState:UIControlStateNormal];
+    [self.doneButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    self.doneButton.backgroundColor = [UIColor whiteColor];
+    [self.doneButton addTarget:self action:@selector(compressFromDetailViews:) forControlEvents:UIControlEventTouchUpInside];
+    [tableViewPopout addSubview:self.doneButton];
+    return tableViewPopout;
+}
+
 - (CGAffineTransform)hiddenGuestInputTransform {
-//    CGFloat hiddenX = self.inputBookOutlet.center.x;
-//    CGFloat hiddenY = self.inputBookOutlet.center.y + 200.0f;
     CGAffineTransform hiddenTransform = CGAffineTransformMakeTranslation(0.0f, 200.0f);
     return CGAffineTransformScale(hiddenTransform, 0.01f, 0.01f);
 }
@@ -171,6 +220,11 @@
 - (CGAffineTransform)shownGuestInputTransform {
     CGAffineTransform shownTransform = CGAffineTransformMakeTranslation(0.0f, 0.0f);
     return CGAffineTransformScale(shownTransform, 1.0f, 1.0f);
+}
+
+- (UIView *)roomView {
+    UIView *rv;
+    return rv;
 }
 
 - (void)bookIt {
