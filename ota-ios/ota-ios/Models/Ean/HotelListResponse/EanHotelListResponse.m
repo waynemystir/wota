@@ -63,7 +63,16 @@
     hlr.hotelListDict = [idHlr objectForKey:@"HotelList"];
     hlr.size = [[hlr.hotelListDict objectForKey:@"@size"] integerValue];
     hlr.activePropertyCount = [[hlr.hotelListDict objectForKey:@"@activePropertyCount"] integerValue];
-    hlr.hotelList = [hlr.hotelListDict objectForKey:@"HotelSummary"];
+    
+    id hSumm = [hlr.hotelListDict objectForKey:@"HotelSummary"];
+    
+    if ([hSumm isKindOfClass:[NSArray class]]) {
+        hlr.hotelList = hSumm;
+    } else if ([hSumm isKindOfClass:[NSDictionary class]]) {
+        hlr.hotelList = [NSArray arrayWithObject:hSumm];
+    } else {
+        hlr.hotelList = nil;
+    }
     
     return hlr;
 }

@@ -15,7 +15,7 @@
 #import "ChildTraveler.h"
 #import "BookViewController.h"
 
-NSTimeInterval const kAnimationDuration = 2.6;
+NSTimeInterval const kAnimationDuration = 0.6;
 
 @interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate>
 
@@ -109,20 +109,12 @@ NSTimeInterval const kAnimationDuration = 2.6;
     CGRect rectOfCellInTableView = [tableView rectForRowAtIndexPath:indexPath];
     self.rectOfCellInSuperview = [tableView convertRect:rectOfCellInTableView toView:[tableView superview]];
     
-    // If the index path of the currently expanded cell is the same as the index that
-    // has just been tapped, then set the expanded index to nil so that there aren't any
-    // expanded cells, otherwise, set the expanded index to the index that has just
-    // been selected.
-    //
-    // Curtesy of 0x7fffffff from http://stackoverflow.com/questions/4635338/uitableviewcell-expand-on-click
-//    [tableView beginUpdates];
     if ([indexPath compare:self.expandedIndexPath] == NSOrderedSame) {
         self.expandedIndexPath = nil;
     } else {
         self.expandedIndexPath = indexPath;
         [self expandToDetailViews];
     }
-//    [tableView endUpdates];
 }
 
 #pragma mark Various methods
@@ -132,30 +124,13 @@ NSTimeInterval const kAnimationDuration = 2.6;
     __weak UIView *rtv = self.roomsTableViewOutlet;
     __weak UIView *ibo = self.inputBookOutlet;
     
-//    CGFloat rcX = self.rectOfCellInSuperview.origin.x + self.rectOfCellInSuperview.size.width / 2;
-//    CGFloat ncX = rcX - tvp.center.x;
-//    CGFloat rcY = self.rectOfCellInSuperview.origin.y + self.rectOfCellInSuperview.size.height / 2;
-//    CGFloat ncY = rcY - tvp.center.y;
-//    float rcW = (float) self.rectOfCellInSuperview.size.width / tvp.frame.size.width;
-//    float rcH = (float) self.rectOfCellInSuperview.size.height / tvp.frame.size.height;
-//    
-//    CGAffineTransform startingPopoutTransform = CGAffineTransformMakeTranslation(ncX, ncY);
-//    startingPopoutTransform = CGAffineTransformScale(startingPopoutTransform, rcW, rcH);
-//    tvp.transform = startingPopoutTransform;
-    
-//    __block CGAffineTransform toTransform = CGAffineTransformMakeTranslation(0.0f, 0.0f);
-//    toTransform = CGAffineTransformScale(toTransform, 1.0f, 1.0f);
-    
     tvp.frame = self.rectOfCellInSuperview;
     tvp.hidden = NO;
     ibo.hidden = NO;
     [UIView animateWithDuration:kAnimationDuration animations:^{
-//        tvp.transform = toTransform;
         tvp.frame = CGRectMake(10, 65, 300, 200);
         rtv.transform = CGAffineTransformMakeScale(0.1, 0.1);
         ibo.transform = [self shownGuestInputTransform];
-    } completion:^(BOOL finished) {
-        ibo.hidden = NO;
     }];
 }
 
@@ -164,18 +139,7 @@ NSTimeInterval const kAnimationDuration = 2.6;
     __weak UIView *rtv = self.roomsTableViewOutlet;
     __weak UIView *ibo = self.inputBookOutlet;
     
-//    CGFloat rcX = self.rectOfCellInSuperview.origin.x + self.rectOfCellInSuperview.size.width / 2;
-//    CGFloat ncX = rcX - tvp.center.x;
-//    CGFloat rcY = self.rectOfCellInSuperview.origin.y + self.rectOfCellInSuperview.size.height / 2;
-//    CGFloat ncY = rcY - tvp.center.y;
-//    float rcW = (float) self.rectOfCellInSuperview.size.width / tvp.frame.size.width;
-//    float rcH = (float) self.rectOfCellInSuperview.size.height / tvp.frame.size.height;
-//    
-//    __block CGAffineTransform finishingPopoutTransform = CGAffineTransformMakeTranslation(ncX, ncY);
-//    finishingPopoutTransform = CGAffineTransformScale(finishingPopoutTransform, rcW, rcH);
-    
     [UIView animateWithDuration:kAnimationDuration animations:^{
-//        tvp.transform = finishingPopoutTransform;
         tvp.frame = self.rectOfCellInSuperview;
         rtv.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
         ibo.transform = [self hiddenGuestInputTransform];

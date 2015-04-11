@@ -148,11 +148,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ota-ios/Models/Ean/HotelListResponse/EanHotelListResponse.m"
-            timestampString = "449945293.727371"
+            timestampString = "450407715.522055"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "68"
-            endingLineNumber = "68"
+            startingLineNumber = "77"
+            endingLineNumber = "77"
             landmarkName = "+hotelListResponseFromDict:"
             landmarkType = "5">
          </BreakpointContent>
