@@ -13,6 +13,8 @@
 		B0122E501AD0E8C700E44319 /* EanHotelInformationSummary.m in Sources */ = {isa = PBXBuildFile; fileRef = B0122E4F1AD0E8C700E44319 /* EanHotelInformationSummary.m */; };
 		B018C0421AD96A7600DDCE2E /* GuestDetailsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B018C0411AD96A7600DDCE2E /* GuestDetailsView.xib */; };
 		B018C0451AD9BEC800DDCE2E /* GuestInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B018C0441AD9BEC800DDCE2E /* GuestInfo.m */; };
+		B018C0471ADA01FA00DDCE2E /* PaymentDetailsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B018C0461ADA01FA00DDCE2E /* PaymentDetailsView.xib */; };
+		B018C04B1ADA08CF00DDCE2E /* JNKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = B018C04A1ADA08CF00DDCE2E /* JNKeychain.m */; };
 		B032F62A1AC18F6700809395 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B032F6291AC18F6700809395 /* main.m */; };
 		B032F62D1AC18F6700809395 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B032F62C1AC18F6700809395 /* AppDelegate.m */; };
 		B032F6301AC18F6700809395 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B032F62F1AC18F6700809395 /* MainViewController.m */; };
@@ -99,6 +101,9 @@
 		B018C0411AD96A7600DDCE2E /* GuestDetailsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GuestDetailsView.xib; sourceTree = "<group>"; };
 		B018C0431AD9BEC800DDCE2E /* GuestInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuestInfo.h; sourceTree = "<group>"; };
 		B018C0441AD9BEC800DDCE2E /* GuestInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuestInfo.m; sourceTree = "<group>"; };
+		B018C0461ADA01FA00DDCE2E /* PaymentDetailsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PaymentDetailsView.xib; sourceTree = "<group>"; };
+		B018C0491ADA08CF00DDCE2E /* JNKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JNKeychain.h; sourceTree = "<group>"; };
+		B018C04A1ADA08CF00DDCE2E /* JNKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JNKeychain.m; sourceTree = "<group>"; };
 		B032F6241AC18F6700809395 /* ota-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ota-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B032F6281AC18F6700809395 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B032F6291AC18F6700809395 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -284,6 +289,15 @@
 			path = HotelInfoResponse;
 			sourceTree = "<group>";
 		};
+		B018C0481ADA08CF00DDCE2E /* Keychain */ = {
+			isa = PBXGroup;
+			children = (
+				B018C0491ADA08CF00DDCE2E /* JNKeychain.h */,
+				B018C04A1ADA08CF00DDCE2E /* JNKeychain.m */,
+			);
+			path = Keychain;
+			sourceTree = "<group>";
+		};
 		B032F61B1AC18F6700809395 = {
 			isa = PBXGroup;
 			children = (
@@ -364,6 +378,7 @@
 				B0963CC51AC8E034002FD859 /* ChildSubView.m */,
 				B091B8961AD22FEF00BB6CB0 /* AvailableRoomTableViewCell.xib */,
 				B018C0411AD96A7600DDCE2E /* GuestDetailsView.xib */,
+				B018C0461ADA01FA00DDCE2E /* PaymentDetailsView.xib */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -463,6 +478,7 @@
 		B09797E81AC3BBDF0014FC7C /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				B018C0481ADA08CF00DDCE2E /* Keychain */,
 				B09797EB1AC3BC690014FC7C /* THDatePicker */,
 			);
 			path = Libraries;
@@ -606,6 +622,7 @@
 			files = (
 				B091B8971AD22FEF00BB6CB0 /* AvailableRoomTableViewCell.xib in Resources */,
 				B032F6351AC18F6700809395 /* Images.xcassets in Resources */,
+				B018C0471ADA01FA00DDCE2E /* PaymentDetailsView.xib in Resources */,
 				B09797F91AC3BC690014FC7C /* THDateDay.xib in Resources */,
 				B09797FB1AC3BC690014FC7C /* THDatePickerViewController.xib in Resources */,
 				B0FE0F491AC6ED0000DAF635 /* BookView.xib in Resources */,
@@ -646,6 +663,7 @@
 				B0963CBC1AC89445002FD859 /* ChildViewController.m in Sources */,
 				B0FE0F4C1AC70A0700DAF635 /* SelectRoomViewController.m in Sources */,
 				B09C5EA61AD1A16E00A3D7E8 /* EanHotelListHotelSummary.m in Sources */,
+				B018C04B1ADA08CF00DDCE2E /* JNKeychain.m in Sources */,
 				B032F6301AC18F6700809395 /* MainViewController.m in Sources */,
 				B09797D11AC321F90014FC7C /* GooglePlaceDetail.m in Sources */,
 				B05BD6301AC1FEE3002C2882 /* GooglePlace.m in Sources */,

@@ -9,6 +9,7 @@
                 <outlet property="bookButtonOutlet" destination="bAk-VO-vQt" id="xsM-RV-Cc7"/>
                 <outlet property="guestButtonOutlet" destination="rqc-YR-Rdm" id="soo-hp-Jyd"/>
                 <outlet property="inputBookOutlet" destination="lvY-Yf-X5X" id="ClG-Fo-Ve2"/>
+                <outlet property="paymentButtonOutlet" destination="Aff-y2-VbT" id="0Dy-N6-JUe"/>
                 <outlet property="roomsTableViewOutlet" destination="jZC-PK-cHb" id="Ol9-8S-njj"/>
                 <outlet property="view" destination="iN0-l3-epB" id="fSb-Kv-SYT"/>
             </connections>
@@ -37,6 +38,9 @@
                             <state key="normal" title="Payment Details">
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
+                            <connections>
+                                <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="ASO-0W-OUs"/>
+                            </connections>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bAk-VO-vQt" userLabel="bookButton">
                             <rect key="frame" x="31" y="114" width="120" height="30"/>

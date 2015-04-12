@@ -14,6 +14,7 @@
 @property (nonatomic, strong, setter=setLastName:) NSString *lastName;
 @property (nonatomic, strong, setter=setEmail:) NSString *email;
 @property (nonatomic, strong, setter=setPhoneNumber:) NSString *phoneNumber;
+@property (nonatomic, strong, setter=setPostalCode:) NSString *postalCode;
 
 + (GuestInfo *)singleton;
 

@@ -15,9 +15,12 @@
 #import "ChildTraveler.h"
 #import "BookViewController.h"
 #import "GuestInfo.h"
+#import "JNKeychain.h"
 
 NSTimeInterval const kAnimationDuration = 0.6;
 NSUInteger const kGuestDetailsViewTag = 51;
+NSUInteger const kPaymentDetailsViewTag = 52;
+NSString * const kKeyDaNumber = @"AcBrCeDdEiFtGCHaIrJdKNLuMmNbOePr";
 
 @interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate>
 
@@ -25,10 +28,14 @@ NSUInteger const kGuestDetailsViewTag = 51;
 @property (weak, nonatomic) IBOutlet UIView *inputBookOutlet;
 @property (weak, nonatomic) IBOutlet UIButton *bookButtonOutlet;
 @property (weak, nonatomic) IBOutlet UIButton *guestButtonOutlet;
+@property (weak, nonatomic) IBOutlet UIButton *paymentButtonOutlet;
+
 @property (weak, nonatomic) IBOutlet UITextField *firstNameOutlet;
 @property (weak, nonatomic) IBOutlet UITextField *lastNameOutlet;
 @property (weak, nonatomic) IBOutlet UITextField *emailOutlet;
 @property (weak, nonatomic) IBOutlet UITextField *phoneOutlet;
+
+@property (weak, nonatomic) IBOutlet UITextField *ccNumberOutlet;
 
 @property (nonatomic, strong) EanHotelRoomAvailabilityResponse *eanHrar;
 @property (nonatomic, strong) EanAvailabilityHotelRoomResponse *selectedRoom;
@@ -198,6 +205,8 @@ NSUInteger const kGuestDetailsViewTag = 51;
         [self bookIt];
     } else if (sender == self.guestButtonOutlet) {
         [self loadGuestDetailsView];
+    } else if (sender == self.paymentButtonOutlet) {
+        [self loadPaymentDetailsView];
     }
 }
 
@@ -231,7 +240,7 @@ NSUInteger const kGuestDetailsViewTag = 51;
                                                       lastName:gi.lastName
                                                      homePhone:gi.phoneNumber
                                                 creditCardType:@"CA"
-                                              creditCardNumber:@"5401999999999999"
+                                              creditCardNumber:[JNKeychain loadValueForKey:kKeyDaNumber]
                                           creditCardIdentifier:@"123"
                                      creditCardExpirationMonth:@"11"
                                       creditCardExpirationYear:@"2016"
@@ -303,7 +312,64 @@ NSUInteger const kGuestDetailsViewTag = 51;
 }
 
 - (void)loadPaymentDetailsView {
+    NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"PaymentDetailsView" owner:self options:nil];
+    if (nil == views || [views count] != 1) {
+        return;
+    }
     
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dropPaymentDetailsView:)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dropPaymentDetailsView:)];
+    
+    UIView *paymentDetailsView = views[0];
+    paymentDetailsView.tag = kPaymentDetailsViewTag;
+    paymentDetailsView.frame = CGRectMake(10, 64, 300, 300);
+    
+    CGPoint pboCenter = [self.view convertPoint:self.paymentButtonOutlet.center fromView:self.inputBookOutlet];
+    CGFloat fromX = pboCenter.x - paymentDetailsView.center.x;
+    CGFloat fromY = pboCenter.y - paymentDetailsView.center.y;
+    CGAffineTransform fromTransform = CGAffineTransformMakeTranslation(fromX, fromY);
+    paymentDetailsView.transform = CGAffineTransformScale(fromTransform, 0.01f, 0.01f);
+    
+    [self.view addSubview:paymentDetailsView];
+    [self.ccNumberOutlet becomeFirstResponder];
+    self.ccNumberOutlet.text = [JNKeychain loadValueForKey:kKeyDaNumber];
+    [UIView animateWithDuration:kAnimationDuration animations:^{
+        paymentDetailsView.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+    } completion:^(BOOL finished) {
+        ;
+    }];    
+}
+
+- (void)dropPaymentDetailsView:(id)sender {
+    if (sender == self.navigationItem.rightBarButtonItem) {
+//        GuestInfo *gi = [GuestInfo singleton];
+//        gi.firstName = self.firstNameOutlet.text;
+//        gi.lastName = self.lastNameOutlet.text;
+//        gi.email = self.emailOutlet.text;
+//        gi.phoneNumber = self.phoneOutlet.text;
+        [self saveDaNumber:self.ccNumberOutlet.text];
+    }
+    
+    __weak UIView *paymentDetailsView = [self.view viewWithTag:kPaymentDetailsViewTag];
+    
+    CGPoint pboCenter = [self.view convertPoint:self.paymentButtonOutlet.center fromView:self.inputBookOutlet];
+    CGFloat toX = pboCenter.x - paymentDetailsView.center.x;
+    CGFloat toY = pboCenter.y - paymentDetailsView.center.y;
+    __block CGAffineTransform toTransform = CGAffineTransformMakeTranslation(toX, toY);
+    
+//    [self.firstNameOutlet resignFirstResponder];
+    self.navigationItem.leftBarButtonItem = self.navigationItem.backBarButtonItem;
+    self.navigationItem.rightBarButtonItem = nil;
+    [UIView animateWithDuration:kAnimationDuration animations:^{
+        paymentDetailsView.transform = CGAffineTransformScale(toTransform, 0.01f, 0.01f);
+    } completion:^(BOOL finished) {
+        [paymentDetailsView removeFromSuperview];;
+    }];
+}
+
+- (void)saveDaNumber:(NSString *)daNumber {
+    // TODO: validate the number
+    [JNKeychain saveValue:daNumber forKey:kKeyDaNumber];
 }
 
 @end
