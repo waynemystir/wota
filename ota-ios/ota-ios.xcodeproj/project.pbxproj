@@ -11,6 +11,8 @@
 		B0122E471AD088F800E44319 /* EanAvailabilityHotelRoomResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = B0122E461AD088F800E44319 /* EanAvailabilityHotelRoomResponse.m */; };
 		B0122E4D1AD0A88500E44319 /* EanHotelDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = B0122E4C1AD0A88500E44319 /* EanHotelDetails.m */; };
 		B0122E501AD0E8C700E44319 /* EanHotelInformationSummary.m in Sources */ = {isa = PBXBuildFile; fileRef = B0122E4F1AD0E8C700E44319 /* EanHotelInformationSummary.m */; };
+		B018C0421AD96A7600DDCE2E /* GuestDetailsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B018C0411AD96A7600DDCE2E /* GuestDetailsView.xib */; };
+		B018C0451AD9BEC800DDCE2E /* GuestInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B018C0441AD9BEC800DDCE2E /* GuestInfo.m */; };
 		B032F62A1AC18F6700809395 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B032F6291AC18F6700809395 /* main.m */; };
 		B032F62D1AC18F6700809395 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B032F62C1AC18F6700809395 /* AppDelegate.m */; };
 		B032F6301AC18F6700809395 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B032F62F1AC18F6700809395 /* MainViewController.m */; };
@@ -94,6 +96,9 @@
 		B0122E4C1AD0A88500E44319 /* EanHotelDetails.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EanHotelDetails.m; path = "ota-ios/Models/Ean/HotelInfoResponse/EanHotelDetails.m"; sourceTree = SOURCE_ROOT; };
 		B0122E4E1AD0E8C700E44319 /* EanHotelInformationSummary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EanHotelInformationSummary.h; path = "ota-ios/Models/Ean/HotelInfoResponse/EanHotelInformationSummary.h"; sourceTree = SOURCE_ROOT; };
 		B0122E4F1AD0E8C700E44319 /* EanHotelInformationSummary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanHotelInformationSummary.m; sourceTree = "<group>"; };
+		B018C0411AD96A7600DDCE2E /* GuestDetailsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GuestDetailsView.xib; sourceTree = "<group>"; };
+		B018C0431AD9BEC800DDCE2E /* GuestInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuestInfo.h; sourceTree = "<group>"; };
+		B018C0441AD9BEC800DDCE2E /* GuestInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuestInfo.m; sourceTree = "<group>"; };
 		B032F6241AC18F6700809395 /* ota-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ota-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B032F6281AC18F6700809395 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B032F6291AC18F6700809395 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -258,6 +263,8 @@
 				B0963CB81AC786E3002FD859 /* SelectionCriteria.m */,
 				B0963CBF1AC8BDC6002FD859 /* ChildTraveler.h */,
 				B0963CC01AC8BDC6002FD859 /* ChildTraveler.m */,
+				B018C0431AD9BEC800DDCE2E /* GuestInfo.h */,
+				B018C0441AD9BEC800DDCE2E /* GuestInfo.m */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
@@ -356,6 +363,7 @@
 				B0963CC41AC8E034002FD859 /* ChildSubView.h */,
 				B0963CC51AC8E034002FD859 /* ChildSubView.m */,
 				B091B8961AD22FEF00BB6CB0 /* AvailableRoomTableViewCell.xib */,
+				B018C0411AD96A7600DDCE2E /* GuestDetailsView.xib */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -603,6 +611,7 @@
 				B0FE0F491AC6ED0000DAF635 /* BookView.xib in Resources */,
 				B032F6551AC193DB00809395 /* CriteriaView.xib in Resources */,
 				B05BD6321AC1FF54002C2882 /* PlaceAutoCompleteTableViewCell.xib in Resources */,
+				B018C0421AD96A7600DDCE2E /* GuestDetailsView.xib in Resources */,
 				B09797CE1AC2518D0014FC7C /* MapView.xib in Resources */,
 				B0963CC31AC8DFED002FD859 /* ChildSubView.xib in Resources */,
 				B080B7C91AC505DC00075A32 /* HotelInfoView.xib in Resources */,
@@ -655,6 +664,7 @@
 				B05BD6241AC1E9FB002C2882 /* AppEnvironment.m in Sources */,
 				B09797C91AC23C1F0014FC7C /* GoogleParser.m in Sources */,
 				B0963CC11AC8BDC6002FD859 /* ChildTraveler.m in Sources */,
+				B018C0451AD9BEC800DDCE2E /* GuestInfo.m in Sources */,
 				B09797CC1AC24BE20014FC7C /* MapViewController.m in Sources */,
 				B09797E21AC343DD0014FC7C /* HotelListingViewController.m in Sources */,
 				B0122E441AD0885D00E44319 /* EanHotelRoomAvailabilityResponse.m in Sources */,

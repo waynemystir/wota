@@ -14,14 +14,21 @@
 #import "SelectionCriteria.h"
 #import "ChildTraveler.h"
 #import "BookViewController.h"
+#import "GuestInfo.h"
 
 NSTimeInterval const kAnimationDuration = 0.6;
+NSUInteger const kGuestDetailsViewTag = 51;
 
 @interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *roomsTableViewOutlet;
 @property (weak, nonatomic) IBOutlet UIView *inputBookOutlet;
 @property (weak, nonatomic) IBOutlet UIButton *bookButtonOutlet;
+@property (weak, nonatomic) IBOutlet UIButton *guestButtonOutlet;
+@property (weak, nonatomic) IBOutlet UITextField *firstNameOutlet;
+@property (weak, nonatomic) IBOutlet UITextField *lastNameOutlet;
+@property (weak, nonatomic) IBOutlet UITextField *emailOutlet;
+@property (weak, nonatomic) IBOutlet UITextField *phoneOutlet;
 
 @property (nonatomic, strong) EanHotelRoomAvailabilityResponse *eanHrar;
 @property (nonatomic, strong) EanAvailabilityHotelRoomResponse *selectedRoom;
@@ -186,9 +193,12 @@ NSTimeInterval const kAnimationDuration = 0.6;
     return CGAffineTransformScale(shownTransform, 1.0f, 1.0f);
 }
 
-- (UIView *)roomView {
-    UIView *rv;
-    return rv;
+- (IBAction)justPushIt:(id)sender {
+    if (sender == self.bookButtonOutlet) {
+        [self bookIt];
+    } else if (sender == self.guestButtonOutlet) {
+        [self loadGuestDetailsView];
+    }
 }
 
 - (void)bookIt {
@@ -198,6 +208,7 @@ NSTimeInterval const kAnimationDuration = 0.6;
     
     self.selectedRoom = [EanAvailabilityHotelRoomResponse roomFromDict:[self.tableData objectAtIndex:self.expandedIndexPath.row]];
     SelectionCriteria *sc = [SelectionCriteria singleton];
+    GuestInfo *gi = [GuestInfo singleton];
     BookViewController *bvc = [BookViewController new];
     
     [[LoadEanData sharedInstance:bvc] bookHotelRoomWithHotelId:self.eanHrar.hotelId
@@ -210,15 +221,15 @@ NSTimeInterval const kAnimationDuration = 0.6;
                                                 chargeableRate:self.selectedRoom.chargeableRate
                                                 numberOfAdults:sc.numberOfAdults
                                                 childTravelers:[ChildTraveler childTravelers]
-                                                room1FirstName:@"test"
-                                                 room1LastName:@"testers"
+                                                room1FirstName:gi.firstName
+                                                 room1LastName:gi.lastName
                                                 room1BedTypeId:@"23"
                                         room1SmokingPreference:@"NS"
                                        affiliateConfirmationId:[NSUUID UUID]
-                                                         email:@"test@yourSite.com"
-                                                     firstName:@"tester"
-                                                      lastName:@"testing"
-                                                     homePhone:@"1234567890"
+                                                         email:gi.email
+                                                     firstName:gi.firstName
+                                                      lastName:gi.lastName
+                                                     homePhone:gi.phoneNumber
                                                 creditCardType:@"CA"
                                               creditCardNumber:@"5401999999999999"
                                           creditCardIdentifier:@"123"
@@ -233,10 +244,66 @@ NSTimeInterval const kAnimationDuration = 0.6;
     [self.navigationController pushViewController:bvc animated:YES];
 }
 
-- (IBAction)justPushIt:(id)sender {
-    if (sender == self.bookButtonOutlet) {
-        [self bookIt];
+- (void)loadGuestDetailsView {
+    NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"GuestDetailsView" owner:self options:nil];
+    if (nil == views || [views count] != 1) {
+        return;
     }
+    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dropGuestDetailsView:)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dropGuestDetailsView:)];
+    
+    UIView *guestDetailsView = views[0];
+    guestDetailsView.tag = kGuestDetailsViewTag;
+    guestDetailsView.frame = CGRectMake(10, 64, 300, 300);
+    
+    CGPoint gboCenter = [self.view convertPoint:self.guestButtonOutlet.center fromView:self.inputBookOutlet];
+    CGFloat fromX = gboCenter.x - guestDetailsView.center.x;
+    CGFloat fromY = gboCenter.y - guestDetailsView.center.y;
+    CGAffineTransform fromTransform = CGAffineTransformMakeTranslation(fromX, fromY);
+    guestDetailsView.transform = CGAffineTransformScale(fromTransform, 0.01f, 0.01f);
+    
+    [self.view addSubview:guestDetailsView];
+    [self.firstNameOutlet becomeFirstResponder];
+    self.firstNameOutlet.text = [GuestInfo singleton].firstName;
+    self.lastNameOutlet.text = [GuestInfo singleton].lastName;
+    self.emailOutlet.text = [GuestInfo singleton].email;
+    self.phoneOutlet.text = [GuestInfo singleton].phoneNumber;
+    [UIView animateWithDuration:kAnimationDuration animations:^{
+        guestDetailsView.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+    } completion:^(BOOL finished) {
+        ;
+    }];
+}
+
+- (void)dropGuestDetailsView:(id)sender {
+    if (sender == self.navigationItem.rightBarButtonItem) {
+        GuestInfo *gi = [GuestInfo singleton];
+        gi.firstName = self.firstNameOutlet.text;
+        gi.lastName = self.lastNameOutlet.text;
+        gi.email = self.emailOutlet.text;
+        gi.phoneNumber = self.phoneOutlet.text;
+    }
+    
+    __weak UIView *guestView = [self.view viewWithTag:kGuestDetailsViewTag];
+    
+    CGPoint gboCenter = [self.view convertPoint:self.guestButtonOutlet.center fromView:self.inputBookOutlet];
+    CGFloat toX = gboCenter.x - guestView.center.x;
+    CGFloat toY = gboCenter.y - guestView.center.y;
+    __block CGAffineTransform toTransform = CGAffineTransformMakeTranslation(toX, toY);
+    
+    [self.firstNameOutlet resignFirstResponder];
+    self.navigationItem.leftBarButtonItem = self.navigationItem.backBarButtonItem;
+    self.navigationItem.rightBarButtonItem = nil;
+    [UIView animateWithDuration:kAnimationDuration animations:^{
+        guestView.transform = CGAffineTransformScale(toTransform, 0.01f, 0.01f);
+    } completion:^(BOOL finished) {
+        [guestView removeFromSuperview];;
+    }];
+}
+
+- (void)loadPaymentDetailsView {
+    
 }
 
 @end

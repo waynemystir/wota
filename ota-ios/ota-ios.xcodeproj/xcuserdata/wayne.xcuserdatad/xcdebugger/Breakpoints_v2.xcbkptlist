@@ -196,11 +196,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ota-ios/Classes/LoadEanData.m"
-            timestampString = "450065570.68582"
+            timestampString = "450494017.432837"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "219"
-            endingLineNumber = "219"
+            startingLineNumber = "221"
+            endingLineNumber = "221"
             landmarkName = "-bookHotelRoomWithHotelId:arrivalDate:departureDate:supplierType:rateKey:roomTypeCode:rateCode:chargeableRate:numberOfAdults:childTravelers:room1FirstName:room1LastName:room1BedTypeId:room1SmokingPreference:affiliateConfirmationId:email:firstName:lastName:homePhone:creditCardType:creditCardNumber:creditCardIdentifier:creditCardExpirationMonth:creditCardExpirationYear:address1:city:stateProvinceCode:countryCode:postalCode:"
             landmarkType = "5">
          </BreakpointContent>
@@ -234,6 +234,22 @@
             startingLineNumber = "80"
             endingLineNumber = "80"
             landmarkName = "+roomReservationFromDict:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ota-ios/Classes/LoadEanData.m"
+            timestampString = "450482871.21369"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "187"
+            endingLineNumber = "187"
+            landmarkName = "-bookHotelRoomWithHotelId:arrivalDate:departureDate:supplierType:rateKey:roomTypeCode:rateCode:chargeableRate:numberOfAdults:childTravelers:room1FirstName:room1LastName:room1BedTypeId:room1SmokingPreference:affiliateConfirmationId:email:firstName:lastName:homePhone:creditCardType:creditCardNumber:creditCardIdentifier:creditCardExpirationMonth:creditCardExpirationYear:address1:city:stateProvinceCode:countryCode:postalCode:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

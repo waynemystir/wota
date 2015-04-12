@@ -7,6 +7,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SelectRoomViewController">
             <connections>
                 <outlet property="bookButtonOutlet" destination="bAk-VO-vQt" id="xsM-RV-Cc7"/>
+                <outlet property="guestButtonOutlet" destination="rqc-YR-Rdm" id="soo-hp-Jyd"/>
                 <outlet property="inputBookOutlet" destination="lvY-Yf-X5X" id="ClG-Fo-Ve2"/>
                 <outlet property="roomsTableViewOutlet" destination="jZC-PK-cHb" id="Ol9-8S-njj"/>
                 <outlet property="view" destination="iN0-l3-epB" id="fSb-Kv-SYT"/>
@@ -26,6 +27,9 @@
                             <state key="normal" title="Guest Details">
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
+                            <connections>
+                                <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="JjG-w4-w8P"/>
+                            </connections>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Aff-y2-VbT" userLabel="paymentButton">
                             <rect key="frame" x="31" y="64" width="137" height="35"/>
