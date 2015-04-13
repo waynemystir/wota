@@ -15,14 +15,14 @@
 #import "ChildTraveler.h"
 #import "BookViewController.h"
 #import "GuestInfo.h"
+#import "AppEnvironment.h"
 #import "JNKeychain.h"
 
 NSTimeInterval const kAnimationDuration = 0.6;
 NSUInteger const kGuestDetailsViewTag = 51;
 NSUInteger const kPaymentDetailsViewTag = 52;
-NSString * const kKeyDaNumber = @"AcBrCeDdEiFtGCHaIrJdKNLuMmNbOePr";
 
-@interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *roomsTableViewOutlet;
 @property (weak, nonatomic) IBOutlet UIView *inputBookOutlet;
@@ -36,6 +36,13 @@ NSString * const kKeyDaNumber = @"AcBrCeDdEiFtGCHaIrJdKNLuMmNbOePr";
 @property (weak, nonatomic) IBOutlet UITextField *phoneOutlet;
 
 @property (weak, nonatomic) IBOutlet UITextField *ccNumberOutlet;
+@property (weak, nonatomic) IBOutlet UITextField *expirationOutlet;
+@property (weak, nonatomic) IBOutlet UITextField *address1Outlet;
+@property (weak, nonatomic) IBOutlet UITextField *cityOutlet;
+@property (weak, nonatomic) IBOutlet UITextField *stateOutlet;
+@property (weak, nonatomic) IBOutlet UITextField *countryOutlet;
+@property (weak, nonatomic) IBOutlet UITextField *postalOutlet;
+@property (nonatomic, strong) UIPickerView *expirationPicker;
 
 @property (nonatomic, strong) EanHotelRoomAvailabilityResponse *eanHrar;
 @property (nonatomic, strong) EanAvailabilityHotelRoomResponse *selectedRoom;
@@ -70,6 +77,8 @@ NSString * const kKeyDaNumber = @"AcBrCeDdEiFtGCHaIrJdKNLuMmNbOePr";
     self.roomsTableViewOutlet.delegate = self;
     self.roomsTableViewOutlet.layer.borderWidth = 2.0;
     self.roomsTableViewOutlet.layer.borderColor = [UIColor blackColor].CGColor;
+    
+    [self setupExpirationPicker];
     
     self.inputBookOutlet.hidden = YES;
 //    self.inputBookOutlet.frame = CGRectMake(10.0f, 412.0f, 300.0f, 0.0f);
@@ -242,13 +251,13 @@ NSString * const kKeyDaNumber = @"AcBrCeDdEiFtGCHaIrJdKNLuMmNbOePr";
                                                 creditCardType:@"CA"
                                               creditCardNumber:[JNKeychain loadValueForKey:kKeyDaNumber]
                                           creditCardIdentifier:@"123"
-                                     creditCardExpirationMonth:@"11"
-                                      creditCardExpirationYear:@"2016"
-                                                      address1:@"travelnow"
-                                                          city:@"Bellevue"
-                                             stateProvinceCode:@"WA"
-                                                   countryCode:@"US"
-                                                    postalCode:@"98004"];
+                                     creditCardExpirationMonth:[JNKeychain loadValueForKey:kKeyExpMonth]
+                                      creditCardExpirationYear:[JNKeychain loadValueForKey:kKeyExpYear]
+                                                      address1:gi.address1
+                                                          city:gi.city
+                                             stateProvinceCode:gi.stateProvinceCode
+                                                   countryCode:gi.countryCode
+                                                    postalCode:[JNKeychain loadValueForKey:kKeyPostalCode]];
     
     [self.navigationController pushViewController:bvc animated:YES];
 }
@@ -274,10 +283,11 @@ NSString * const kKeyDaNumber = @"AcBrCeDdEiFtGCHaIrJdKNLuMmNbOePr";
     
     [self.view addSubview:guestDetailsView];
     [self.firstNameOutlet becomeFirstResponder];
-    self.firstNameOutlet.text = [GuestInfo singleton].firstName;
-    self.lastNameOutlet.text = [GuestInfo singleton].lastName;
-    self.emailOutlet.text = [GuestInfo singleton].email;
-    self.phoneOutlet.text = [GuestInfo singleton].phoneNumber;
+    GuestInfo *gi = [GuestInfo singleton];
+    self.firstNameOutlet.text = gi.firstName;
+    self.lastNameOutlet.text = gi.lastName;
+    self.emailOutlet.text = gi.email;
+    self.phoneOutlet.text = gi.phoneNumber;
     [UIView animateWithDuration:kAnimationDuration animations:^{
         guestDetailsView.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
     } completion:^(BOOL finished) {
@@ -301,7 +311,8 @@ NSString * const kKeyDaNumber = @"AcBrCeDdEiFtGCHaIrJdKNLuMmNbOePr";
     CGFloat toY = gboCenter.y - guestView.center.y;
     __block CGAffineTransform toTransform = CGAffineTransformMakeTranslation(toX, toY);
     
-    [self.firstNameOutlet resignFirstResponder];
+//    [self.firstNameOutlet resignFirstResponder];
+    [self.view endEditing:YES];
     self.navigationItem.leftBarButtonItem = self.navigationItem.backBarButtonItem;
     self.navigationItem.rightBarButtonItem = nil;
     [UIView animateWithDuration:kAnimationDuration animations:^{
@@ -331,8 +342,18 @@ NSString * const kKeyDaNumber = @"AcBrCeDdEiFtGCHaIrJdKNLuMmNbOePr";
     paymentDetailsView.transform = CGAffineTransformScale(fromTransform, 0.01f, 0.01f);
     
     [self.view addSubview:paymentDetailsView];
+    
     [self.ccNumberOutlet becomeFirstResponder];
     self.ccNumberOutlet.text = [JNKeychain loadValueForKey:kKeyDaNumber];
+    [self updateTextInExpirationOutlet];
+    GuestInfo *gi = [GuestInfo singleton];
+    self.address1Outlet.text = gi.address1;
+    self.cityOutlet.text = gi.city;
+    self.stateOutlet.text = gi.stateProvinceCode;
+    self.countryOutlet.text = gi.countryCode;
+    self.postalOutlet.text = [JNKeychain loadValueForKey:kKeyPostalCode];
+    self.expirationOutlet.delegate = self;
+    
     [UIView animateWithDuration:kAnimationDuration animations:^{
         paymentDetailsView.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
     } completion:^(BOOL finished) {
@@ -342,12 +363,14 @@ NSString * const kKeyDaNumber = @"AcBrCeDdEiFtGCHaIrJdKNLuMmNbOePr";
 
 - (void)dropPaymentDetailsView:(id)sender {
     if (sender == self.navigationItem.rightBarButtonItem) {
-//        GuestInfo *gi = [GuestInfo singleton];
-//        gi.firstName = self.firstNameOutlet.text;
-//        gi.lastName = self.lastNameOutlet.text;
-//        gi.email = self.emailOutlet.text;
-//        gi.phoneNumber = self.phoneOutlet.text;
+        GuestInfo *gi = [GuestInfo singleton];
+        gi.address1 = self.address1Outlet.text;
+        gi.city = self.cityOutlet.text;
+        gi.stateProvinceCode = self.stateOutlet.text;
+        gi.countryCode = self.countryOutlet.text;
         [self saveDaNumber:self.ccNumberOutlet.text];
+        [self saveDaExpiration:self.expirationOutlet.text];
+        [self saveNeumann:self.postalOutlet.text];
     }
     
     __weak UIView *paymentDetailsView = [self.view viewWithTag:kPaymentDetailsViewTag];
@@ -357,7 +380,8 @@ NSString * const kKeyDaNumber = @"AcBrCeDdEiFtGCHaIrJdKNLuMmNbOePr";
     CGFloat toY = pboCenter.y - paymentDetailsView.center.y;
     __block CGAffineTransform toTransform = CGAffineTransformMakeTranslation(toX, toY);
     
-//    [self.firstNameOutlet resignFirstResponder];
+//    [self.ccNumberOutlet resignFirstResponder];
+    [self.view endEditing:YES];
     self.navigationItem.leftBarButtonItem = self.navigationItem.backBarButtonItem;
     self.navigationItem.rightBarButtonItem = nil;
     [UIView animateWithDuration:kAnimationDuration animations:^{
@@ -370,6 +394,132 @@ NSString * const kKeyDaNumber = @"AcBrCeDdEiFtGCHaIrJdKNLuMmNbOePr";
 - (void)saveDaNumber:(NSString *)daNumber {
     // TODO: validate the number
     [JNKeychain saveValue:daNumber forKey:kKeyDaNumber];
+}
+
+- (void)saveDaExpiration:(NSString *)expirationString {
+    // TODO: somehow check for valid expiration?
+    
+    if (nil == expirationString) {
+        return;
+    }
+    
+    NSArray *expArr = [expirationString componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" "]];
+    
+    if (nil == expArr || [expArr count] != 2) {
+        return;
+    }
+    
+    NSString *expMonth = expArr[0];
+    NSString *expYear = expArr[1];
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"MM"];
+    NSDate *daDate = [dateFormatter dateFromString:expMonth];
+    NSString *nExpMonth = [dateFormatter stringFromDate:daDate];
+    [JNKeychain saveValue:nExpMonth forKey:kKeyExpMonth];
+    [JNKeychain saveValue:expYear forKey:kKeyExpYear];
+}
+
+- (void)saveNeumann:(NSString *)postalCode {
+    // TODO: Rather than users (mis)typing their city, state, and country codes
+    // I want to use some API (i.e. Google Places) to get them from the postal
+    // code. So I will probably need to save these values to GuestInfo here as
+    // well
+    [JNKeychain saveValue:postalCode forKey:kKeyPostalCode];
+}
+
+#pragma mark UITextFieldDelegate methods
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    if (textField != self.expirationOutlet) {
+        return;
+    }
+    
+    [textField setInputView:self.expirationPicker];
+}
+
+- (void)setupExpirationPicker {
+    self.expirationPicker = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 300, 320, 268)];
+    self.expirationPicker.dataSource = self;
+    self.expirationPicker.delegate = self;
+    
+    NSDateComponents *components = [[NSCalendar currentCalendar] components:NSCalendarUnitMonth|NSCalendarUnitYear fromDate:[NSDate date]];
+    NSInteger savedExpMonth = [[JNKeychain loadValueForKey:kKeyExpMonth] integerValue];
+    if (savedExpMonth > 0 && savedExpMonth < 13) {
+        [self.expirationPicker selectRow:(savedExpMonth - 1) inComponent:0 animated:NO];
+    } else {
+        [self.expirationPicker selectRow:([components month]) inComponent:0 animated:NO];// yes I want to select next month
+    }
+    
+    NSInteger savedExpYear = [[JNKeychain loadValueForKey:kKeyExpYear] integerValue];
+    NSInteger layerCake = savedExpYear - [components year];
+    if (layerCake >= 0 && layerCake < 1000) {
+        [self.expirationPicker selectRow:(savedExpYear - [components year]) inComponent:1 animated:NO];
+    } else {
+        [self.expirationPicker selectRow:0 inComponent:1 animated:NO];
+    }
+}
+
+- (void)updateTextInExpirationOutlet {
+    NSString *ms = [self pickerView:self.expirationPicker titleForRow:[self.expirationPicker selectedRowInComponent:0] forComponent:0];
+    ms = [ms componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" "]][0];
+    NSString *ys = [self pickerView:self.expirationPicker titleForRow:[self.expirationPicker selectedRowInComponent:1] forComponent:1];
+    self.expirationOutlet.text = [NSString stringWithFormat:@"%@ %@", ms, ys];
+}
+
+#pragma mark UIPickerViewDataSource methods
+
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
+    return 2;
+}
+
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
+    if (1 == component) {
+        return 1000;
+    } else {
+        return 12;
+    }
+}
+
+#pragma mark UIPickerViewDelegate methods
+
+- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+    static NSDateComponents *components = nil;
+    static NSDateFormatter* dateFormatter = nil;
+    static NSDateFormatter *formatter = nil;
+    
+    if (nil == components) {
+        components = [[NSCalendar currentCalendar] components:NSCalendarUnitMonth | NSCalendarUnitYear fromDate:[NSDate date]];
+    }
+    
+    if (nil == dateFormatter) {
+        dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"MM"];
+    }
+    
+    if (nil == formatter) {
+        formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"MMMM"];
+    }
+    
+    if (1 == component) {
+        return [NSString stringWithFormat:@"%ld", ([components year] + row)];
+    } else {
+        NSDate *wd = [dateFormatter dateFromString:[NSString stringWithFormat: @"%ld", (1 + row)]];
+        return [NSString stringWithFormat:@"%@ (%@)", [formatter stringFromDate:wd], [dateFormatter stringFromDate:wd]];
+    }
+}
+
+- (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component {
+    if (1 == component) {
+        return 120.0f;
+    } else {
+        return 200.0f;
+    }
+}
+
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+    [self updateTextInExpirationOutlet];
 }
 
 @end

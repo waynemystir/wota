@@ -13,6 +13,10 @@ NSString * const kKeyFirstName = @"first_name";
 NSString * const kKeyLastName = @"last_name";
 NSString * const kKeyEmail = @"email_address";
 NSString * const kKeyPhoneNumber = @"phone_number";
+NSString * const kKeyAddress1 = @"address_1";
+NSString * const kKeyCity = @"city";
+NSString * const kKeyStateProvinceCode = @"stateProvinceCode";
+NSString * const kKeyCountryCode = @"countryCode";
 
 @implementation GuestInfo
 
@@ -56,6 +60,10 @@ NSString * const kKeyPhoneNumber = @"phone_number";
         _lastName = [aDecoder decodeObjectForKey:kKeyLastName];
         _email = [aDecoder decodeObjectForKey:kKeyEmail];
         _phoneNumber = [aDecoder decodeObjectForKey:kKeyPhoneNumber];
+        _address1 = [aDecoder decodeObjectForKey:kKeyAddress1];
+        _city = [aDecoder decodeObjectForKey:kKeyCity];
+        _stateProvinceCode = [aDecoder decodeObjectForKey:kKeyStateProvinceCode];
+        _countryCode = [aDecoder decodeObjectForKey:kKeyCountryCode];
     }
     return self;
 }
@@ -65,6 +73,10 @@ NSString * const kKeyPhoneNumber = @"phone_number";
     [aCoder encodeObject:_lastName forKey:kKeyLastName];
     [aCoder encodeObject:_email forKey:kKeyEmail];
     [aCoder encodeObject:_phoneNumber forKey:kKeyPhoneNumber];
+    [aCoder encodeObject:_address1 forKey:kKeyAddress1];
+    [aCoder encodeObject:_city forKey:kKeyCity];
+    [aCoder encodeObject:_stateProvinceCode forKey:kKeyStateProvinceCode];
+    [aCoder encodeObject:_countryCode forKey:kKeyCountryCode];
 }
 
 #pragma mark Setters
@@ -86,6 +98,26 @@ NSString * const kKeyPhoneNumber = @"phone_number";
 
 - (void)setPhoneNumber:(NSString *)phoneNumber {
     _phoneNumber = [phoneNumber stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    [self save];
+}
+
+- (void)setAddress1:(NSString *)address1 {
+    _address1 = [address1 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    [self save];
+}
+
+- (void)setCity:(NSString *)city {
+    _city = [city stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    [self save];
+}
+
+- (void)setStateProvinceCode:(NSString *)stateProvinceCode {
+    _stateProvinceCode = [stateProvinceCode stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    [self save];
+}
+
+- (void)setCountryCode:(NSString *)countryCode {
+    _countryCode = [countryCode stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     [self save];
 }
 

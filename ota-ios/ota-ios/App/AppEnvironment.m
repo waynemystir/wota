@@ -8,6 +8,11 @@
 
 #import "AppEnvironment.h"
 
+NSString * const kKeyDaNumber = @"AcBrCeDdEiFtGcHaIrJdKnLuMmNbOePr";
+NSString * const kKeyExpMonth = @"ZeYxXpWeVrUiTaStRiQoPnOmNoMnLtKh";
+NSString * const kKeyExpYear = @"eLxApYeErRiCaAtKiEoMnOyVeIaEr";
+NSString * const kKeyPostalCode = @"postal_code";
+
 NSString * const EAN_CID = @"55505";
 NSString * const EAN_API_KEY = @"ds5gqba7fbetw3wwgq7nnjku";
 NSString * const EAN_SHARED_SECRET = @"QzrgJ6Vc";
