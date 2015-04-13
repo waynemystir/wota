@@ -386,7 +386,7 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dropPaymentDetailsView:)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dropPaymentDetailsView:)];
     
-    UIView *paymentDetailsView = views[0];
+    __weak UIView *paymentDetailsView = views[0];
     paymentDetailsView.tag = kPaymentDetailsViewTag;
     paymentDetailsView.frame = CGRectMake(10, 64, 300, 300);
     
