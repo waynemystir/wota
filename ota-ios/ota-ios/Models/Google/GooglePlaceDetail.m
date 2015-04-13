@@ -8,6 +8,7 @@
 
 #import "GooglePlaceDetail.h"
 #import "AppEnvironment.h"
+#import "GoogleAddressComponent.h"
 
 NSString * const kKeyPlaceId = @"placeId";
 NSString * const kKeyLatitude = @"latitude";
@@ -80,10 +81,10 @@ NSString * const kKeyLongitude = @"longitude";
         return nil;
     }
     
-    return [self placeDetailFromObject:jsonDictionary];
+    return [self placeDetailFromObject:jsonDictionary wrappedInResult:YES];
 }
 
-+ (GooglePlaceDetail *)placeDetailFromObject:(id)object {
++ (GooglePlaceDetail *)placeDetailFromObject:(id)object wrappedInResult:(BOOL)wrapped {
     if (object == nil) {
         return nil;
     }
@@ -93,9 +94,12 @@ NSString * const kKeyLongitude = @"longitude";
     }
     
     GooglePlaceDetail *gpd = [[GooglePlaceDetail alloc] initWithDictionary:object];
-    gpd.googlePlaceResultDict = [object objectForKey:@"result"];
+    
+    gpd.googlePlaceResultDict = wrapped ? [object objectForKey:@"result"] : object;
+    
     gpd.formattedAddress = [gpd.googlePlaceResultDict objectForKey:@"formatted_address"];
     gpd.addressComponents = [gpd.googlePlaceResultDict objectForKey:@"address_components"];
+    [gpd parseAddressComponents];
     gpd.placeId = [gpd.googlePlaceResultDict objectForKey:@"place_id"];
     gpd.geometry = [gpd.googlePlaceResultDict objectForKey:@"geometry"];
     gpd.location = [gpd.geometry objectForKey:@"location"];
@@ -108,11 +112,32 @@ NSString * const kKeyLongitude = @"longitude";
 }
 
 - (void)parseAddressComponents {
-    if (self.addressComponents == nil) {
+    if (self.addressComponents == nil || ![self.addressComponents isKindOfClass:[NSArray class]] || [self.addressComponents count] == 0) {
         return;
     }
     
-    
+    for (NSObject *object in self.addressComponents) {
+        if (nil == object || ![object isKindOfClass:[NSDictionary class]]) {
+            continue;
+        }
+        
+        GoogleAddressComponent *gac = [GoogleAddressComponent addCompFromDict:(NSDictionary *)object];
+        [self.googleAddressComponents addObject:gac];
+        
+        for (int j = 0; j < [gac.types count]; j++) {
+            NSString *type = gac.types[j];
+            
+            if (nil == type || [type isEqualToString:@""]) {
+                continue;
+            } else if ([type isEqualToString:@"locality"]) {
+                self.localityShortName = gac.shortName;
+            } else if ([type isEqualToString:@"administrative_area_level_1"]) {
+                self.administrativeAreaLevel1ShortName = gac.shortName;
+            } else if ([type isEqualToString:@"country"]) {
+                self.countryShortName = gac.shortName;
+            }
+        }
+    }
 }
 
 #pragma mark Getters and Setters
@@ -130,6 +155,14 @@ NSString * const kKeyLongitude = @"longitude";
 - (void)setLongitude:(double)longitude {
     _longitude = longitude;
     [self save];
+}
+
+- (NSMutableArray *)getGoogleAddressComponents {
+    if (nil == _googleAddressComponents) {
+        _googleAddressComponents = [NSMutableArray array];
+    }
+    
+    return _googleAddressComponents;
 }
 
 @end

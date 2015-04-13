@@ -64,7 +64,17 @@
     hrar.checkInInstructions = [idHrar objectForKey:@"checkInInstructions"];
     hrar.tripAdvisorRating = [idHrar objectForKey:@"tripAdvisorRating"];
     hrar.rateKey = [idHrar objectForKey:@"rateKey"];
-    hrar.hotelRoomArray = [idHrar objectForKey:@"HotelRoomResponse"];
+    
+    id hrr = [idHrar objectForKey:@"HotelRoomResponse"];
+    
+    if ([hrr isKindOfClass:[NSArray class]]) {
+        hrar.hotelRoomArray = hrr;
+    } else if ([hrr isKindOfClass:[NSDictionary class]]) {
+        hrar.hotelRoomArray = [NSArray arrayWithObject:hrr];
+    } else {
+        hrar.hotelRoomArray = nil;
+    }
+    
     return hrar;
 }
 

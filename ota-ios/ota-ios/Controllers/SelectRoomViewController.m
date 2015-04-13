@@ -17,12 +17,19 @@
 #import "GuestInfo.h"
 #import "AppEnvironment.h"
 #import "JNKeychain.h"
+#import "LoadGooglePlacesData.h"
+#import "GooglePlaces.h"
+#import "GooglePlaceDetail.h"
 
 NSTimeInterval const kAnimationDuration = 0.6;
 NSUInteger const kGuestDetailsViewTag = 51;
 NSUInteger const kPaymentDetailsViewTag = 52;
+NSString * const kNoLocationsFoundMessage = @"No locations found for this postal code. Please try again.";
 
 @interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate>
+
+// room = NO and postal = YES
+@property (nonatomic) BOOL roomOrPostal;
 
 @property (weak, nonatomic) IBOutlet UITableView *roomsTableViewOutlet;
 @property (weak, nonatomic) IBOutlet UIView *inputBookOutlet;
@@ -38,10 +45,9 @@ NSUInteger const kPaymentDetailsViewTag = 52;
 @property (weak, nonatomic) IBOutlet UITextField *ccNumberOutlet;
 @property (weak, nonatomic) IBOutlet UITextField *expirationOutlet;
 @property (weak, nonatomic) IBOutlet UITextField *address1Outlet;
-@property (weak, nonatomic) IBOutlet UITextField *cityOutlet;
-@property (weak, nonatomic) IBOutlet UITextField *stateOutlet;
-@property (weak, nonatomic) IBOutlet UITextField *countryOutlet;
 @property (weak, nonatomic) IBOutlet UITextField *postalOutlet;
+@property (weak, nonatomic) IBOutlet UILabel *addressLabelOutlet;
+@property (weak, nonatomic) IBOutlet UIButton *fillAddressButtonOutlet;
 @property (nonatomic, strong) UIPickerView *expirationPicker;
 
 @property (nonatomic, strong) EanHotelRoomAvailabilityResponse *eanHrar;
@@ -88,9 +94,16 @@ NSUInteger const kPaymentDetailsViewTag = 52;
 #pragma mark LoadDataProtocol methods
 
 - (void)requestFinished:(NSData *)responseData {
-    self.eanHrar = [EanHotelRoomAvailabilityResponse roomsAvailableResponseFromData:responseData];
-    self.tableData = self.eanHrar.hotelRoomArray;
-    [self.roomsTableViewOutlet reloadData];
+    if (self.roomOrPostal) {
+        self.roomOrPostal = NO;
+//        NSString *respString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
+//        NSLog(@"POSTAL_GOOGLE_RESP:%@", respString);
+        [self handlePostalPlaces:responseData];
+    } else {
+        self.eanHrar = [EanHotelRoomAvailabilityResponse roomsAvailableResponseFromData:responseData];
+        self.tableData = self.eanHrar.hotelRoomArray;
+        [self.roomsTableViewOutlet reloadData];
+    }
 }
 
 #pragma mark Table View Data Source methods
@@ -216,6 +229,48 @@ NSUInteger const kPaymentDetailsViewTag = 52;
         [self loadGuestDetailsView];
     } else if (sender == self.paymentButtonOutlet) {
         [self loadPaymentDetailsView];
+    } else if (sender == self.fillAddressButtonOutlet) {
+        self.roomOrPostal = YES;
+        [[LoadGooglePlacesData sharedInstance:self] loadPlaceDetailsWithPostalCode:self.postalOutlet.text];
+    }
+}
+
+- (void)handlePostalPlaces:(NSData *)data {
+    GooglePlaces *gps = [GooglePlaces placesFromData:data];
+    
+    if (nil == gps) {
+        self.addressLabelOutlet.text = kNoLocationsFoundMessage;
+        GuestInfo *gi = [GuestInfo singleton];
+        gi.city = nil;
+        gi.stateProvinceCode = nil;
+        gi.countryCode = nil;
+        return;
+    }
+    
+    NSArray *places = gps.placesArray;
+    
+    if (nil == places || [places count] == 0) {
+        self.addressLabelOutlet.text = kNoLocationsFoundMessage;
+        GuestInfo *gi = [GuestInfo singleton];
+        gi.city = nil;
+        gi.stateProvinceCode = nil;
+        gi.countryCode = nil;
+        return;
+    }
+    
+    if ([places count] == 1) {
+        GooglePlaceDetail *gpd = gps.placesArray[0];
+        self.addressLabelOutlet.text = [NSString stringWithFormat:@"%@, %@, %@", gpd.localityShortName, gpd.administrativeAreaLevel1ShortName, gpd.countryShortName];
+        GuestInfo *gi = [GuestInfo singleton];
+        gi.city = gpd.localityShortName;
+        gi.stateProvinceCode = gpd.administrativeAreaLevel1ShortName;
+        gi.countryCode = gpd.countryShortName;
+        return;
+    }
+    
+    for (int j = 0; j < [gps.placesArray count]; j++) {
+        GooglePlaceDetail *gpd = gps.placesArray[j];
+        NSLog(@"GPD locality:%@ state:%@ country:%@", gpd.localityShortName, gpd.administrativeAreaLevel1ShortName, gpd.countryShortName);
     }
 }
 
@@ -348,10 +403,17 @@ NSUInteger const kPaymentDetailsViewTag = 52;
     [self updateTextInExpirationOutlet];
     GuestInfo *gi = [GuestInfo singleton];
     self.address1Outlet.text = gi.address1;
-    self.cityOutlet.text = gi.city;
-    self.stateOutlet.text = gi.stateProvinceCode;
-    self.countryOutlet.text = gi.countryCode;
-    self.postalOutlet.text = [JNKeychain loadValueForKey:kKeyPostalCode];
+    
+    NSString *neumannCode = [JNKeychain loadValueForKey:kKeyPostalCode];
+    if (nil != neumannCode && ![neumannCode isEqualToString:@""]) {
+        self.postalOutlet.text = neumannCode;
+        self.addressLabelOutlet.text = [NSString stringWithFormat:@"%@, %@, %@", gi.city, gi.stateProvinceCode, gi.countryCode];
+        
+    } else {
+        self.postalOutlet.text = nil;
+        self.addressLabelOutlet.text = nil;
+    }
+    
     self.expirationOutlet.delegate = self;
     
     [UIView animateWithDuration:kAnimationDuration animations:^{
@@ -365,9 +427,6 @@ NSUInteger const kPaymentDetailsViewTag = 52;
     if (sender == self.navigationItem.rightBarButtonItem) {
         GuestInfo *gi = [GuestInfo singleton];
         gi.address1 = self.address1Outlet.text;
-        gi.city = self.cityOutlet.text;
-        gi.stateProvinceCode = self.stateOutlet.text;
-        gi.countryCode = self.countryOutlet.text;
         [self saveDaNumber:self.ccNumberOutlet.text];
         [self saveDaExpiration:self.expirationOutlet.text];
         [self saveNeumann:self.postalOutlet.text];
@@ -426,6 +485,13 @@ NSUInteger const kPaymentDetailsViewTag = 52;
     // code. So I will probably need to save these values to GuestInfo here as
     // well
     [JNKeychain saveValue:postalCode forKey:kKeyPostalCode];
+    
+    if (nil == self.addressLabelOutlet.text
+            || [self.addressLabelOutlet.text isEqualToString:@""]
+            || [self.addressLabelOutlet.text isEqualToString:kNoLocationsFoundMessage]) {
+        self.roomOrPostal = YES;
+        [[LoadGooglePlacesData sharedInstance:self] loadPlaceDetailsWithPostalCode:postalCode];
+    }
 }
 
 #pragma mark UITextFieldDelegate methods
@@ -503,9 +569,9 @@ NSUInteger const kPaymentDetailsViewTag = 52;
     }
     
     if (1 == component) {
-        return [NSString stringWithFormat:@"%ld", ([components year] + row)];
+        return [NSString stringWithFormat:@"%ld", (long)([components year] + row)];
     } else {
-        NSDate *wd = [dateFormatter dateFromString:[NSString stringWithFormat: @"%ld", (1 + row)]];
+        NSDate *wd = [dateFormatter dateFromString:[NSString stringWithFormat: @"%ld", (long)(1 + row)]];
         return [NSString stringWithFormat:@"%@ (%@)", [formatter stringFromDate:wd], [dateFormatter stringFromDate:wd]];
     }
 }

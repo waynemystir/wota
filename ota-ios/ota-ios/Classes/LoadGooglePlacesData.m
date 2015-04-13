@@ -43,7 +43,7 @@
     NSURLConnection *connection = [NSURLConnection connectionWithRequest:request delegate:self];
     self.responseData = [NSMutableData data];
     [connection start];
-    [self.delegate requestStarted:url];
+    [self sendRequestStartedToDelegate:url];
 }
 
 - (void)loadPlaceDetails:(NSString *)placeId {
@@ -66,7 +66,27 @@
     NSURLConnection *connection = [NSURLConnection connectionWithRequest:request delegate:self];
     self.responseData = [NSMutableData data];
     [connection start];
-    [self.delegate requestStarted:url];
+    [self sendRequestStartedToDelegate:url];
+}
+
+- (void)loadPlaceDetailsWithPostalCode:(NSString *)postalCode {
+    NSString *urlString = [[NSString stringWithFormat:@"https://maps.google.com/maps/api/geocode/json?components=postal_code:%@&key=%@&sensor=false", postalCode, GOOGLE_API_KEY] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setTimeoutInterval:URL_REQUEST_TIMEOUT];
+    [request setHTTPMethod:@"POST"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    NSURLConnection *connection = [NSURLConnection connectionWithRequest:request delegate:self];
+    self.responseData = [NSMutableData data];
+    [connection start];
+    [self sendRequestStartedToDelegate:url];
+}
+
+- (void)sendRequestStartedToDelegate:(NSURL *)url {
+    if ([self.delegate respondsToSelector:@selector(requestStarted:)]) {
+        [self.delegate requestStarted:url];
+    }
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {

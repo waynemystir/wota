@@ -18,5 +18,6 @@
 
 - (void)autoCompleteSomePlaces:(NSString *)queryString;
 - (void)loadPlaceDetails:(NSString *)placeId;
+- (void)loadPlaceDetailsWithPostalCode:(NSString *)postalCode;
 
 @end

@@ -7,12 +7,11 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SelectRoomViewController">
             <connections>
                 <outlet property="address1Outlet" destination="IKi-GV-rJ4" id="CJH-XN-Fp2"/>
+                <outlet property="addressLabelOutlet" destination="HcL-Rz-3a7" id="HbF-Ff-gHF"/>
                 <outlet property="ccNumberOutlet" destination="eE4-SP-jIY" id="Pg4-VS-77D"/>
-                <outlet property="cityOutlet" destination="xed-fs-pLb" id="P74-sI-wYj"/>
-                <outlet property="countryOutlet" destination="lXv-Gn-T2v" id="pBE-vQ-0iY"/>
                 <outlet property="expirationOutlet" destination="mAJ-b4-ZhI" id="2rC-ss-QOc"/>
+                <outlet property="fillAddressButtonOutlet" destination="5dH-Sk-ow9" id="CAu-RH-0xe"/>
                 <outlet property="postalOutlet" destination="37w-zi-TGx" id="1q4-Sz-xHa"/>
-                <outlet property="stateOutlet" destination="Jly-qo-Yr2" id="Mg3-Fc-lge"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
@@ -30,31 +29,31 @@
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="next"/>
                 </textField>
-                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Street Address" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="IKi-GV-rJ4">
+                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Street Address" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="IKi-GV-rJ4" userLabel="streetAddTextField">
                     <rect key="frame" x="8" y="84" width="284" height="30"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits" autocapitalizationType="words" autocorrectionType="no" spellCheckingType="no" returnKeyType="next"/>
                 </textField>
-                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="City" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xed-fs-pLb" userLabel="cityTextField">
-                    <rect key="frame" x="8" y="122" width="234" height="30"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                    <textInputTraits key="textInputTraits" autocapitalizationType="words" autocorrectionType="no" spellCheckingType="no" returnKeyType="next"/>
-                </textField>
-                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="State" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Jly-qo-Yr2" userLabel="stateTextField">
-                    <rect key="frame" x="8" y="160" width="59" height="30"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                    <textInputTraits key="textInputTraits" autocapitalizationType="allCharacters" autocorrectionType="no" spellCheckingType="no" returnKeyType="next"/>
-                </textField>
-                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Country" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="lXv-Gn-T2v" userLabel="countryTextField">
-                    <rect key="frame" x="8" y="198" width="67" height="30"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                    <textInputTraits key="textInputTraits" autocapitalizationType="allCharacters" autocorrectionType="no" spellCheckingType="no" returnKeyType="next"/>
-                </textField>
                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Billing Postal Code" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="37w-zi-TGx" userLabel="postalTextField">
-                    <rect key="frame" x="8" y="236" width="142" height="30"/>
+                    <rect key="frame" x="8" y="122" width="142" height="30"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits" keyboardType="numbersAndPunctuation" returnKeyType="next"/>
                 </textField>
+                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5dH-Sk-ow9" userLabel="fillAddButton">
+                    <rect key="frame" x="163" y="122" width="117" height="30"/>
+                    <state key="normal" title="Fill In Location">
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="XS7-qf-u7p"/>
+                    </connections>
+                </button>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HcL-Rz-3a7" userLabel="addressLabel">
+                    <rect key="frame" x="8" y="168" width="284" height="46"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <nil key="simulatedStatusBarMetrics"/>

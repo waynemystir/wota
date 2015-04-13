@@ -14,7 +14,10 @@
 @property (nonatomic, strong, setter=setPlaceId:) NSString *placeId;
 @property (nonatomic, strong) NSString *formattedAddress;
 @property (nonatomic, strong) NSArray *addressComponents;
+@property (nonatomic, strong, getter=getGoogleAddressComponents) NSMutableArray *googleAddressComponents;
 @property (nonatomic, strong) NSString *postalCode;
+@property (nonatomic, strong) NSString *localityShortName;
+@property (nonatomic, strong) NSString *administrativeAreaLevel1ShortName;
 @property (nonatomic, strong) NSString *countryLongName;
 @property (nonatomic, strong) NSString *countryShortName;
 @property (nonatomic, strong) NSDictionary *geometry;
@@ -24,6 +27,6 @@
 
 + (GooglePlaceDetail *)placeDetailFromId:(NSString *)placeId;
 + (GooglePlaceDetail *)placeDetailFromData:(NSData *)data;
-+ (GooglePlaceDetail *)placeDetailFromObject:(id)object;
++ (GooglePlaceDetail *)placeDetailFromObject:(id)object wrappedInResult:(BOOL)wrapped;
 
 @end
