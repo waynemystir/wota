@@ -8,6 +8,9 @@
 
 #import "PostalResultsTableViewDelegateImplementation.h"
 #import "PostalResultsTableViewCell.h"
+#import "PlaceAutoCompleteTableViewCell.h"
+#import "LoadGooglePlacesData.h"
+
 
 @implementation PostalResultsTableViewDelegateImplementation
 
@@ -20,26 +23,40 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *cellIdentifier = @"postalCellIdentifier";
-    PostalResultsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-    if (nil == cell) {
-        [tableView registerNib:[UINib nibWithNibName:@"PostResultsTableViewCell" bundle:nil] forCellReuseIdentifier:cellIdentifier];
-        cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    NSString *CellIdentifier = @"placeAutoCompleteCell";
+    PlaceAutoCompleteTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) {
+        [tableView registerNib:[UINib nibWithNibName:@"PlaceAutoCompleteTableViewCell" bundle:nil] forCellReuseIdentifier:CellIdentifier];
+        cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     }
     
-    GooglePlaceDetail *gpd = [self.tableData objectAtIndex:indexPath.row];
-    NSString *localityString = gpd.localityShortName ? [gpd.localityShortName stringByAppendingString:@", "] : @"";
-    NSString *stateStr = gpd.administrativeAreaLevel1ShortName ? [gpd.administrativeAreaLevel1ShortName stringByAppendingString:@", "] : @"";
-    NSString *cntryStr = gpd.countryShortName ? : @"";
-    NSString *addressString = [NSString stringWithFormat:@"%@%@%@", localityString, stateStr, cntryStr];
-    cell.cellAddrOutlet.text = addressString;
+    GooglePlace *place = [GooglePlace placeFromObject:[self.tableData objectAtIndex:indexPath.row]];
+    cell.outletPlaceName.text = place.placeName;
+    cell.placeId = place.placeId;
     
     return cell;
+//    NSString *cellIdentifier = @"postalCellIdentifier";
+//    PostalResultsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+//    if (nil == cell) {
+//        [tableView registerNib:[UINib nibWithNibName:@"PostResultsTableViewCell" bundle:nil] forCellReuseIdentifier:cellIdentifier];
+//        cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+//    }
+//    
+//    GooglePlaceDetail *gpd = [self.tableData objectAtIndex:indexPath.row];
+//    NSString *localityString = gpd.localityShortName ? [gpd.localityShortName stringByAppendingString:@", "] : @"";
+//    NSString *stateStr = gpd.administrativeAreaLevel1ShortName ? [gpd.administrativeAreaLevel1ShortName stringByAppendingString:@", "] : @"";
+//    NSString *cntryStr = gpd.countryShortName ? : @"";
+//    NSString *addressString = [NSString stringWithFormat:@"%@%@%@", localityString, stateStr, cntryStr];
+//    cell.cellAddrOutlet.text = addressString;
+//    
+//    return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([self.delegate respondsToSelector:@selector(didSelectRow:)]) {
-        [self.delegate didSelectRow:[self.tableData objectAtIndex:indexPath.row]];
+        PlaceAutoCompleteTableViewCell * cell = (PlaceAutoCompleteTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+        [[LoadGooglePlacesData sharedInstance:self] loadPlaceDetails:cell.placeId];
+        [self.delegate didSelectRow:[GooglePlace placeFromObject:[self.tableData objectAtIndex:indexPath.row]]];
     }
 }
 

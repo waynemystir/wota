@@ -8,13 +8,13 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "GooglePlaceDetail.h"
+#import "GooglePlace.h"
 
 @protocol PostResultsDelegate <NSObject>
 
 @required
 
-- (void)didSelectRow:(GooglePlaceDetail *)googlePlaceDetail;
+- (void)didSelectRow:(GooglePlace *)googlePlace;
 
 @end
 

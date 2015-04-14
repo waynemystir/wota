@@ -18,6 +18,7 @@
 #import "AppEnvironment.h"
 #import "JNKeychain.h"
 #import "LoadGooglePlacesData.h"
+#import "GoogleParser.h"
 #import "GooglePlaces.h"
 #import "GooglePlaceDetail.h"
 #import "PostalResultsTableViewDelegateImplementation.h"
@@ -46,10 +47,9 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 @property (weak, nonatomic) IBOutlet UITextField *ccNumberOutlet;
 @property (weak, nonatomic) IBOutlet UITextField *expirationOutlet;
 @property (weak, nonatomic) IBOutlet UITextField *address1Outlet;
-@property (weak, nonatomic) IBOutlet UITextField *postalOutlet;
-@property (weak, nonatomic) IBOutlet UILabel *addressLabelOutlet;
-@property (weak, nonatomic) IBOutlet UIButton *fillAddressButtonOutlet;
 @property (nonatomic, strong) UIPickerView *expirationPicker;
+@property (weak, nonatomic) IBOutlet UITextField *addressTextFieldOutlet;
+@property (weak, nonatomic) IBOutlet UIView *ccContainerOutlet;
 
 @property (nonatomic, strong) EanHotelRoomAvailabilityResponse *eanHrar;
 @property (nonatomic, strong) EanAvailabilityHotelRoomResponse *selectedRoom;
@@ -95,21 +95,49 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 //    self.inputBookOutlet.frame = CGRectMake(10.0f, 412.0f, 300.0f, 0.0f);
     self.inputBookOutlet.transform = [self hiddenGuestInputTransform];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
 }
 
-- (void)keyboardWillShow:(id)sender {
-    [self dropPostalResultsTableView];
+//- (void)keyboardWillShow:(id)sender {
+//    [self dropPostalResultsTableView];
+//}
+
+- (void)startEnteringCcBillAddress {
+    NSLog(@"");
+    
+    if (nil == self.postalResultsTableView) {
+        self.postalResultsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 100, 320, 268)];
+        self.postalResultsTableView.layer.borderWidth = 2.0f;
+        self.postalResultsTableView.layer.borderColor = self.view.tintColor.CGColor;
+        if (nil == self.postalResultsDelegate) {
+            self.postalResultsDelegate = [[PostalResultsTableViewDelegateImplementation alloc] init];
+            self.postalResultsDelegate.delegate = self;
+        }
+        self.postalResultsTableView.dataSource = self.postalResultsDelegate;
+        self.postalResultsTableView.delegate = self.postalResultsDelegate;
+    }
+    
+    [self.view endEditing:YES];
+    [self loadPostalResultsTableView];
+}
+
+- (void)autoCompleteCcBillAddress {
+    self.roomOrPostal = YES;
+    [[LoadGooglePlacesData sharedInstance:self] autoCompleteSomePlaces:self.addressTextFieldOutlet.text];
 }
 
 #pragma mark LoadDataProtocol methods
 
 - (void)requestFinished:(NSData *)responseData {
     if (self.roomOrPostal) {
-        self.roomOrPostal = NO;
-        NSString *respString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
-        NSLog(@"POSTAL_GOOGLE_RESP:%@", respString);
-        [self handlePostalPlaces:responseData];
+//        self.roomOrPostal = NO;
+        
+//        NSString *respString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
+//        NSLog(@"POSTAL_GOOGLE_RESP:%@", respString);
+//        [self handlePostalPlaces:responseData];
+        
+        self.postalResultsDelegate.tableData = [GoogleParser parseAutoCompleteResponse:responseData];
+        [self.postalResultsTableView reloadData];
     } else {
         self.eanHrar = [EanHotelRoomAvailabilityResponse roomsAvailableResponseFromData:responseData];
         self.tableData = self.eanHrar.hotelRoomArray;
@@ -240,73 +268,73 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
         [self loadGuestDetailsView];
     } else if (sender == self.paymentButtonOutlet) {
         [self loadPaymentDetailsView];
-    } else if (sender == self.fillAddressButtonOutlet) {
+    } /*else if (sender == self.fillAddressButtonOutlet) {
         self.fillAddressButtonOutlet.enabled = NO;
         self.roomOrPostal = YES;
         [[LoadGooglePlacesData sharedInstance:self] loadPlaceDetailsWithPostalCode:self.postalOutlet.text];
-    }
+    }*/
 }
 
-- (void)handlePostalPlaces:(NSData *)data {
-    GooglePlaces *gps = [GooglePlaces placesFromData:data];
-    
-    if (nil == gps) {
-        [self paintTheAddressLabel:nil];
-        return;
-    }
-    
-    NSArray *places = gps.placesArray;
-    
-    if (nil == places || [places count] == 0) {
-        [self paintTheAddressLabel:nil];
-        return;
-    }
-    
-    if ([places count] == 1) {
-        self.fillAddressButtonOutlet.enabled = NO;
-        GooglePlaceDetail *gpd = gps.placesArray[0];
-        [self paintTheAddressLabel:gpd];
-        return;
-    }
-    
-    if (nil == self.postalResultsTableView) {
-        self.postalResultsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 300, 320, 268)];
-    }
-    
-    self.postalResultsTableView.layer.borderWidth = 2.0f;
-    self.postalResultsTableView.layer.borderColor = self.view.tintColor.CGColor;
-    self.postalResultsDelegate = [[PostalResultsTableViewDelegateImplementation alloc] init];
-    self.postalResultsDelegate.delegate = self;
-    self.postalResultsDelegate.tableData = gps.placesArray;
-    self.postalResultsTableView.dataSource = self.postalResultsDelegate;
-    self.postalResultsTableView.delegate = self.postalResultsDelegate;
-    [self.view endEditing:YES];
-    [self loadPostalResultsTableView];
-}
+//- (void)handlePostalPlaces:(NSData *)data {
+//    GooglePlaces *gps = [GooglePlaces placesFromData:data];
+//    
+//    if (nil == gps) {
+//        [self paintTheAddressLabel:nil];
+//        return;
+//    }
+//    
+//    NSArray *places = gps.placesArray;
+//    
+//    if (nil == places || [places count] == 0) {
+//        [self paintTheAddressLabel:nil];
+//        return;
+//    }
+//    
+//    if ([places count] == 1) {
+//        self.fillAddressButtonOutlet.enabled = NO;
+//        GooglePlaceDetail *gpd = gps.placesArray[0];
+//        [self paintTheAddressLabel:gpd];
+//        return;
+//    }
+//    
+//    if (nil == self.postalResultsTableView) {
+//        self.postalResultsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 300, 320, 268)];
+//    }
+//    
+//    self.postalResultsTableView.layer.borderWidth = 2.0f;
+//    self.postalResultsTableView.layer.borderColor = self.view.tintColor.CGColor;
+//    self.postalResultsDelegate = [[PostalResultsTableViewDelegateImplementation alloc] init];
+//    self.postalResultsDelegate.delegate = self;
+//    self.postalResultsDelegate.tableData = gps.placesArray;
+//    self.postalResultsTableView.dataSource = self.postalResultsDelegate;
+//    self.postalResultsTableView.delegate = self.postalResultsDelegate;
+//    [self.view endEditing:YES];
+//    [self loadPostalResultsTableView];
+//}
 
-- (void)paintTheAddressLabel:(GooglePlaceDetail *)gpd {
-    self.fillAddressButtonOutlet.enabled = NO;
-    
-    if (nil == gpd) {
-        self.addressLabelOutlet.text = kNoLocationsFoundMessage;
-        GuestInfo *gi = [GuestInfo singleton];
-        gi.city = nil;
-        gi.stateProvinceCode = nil;
-        gi.countryCode = nil;
-        return;
-    }
-    
-    NSString *localityString = gpd.localityShortName ? [gpd.localityShortName stringByAppendingString:@", "] : @"";
-    NSString *stateStr = gpd.administrativeAreaLevel1ShortName ? [gpd.administrativeAreaLevel1ShortName stringByAppendingString:@", "] : @"";
-    NSString *cntryStr = gpd.countryShortName ? : @"";
-    NSString *addressString = [NSString stringWithFormat:@"%@%@%@", localityString, stateStr, cntryStr];
-    self.addressLabelOutlet.text = addressString;
-    
-    GuestInfo *gi = [GuestInfo singleton];
-    gi.city = gpd.localityShortName;
-    gi.stateProvinceCode = gpd.administrativeAreaLevel1ShortName;
-    gi.countryCode = gpd.countryShortName;
-}
+//- (void)paintTheAddressLabel:(GooglePlaceDetail *)gpd {
+//    self.fillAddressButtonOutlet.enabled = NO;
+//    
+//    if (nil == gpd) {
+//        self.addressLabelOutlet.text = kNoLocationsFoundMessage;
+//        GuestInfo *gi = [GuestInfo singleton];
+//        gi.city = nil;
+//        gi.stateProvinceCode = nil;
+//        gi.countryCode = nil;
+//        return;
+//    }
+//    
+//    NSString *localityString = gpd.localityShortName ? [gpd.localityShortName stringByAppendingString:@", "] : @"";
+//    NSString *stateStr = gpd.administrativeAreaLevel1ShortName ? [gpd.administrativeAreaLevel1ShortName stringByAppendingString:@", "] : @"";
+//    NSString *cntryStr = gpd.countryShortName ? : @"";
+//    NSString *addressString = [NSString stringWithFormat:@"%@%@%@", localityString, stateStr, cntryStr];
+//    self.addressLabelOutlet.text = addressString;
+//    
+//    GuestInfo *gi = [GuestInfo singleton];
+//    gi.city = gpd.localityShortName;
+//    gi.stateProvinceCode = gpd.administrativeAreaLevel1ShortName;
+//    gi.countryCode = gpd.countryShortName;
+//}
 
 - (void)bookIt {
     if (nil == self.expandedIndexPath) {
@@ -387,12 +415,12 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     // well
     [JNKeychain saveValue:postalCode forKey:kKeyPostalCode];
     
-    if (nil == self.addressLabelOutlet.text
-            || [self.addressLabelOutlet.text isEqualToString:@""]
-            || [self.addressLabelOutlet.text isEqualToString:kNoLocationsFoundMessage]) {
-        self.roomOrPostal = YES;
-        [[LoadGooglePlacesData sharedInstance:self] loadPlaceDetailsWithPostalCode:postalCode];
-    }
+//    if (nil == self.addressLabelOutlet.text
+//            || [self.addressLabelOutlet.text isEqualToString:@""]
+//            || [self.addressLabelOutlet.text isEqualToString:kNoLocationsFoundMessage]) {
+//        self.roomOrPostal = YES;
+//        [[LoadGooglePlacesData sharedInstance:self] loadPlaceDetailsWithPostalCode:postalCode];
+//    }
 }
 
 #pragma mark UITextFieldDelegate methods
@@ -409,13 +437,13 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-    if (textField == self.postalOutlet) {
-        if (self.postalOutlet.text.length > 0) {
-            self.fillAddressButtonOutlet.enabled = YES;
-        } else {
-            self.fillAddressButtonOutlet.enabled = NO;
-        }
-    }
+//    if (textField == self.postalOutlet) {
+//        if (self.postalOutlet.text.length > 0) {
+//            self.fillAddressButtonOutlet.enabled = YES;
+//        } else {
+//            self.fillAddressButtonOutlet.enabled = NO;
+//        }
+//    }
     return YES;
 }
 
@@ -507,9 +535,15 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 
 #pragma mark PostResultsDelegate method
 
-- (void)didSelectRow:(GooglePlaceDetail *)googlePlaceDetail {
-    [self paintTheAddressLabel:googlePlaceDetail];
-    [self.postalOutlet becomeFirstResponder];
+//- (void)didSelectRow:(GooglePlaceDetail *)googlePlaceDetail {
+//    [self paintTheAddressLabel:googlePlaceDetail];
+//    [self.postalOutlet becomeFirstResponder];
+//    [self dropPostalResultsTableView];
+//}
+
+- (void)didSelectRow:(GooglePlace *)googlePlace {
+    self.addressTextFieldOutlet.text = googlePlace.placeName;
+    [self.view endEditing:YES];
     [self dropPostalResultsTableView];
 }
 
@@ -597,21 +631,25 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     
     [self.view addSubview:paymentDetailsView];
     
+    self.addressTextFieldOutlet.delegate = nil;
+    [self.addressTextFieldOutlet addTarget:self action:@selector(startEnteringCcBillAddress) forControlEvents:UIControlEventTouchDown];
+    [self.addressTextFieldOutlet addTarget:self action:@selector(autoCompleteCcBillAddress) forControlEvents:UIControlEventEditingChanged];
+    
     [self.ccNumberOutlet becomeFirstResponder];
     self.ccNumberOutlet.text = [JNKeychain loadValueForKey:kKeyDaNumber];
     [self updateTextInExpirationOutlet];
     GuestInfo *gi = [GuestInfo singleton];
     self.address1Outlet.text = gi.address1;
     
-    self.postalOutlet.delegate = self;
+//    self.postalOutlet.delegate = self;
     NSString *neumannCode = [JNKeychain loadValueForKey:kKeyPostalCode];
     if (nil != neumannCode && ![neumannCode isEqualToString:@""]) {
-        self.postalOutlet.text = neumannCode;
-        self.addressLabelOutlet.text = [NSString stringWithFormat:@"%@, %@, %@", gi.city, gi.stateProvinceCode, gi.countryCode];
+//        self.postalOutlet.text = neumannCode;
+//        self.addressLabelOutlet.text = [NSString stringWithFormat:@"%@, %@, %@", gi.city, gi.stateProvinceCode, gi.countryCode];
         self.navigationItem.rightBarButtonItem.enabled = YES;
     } else {
-        self.postalOutlet.text = nil;
-        self.addressLabelOutlet.text = nil;
+//        self.postalOutlet.text = nil;
+//        self.addressLabelOutlet.text = nil;
         self.navigationItem.rightBarButtonItem.enabled = NO;
     }
     
@@ -630,7 +668,7 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
         gi.address1 = self.address1Outlet.text;
         [self saveDaNumber:self.ccNumberOutlet.text];
         [self saveDaExpiration:self.expirationOutlet.text];
-        [self saveNeumann:self.postalOutlet.text];
+//        [self saveNeumann:self.postalOutlet.text];
     }
     
     [self dropPostalResultsTableView];
@@ -655,12 +693,15 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 
 - (void)loadPostalResultsTableView {
     __weak UITableView *prtv = self.postalResultsTableView;
+    __weak UIView *ccco = self.ccContainerOutlet;
     prtv.transform = CGAffineTransformMakeTranslation(0.0f, 400.0f);
     [self.view addSubview:self.postalResultsTableView];
     [UIView animateWithDuration:kAnimationDuration animations:^{
         prtv.transform = CGAffineTransformMakeTranslation(0.0f, 0.0f);
+        ccco.transform = CGAffineTransformMakeTranslation(0.0f, -120.0f);
     } completion:^(BOOL finished) {
-        ;
+        NSLog(@"Something");
+        NSLog(@"Else");
     }];
 }
 
@@ -670,8 +711,10 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     }
     
     __weak UITableView *prtv = self.postalResultsTableView;
+    __weak UIView *ccco = self.ccContainerOutlet;
     [UIView animateWithDuration:kAnimationDuration animations:^{
         prtv.transform = CGAffineTransformMakeTranslation(0.0f, 400.0f);
+        ccco.transform = CGAffineTransformMakeTranslation(0.0f, 0.0f);
     } completion:^(BOOL finished) {
         [prtv removeFromSuperview];
     }];
