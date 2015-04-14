@@ -135,6 +135,8 @@ NSString * const kKeyLongitude = @"longitude";
                 self.administrativeAreaLevel1ShortName = gac.shortName;
             } else if ([type isEqualToString:@"country"]) {
                 self.countryShortName = gac.shortName;
+            } else if ([type isEqualToString:@"postal_town"]) {
+                self.localityShortName = gac.shortName;
             }
         }
     }

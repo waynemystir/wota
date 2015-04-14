@@ -107,8 +107,8 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 - (void)requestFinished:(NSData *)responseData {
     if (self.roomOrPostal) {
         self.roomOrPostal = NO;
-//        NSString *respString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
-//        NSLog(@"POSTAL_GOOGLE_RESP:%@", respString);
+        NSString *respString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
+        NSLog(@"POSTAL_GOOGLE_RESP:%@", respString);
         [self handlePostalPlaces:responseData];
     } else {
         self.eanHrar = [EanHotelRoomAvailabilityResponse roomsAvailableResponseFromData:responseData];
@@ -410,7 +410,7 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     if (textField == self.postalOutlet) {
-        if (self.postalOutlet.text.length > 1) {
+        if (self.postalOutlet.text.length > 0) {
             self.fillAddressButtonOutlet.enabled = YES;
         } else {
             self.fillAddressButtonOutlet.enabled = NO;
@@ -632,6 +632,8 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
         [self saveDaExpiration:self.expirationOutlet.text];
         [self saveNeumann:self.postalOutlet.text];
     }
+    
+    [self dropPostalResultsTableView];
     
     __weak UIView *paymentDetailsView = [self.view viewWithTag:kPaymentDetailsViewTag];
     
