@@ -20,13 +20,14 @@
 #import "LoadGooglePlacesData.h"
 #import "GooglePlaces.h"
 #import "GooglePlaceDetail.h"
+#import "PostalResultsTableViewDelegateImplementation.h"
 
 NSTimeInterval const kAnimationDuration = 0.6;
 NSUInteger const kGuestDetailsViewTag = 51;
 NSUInteger const kPaymentDetailsViewTag = 52;
 NSString * const kNoLocationsFoundMessage = @"No locations found for this postal code. Please try again.";
 
-@interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate>
+@interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, PostResultsDelegate>
 
 // room = NO and postal = YES
 @property (nonatomic) BOOL roomOrPostal;
@@ -56,6 +57,10 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 @property (nonatomic, strong) NSIndexPath *expandedIndexPath;
 @property (nonatomic) CGRect rectOfCellInSuperview;
 @property (nonatomic, strong) UIButton *doneButton;
+
+@property (nonatomic, strong) UITableView *postalResultsTableView;
+@property (nonatomic, strong) PostalResultsTableViewDelegateImplementation *postalResultsDelegate;
+@property (nonatomic) BOOL startFillAddress;
 
 - (IBAction)justPushIt:(id)sender;
 
@@ -89,6 +94,12 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     self.inputBookOutlet.hidden = YES;
 //    self.inputBookOutlet.frame = CGRectMake(10.0f, 412.0f, 300.0f, 0.0f);
     self.inputBookOutlet.transform = [self hiddenGuestInputTransform];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+}
+
+- (void)keyboardWillShow:(id)sender {
+    [self dropPostalResultsTableView];
 }
 
 #pragma mark LoadDataProtocol methods
@@ -230,6 +241,7 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     } else if (sender == self.paymentButtonOutlet) {
         [self loadPaymentDetailsView];
     } else if (sender == self.fillAddressButtonOutlet) {
+        self.fillAddressButtonOutlet.enabled = NO;
         self.roomOrPostal = YES;
         [[LoadGooglePlacesData sharedInstance:self] loadPlaceDetailsWithPostalCode:self.postalOutlet.text];
     }
@@ -239,17 +251,43 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     GooglePlaces *gps = [GooglePlaces placesFromData:data];
     
     if (nil == gps) {
-        self.addressLabelOutlet.text = kNoLocationsFoundMessage;
-        GuestInfo *gi = [GuestInfo singleton];
-        gi.city = nil;
-        gi.stateProvinceCode = nil;
-        gi.countryCode = nil;
+        [self paintTheAddressLabel:nil];
         return;
     }
     
     NSArray *places = gps.placesArray;
     
     if (nil == places || [places count] == 0) {
+        [self paintTheAddressLabel:nil];
+        return;
+    }
+    
+    if ([places count] == 1) {
+        self.fillAddressButtonOutlet.enabled = NO;
+        GooglePlaceDetail *gpd = gps.placesArray[0];
+        [self paintTheAddressLabel:gpd];
+        return;
+    }
+    
+    if (nil == self.postalResultsTableView) {
+        self.postalResultsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 300, 320, 268)];
+    }
+    
+    self.postalResultsTableView.layer.borderWidth = 2.0f;
+    self.postalResultsTableView.layer.borderColor = self.view.tintColor.CGColor;
+    self.postalResultsDelegate = [[PostalResultsTableViewDelegateImplementation alloc] init];
+    self.postalResultsDelegate.delegate = self;
+    self.postalResultsDelegate.tableData = gps.placesArray;
+    self.postalResultsTableView.dataSource = self.postalResultsDelegate;
+    self.postalResultsTableView.delegate = self.postalResultsDelegate;
+    [self.view endEditing:YES];
+    [self loadPostalResultsTableView];
+}
+
+- (void)paintTheAddressLabel:(GooglePlaceDetail *)gpd {
+    self.fillAddressButtonOutlet.enabled = NO;
+    
+    if (nil == gpd) {
         self.addressLabelOutlet.text = kNoLocationsFoundMessage;
         GuestInfo *gi = [GuestInfo singleton];
         gi.city = nil;
@@ -258,20 +296,16 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
         return;
     }
     
-    if ([places count] == 1) {
-        GooglePlaceDetail *gpd = gps.placesArray[0];
-        self.addressLabelOutlet.text = [NSString stringWithFormat:@"%@, %@, %@", gpd.localityShortName, gpd.administrativeAreaLevel1ShortName, gpd.countryShortName];
-        GuestInfo *gi = [GuestInfo singleton];
-        gi.city = gpd.localityShortName;
-        gi.stateProvinceCode = gpd.administrativeAreaLevel1ShortName;
-        gi.countryCode = gpd.countryShortName;
-        return;
-    }
+    NSString *localityString = gpd.localityShortName ? [gpd.localityShortName stringByAppendingString:@", "] : @"";
+    NSString *stateStr = gpd.administrativeAreaLevel1ShortName ? [gpd.administrativeAreaLevel1ShortName stringByAppendingString:@", "] : @"";
+    NSString *cntryStr = gpd.countryShortName ? : @"";
+    NSString *addressString = [NSString stringWithFormat:@"%@%@%@", localityString, stateStr, cntryStr];
+    self.addressLabelOutlet.text = addressString;
     
-    for (int j = 0; j < [gps.placesArray count]; j++) {
-        GooglePlaceDetail *gpd = gps.placesArray[j];
-        NSLog(@"GPD locality:%@ state:%@ country:%@", gpd.localityShortName, gpd.administrativeAreaLevel1ShortName, gpd.countryShortName);
-    }
+    GuestInfo *gi = [GuestInfo singleton];
+    gi.city = gpd.localityShortName;
+    gi.stateProvinceCode = gpd.administrativeAreaLevel1ShortName;
+    gi.countryCode = gpd.countryShortName;
 }
 
 - (void)bookIt {
@@ -315,139 +349,6 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
                                                     postalCode:[JNKeychain loadValueForKey:kKeyPostalCode]];
     
     [self.navigationController pushViewController:bvc animated:YES];
-}
-
-- (void)loadGuestDetailsView {
-    NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"GuestDetailsView" owner:self options:nil];
-    if (nil == views || [views count] != 1) {
-        return;
-    }
-    
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dropGuestDetailsView:)];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dropGuestDetailsView:)];
-    
-    UIView *guestDetailsView = views[0];
-    guestDetailsView.tag = kGuestDetailsViewTag;
-    guestDetailsView.frame = CGRectMake(10, 64, 300, 300);
-    
-    CGPoint gboCenter = [self.view convertPoint:self.guestButtonOutlet.center fromView:self.inputBookOutlet];
-    CGFloat fromX = gboCenter.x - guestDetailsView.center.x;
-    CGFloat fromY = gboCenter.y - guestDetailsView.center.y;
-    CGAffineTransform fromTransform = CGAffineTransformMakeTranslation(fromX, fromY);
-    guestDetailsView.transform = CGAffineTransformScale(fromTransform, 0.01f, 0.01f);
-    
-    [self.view addSubview:guestDetailsView];
-    [self.firstNameOutlet becomeFirstResponder];
-    GuestInfo *gi = [GuestInfo singleton];
-    self.firstNameOutlet.text = gi.firstName;
-    self.lastNameOutlet.text = gi.lastName;
-    self.emailOutlet.text = gi.email;
-    self.phoneOutlet.text = gi.phoneNumber;
-    [UIView animateWithDuration:kAnimationDuration animations:^{
-        guestDetailsView.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
-    } completion:^(BOOL finished) {
-        ;
-    }];
-}
-
-- (void)dropGuestDetailsView:(id)sender {
-    if (sender == self.navigationItem.rightBarButtonItem) {
-        GuestInfo *gi = [GuestInfo singleton];
-        gi.firstName = self.firstNameOutlet.text;
-        gi.lastName = self.lastNameOutlet.text;
-        gi.email = self.emailOutlet.text;
-        gi.phoneNumber = self.phoneOutlet.text;
-    }
-    
-    __weak UIView *guestView = [self.view viewWithTag:kGuestDetailsViewTag];
-    
-    CGPoint gboCenter = [self.view convertPoint:self.guestButtonOutlet.center fromView:self.inputBookOutlet];
-    CGFloat toX = gboCenter.x - guestView.center.x;
-    CGFloat toY = gboCenter.y - guestView.center.y;
-    __block CGAffineTransform toTransform = CGAffineTransformMakeTranslation(toX, toY);
-    
-//    [self.firstNameOutlet resignFirstResponder];
-    [self.view endEditing:YES];
-    self.navigationItem.leftBarButtonItem = self.navigationItem.backBarButtonItem;
-    self.navigationItem.rightBarButtonItem = nil;
-    [UIView animateWithDuration:kAnimationDuration animations:^{
-        guestView.transform = CGAffineTransformScale(toTransform, 0.01f, 0.01f);
-    } completion:^(BOOL finished) {
-        [guestView removeFromSuperview];;
-    }];
-}
-
-- (void)loadPaymentDetailsView {
-    NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"PaymentDetailsView" owner:self options:nil];
-    if (nil == views || [views count] != 1) {
-        return;
-    }
-    
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dropPaymentDetailsView:)];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dropPaymentDetailsView:)];
-    
-    __weak UIView *paymentDetailsView = views[0];
-    paymentDetailsView.tag = kPaymentDetailsViewTag;
-    paymentDetailsView.frame = CGRectMake(10, 64, 300, 300);
-    
-    CGPoint pboCenter = [self.view convertPoint:self.paymentButtonOutlet.center fromView:self.inputBookOutlet];
-    CGFloat fromX = pboCenter.x - paymentDetailsView.center.x;
-    CGFloat fromY = pboCenter.y - paymentDetailsView.center.y;
-    CGAffineTransform fromTransform = CGAffineTransformMakeTranslation(fromX, fromY);
-    paymentDetailsView.transform = CGAffineTransformScale(fromTransform, 0.01f, 0.01f);
-    
-    [self.view addSubview:paymentDetailsView];
-    
-    [self.ccNumberOutlet becomeFirstResponder];
-    self.ccNumberOutlet.text = [JNKeychain loadValueForKey:kKeyDaNumber];
-    [self updateTextInExpirationOutlet];
-    GuestInfo *gi = [GuestInfo singleton];
-    self.address1Outlet.text = gi.address1;
-    
-    NSString *neumannCode = [JNKeychain loadValueForKey:kKeyPostalCode];
-    if (nil != neumannCode && ![neumannCode isEqualToString:@""]) {
-        self.postalOutlet.text = neumannCode;
-        self.addressLabelOutlet.text = [NSString stringWithFormat:@"%@, %@, %@", gi.city, gi.stateProvinceCode, gi.countryCode];
-        
-    } else {
-        self.postalOutlet.text = nil;
-        self.addressLabelOutlet.text = nil;
-    }
-    
-    self.expirationOutlet.delegate = self;
-    
-    [UIView animateWithDuration:kAnimationDuration animations:^{
-        paymentDetailsView.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
-    } completion:^(BOOL finished) {
-        ;
-    }];    
-}
-
-- (void)dropPaymentDetailsView:(id)sender {
-    if (sender == self.navigationItem.rightBarButtonItem) {
-        GuestInfo *gi = [GuestInfo singleton];
-        gi.address1 = self.address1Outlet.text;
-        [self saveDaNumber:self.ccNumberOutlet.text];
-        [self saveDaExpiration:self.expirationOutlet.text];
-        [self saveNeumann:self.postalOutlet.text];
-    }
-    
-    __weak UIView *paymentDetailsView = [self.view viewWithTag:kPaymentDetailsViewTag];
-    
-    CGPoint pboCenter = [self.view convertPoint:self.paymentButtonOutlet.center fromView:self.inputBookOutlet];
-    CGFloat toX = pboCenter.x - paymentDetailsView.center.x;
-    CGFloat toY = pboCenter.y - paymentDetailsView.center.y;
-    __block CGAffineTransform toTransform = CGAffineTransformMakeTranslation(toX, toY);
-    
-//    [self.ccNumberOutlet resignFirstResponder];
-    [self.view endEditing:YES];
-    self.navigationItem.leftBarButtonItem = self.navigationItem.backBarButtonItem;
-    self.navigationItem.rightBarButtonItem = nil;
-    [UIView animateWithDuration:kAnimationDuration animations:^{
-        paymentDetailsView.transform = CGAffineTransformScale(toTransform, 0.01f, 0.01f);
-    } completion:^(BOOL finished) {
-        [paymentDetailsView removeFromSuperview];;
-    }];
 }
 
 - (void)saveDaNumber:(NSString *)daNumber {
@@ -497,12 +398,28 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 #pragma mark UITextFieldDelegate methods
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
-    if (textField != self.expirationOutlet) {
-        return;
+    if (textField == self.expirationOutlet) {
+        [textField setInputView:self.expirationPicker];
+    } /*else if (textField == self.postalOutlet) {
+        [self dropPostalResultsTableView];
+    }*/ else {
+        ;
     }
     
-    [textField setInputView:self.expirationPicker];
 }
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    if (textField == self.postalOutlet) {
+        if (self.postalOutlet.text.length > 1) {
+            self.fillAddressButtonOutlet.enabled = YES;
+        } else {
+            self.fillAddressButtonOutlet.enabled = NO;
+        }
+    }
+    return YES;
+}
+
+#pragma mark Expiration Picker and Outlet methods
 
 - (void)setupExpirationPicker {
     self.expirationPicker = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 300, 320, 268)];
@@ -586,6 +503,176 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
     [self updateTextInExpirationOutlet];
+}
+
+#pragma mark PostResultsDelegate method
+
+- (void)didSelectRow:(GooglePlaceDetail *)googlePlaceDetail {
+    [self paintTheAddressLabel:googlePlaceDetail];
+    [self.postalOutlet becomeFirstResponder];
+    [self dropPostalResultsTableView];
+}
+
+#pragma mark Animation methods
+
+- (void)loadGuestDetailsView {
+    NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"GuestDetailsView" owner:self options:nil];
+    if (nil == views || [views count] != 1) {
+        return;
+    }
+    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dropGuestDetailsView:)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dropGuestDetailsView:)];
+    
+    __weak UIView *guestDetailsView = views[0];
+    guestDetailsView.tag = kGuestDetailsViewTag;
+    guestDetailsView.frame = CGRectMake(10, 64, 300, 300);
+    
+    CGPoint gboCenter = [self.view convertPoint:self.guestButtonOutlet.center fromView:self.inputBookOutlet];
+    CGFloat fromX = gboCenter.x - guestDetailsView.center.x;
+    CGFloat fromY = gboCenter.y - guestDetailsView.center.y;
+    CGAffineTransform fromTransform = CGAffineTransformMakeTranslation(fromX, fromY);
+    guestDetailsView.transform = CGAffineTransformScale(fromTransform, 0.01f, 0.01f);
+    
+    [self.view addSubview:guestDetailsView];
+    [self.firstNameOutlet becomeFirstResponder];
+    GuestInfo *gi = [GuestInfo singleton];
+    self.firstNameOutlet.text = gi.firstName;
+    self.lastNameOutlet.text = gi.lastName;
+    self.emailOutlet.text = gi.email;
+    self.phoneOutlet.text = gi.phoneNumber;
+    [UIView animateWithDuration:kAnimationDuration animations:^{
+        guestDetailsView.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+    } completion:^(BOOL finished) {
+        ;
+    }];
+}
+
+- (void)dropGuestDetailsView:(id)sender {
+    if (sender == self.navigationItem.rightBarButtonItem) {
+        GuestInfo *gi = [GuestInfo singleton];
+        gi.firstName = self.firstNameOutlet.text;
+        gi.lastName = self.lastNameOutlet.text;
+        gi.email = self.emailOutlet.text;
+        gi.phoneNumber = self.phoneOutlet.text;
+    }
+    
+    __weak UIView *guestDetailsView = [self.view viewWithTag:kGuestDetailsViewTag];
+    
+    CGPoint gboCenter = [self.view convertPoint:self.guestButtonOutlet.center fromView:self.inputBookOutlet];
+    CGFloat toX = gboCenter.x - guestDetailsView.center.x;
+    CGFloat toY = gboCenter.y - guestDetailsView.center.y;
+    __block CGAffineTransform toTransform = CGAffineTransformMakeTranslation(toX, toY);
+    
+    //    [self.firstNameOutlet resignFirstResponder];
+    [self.view endEditing:YES];
+    self.navigationItem.leftBarButtonItem = self.navigationItem.backBarButtonItem;
+    self.navigationItem.rightBarButtonItem = nil;
+    [UIView animateWithDuration:kAnimationDuration animations:^{
+        guestDetailsView.transform = CGAffineTransformScale(toTransform, 0.01f, 0.01f);
+    } completion:^(BOOL finished) {
+        [guestDetailsView removeFromSuperview];;
+    }];
+}
+
+- (void)loadPaymentDetailsView {
+    NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"PaymentDetailsView" owner:self options:nil];
+    if (nil == views || [views count] != 1) {
+        return;
+    }
+    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dropPaymentDetailsView:)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dropPaymentDetailsView:)];
+    self.navigationItem.rightBarButtonItem.enabled = NO;
+    
+    __weak UIView *paymentDetailsView = views[0];
+    paymentDetailsView.tag = kPaymentDetailsViewTag;
+    paymentDetailsView.frame = CGRectMake(10, 64, 300, 568);
+    
+    CGPoint pboCenter = [self.view convertPoint:self.paymentButtonOutlet.center fromView:self.inputBookOutlet];
+    CGFloat fromX = pboCenter.x - paymentDetailsView.center.x;
+    CGFloat fromY = pboCenter.y - paymentDetailsView.center.y;
+    CGAffineTransform fromTransform = CGAffineTransformMakeTranslation(fromX, fromY);
+    paymentDetailsView.transform = CGAffineTransformScale(fromTransform, 0.01f, 0.01f);
+    
+    [self.view addSubview:paymentDetailsView];
+    
+    [self.ccNumberOutlet becomeFirstResponder];
+    self.ccNumberOutlet.text = [JNKeychain loadValueForKey:kKeyDaNumber];
+    [self updateTextInExpirationOutlet];
+    GuestInfo *gi = [GuestInfo singleton];
+    self.address1Outlet.text = gi.address1;
+    
+    self.postalOutlet.delegate = self;
+    NSString *neumannCode = [JNKeychain loadValueForKey:kKeyPostalCode];
+    if (nil != neumannCode && ![neumannCode isEqualToString:@""]) {
+        self.postalOutlet.text = neumannCode;
+        self.addressLabelOutlet.text = [NSString stringWithFormat:@"%@, %@, %@", gi.city, gi.stateProvinceCode, gi.countryCode];
+        self.navigationItem.rightBarButtonItem.enabled = YES;
+    } else {
+        self.postalOutlet.text = nil;
+        self.addressLabelOutlet.text = nil;
+        self.navigationItem.rightBarButtonItem.enabled = NO;
+    }
+    
+    self.expirationOutlet.delegate = self;
+    
+    [UIView animateWithDuration:kAnimationDuration animations:^{
+        paymentDetailsView.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+    } completion:^(BOOL finished) {
+        ;
+    }];
+}
+
+- (void)dropPaymentDetailsView:(id)sender {
+    if (sender == self.navigationItem.rightBarButtonItem) {
+        GuestInfo *gi = [GuestInfo singleton];
+        gi.address1 = self.address1Outlet.text;
+        [self saveDaNumber:self.ccNumberOutlet.text];
+        [self saveDaExpiration:self.expirationOutlet.text];
+        [self saveNeumann:self.postalOutlet.text];
+    }
+    
+    __weak UIView *paymentDetailsView = [self.view viewWithTag:kPaymentDetailsViewTag];
+    
+    CGPoint pboCenter = [self.view convertPoint:self.paymentButtonOutlet.center fromView:self.inputBookOutlet];
+    CGFloat toX = pboCenter.x - paymentDetailsView.center.x;
+    CGFloat toY = pboCenter.y - paymentDetailsView.center.y;
+    __block CGAffineTransform toTransform = CGAffineTransformMakeTranslation(toX, toY);
+    
+    //    [self.ccNumberOutlet resignFirstResponder];
+    [self.view endEditing:YES];
+    self.navigationItem.leftBarButtonItem = self.navigationItem.backBarButtonItem;
+    self.navigationItem.rightBarButtonItem = nil;
+    [UIView animateWithDuration:kAnimationDuration animations:^{
+        paymentDetailsView.transform = CGAffineTransformScale(toTransform, 0.01f, 0.01f);
+    } completion:^(BOOL finished) {
+        [paymentDetailsView removeFromSuperview];;
+    }];
+}
+
+- (void)loadPostalResultsTableView {
+    __weak UITableView *prtv = self.postalResultsTableView;
+    prtv.transform = CGAffineTransformMakeTranslation(0.0f, 400.0f);
+    [self.view addSubview:self.postalResultsTableView];
+    [UIView animateWithDuration:kAnimationDuration animations:^{
+        prtv.transform = CGAffineTransformMakeTranslation(0.0f, 0.0f);
+    } completion:^(BOOL finished) {
+        ;
+    }];
+}
+
+- (void)dropPostalResultsTableView {
+    if (nil == self.postalResultsTableView) {
+        return;
+    }
+    
+    __weak UITableView *prtv = self.postalResultsTableView;
+    [UIView animateWithDuration:kAnimationDuration animations:^{
+        prtv.transform = CGAffineTransformMakeTranslation(0.0f, 400.0f);
+    } completion:^(BOOL finished) {
+        [prtv removeFromSuperview];
+    }];
 }
 
 @end

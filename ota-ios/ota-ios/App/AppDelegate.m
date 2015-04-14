@@ -39,6 +39,7 @@
         [JNKeychain deleteValueForKey:kKeyDaNumber];
         [JNKeychain deleteValueForKey:kKeyExpMonth];
         [JNKeychain deleteValueForKey:kKeyExpYear];
+        [JNKeychain deleteValueForKey:kKeyPostalCode];
         
         [[NSUserDefaults standardUserDefaults] setValue:@"da1stRun" forKey:@"daFirstRun"];
         [[NSUserDefaults standardUserDefaults] synchronize];
