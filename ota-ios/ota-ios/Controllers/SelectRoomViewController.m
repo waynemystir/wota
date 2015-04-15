@@ -20,7 +20,7 @@
 #import "GoogleParser.h"
 #import "GooglePlaces.h"
 #import "GooglePlaceDetail.h"
-#import "PostalResultsTableViewDelegateImplementation.h"
+#import "GooglePlaceTableViewDelegateImplementation.h"
 #import "LoadGooglePlacesData.h"
 #import "EanPlace.h"
 
@@ -35,10 +35,7 @@ NSUInteger const kGuestDetailsViewTag = 51;
 NSUInteger const kPaymentDetailsViewTag = 52;
 NSString * const kNoLocationsFoundMessage = @"No locations found for this postal code. Please try again.";
 
-@interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, PostResultsDelegate>
-
-// room = NO and postal = YES
-//@property (nonatomic) BOOL roomOrPostal;
+@interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, SelectGooglePlaceDelegate>
 
 @property (nonatomic) LOAD_DATA load_data_type;
 
@@ -68,7 +65,7 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 @property (nonatomic, strong) UIButton *doneButton;
 
 @property (nonatomic, strong) UITableView *postalResultsTableView;
-@property (nonatomic, strong) PostalResultsTableViewDelegateImplementation *postalResultsDelegate;
+@property (nonatomic, strong) GooglePlaceTableViewDelegateImplementation *postalResultsDelegate;
 @property (nonatomic) BOOL startFillAddress;
 
 - (IBAction)justPushIt:(id)sender;
@@ -119,7 +116,7 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
         self.postalResultsTableView.layer.borderWidth = 2.0f;
         self.postalResultsTableView.layer.borderColor = self.view.tintColor.CGColor;
         if (nil == self.postalResultsDelegate) {
-            self.postalResultsDelegate = [[PostalResultsTableViewDelegateImplementation alloc] init];
+            self.postalResultsDelegate = [[GooglePlaceTableViewDelegateImplementation alloc] init];
             self.postalResultsDelegate.delegate = self;
         }
         self.postalResultsTableView.dataSource = self.postalResultsDelegate;

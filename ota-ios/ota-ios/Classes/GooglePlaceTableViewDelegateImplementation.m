@@ -6,12 +6,12 @@
 //  Copyright (c) 2015 Irwin. All rights reserved.
 //
 
-#import "PostalResultsTableViewDelegateImplementation.h"
+#import "GooglePlaceTableViewDelegateImplementation.h"
 #import "PostalResultsTableViewCell.h"
 #import "PlaceAutoCompleteTableViewCell.h"
 
 
-@implementation PostalResultsTableViewDelegateImplementation
+@implementation GooglePlaceTableViewDelegateImplementation
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;

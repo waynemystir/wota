@@ -10,7 +10,7 @@
 #import <UIKit/UIKit.h>
 #import "GooglePlace.h"
 
-@protocol PostResultsDelegate <NSObject>
+@protocol SelectGooglePlaceDelegate <NSObject>
 
 @required
 
@@ -18,9 +18,9 @@
 
 @end
 
-@interface PostalResultsTableViewDelegateImplementation : NSObject <UITableViewDataSource, UITableViewDelegate>
+@interface GooglePlaceTableViewDelegateImplementation : NSObject <UITableViewDataSource, UITableViewDelegate>
 
-@property (nonatomic, weak) id<PostResultsDelegate> delegate;
+@property (nonatomic, weak) id<SelectGooglePlaceDelegate> delegate;
 @property (nonatomic, strong) NSArray *tableData;
 
 @end
