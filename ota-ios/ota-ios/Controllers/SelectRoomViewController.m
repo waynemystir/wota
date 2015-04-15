@@ -17,11 +17,18 @@
 #import "GuestInfo.h"
 #import "AppEnvironment.h"
 #import "JNKeychain.h"
-#import "LoadGooglePlacesData.h"
 #import "GoogleParser.h"
 #import "GooglePlaces.h"
 #import "GooglePlaceDetail.h"
 #import "PostalResultsTableViewDelegateImplementation.h"
+#import "LoadGooglePlacesData.h"
+#import "EanPlace.h"
+
+typedef NS_ENUM(NSUInteger, LOAD_DATA) {
+    LOAD_ROOM = 0,
+    LOAD_AUTOOMPLETE = 1,
+    LOAD_PLACE = 2
+};
 
 NSTimeInterval const kAnimationDuration = 0.6;
 NSUInteger const kGuestDetailsViewTag = 51;
@@ -31,7 +38,9 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 @interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, PostResultsDelegate>
 
 // room = NO and postal = YES
-@property (nonatomic) BOOL roomOrPostal;
+//@property (nonatomic) BOOL roomOrPostal;
+
+@property (nonatomic) LOAD_DATA load_data_type;
 
 @property (weak, nonatomic) IBOutlet UITableView *roomsTableViewOutlet;
 @property (weak, nonatomic) IBOutlet UIView *inputBookOutlet;
@@ -122,26 +131,39 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 }
 
 - (void)autoCompleteCcBillAddress {
-    self.roomOrPostal = YES;
+    self.load_data_type = LOAD_AUTOOMPLETE;
     [[LoadGooglePlacesData sharedInstance:self] autoCompleteSomePlaces:self.addressTextFieldOutlet.text];
 }
 
 #pragma mark LoadDataProtocol methods
 
 - (void)requestFinished:(NSData *)responseData {
-    if (self.roomOrPostal) {
-//        self.roomOrPostal = NO;
-        
-//        NSString *respString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
-//        NSLog(@"POSTAL_GOOGLE_RESP:%@", respString);
-//        [self handlePostalPlaces:responseData];
-        
-        self.postalResultsDelegate.tableData = [GoogleParser parseAutoCompleteResponse:responseData];
-        [self.postalResultsTableView reloadData];
-    } else {
-        self.eanHrar = [EanHotelRoomAvailabilityResponse roomsAvailableResponseFromData:responseData];
-        self.tableData = self.eanHrar.hotelRoomArray;
-        [self.roomsTableViewOutlet reloadData];
+    switch (self.load_data_type) {
+        case LOAD_ROOM: {
+            self.eanHrar = [EanHotelRoomAvailabilityResponse roomsAvailableResponseFromData:responseData];
+            self.tableData = self.eanHrar.hotelRoomArray;
+            [self.roomsTableViewOutlet reloadData];
+            break;
+        }
+            
+        case LOAD_AUTOOMPLETE: {
+            self.load_data_type = LOAD_ROOM;
+            self.postalResultsDelegate.tableData = [GoogleParser parseAutoCompleteResponse:responseData];
+            [self.postalResultsTableView reloadData];
+            break;
+        }
+            
+        case LOAD_PLACE: {
+            self.load_data_type = LOAD_ROOM;
+            NSString *response = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
+            NSLog(@"PLACESDETAIL:%@", response);
+            GooglePlaceDetail *gpd = [GooglePlaceDetail placeDetailFromData:responseData];
+            self.addressTextFieldOutlet.text = [EanPlace eanPlaceFromGooglePlaceDetail:gpd].formattedAddress;
+            break;
+        }
+            
+        default:
+            break;
     }
 }
 
@@ -188,41 +210,11 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
         self.expandedIndexPath = nil;
     } else {
         self.expandedIndexPath = indexPath;
-        [self expandToDetailViews];
+        [self loadRoomDetailsView];
     }
 }
 
 #pragma mark Various methods
-
-- (void)expandToDetailViews {
-    __block UIView *tvp = [self getTableViewPopOut];
-    __weak UIView *rtv = self.roomsTableViewOutlet;
-    __weak UIView *ibo = self.inputBookOutlet;
-    
-    tvp.frame = self.rectOfCellInSuperview;
-    tvp.hidden = NO;
-    ibo.hidden = NO;
-    [UIView animateWithDuration:kAnimationDuration animations:^{
-        tvp.frame = CGRectMake(10, 65, 300, 200);
-        rtv.transform = CGAffineTransformMakeScale(0.1, 0.1);
-        ibo.transform = [self shownGuestInputTransform];
-    }];
-}
-
-- (void)compressFromDetailViews:(id)sender {
-    __weak UIView *tvp = self.doneButton.superview;
-    __weak UIView *rtv = self.roomsTableViewOutlet;
-    __weak UIView *ibo = self.inputBookOutlet;
-    
-    [UIView animateWithDuration:kAnimationDuration animations:^{
-        tvp.frame = self.rectOfCellInSuperview;
-        rtv.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
-        ibo.transform = [self hiddenGuestInputTransform];
-    } completion:^(BOOL finished) {
-        tvp.hidden = YES;
-        ibo.hidden = YES;
-    }];
-}
 
 - (UIView *)getTableViewPopOut {
     UIView *tableViewPopout = [[UIView alloc] initWithFrame:self.rectOfCellInSuperview];
@@ -268,49 +260,8 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
         [self loadGuestDetailsView];
     } else if (sender == self.paymentButtonOutlet) {
         [self loadPaymentDetailsView];
-    } /*else if (sender == self.fillAddressButtonOutlet) {
-        self.fillAddressButtonOutlet.enabled = NO;
-        self.roomOrPostal = YES;
-        [[LoadGooglePlacesData sharedInstance:self] loadPlaceDetailsWithPostalCode:self.postalOutlet.text];
-    }*/
+    }
 }
-
-//- (void)handlePostalPlaces:(NSData *)data {
-//    GooglePlaces *gps = [GooglePlaces placesFromData:data];
-//    
-//    if (nil == gps) {
-//        [self paintTheAddressLabel:nil];
-//        return;
-//    }
-//    
-//    NSArray *places = gps.placesArray;
-//    
-//    if (nil == places || [places count] == 0) {
-//        [self paintTheAddressLabel:nil];
-//        return;
-//    }
-//    
-//    if ([places count] == 1) {
-//        self.fillAddressButtonOutlet.enabled = NO;
-//        GooglePlaceDetail *gpd = gps.placesArray[0];
-//        [self paintTheAddressLabel:gpd];
-//        return;
-//    }
-//    
-//    if (nil == self.postalResultsTableView) {
-//        self.postalResultsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 300, 320, 268)];
-//    }
-//    
-//    self.postalResultsTableView.layer.borderWidth = 2.0f;
-//    self.postalResultsTableView.layer.borderColor = self.view.tintColor.CGColor;
-//    self.postalResultsDelegate = [[PostalResultsTableViewDelegateImplementation alloc] init];
-//    self.postalResultsDelegate.delegate = self;
-//    self.postalResultsDelegate.tableData = gps.placesArray;
-//    self.postalResultsTableView.dataSource = self.postalResultsDelegate;
-//    self.postalResultsTableView.delegate = self.postalResultsDelegate;
-//    [self.view endEditing:YES];
-//    [self loadPostalResultsTableView];
-//}
 
 //- (void)paintTheAddressLabel:(GooglePlaceDetail *)gpd {
 //    self.fillAddressButtonOutlet.enabled = NO;
@@ -418,7 +369,6 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 //    if (nil == self.addressLabelOutlet.text
 //            || [self.addressLabelOutlet.text isEqualToString:@""]
 //            || [self.addressLabelOutlet.text isEqualToString:kNoLocationsFoundMessage]) {
-//        self.roomOrPostal = YES;
 //        [[LoadGooglePlacesData sharedInstance:self] loadPlaceDetailsWithPostalCode:postalCode];
 //    }
 }
@@ -535,19 +485,44 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 
 #pragma mark PostResultsDelegate method
 
-//- (void)didSelectRow:(GooglePlaceDetail *)googlePlaceDetail {
-//    [self paintTheAddressLabel:googlePlaceDetail];
-//    [self.postalOutlet becomeFirstResponder];
-//    [self dropPostalResultsTableView];
-//}
-
 - (void)didSelectRow:(GooglePlace *)googlePlace {
-    self.addressTextFieldOutlet.text = googlePlace.placeName;
+    self.load_data_type = LOAD_PLACE;
+    [[LoadGooglePlacesData sharedInstance:self] loadPlaceDetails:googlePlace.placeId];
     [self.view endEditing:YES];
     [self dropPostalResultsTableView];
 }
 
 #pragma mark Animation methods
+
+- (void)loadRoomDetailsView {
+    __block UIView *tvp = [self getTableViewPopOut];
+    __weak UIView *rtv = self.roomsTableViewOutlet;
+    __weak UIView *ibo = self.inputBookOutlet;
+    
+    tvp.frame = self.rectOfCellInSuperview;
+    tvp.hidden = NO;
+    ibo.hidden = NO;
+    [UIView animateWithDuration:kAnimationDuration animations:^{
+        tvp.frame = CGRectMake(10, 65, 300, 200);
+        rtv.transform = CGAffineTransformMakeScale(0.1, 0.1);
+        ibo.transform = [self shownGuestInputTransform];
+    }];
+}
+
+- (void)compressFromDetailViews:(id)sender {
+    __weak UIView *tvp = self.doneButton.superview;
+    __weak UIView *rtv = self.roomsTableViewOutlet;
+    __weak UIView *ibo = self.inputBookOutlet;
+    
+    [UIView animateWithDuration:kAnimationDuration animations:^{
+        tvp.frame = self.rectOfCellInSuperview;
+        rtv.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+        ibo.transform = [self hiddenGuestInputTransform];
+    } completion:^(BOOL finished) {
+        tvp.hidden = YES;
+        ibo.hidden = YES;
+    }];
+}
 
 - (void)loadGuestDetailsView {
     NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"GuestDetailsView" owner:self options:nil];

@@ -129,16 +129,39 @@ NSString * const kKeyLongitude = @"longitude";
             
             if (nil == type || [type isEqualToString:@""]) {
                 continue;
+            } else if ([type isEqualToString:@"street_number"]) {
+                self.streetNumberShortName = gac.shortName;
+                self.streetNumberLongName = gac.longName;
+            } else if ([type isEqualToString:@"route"]) {
+                self.routeShortName = gac.shortName;
+                self.routeLongName = gac.longName;
+            } else if ([type isEqualToString:@"premise"]) {
+                self.premiseShortName = gac.shortName;
+                self.premiseLongName = gac.longName;
+            } else if ([type isEqualToString:@"neighborhood"]) {
+                self.neighborhoodShortName = gac.shortName;
+                self.neighborhoodLongName = gac.longName;
             } else if ([type isEqualToString:@"locality"]) {
                 self.localityShortName = gac.shortName;
+                self.localityLongName = gac.longName;
+            } else if ([type isEqualToString:@"postal_town"]) {
+                self.postalTownShortName = gac.shortName;
+                self.postalTownLongName = gac.longName;
+            } else if ([type isEqualToString:@"administrative_area_level_3"]) {
+                self.administrativeAreaLevel3ShortName = gac.shortName;
+                self.administrativeAreaLevel3LongName = gac.longName;
+            } else if ([type isEqualToString:@"administrative_area_level_2"]) {
+                self.administrativeAreaLevel2ShortName = gac.shortName;
+                self.administrativeAreaLevel2LongName = gac.longName;
             } else if ([type isEqualToString:@"administrative_area_level_1"]) {
                 self.administrativeAreaLevel1ShortName = gac.shortName;
+                self.administrativeAreaLevel1LongName = gac.longName;
+            } else if ([type isEqualToString:@"postal_code"]) {
+                self.postalCodeShortName = gac.shortName;
+                self.postalCodeLongName = gac.longName;
             } else if ([type isEqualToString:@"country"]) {
                 self.countryShortName = gac.shortName;
-            } else if ([type isEqualToString:@"postal_town"]) {
-                self.localityShortName = gac.shortName;
-            } else if ([type isEqualToString:@"postal_code"]) {
-                self.postalCode = gac.shortName;
+                self.countryLongName = gac.longName;
             }
         }
     }
