@@ -33,7 +33,7 @@
                         <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Cardholder" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="88a-OR-8b1">
                             <rect key="frame" x="8" y="82" width="167" height="30"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                            <textInputTraits key="textInputTraits"/>
+                            <textInputTraits key="textInputTraits" autocapitalizationType="words" autocorrectionType="no" spellCheckingType="no" returnKeyType="next"/>
                         </textField>
                         <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Credit Card Billing Address" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="kE6-fi-hE7" userLabel="addressTextField">
                             <rect key="frame" x="8" y="120" width="284" height="30"/>

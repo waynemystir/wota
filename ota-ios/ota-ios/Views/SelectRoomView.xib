@@ -20,7 +20,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lvY-Yf-X5X" userLabel="inputBookView">
-                    <rect key="frame" x="10" y="289" width="300" height="158"/>
+                    <rect key="frame" x="10" y="370" width="300" height="158"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rqc-YR-Rdm" userLabel="guestButton">
                             <rect key="frame" x="31" y="14" width="131" height="35"/>
@@ -55,12 +55,18 @@
                     </subviews>
                     <color key="backgroundColor" red="1" green="0.55226835210000003" blue="0.033859193480000001" alpha="1" colorSpace="calibratedRGB"/>
                 </view>
-                <tableView clipsSubviews="YES" contentMode="scaleAspectFill" fixedFrame="YES" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="jZC-PK-cHb" userLabel="roomsTableView">
-                    <rect key="frame" x="10" y="65" width="300" height="300"/>
+                <tableView clipsSubviews="YES" contentMode="scaleAspectFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" rowHeight="88" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="jZC-PK-cHb" userLabel="roomsTableView">
+                    <rect key="frame" x="0.0" y="64" width="600" height="536"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </tableView>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="jZC-PK-cHb" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="RFh-Vp-cD8"/>
+                <constraint firstAttribute="trailing" secondItem="jZC-PK-cHb" secondAttribute="trailing" id="s57-Lm-R3p"/>
+                <constraint firstItem="jZC-PK-cHb" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="64" id="xXx-zf-atS"/>
+                <constraint firstAttribute="bottom" secondItem="jZC-PK-cHb" secondAttribute="bottom" id="zzR-qP-6s5"/>
+            </constraints>
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
             <nil key="simulatedTopBarMetrics"/>
             <point key="canvasLocation" x="354" y="128.5"/>

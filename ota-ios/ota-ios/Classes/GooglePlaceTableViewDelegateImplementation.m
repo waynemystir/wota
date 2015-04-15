@@ -1,5 +1,5 @@
 //
-//  PostalResultsTableViewDelegateImplementation.m
+//  GooglePlaceTableViewDelegateImplementation.m
 //  ota-ios
 //
 //  Created by WAYNE SMALL on 4/13/15.
@@ -7,7 +7,6 @@
 //
 
 #import "GooglePlaceTableViewDelegateImplementation.h"
-#import "PostalResultsTableViewCell.h"
 #import "PlaceAutoCompleteTableViewCell.h"
 
 

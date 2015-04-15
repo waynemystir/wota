@@ -33,6 +33,7 @@ typedef NS_ENUM(NSUInteger, LOAD_DATA) {
 NSTimeInterval const kAnimationDuration = 0.6;
 NSUInteger const kGuestDetailsViewTag = 51;
 NSUInteger const kPaymentDetailsViewTag = 52;
+NSUInteger const kAvailRoomCellContViewTag = 19191;
 NSString * const kNoLocationsFoundMessage = @"No locations found for this postal code. Please try again.";
 
 @interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, SelectGooglePlaceDelegate>
@@ -62,10 +63,11 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 @property (nonatomic, strong) NSArray *tableData;
 @property (nonatomic, strong) NSIndexPath *expandedIndexPath;
 @property (nonatomic) CGRect rectOfCellInSuperview;
+@property (nonatomic) CGRect rectOfAvailRoomContView;
 @property (nonatomic, strong) UIButton *doneButton;
 
-@property (nonatomic, strong) UITableView *postalResultsTableView;
-@property (nonatomic, strong) GooglePlaceTableViewDelegateImplementation *postalResultsDelegate;
+@property (nonatomic, strong) UITableView *googlePlacesTableView;
+@property (nonatomic, strong) GooglePlaceTableViewDelegateImplementation *googlePlacesTableViewDelegate;
 @property (nonatomic) BOOL startFillAddress;
 
 - (IBAction)justPushIt:(id)sender;
@@ -92,8 +94,12 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     
     self.roomsTableViewOutlet.dataSource = self;
     self.roomsTableViewOutlet.delegate = self;
-    self.roomsTableViewOutlet.layer.borderWidth = 2.0;
-    self.roomsTableViewOutlet.layer.borderColor = [UIColor blackColor].CGColor;
+//    self.roomsTableViewOutlet.layer.borderWidth = 2.0;
+//    self.roomsTableViewOutlet.layer.borderColor = self.view.tintColor.CGColor;
+    
+//    if ([self.roomsTableViewOutlet respondsToSelector:@selector(separatorInset)]) {
+//        [self.roomsTableViewOutlet setSeparatorInset:UIEdgeInsetsZero];
+//    }
     
     [self setupExpirationPicker];
     
@@ -111,16 +117,16 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 - (void)startEnteringCcBillAddress {
     NSLog(@"");
     
-    if (nil == self.postalResultsTableView) {
-        self.postalResultsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 100, 320, 268)];
-        self.postalResultsTableView.layer.borderWidth = 2.0f;
-        self.postalResultsTableView.layer.borderColor = self.view.tintColor.CGColor;
-        if (nil == self.postalResultsDelegate) {
-            self.postalResultsDelegate = [[GooglePlaceTableViewDelegateImplementation alloc] init];
-            self.postalResultsDelegate.delegate = self;
+    if (nil == self.googlePlacesTableView) {
+        self.googlePlacesTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 100, 320, 268)];
+        self.googlePlacesTableView.layer.borderWidth = 2.0f;
+        self.googlePlacesTableView.layer.borderColor = self.view.tintColor.CGColor;
+        if (nil == self.googlePlacesTableViewDelegate) {
+            self.googlePlacesTableViewDelegate = [[GooglePlaceTableViewDelegateImplementation alloc] init];
+            self.googlePlacesTableViewDelegate.delegate = self;
         }
-        self.postalResultsTableView.dataSource = self.postalResultsDelegate;
-        self.postalResultsTableView.delegate = self.postalResultsDelegate;
+        self.googlePlacesTableView.dataSource = self.googlePlacesTableViewDelegate;
+        self.googlePlacesTableView.delegate = self.googlePlacesTableViewDelegate;
     }
     
     [self.view endEditing:YES];
@@ -145,8 +151,8 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
             
         case LOAD_AUTOOMPLETE: {
             self.load_data_type = LOAD_ROOM;
-            self.postalResultsDelegate.tableData = [GoogleParser parseAutoCompleteResponse:responseData];
-            [self.postalResultsTableView reloadData];
+            self.googlePlacesTableViewDelegate.tableData = [GoogleParser parseAutoCompleteResponse:responseData];
+            [self.googlePlacesTableView reloadData];
             break;
         }
             
@@ -188,6 +194,10 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     cell.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     cell.clipsToBounds = YES;
     
+    cell.borderViewOutlet.layer.cornerRadius = 8.0f;
+    cell.borderViewOutlet.layer.borderWidth = 1.0f;
+    cell.borderViewOutlet.layer.borderColor = [UIColor blackColor].CGColor;
+    
     EanAvailabilityHotelRoomResponse *room = [EanAvailabilityHotelRoomResponse roomFromDict:[self.tableData objectAtIndex:indexPath.row]];
     
     cell.roomTypeDescriptionOutlet.text = room.roomTypeDescription;
@@ -211,11 +221,19 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     }
 }
 
+//- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
+//    self.expandedIndexPath = nil;
+//}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 100.0f;
+}
+
 #pragma mark Various methods
 
 - (UIView *)getTableViewPopOut {
     UIView *tableViewPopout = [[UIView alloc] initWithFrame:self.rectOfCellInSuperview];
-    tableViewPopout.backgroundColor = [UIColor redColor];
+    tableViewPopout.backgroundColor = [UIColor whiteColor];
     tableViewPopout.hidden = YES;
     tableViewPopout.clipsToBounds = YES;
     [self.view addSubview:tableViewPopout];
@@ -223,6 +241,11 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"AvailableRoomTableViewCell" owner:self options:nil];
     if (nil != views && [views count] == 1 && [views[0] isKindOfClass:[AvailableRoomTableViewCell class]]) {
         UIView *cv = ((AvailableRoomTableViewCell *) views[0]).contentView;
+        cv.tag = kAvailRoomCellContViewTag;
+        cv.layer.cornerRadius = 8.0f;
+        cv.layer.borderColor = [UIColor blackColor].CGColor;
+        cv.layer.borderWidth = 1.0f;
+//        cv.backgroundColor = [UIColor greenColor];
         UILabel *rtdLabel = (UILabel *)[cv viewWithTag:11];
         
         EanAvailabilityHotelRoomResponse *room = [EanAvailabilityHotelRoomResponse roomFromDict:[self.tableData objectAtIndex:self.expandedIndexPath.row]];
@@ -480,7 +503,7 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     [self updateTextInExpirationOutlet];
 }
 
-#pragma mark PostResultsDelegate method
+#pragma mark SelectGooglePlaceDelegate method
 
 - (void)didSelectRow:(GooglePlace *)googlePlace {
     self.load_data_type = LOAD_PLACE;
@@ -492,7 +515,10 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 #pragma mark Animation methods
 
 - (void)loadRoomDetailsView {
+    __weak typeof(self) weakSelf = self;
     __block UIView *tvp = [self getTableViewPopOut];
+    __block UIView *cv = [tvp viewWithTag:kAvailRoomCellContViewTag];
+    self.rectOfAvailRoomContView = cv.frame;
     __weak UIView *rtv = self.roomsTableViewOutlet;
     __weak UIView *ibo = self.inputBookOutlet;
     
@@ -500,21 +526,31 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     tvp.hidden = NO;
     ibo.hidden = NO;
     [UIView animateWithDuration:kAnimationDuration animations:^{
-        tvp.frame = CGRectMake(10, 65, 300, 200);
-        rtv.transform = CGAffineTransformMakeScale(0.1, 0.1);
-        ibo.transform = [self shownGuestInputTransform];
+        tvp.frame = CGRectMake(0.0f, 64.0f, 320.0f, 300.0f);
+        cv.frame = CGRectMake(2.0f, 2.0f, 316.0f, 296.0f);
+        rtv.transform = CGAffineTransformMakeScale(0.01, 0.01);
+        ibo.transform = [weakSelf shownGuestInputTransform];
+    } completion:^(BOOL finished) {
+        rtv.hidden = YES;
     }];
 }
 
 - (void)compressFromDetailViews:(id)sender {
+    __weak typeof(self) weakSelf = self;
+    __weak UIView *db = self.doneButton;
     __weak UIView *tvp = self.doneButton.superview;
+    __block UIView *cv = [tvp viewWithTag:kAvailRoomCellContViewTag];
     __weak UIView *rtv = self.roomsTableViewOutlet;
     __weak UIView *ibo = self.inputBookOutlet;
+    self.expandedIndexPath = nil;
     
+    rtv.hidden = NO;
     [UIView animateWithDuration:kAnimationDuration animations:^{
-        tvp.frame = self.rectOfCellInSuperview;
+        db.transform = CGAffineTransformMakeScale(0.01f, 0.01f);
+        tvp.frame = weakSelf.rectOfCellInSuperview;
+        cv.frame = weakSelf.rectOfAvailRoomContView;
         rtv.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
-        ibo.transform = [self hiddenGuestInputTransform];
+        ibo.transform = [weakSelf hiddenGuestInputTransform];
     } completion:^(BOOL finished) {
         tvp.hidden = YES;
         ibo.hidden = YES;
@@ -664,25 +700,23 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 }
 
 - (void)loadPostalResultsTableView {
-    __weak UITableView *prtv = self.postalResultsTableView;
+    __weak UITableView *prtv = self.googlePlacesTableView;
     __weak UIView *ccco = self.ccContainerOutlet;
     prtv.transform = CGAffineTransformMakeTranslation(0.0f, 400.0f);
-    [self.view addSubview:self.postalResultsTableView];
+    [self.view addSubview:self.googlePlacesTableView];
     [UIView animateWithDuration:kAnimationDuration animations:^{
         prtv.transform = CGAffineTransformMakeTranslation(0.0f, 0.0f);
         ccco.transform = CGAffineTransformMakeTranslation(0.0f, -120.0f);
     } completion:^(BOOL finished) {
-        NSLog(@"Something");
-        NSLog(@"Else");
     }];
 }
 
 - (void)dropPostalResultsTableView {
-    if (nil == self.postalResultsTableView) {
+    if (nil == self.googlePlacesTableView) {
         return;
     }
     
-    __weak UITableView *prtv = self.postalResultsTableView;
+    __weak UITableView *prtv = self.googlePlacesTableView;
     __weak UIView *ccco = self.ccContainerOutlet;
     [UIView animateWithDuration:kAnimationDuration animations:^{
         prtv.transform = CGAffineTransformMakeTranslation(0.0f, 400.0f);

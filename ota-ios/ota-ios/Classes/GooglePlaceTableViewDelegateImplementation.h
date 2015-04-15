@@ -1,5 +1,5 @@
 //
-//  PostalResultsTableViewDelegateImplementation.h
+//  GooglePlaceTableViewDelegateImplementation.h
 //  ota-ios
 //
 //  Created by WAYNE SMALL on 4/13/15.

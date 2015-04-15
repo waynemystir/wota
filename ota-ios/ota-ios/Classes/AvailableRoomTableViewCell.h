@@ -10,6 +10,7 @@
 
 @interface AvailableRoomTableViewCell : UITableViewCell
 
+@property (weak, nonatomic) IBOutlet UIView *borderViewOutlet;
 @property (weak, nonatomic) IBOutlet UILabel *roomTypeDescriptionOutlet;
 
 @end
