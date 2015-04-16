@@ -44,6 +44,11 @@
     room.chargeableRateInfo = [room.rateInfo objectForKey:@"ChargeableRateInfo"];
     room.chargeableRate = [[room.chargeableRateInfo objectForKey:@"@total"] floatValue];
     room.deepLink = [dict objectForKey:@"deepLink"];
+    
+    NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
+    f.numberStyle = NSNumberFormatterDecimalStyle;
+    room.nightlyRateToPresent = [f numberFromString:[room.chargeableRateInfo objectForKey:@"@averageRate"]];
+    
     return room;
 }
 

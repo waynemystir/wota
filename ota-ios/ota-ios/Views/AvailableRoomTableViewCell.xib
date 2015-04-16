@@ -16,9 +16,15 @@
                         <rect key="frame" x="2" y="2" width="316" height="95"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" tag="11" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="roomTypeDescription" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dnJ-sW-RrZ" userLabel="roomTypeDescription">
-                                <rect key="frame" x="8" y="8" width="294" height="46"/>
+                                <rect key="frame" x="3" y="8" width="249" height="63"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" tag="19" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="rate" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qk8-ap-PBd" userLabel="rateLabel">
+                                <rect key="frame" x="266" y="26" width="46" height="28"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="18"/>
+                                <color key="textColor" red="0.050980392156862744" green="0.61176470588235299" blue="0.011764705882352941" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
@@ -28,6 +34,7 @@
             </tableViewCellContentView>
             <connections>
                 <outlet property="borderViewOutlet" destination="Si8-AH-KtS" id="tgO-72-Kxp"/>
+                <outlet property="rateOutlet" destination="qk8-ap-PBd" id="ffk-pg-iyF"/>
                 <outlet property="roomTypeDescriptionOutlet" destination="dnJ-sW-RrZ" id="M0i-Kd-BMr"/>
             </connections>
             <point key="canvasLocation" x="237" y="152"/>

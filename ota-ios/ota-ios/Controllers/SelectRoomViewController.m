@@ -36,6 +36,7 @@ NSUInteger const kPaymentDetailsViewTag = 52;
 NSUInteger const kAvailRoomCellTag = 13456;
 NSUInteger const kAvailRoomCellContViewTag = 19191;
 NSUInteger const kAvailRoomBorderViewTag = 13;
+NSUInteger const kNightlyRateViewTag = 19;
 NSString * const kNoLocationsFoundMessage = @"No locations found for this postal code. Please try again.";
 
 @interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, SelectGooglePlaceDelegate>
@@ -204,6 +205,15 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     
     cell.roomTypeDescriptionOutlet.text = room.roomTypeDescription;
     
+    NSNumberFormatter *currencyStyle = [[NSNumberFormatter alloc] init];
+    [currencyStyle setNumberStyle:NSNumberFormatterCurrencyStyle];
+    [currencyStyle setMaximumFractionDigits:0];
+    [currencyStyle setRoundingMode: NSNumberFormatterRoundHalfUp];
+//    [currencyStyle setLocale:locale];
+    NSString *currency = [currencyStyle stringFromNumber:room.nightlyRateToPresent];
+    
+    cell.rateOutlet.text = currency;
+    
     return cell;
 }
 
@@ -253,11 +263,26 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     borderView.tag = kAvailRoomBorderViewTag;
     [cv addSubview:borderView];
     
-    UILabel *rtd = [[UILabel alloc] initWithFrame:CGRectMake(8, 8, 294, 46)];
-    
     EanAvailabilityHotelRoomResponse *room = [EanAvailabilityHotelRoomResponse roomFromDict:[self.tableData objectAtIndex:self.expandedIndexPath.row]];
+    
+    UILabel *rtd = [[UILabel alloc] initWithFrame:CGRectMake(3, 8, 249, 63)];
+    rtd.lineBreakMode = NSLineBreakByWordWrapping;
+    rtd.numberOfLines = 2;
     rtd.text = room.roomTypeDescription;
     [borderView addSubview:rtd];
+    
+    UILabel *rateLabel = [[UILabel alloc] initWithFrame:CGRectMake(266, 26, 46, 28)];
+    rateLabel.textColor = UIColorFromRGB(0x0D9C03);
+    rateLabel.textAlignment = NSTextAlignmentRight;
+    [rateLabel setFont:[UIFont boldSystemFontOfSize:18.0f]];
+    NSNumberFormatter *currencyStyle = [[NSNumberFormatter alloc] init];
+    [currencyStyle setNumberStyle:NSNumberFormatterCurrencyStyle];
+    [currencyStyle setMaximumFractionDigits:0];
+    [currencyStyle setRoundingMode: NSNumberFormatterRoundHalfUp];
+    //    [currencyStyle setLocale:locale];
+    NSString *currency = [currencyStyle stringFromNumber:room.nightlyRateToPresent];
+    rateLabel.text = currency;
+    [borderView addSubview:rateLabel];
     
     self.doneButton = [[UIButton alloc] initWithFrame:CGRectMake(100, 100, 100, 50)];
     [self.doneButton setTitle:@"Done" forState:UIControlStateNormal];

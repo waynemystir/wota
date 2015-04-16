@@ -12,5 +12,6 @@
 
 @property (weak, nonatomic) IBOutlet UIView *borderViewOutlet;
 @property (weak, nonatomic) IBOutlet UILabel *roomTypeDescriptionOutlet;
+@property (weak, nonatomic) IBOutlet UILabel *rateOutlet;
 
 @end

@@ -35,6 +35,8 @@
 @property (nonatomic) float chargeableRate;
 @property (nonatomic, strong) NSString *deepLink;
 
+@property (nonatomic, strong) NSNumber *nightlyRateToPresent;
+
 + (EanAvailabilityHotelRoomResponse *)roomFromDict:(NSDictionary *)dict;
 
 @end
