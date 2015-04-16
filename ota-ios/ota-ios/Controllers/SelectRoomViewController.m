@@ -30,10 +30,12 @@ typedef NS_ENUM(NSUInteger, LOAD_DATA) {
     LOAD_PLACE = 2
 };
 
-NSTimeInterval const kAnimationDuration = 0.6;
+NSTimeInterval const kAnimationDuration = 0.6f;
 NSUInteger const kGuestDetailsViewTag = 51;
 NSUInteger const kPaymentDetailsViewTag = 52;
+NSUInteger const kAvailRoomCellTag = 13456;
 NSUInteger const kAvailRoomCellContViewTag = 19191;
+NSUInteger const kAvailRoomBorderViewTag = 13;
 NSString * const kNoLocationsFoundMessage = @"No locations found for this postal code. Please try again.";
 
 @interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, SelectGooglePlaceDelegate>
@@ -234,25 +236,28 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 - (UIView *)getTableViewPopOut {
     UIView *tableViewPopout = [[UIView alloc] initWithFrame:self.rectOfCellInSuperview];
     tableViewPopout.backgroundColor = [UIColor whiteColor];
-    tableViewPopout.hidden = YES;
+//    tableViewPopout.hidden = YES;
     tableViewPopout.clipsToBounds = YES;
     [self.view addSubview:tableViewPopout];
     
-    NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"AvailableRoomTableViewCell" owner:self options:nil];
-    if (nil != views && [views count] == 1 && [views[0] isKindOfClass:[AvailableRoomTableViewCell class]]) {
-        UIView *cv = ((AvailableRoomTableViewCell *) views[0]).contentView;
-        cv.tag = kAvailRoomCellContViewTag;
-        cv.layer.cornerRadius = 8.0f;
-        cv.layer.borderColor = [UIColor blackColor].CGColor;
-        cv.layer.borderWidth = 1.0f;
-//        cv.backgroundColor = [UIColor greenColor];
-        UILabel *rtdLabel = (UILabel *)[cv viewWithTag:11];
-        
-        EanAvailabilityHotelRoomResponse *room = [EanAvailabilityHotelRoomResponse roomFromDict:[self.tableData objectAtIndex:self.expandedIndexPath.row]];
-        
-        rtdLabel.text = room.roomTypeDescription;
-        [tableViewPopout addSubview:cv];
-    }
+    UIView *cellV = [[UIView alloc] initWithFrame:tableViewPopout.bounds];
+    cellV.tag = kAvailRoomCellTag;
+    [tableViewPopout addSubview:cellV];
+    UIView *cv = [[UIView alloc] initWithFrame:CGRectMake(0, 0, cellV.bounds.size.width, cellV.bounds.size.height - 1)];
+    cv.tag = kAvailRoomCellContViewTag;
+    [cellV addSubview:cv];
+    UIView *borderView = [[UIView alloc] initWithFrame:CGRectMake(2, 2, 316, 95)];
+    borderView.layer.borderColor = [UIColor blackColor].CGColor;
+    borderView.layer.borderWidth = 1.0f;
+    borderView.layer.cornerRadius = 8.0f;
+    borderView.tag = kAvailRoomBorderViewTag;
+    [cv addSubview:borderView];
+    
+    UILabel *rtd = [[UILabel alloc] initWithFrame:CGRectMake(8, 8, 294, 46)];
+    
+    EanAvailabilityHotelRoomResponse *room = [EanAvailabilityHotelRoomResponse roomFromDict:[self.tableData objectAtIndex:self.expandedIndexPath.row]];
+    rtd.text = room.roomTypeDescription;
+    [borderView addSubview:rtd];
     
     self.doneButton = [[UIButton alloc] initWithFrame:CGRectMake(100, 100, 100, 50)];
     [self.doneButton setTitle:@"Done" forState:UIControlStateNormal];
@@ -517,19 +522,25 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 - (void)loadRoomDetailsView {
     __weak typeof(self) weakSelf = self;
     __block UIView *tvp = [self getTableViewPopOut];
-    __block UIView *cv = [tvp viewWithTag:kAvailRoomCellContViewTag];
-    self.rectOfAvailRoomContView = cv.frame;
+    __weak UIView *cv = [tvp viewWithTag:kAvailRoomCellContViewTag];
+    __weak UIView *borderView = [cv viewWithTag:kAvailRoomBorderViewTag];
     __weak UIView *rtv = self.roomsTableViewOutlet;
     __weak UIView *ibo = self.inputBookOutlet;
     
+    [self.view addSubview:tvp];
     tvp.frame = self.rectOfCellInSuperview;
+    self.rectOfAvailRoomContView = cv.frame;
     tvp.hidden = NO;
     ibo.hidden = NO;
+    __block UIButton *doneB = self.doneButton;
+    doneB.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/3)), 0.01f, 0.01f);
     [UIView animateWithDuration:kAnimationDuration animations:^{
         tvp.frame = CGRectMake(0.0f, 64.0f, 320.0f, 300.0f);
-        cv.frame = CGRectMake(2.0f, 2.0f, 316.0f, 296.0f);
+        cv.frame = CGRectMake(2.0f, 2.0f, tvp.frame.size.width - 4.0f, tvp.frame.size.height - 4.0f);
+        borderView.frame = CGRectMake(2.0f, 2.0f, cv.frame.size.width - 4.0f, cv.frame.size.height - 4.0f);
         rtv.transform = CGAffineTransformMakeScale(0.01, 0.01);
         ibo.transform = [weakSelf shownGuestInputTransform];
+        doneB.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 0), 1.0f, 1.0f);
     } completion:^(BOOL finished) {
         rtv.hidden = YES;
     }];
@@ -539,16 +550,18 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     __weak typeof(self) weakSelf = self;
     __weak UIView *db = self.doneButton;
     __weak UIView *tvp = self.doneButton.superview;
-    __block UIView *cv = [tvp viewWithTag:kAvailRoomCellContViewTag];
+    __weak UIView *cv = [tvp viewWithTag:kAvailRoomCellContViewTag];
+    __weak UIView *borderView = [cv viewWithTag:kAvailRoomBorderViewTag];
     __weak UIView *rtv = self.roomsTableViewOutlet;
     __weak UIView *ibo = self.inputBookOutlet;
     self.expandedIndexPath = nil;
     
     rtv.hidden = NO;
     [UIView animateWithDuration:kAnimationDuration animations:^{
-        db.transform = CGAffineTransformMakeScale(0.01f, 0.01f);
+        db.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/6)), 0.01f, 0.01f);
         tvp.frame = weakSelf.rectOfCellInSuperview;
         cv.frame = weakSelf.rectOfAvailRoomContView;
+        borderView.frame = CGRectMake(2.0f, 2.0f, weakSelf.rectOfAvailRoomContView.size.width - 4.0f, weakSelf.rectOfAvailRoomContView.size.height - 4.0f);
         rtv.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
         ibo.transform = [weakSelf hiddenGuestInputTransform];
     } completion:^(BOOL finished) {
