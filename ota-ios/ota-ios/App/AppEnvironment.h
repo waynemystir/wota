@@ -109,6 +109,7 @@ extern NSString * kWotaCacheChildTravelersDirectory();
 extern NSString * kWotaCacheGooglePlaceDetailDirectory();
 
 /**
- *
+ * Various formatters
  */
 extern NSDateFormatter * kEanApiDateFormatter();
+extern NSNumberFormatter * kPriceRoundOffFormatter(NSString * currencyCode);

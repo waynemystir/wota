@@ -201,14 +201,13 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     cell.borderViewOutlet.layer.borderWidth = 1.0f;
     cell.borderViewOutlet.layer.borderColor = [UIColor blackColor].CGColor;
     
-    EanAvailabilityHotelRoomResponse *room = [EanAvailabilityHotelRoomResponse roomFromDict:[self.tableData objectAtIndex:indexPath.row]];
+//    EanAvailabilityHotelRoomResponse *room = [EanAvailabilityHotelRoomResponse roomFromDict:[self.tableData objectAtIndex:indexPath.row]];
+    
+    EanAvailabilityHotelRoomResponse *room = [self.tableData objectAtIndex:indexPath.row];
     
     cell.roomTypeDescriptionOutlet.text = room.roomTypeDescription;
     
-    NSNumberFormatter *currencyStyle = [[NSNumberFormatter alloc] init];
-    [currencyStyle setNumberStyle:NSNumberFormatterCurrencyStyle];
-    [currencyStyle setMaximumFractionDigits:0];
-    [currencyStyle setRoundingMode: NSNumberFormatterRoundHalfUp];
+    NSNumberFormatter *currencyStyle = kPriceRoundOffFormatter(room.currencyCode);
 //    [currencyStyle setLocale:locale];
     NSString *currency = [currencyStyle stringFromNumber:room.nightlyRateToPresent];
     
@@ -263,22 +262,22 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     borderView.tag = kAvailRoomBorderViewTag;
     [cv addSubview:borderView];
     
-    EanAvailabilityHotelRoomResponse *room = [EanAvailabilityHotelRoomResponse roomFromDict:[self.tableData objectAtIndex:self.expandedIndexPath.row]];
+    //    EanAvailabilityHotelRoomResponse *room = [EanAvailabilityHotelRoomResponse roomFromDict:[self.tableData objectAtIndex:self.expandedIndexPath.row]];
     
-    UILabel *rtd = [[UILabel alloc] initWithFrame:CGRectMake(3, 8, 249, 63)];
+    EanAvailabilityHotelRoomResponse *room = [self.tableData objectAtIndex:self.expandedIndexPath.row];
+    
+    UILabel *rtd = [[UILabel alloc] initWithFrame:CGRectMake(3, 8, 244, 63)];
     rtd.lineBreakMode = NSLineBreakByWordWrapping;
     rtd.numberOfLines = 2;
     rtd.text = room.roomTypeDescription;
     [borderView addSubview:rtd];
     
-    UILabel *rateLabel = [[UILabel alloc] initWithFrame:CGRectMake(266, 26, 46, 28)];
+    UILabel *rateLabel = [[UILabel alloc] initWithFrame:CGRectMake(256, 26, 56, 28)];
     rateLabel.textColor = UIColorFromRGB(0x0D9C03);
     rateLabel.textAlignment = NSTextAlignmentRight;
-    [rateLabel setFont:[UIFont boldSystemFontOfSize:18.0f]];
-    NSNumberFormatter *currencyStyle = [[NSNumberFormatter alloc] init];
-    [currencyStyle setNumberStyle:NSNumberFormatterCurrencyStyle];
-    [currencyStyle setMaximumFractionDigits:0];
-    [currencyStyle setRoundingMode: NSNumberFormatterRoundHalfUp];
+//    [rateLabel setFont:[UIFont boldSystemFontOfSize:18.0f]];
+    [rateLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18.0f]];
+    NSNumberFormatter *currencyStyle = kPriceRoundOffFormatter(room.currencyCode);
     //    [currencyStyle setLocale:locale];
     NSString *currency = [currencyStyle stringFromNumber:room.nightlyRateToPresent];
     rateLabel.text = currency;
@@ -342,7 +341,7 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
         return;
     }
     
-    self.selectedRoom = [EanAvailabilityHotelRoomResponse roomFromDict:[self.tableData objectAtIndex:self.expandedIndexPath.row]];
+    self.selectedRoom = [self.tableData objectAtIndex:self.expandedIndexPath.row];
     SelectionCriteria *sc = [SelectionCriteria singleton];
     GuestInfo *gi = [GuestInfo singleton];
     BookViewController *bvc = [BookViewController new];
@@ -561,7 +560,7 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     doneB.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/3)), 0.01f, 0.01f);
     [UIView animateWithDuration:kAnimationDuration animations:^{
         tvp.frame = CGRectMake(0.0f, 64.0f, 320.0f, 300.0f);
-        cv.frame = CGRectMake(2.0f, 2.0f, tvp.frame.size.width - 4.0f, tvp.frame.size.height - 4.0f);
+        cv.frame = tvp.bounds;
         borderView.frame = CGRectMake(2.0f, 2.0f, cv.frame.size.width - 4.0f, cv.frame.size.height - 4.0f);
         rtv.transform = CGAffineTransformMakeScale(0.01, 0.01);
         ibo.transform = [weakSelf shownGuestInputTransform];

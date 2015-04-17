@@ -33,6 +33,7 @@
 @property (nonatomic, strong) NSDictionary *rateInfo;
 @property (nonatomic, strong) NSDictionary *chargeableRateInfo;
 @property (nonatomic) float chargeableRate;
+@property (nonatomic, strong) NSString *currencyCode;
 @property (nonatomic, strong) NSString *deepLink;
 
 @property (nonatomic, strong) NSNumber *nightlyRateToPresent;

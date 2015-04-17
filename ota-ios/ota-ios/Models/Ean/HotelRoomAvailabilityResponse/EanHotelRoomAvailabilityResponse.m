@@ -7,6 +7,7 @@
 //
 
 #import "EanHotelRoomAvailabilityResponse.h"
+#import "EanAvailabilityHotelRoomResponse.h"
 
 @implementation EanHotelRoomAvailabilityResponse
 
@@ -67,10 +68,34 @@
     
     id hrr = [idHrar objectForKey:@"HotelRoomResponse"];
     
-    if ([hrr isKindOfClass:[NSArray class]]) {
-        hrar.hotelRoomArray = hrr;
+    if (nil == hrr) {
+        hrar.hotelRoomArray = nil;
+    } else if ([hrr isKindOfClass:[NSArray class]]) {
+//        hrar.hotelRoomArray = hrr;
+        
+        // I previously would just return an array of NSDictionary's
+        // that needed to be re-parsed with "roomFromDict" by the table
+        // view in SelectRoomView Controller. This seemed terribly
+        // inefficient. So now we're parsing the dicts once and the
+        // hotelRoomArray is an array of Ean...Room objects
+        
+        NSMutableArray *tmpRooms = [NSMutableArray array];
+        for (int j = 0; j < [hrr count]; j++) {
+            EanAvailabilityHotelRoomResponse *room = [EanAvailabilityHotelRoomResponse roomFromDict:hrr[j]];
+            [tmpRooms addObject:room];
+        }
+        
+        hrar.hotelRoomArray = [NSArray arrayWithArray:tmpRooms];
+
     } else if ([hrr isKindOfClass:[NSDictionary class]]) {
-        hrar.hotelRoomArray = [NSArray arrayWithObject:hrr];
+        
+//        hrar.hotelRoomArray = [NSArray arrayWithObject:hrr];
+        
+        // Believe it or not, Ean API will not return an array if there
+        // is a single room response. Instead they just return a dict
+        // of the room. Nice.
+        hrar.hotelRoomArray = [NSArray arrayWithObject:[EanAvailabilityHotelRoomResponse roomFromDict:hrr]];
+        
     } else {
         hrar.hotelRoomArray = nil;
     }
