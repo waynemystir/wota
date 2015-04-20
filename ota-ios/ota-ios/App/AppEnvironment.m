@@ -7,6 +7,7 @@
 //
 
 #import "AppEnvironment.h"
+#import <AVFoundation/AVFoundation.h>
 
 NSString * const kKeyDaNumber = @"AcBrCeDdEiFtGcHaIrJdKnLuMmNbOePr";
 NSString * const kKeyExpMonth = @"ZeYxXpWeVrUiTaStRiQoPnOmNoMnLtKh";

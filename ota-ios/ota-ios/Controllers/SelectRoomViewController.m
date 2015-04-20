@@ -23,6 +23,7 @@
 #import "GooglePlaceTableViewDelegateImplementation.h"
 #import "LoadGooglePlacesData.h"
 #import "EanPlace.h"
+#import <AudioToolbox/AudioToolbox.h>
 
 typedef NS_ENUM(NSUInteger, LOAD_DATA) {
     LOAD_ROOM = 0,
@@ -55,10 +56,12 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 @property (weak, nonatomic) IBOutlet UITextField *phoneOutlet;
 
 @property (weak, nonatomic) IBOutlet UITextField *ccNumberOutlet;
-@property (weak, nonatomic) IBOutlet UITextField *expirationOutlet;
-@property (weak, nonatomic) IBOutlet UITextField *address1Outlet;
-@property (nonatomic, strong) UIPickerView *expirationPicker;
 @property (weak, nonatomic) IBOutlet UITextField *addressTextFieldOutlet;
+@property (weak, nonatomic) IBOutlet UITextField *expirationOutlet;
+@property (weak, nonatomic) IBOutlet UITextField *cardholderOutlet;
+@property (nonatomic, strong) UIView *expirationInputView;
+@property (nonatomic, strong) UIPickerView *expirationPicker;
+@property (nonatomic, strong) UIButton *expirationNext;
 @property (weak, nonatomic) IBOutlet UIView *ccContainerOutlet;
 
 @property (nonatomic, strong) EanHotelRoomAvailabilityResponse *eanHrar;
@@ -71,7 +74,7 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 
 @property (nonatomic, strong) UITableView *googlePlacesTableView;
 @property (nonatomic, strong) GooglePlaceTableViewDelegateImplementation *googlePlacesTableViewDelegate;
-@property (nonatomic) BOOL startFillAddress;
+@property (nonatomic) BOOL showingGooglePlacesTableView;
 
 - (IBAction)justPushIt:(id)sender;
 
@@ -121,7 +124,7 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     NSLog(@"");
     
     if (nil == self.googlePlacesTableView) {
-        self.googlePlacesTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 100, 320, 268)];
+        self.googlePlacesTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 134, 320, 268)];
         self.googlePlacesTableView.layer.borderWidth = 2.0f;
         self.googlePlacesTableView.layer.borderColor = self.view.tintColor.CGColor;
         if (nil == self.googlePlacesTableViewDelegate) {
@@ -132,7 +135,8 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
         self.googlePlacesTableView.delegate = self.googlePlacesTableViewDelegate;
     }
     
-    [self.view endEditing:YES];
+//    [self.view endEditing:YES];
+    [self.addressTextFieldOutlet becomeFirstResponder];
     [self loadPostalResultsTableView];
 }
 
@@ -425,8 +429,16 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 #pragma mark UITextFieldDelegate methods
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
-    if (textField == self.expirationOutlet) {
-        [textField setInputView:self.expirationPicker];
+    if (textField != self.addressTextFieldOutlet) {
+        [self dropPostalResultsTableView];
+    }
+    
+    if (textField == self.ccNumberOutlet) {
+        
+    } else if (textField == self.addressTextFieldOutlet) {
+        [self startEnteringCcBillAddress];
+    } else if (textField == self.expirationOutlet) {
+        [textField setInputView:self.expirationInputView];
     } /*else if (textField == self.postalOutlet) {
         [self dropPostalResultsTableView];
     }*/ else {
@@ -436,6 +448,14 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    if (textField == self.ccNumberOutlet) {
+        
+    } else if (textField == self.addressTextFieldOutlet) {
+        [self autoCompleteCcBillAddress];
+    } else if (textField == self.expirationOutlet) {
+        
+    }
+    
 //    if (textField == self.postalOutlet) {
 //        if (self.postalOutlet.text.length > 0) {
 //            self.fillAddressButtonOutlet.enabled = YES;
@@ -446,10 +466,63 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     return YES;
 }
 
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    if (textField == self.ccNumberOutlet) {
+        [self.addressTextFieldOutlet becomeFirstResponder];
+    } else if (textField == self.addressTextFieldOutlet) {
+        [self dropPostalResultsTableView];
+        [self.expirationOutlet becomeFirstResponder];
+    } else if (textField == self.expirationOutlet) {
+        [self.cardholderOutlet becomeFirstResponder];
+    } else if (textField == self.cardholderOutlet) {
+        [self.ccNumberOutlet becomeFirstResponder];
+    }
+    return YES;
+}
+
 #pragma mark Expiration Picker and Outlet methods
 
+- (void)tdExpirNext:(id)sender {
+    AudioServicesPlaySystemSound(0x450);
+    ((UIView *)sender).backgroundColor = [UIColor whiteColor];
+}
+
+- (void)tuiExpirNext:(id)sender {
+    ((UIView *) sender).backgroundColor = UIColorFromRGB(0xc4c4c4);
+    [self.cardholderOutlet becomeFirstResponder];
+}
+
+- (void)tuoExpirNext:(id)sender {
+    ((UIView *) sender).backgroundColor = UIColorFromRGB(0xc4c4c4);
+}
+
 - (void)setupExpirationPicker {
-    self.expirationPicker = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 300, 320, 268)];
+    self.expirationInputView = [[UIView alloc] initWithFrame:CGRectMake(0, 270, 320, 298)];
+    self.expirationInputView.backgroundColor = [UIColor whiteColor];
+    
+    self.expirationNext = [[UIButton alloc] initWithFrame:CGRectMake(242, 257, 75, 38)];
+    self.expirationNext.backgroundColor = UIColorFromRGB(0xc4c4c4);
+    self.expirationNext.layer.cornerRadius = 4.0f;
+    self.expirationNext.layer.masksToBounds = NO;
+    self.expirationNext.layer.borderWidth = 0.8f;
+    self.expirationNext.layer.borderColor = UIColorFromRGB(0xb5b5b5).CGColor;
+    
+    self.expirationNext.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.expirationNext.layer.shadowOpacity = 0.8;
+    self.expirationNext.layer.shadowRadius = 1;
+    self.expirationNext.layer.shadowOffset = CGSizeMake(1.0f, 1.0f);
+    
+    [self.expirationNext setTitle:@"Next" forState:UIControlStateNormal];
+    self.expirationNext.titleLabel.font = [UIFont systemFontOfSize:17.0f];
+    [self.expirationNext setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [self.expirationNext addTarget:self action:@selector(tdExpirNext:) forControlEvents:UIControlEventTouchDown];
+    [self.expirationNext addTarget:self action:@selector(tuiExpirNext:) forControlEvents:UIControlEventTouchUpInside];
+    [self.expirationNext addTarget:self action:@selector(tuoExpirNext:) forControlEvents:UIControlEventTouchUpOutside];
+    [self.expirationInputView addSubview:self.expirationNext];
+    
+    self.expirationPicker = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 20, 320, 268)];
+    self.expirationPicker.backgroundColor = UIColorFromRGB(0xe3e3e3);
+    [self.expirationInputView addSubview:self.expirationPicker];
     self.expirationPicker.dataSource = self;
     self.expirationPicker.delegate = self;
     
@@ -537,7 +610,8 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 - (void)didSelectRow:(GooglePlace *)googlePlace {
     self.load_data_type = LOAD_PLACE;
     [[LoadGooglePlacesData sharedInstance:self] loadPlaceDetails:googlePlace.placeId];
-    [self.view endEditing:YES];
+//    [self.view endEditing:YES];
+//    [self.expirationOutlet becomeFirstResponder];
     [self dropPostalResultsTableView];
 }
 
@@ -666,7 +740,7 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     
     __weak UIView *paymentDetailsView = views[0];
     paymentDetailsView.tag = kPaymentDetailsViewTag;
-    paymentDetailsView.frame = CGRectMake(10, 64, 300, 568);
+    paymentDetailsView.frame = CGRectMake(0, 64, 320, 568);
     
     CGPoint pboCenter = [self.view convertPoint:self.paymentButtonOutlet.center fromView:self.inputBookOutlet];
     CGFloat fromX = pboCenter.x - paymentDetailsView.center.x;
@@ -676,15 +750,20 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     
     [self.view addSubview:paymentDetailsView];
     
-    self.addressTextFieldOutlet.delegate = nil;
-    [self.addressTextFieldOutlet addTarget:self action:@selector(startEnteringCcBillAddress) forControlEvents:UIControlEventTouchDown];
-    [self.addressTextFieldOutlet addTarget:self action:@selector(autoCompleteCcBillAddress) forControlEvents:UIControlEventEditingChanged];
+//    self.addressTextFieldOutlet.delegate = nil;
+//    [self.addressTextFieldOutlet addTarget:self action:@selector(startEnteringCcBillAddress) forControlEvents:UIControlEventTouchDown];
+//    [self.addressTextFieldOutlet addTarget:self action:@selector(autoCompleteCcBillAddress) forControlEvents:UIControlEventEditingChanged];
+    
+    self.ccNumberOutlet.delegate = self;
+    self.addressTextFieldOutlet.delegate = self;
+    self.expirationOutlet.delegate = self;
+    self.cardholderOutlet.delegate = self;
     
     [self.ccNumberOutlet becomeFirstResponder];
     self.ccNumberOutlet.text = [JNKeychain loadValueForKey:kKeyDaNumber];
     [self updateTextInExpirationOutlet];
-    GuestInfo *gi = [GuestInfo singleton];
-    self.address1Outlet.text = gi.address1;
+//    GuestInfo *gi = [GuestInfo singleton];
+//    self.address1Outlet.text = gi.address1;
     
 //    self.postalOutlet.delegate = self;
     NSString *neumannCode = [JNKeychain loadValueForKey:kKeyPostalCode];
@@ -709,8 +788,8 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 
 - (void)dropPaymentDetailsView:(id)sender {
     if (sender == self.navigationItem.rightBarButtonItem) {
-        GuestInfo *gi = [GuestInfo singleton];
-        gi.address1 = self.address1Outlet.text;
+//        GuestInfo *gi = [GuestInfo singleton];
+//        gi.address1 = self.address1Outlet.text;
         [self saveDaNumber:self.ccNumberOutlet.text];
         [self saveDaExpiration:self.expirationOutlet.text];
 //        [self saveNeumann:self.postalOutlet.text];
@@ -737,24 +816,30 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 }
 
 - (void)loadPostalResultsTableView {
+    if (self.showingGooglePlacesTableView) {
+        return;
+    }
+    
     __weak UITableView *prtv = self.googlePlacesTableView;
-    __weak UIView *ccco = self.ccContainerOutlet;
+//    __weak UIView *ccco = self.ccContainerOutlet;
     prtv.transform = CGAffineTransformMakeTranslation(0.0f, 400.0f);
     [self.view addSubview:self.googlePlacesTableView];
+    self.showingGooglePlacesTableView = YES;
     [UIView animateWithDuration:kAnimationDuration animations:^{
         prtv.transform = CGAffineTransformMakeTranslation(0.0f, 0.0f);
-        ccco.transform = CGAffineTransformMakeTranslation(0.0f, -120.0f);
+//        ccco.transform = CGAffineTransformMakeTranslation(0.0f, -120.0f);
     } completion:^(BOOL finished) {
     }];
 }
 
 - (void)dropPostalResultsTableView {
-    if (nil == self.googlePlacesTableView) {
+    if (nil == self.googlePlacesTableView || !self.showingGooglePlacesTableView) {
         return;
     }
     
     __weak UITableView *prtv = self.googlePlacesTableView;
     __weak UIView *ccco = self.ccContainerOutlet;
+    self.showingGooglePlacesTableView = NO;
     [UIView animateWithDuration:kAnimationDuration animations:^{
         prtv.transform = CGAffineTransformMakeTranslation(0.0f, 400.0f);
         ccco.transform = CGAffineTransformMakeTranslation(0.0f, 0.0f);
