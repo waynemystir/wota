@@ -7,7 +7,6 @@
 //
 
 #import "AppEnvironment.h"
-#import <AVFoundation/AVFoundation.h>
 
 NSString * const kKeyDaNumber = @"AcBrCeDdEiFtGcHaIrJdKnLuMmNbOePr";
 NSString * const kKeyExpMonth = @"ZeYxXpWeVrUiTaStRiQoPnOmNoMnLtKh";
@@ -163,4 +162,12 @@ NSNumberFormatter * kPriceRoundOffFormatter(NSString * currencyCode) {
     }
     
     return _currencyStyle;
+}
+
+UIColor * kColorGoodToGo() {
+    return [UIColor colorWithRed:0 green:255 blue:0 alpha:0.75f];
+}
+
+UIColor * kColorNoGo() {
+    return [UIColor colorWithRed:255 green:0 blue:0 alpha:0.75f];
 }

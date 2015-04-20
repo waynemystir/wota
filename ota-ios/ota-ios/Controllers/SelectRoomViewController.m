@@ -24,7 +24,7 @@
 #import "LoadGooglePlacesData.h"
 #import "EanPlace.h"
 #import <AudioToolbox/AudioToolbox.h>
-#import "BKCardNumberField.h"
+#import "WotaCardNumberField.h"
 
 typedef NS_ENUM(NSUInteger, LOAD_DATA) {
     LOAD_ROOM = 0,
@@ -56,7 +56,7 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 @property (weak, nonatomic) IBOutlet UITextField *emailOutlet;
 @property (weak, nonatomic) IBOutlet UITextField *phoneOutlet;
 
-@property (weak, nonatomic) IBOutlet BKCardNumberField *ccNumberOutlet;
+@property (weak, nonatomic) IBOutlet WotaCardNumberField *ccNumberOutlet;
 @property (weak, nonatomic) IBOutlet UITextField *addressTextFieldOutlet;
 @property (weak, nonatomic) IBOutlet UITextField *expirationOutlet;
 @property (weak, nonatomic) IBOutlet UITextField *cardholderOutlet;
@@ -76,6 +76,7 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 @property (nonatomic, strong) UITableView *googlePlacesTableView;
 @property (nonatomic, strong) GooglePlaceTableViewDelegateImplementation *googlePlacesTableViewDelegate;
 @property (nonatomic) BOOL showingGooglePlacesTableView;
+@property (nonatomic, strong) EanPlace *selectedBillingAddress;
 
 - (IBAction)justPushIt:(id)sender;
 
@@ -169,7 +170,9 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
             NSString *response = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
             NSLog(@"PLACESDETAIL:%@", response);
             GooglePlaceDetail *gpd = [GooglePlaceDetail placeDetailFromData:responseData];
-            self.addressTextFieldOutlet.text = [EanPlace eanPlaceFromGooglePlaceDetail:gpd].formattedAddress;
+            self.selectedBillingAddress = [EanPlace eanPlaceFromGooglePlaceDetail:gpd];
+            [self validateBillingAddress];
+            self.addressTextFieldOutlet.text = self.selectedBillingAddress.formattedAddress;
             break;
         }
             
@@ -871,7 +874,13 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 }
 
 - (BOOL)validateBillingAddress {
-    return YES;
+    if ([self.selectedBillingAddress isValidToSubmitAsBillingAddress]) {
+        self.addressTextFieldOutlet.backgroundColor = kColorGoodToGo();
+        return YES;
+    } else {
+        self.addressTextFieldOutlet.backgroundColor = kColorNoGo();
+        return NO;
+    }
 }
 
 - (BOOL)validateExpiration {
@@ -881,11 +890,11 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 - (BOOL)validateCardholder {
     NSArray *ch = [self.cardholderOutlet.text componentsSeparatedByString:@" "];
     if ([ch count] != 2) {
-        self.cardholderOutlet.backgroundColor = [UIColor colorWithRed:255 green:0 blue:0 alpha:0.5f];
+        self.cardholderOutlet.backgroundColor = kColorNoGo();
         return NO;
     }
     
-    self.cardholderOutlet.backgroundColor = [UIColor colorWithRed:0 green:255 blue:0 alpha:0.5f];
+    self.cardholderOutlet.backgroundColor = kColorGoodToGo();
     return YES;
 }
 

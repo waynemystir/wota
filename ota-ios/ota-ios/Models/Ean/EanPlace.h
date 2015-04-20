@@ -19,6 +19,8 @@
 @property (nonatomic, strong) NSString *formattedAddress;
 @property (nonatomic, strong) NSString *googleFormattedAddress;
 
+- (BOOL)isValidToSubmitAsBillingAddress;
+
 + (EanPlace *)eanPlaceFromGooglePlaceDetail:(GooglePlaceDetail *)gpd;
 
 @end

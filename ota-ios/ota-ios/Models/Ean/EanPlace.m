@@ -10,6 +10,30 @@
 
 @implementation EanPlace
 
+- (BOOL)isValidToSubmitAsBillingAddress {
+    if (nil == self.address1 || [self.address1 length] < 2) {
+        return NO;
+    }
+    
+    if (nil == self.city) {
+        return NO;
+    }
+    
+    if (nil == self.stateProvinceCode) {
+        return NO;
+    }
+    
+    if (nil == self.postalCode) {
+        return NO;
+    }
+    
+    if (nil == self.countryCode) {
+        return NO;
+    }
+    
+    return YES;
+}
+
 + (EanPlace *)eanPlaceFromGooglePlaceDetail:(GooglePlaceDetail *)gpd {
     if (nil == gpd) {
         return nil;

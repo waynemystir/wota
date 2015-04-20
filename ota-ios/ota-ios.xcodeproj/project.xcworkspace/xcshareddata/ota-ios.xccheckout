@@ -22,7 +22,7 @@
 		<key>38CF75A6C2BD0DAE0B17A7F3E55250F15C6BA567</key>
 		<string>../../..</string>
 		<key>4CDD903768BF70883800462098001419CABEBB20</key>
-		<string>../../../ota-ios/ota-ios/Libraries/BKMoneyKit/</string>
+		<string>../../../ota-ios/ota-ios/Libraries/BKMoneyKit</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>github.com:waynemystir/wota.git</string>
