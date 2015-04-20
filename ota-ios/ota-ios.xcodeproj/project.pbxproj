@@ -23,6 +23,15 @@
 		B032F6501AC1935000809395 /* MainView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B032F64F1AC1935000809395 /* MainView.xib */; };
 		B032F6531AC193B300809395 /* CriteriaViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B032F6521AC193B300809395 /* CriteriaViewController.m */; };
 		B032F6551AC193DB00809395 /* CriteriaView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B032F6541AC193DB00809395 /* CriteriaView.xib */; };
+		B0344C381AE4BC3F000BBFCE /* BKCardExpiryField.m in Sources */ = {isa = PBXBuildFile; fileRef = B0344C281AE4BC3F000BBFCE /* BKCardExpiryField.m */; };
+		B0344C391AE4BC3F000BBFCE /* BKCardNumberField.m in Sources */ = {isa = PBXBuildFile; fileRef = B0344C2A1AE4BC3F000BBFCE /* BKCardNumberField.m */; };
+		B0344C3A1AE4BC3F000BBFCE /* BKCardNumberFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = B0344C2C1AE4BC3F000BBFCE /* BKCardNumberFormatter.m */; };
+		B0344C3B1AE4BC3F000BBFCE /* BKCardNumberLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = B0344C2E1AE4BC3F000BBFCE /* BKCardNumberLabel.m */; };
+		B0344C3C1AE4BC3F000BBFCE /* BKCardPatternInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B0344C301AE4BC3F000BBFCE /* BKCardPatternInfo.m */; };
+		B0344C3D1AE4BC3F000BBFCE /* BKCurrencyTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = B0344C321AE4BC3F000BBFCE /* BKCurrencyTextField.m */; };
+		B0344C3E1AE4BC3F000BBFCE /* BKForwardingTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = B0344C341AE4BC3F000BBFCE /* BKForwardingTextField.m */; };
+		B0344C3F1AE4BC3F000BBFCE /* BKMoneyKit.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B0344C351AE4BC3F000BBFCE /* BKMoneyKit.bundle */; };
+		B0344C401AE4BC3F000BBFCE /* BKMoneyUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = B0344C371AE4BC3F000BBFCE /* BKMoneyUtils.m */; };
 		B03B42FD1ADDFE1B0083A6EA /* EanPlace.m in Sources */ = {isa = PBXBuildFile; fileRef = B03B42FC1ADDFE1B0083A6EA /* EanPlace.m */; };
 		B049D1FA1AC19B2200E2E18C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B049D1F81AC19AC100E2E18C /* AVFoundation.framework */; };
 		B049D2061AC19B2300E2E18C /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B049D1FB1AC19B2300E2E18C /* CoreData.framework */; };
@@ -125,6 +134,23 @@
 		B032F6511AC193B300809395 /* CriteriaViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CriteriaViewController.h; sourceTree = "<group>"; };
 		B032F6521AC193B300809395 /* CriteriaViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CriteriaViewController.m; sourceTree = "<group>"; };
 		B032F6541AC193DB00809395 /* CriteriaView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CriteriaView.xib; sourceTree = "<group>"; };
+		B0344C271AE4BC3F000BBFCE /* BKCardExpiryField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKCardExpiryField.h; sourceTree = "<group>"; };
+		B0344C281AE4BC3F000BBFCE /* BKCardExpiryField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKCardExpiryField.m; sourceTree = "<group>"; };
+		B0344C291AE4BC3F000BBFCE /* BKCardNumberField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKCardNumberField.h; sourceTree = "<group>"; };
+		B0344C2A1AE4BC3F000BBFCE /* BKCardNumberField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKCardNumberField.m; sourceTree = "<group>"; };
+		B0344C2B1AE4BC3F000BBFCE /* BKCardNumberFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKCardNumberFormatter.h; sourceTree = "<group>"; };
+		B0344C2C1AE4BC3F000BBFCE /* BKCardNumberFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKCardNumberFormatter.m; sourceTree = "<group>"; };
+		B0344C2D1AE4BC3F000BBFCE /* BKCardNumberLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKCardNumberLabel.h; sourceTree = "<group>"; };
+		B0344C2E1AE4BC3F000BBFCE /* BKCardNumberLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKCardNumberLabel.m; sourceTree = "<group>"; };
+		B0344C2F1AE4BC3F000BBFCE /* BKCardPatternInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKCardPatternInfo.h; sourceTree = "<group>"; };
+		B0344C301AE4BC3F000BBFCE /* BKCardPatternInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKCardPatternInfo.m; sourceTree = "<group>"; };
+		B0344C311AE4BC3F000BBFCE /* BKCurrencyTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKCurrencyTextField.h; sourceTree = "<group>"; };
+		B0344C321AE4BC3F000BBFCE /* BKCurrencyTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKCurrencyTextField.m; sourceTree = "<group>"; };
+		B0344C331AE4BC3F000BBFCE /* BKForwardingTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKForwardingTextField.h; sourceTree = "<group>"; };
+		B0344C341AE4BC3F000BBFCE /* BKForwardingTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKForwardingTextField.m; sourceTree = "<group>"; };
+		B0344C351AE4BC3F000BBFCE /* BKMoneyKit.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = BKMoneyKit.bundle; sourceTree = "<group>"; };
+		B0344C361AE4BC3F000BBFCE /* BKMoneyUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKMoneyUtils.h; sourceTree = "<group>"; };
+		B0344C371AE4BC3F000BBFCE /* BKMoneyUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKMoneyUtils.m; sourceTree = "<group>"; };
 		B03B42FB1ADDFE1A0083A6EA /* EanPlace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanPlace.h; sourceTree = "<group>"; };
 		B03B42FC1ADDFE1B0083A6EA /* EanPlace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanPlace.m; sourceTree = "<group>"; };
 		B049D1F81AC19AC100E2E18C /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -432,6 +458,30 @@
 			path = Controllers;
 			sourceTree = "<group>";
 		};
+		B0344C261AE4BC3F000BBFCE /* BKMoneyKit */ = {
+			isa = PBXGroup;
+			children = (
+				B0344C271AE4BC3F000BBFCE /* BKCardExpiryField.h */,
+				B0344C281AE4BC3F000BBFCE /* BKCardExpiryField.m */,
+				B0344C291AE4BC3F000BBFCE /* BKCardNumberField.h */,
+				B0344C2A1AE4BC3F000BBFCE /* BKCardNumberField.m */,
+				B0344C2B1AE4BC3F000BBFCE /* BKCardNumberFormatter.h */,
+				B0344C2C1AE4BC3F000BBFCE /* BKCardNumberFormatter.m */,
+				B0344C2D1AE4BC3F000BBFCE /* BKCardNumberLabel.h */,
+				B0344C2E1AE4BC3F000BBFCE /* BKCardNumberLabel.m */,
+				B0344C2F1AE4BC3F000BBFCE /* BKCardPatternInfo.h */,
+				B0344C301AE4BC3F000BBFCE /* BKCardPatternInfo.m */,
+				B0344C311AE4BC3F000BBFCE /* BKCurrencyTextField.h */,
+				B0344C321AE4BC3F000BBFCE /* BKCurrencyTextField.m */,
+				B0344C331AE4BC3F000BBFCE /* BKForwardingTextField.h */,
+				B0344C341AE4BC3F000BBFCE /* BKForwardingTextField.m */,
+				B0344C351AE4BC3F000BBFCE /* BKMoneyKit.bundle */,
+				B0344C361AE4BC3F000BBFCE /* BKMoneyUtils.h */,
+				B0344C371AE4BC3F000BBFCE /* BKMoneyUtils.m */,
+			);
+			path = BKMoneyKit;
+			sourceTree = "<group>";
+		};
 		B049D1F71AC19A7700E2E18C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -506,6 +556,7 @@
 		B09797E81AC3BBDF0014FC7C /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				B0344C261AE4BC3F000BBFCE /* BKMoneyKit */,
 				B018C0481ADA08CF00DDCE2E /* Keychain */,
 				B09797EB1AC3BC690014FC7C /* THDatePicker */,
 			);
@@ -662,6 +713,7 @@
 				B0963CC31AC8DFED002FD859 /* ChildSubView.xib in Resources */,
 				B080B7C91AC505DC00075A32 /* HotelInfoView.xib in Resources */,
 				B032F6501AC1935000809395 /* MainView.xib in Resources */,
+				B0344C3F1AE4BC3F000BBFCE /* BKMoneyKit.bundle in Resources */,
 				B0963CBE1AC89459002FD859 /* ChildView.xib in Resources */,
 				B049D2161AC19D1400E2E18C /* GoogleMaps.bundle in Resources */,
 				B09797E71AC34DB70014FC7C /* HotelListingView.xib in Resources */,
@@ -685,6 +737,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B05BD6271AC1EA65002C2882 /* LoadGooglePlacesData.m in Sources */,
+				B0344C3D1AE4BC3F000BBFCE /* BKCurrencyTextField.m in Sources */,
 				B080B7C71AC5057100075A32 /* HotelInfoViewController.m in Sources */,
 				B0DF52341ADC74D400136661 /* GooglePlaceTableViewDelegateImplementation.m in Sources */,
 				B09C5EA31AD1930600A3D7E8 /* EanHotelListResponse.m in Sources */,
@@ -706,6 +759,7 @@
 				B09797E51AC344340014FC7C /* LoadEanData.m in Sources */,
 				B0FE0F471AC6EB9500DAF635 /* BookViewController.m in Sources */,
 				B0DF52371ADC77BA00136661 /* PostalResultsTableViewCell.m in Sources */,
+				B0344C3E1AE4BC3F000BBFCE /* BKForwardingTextField.m in Sources */,
 				B0A87D681AD4B2B3001505A6 /* EanHotelRoomReservationResponse.m in Sources */,
 				B091B8951AD22EFC00BB6CB0 /* AvailableRoomTableViewCell.m in Sources */,
 				B075AB091ADB687B0028C613 /* GoogleAddressComponent.m in Sources */,
@@ -714,9 +768,15 @@
 				B09797FA1AC3BC690014FC7C /* THDatePickerViewController.m in Sources */,
 				B05BD6241AC1E9FB002C2882 /* AppEnvironment.m in Sources */,
 				B09797C91AC23C1F0014FC7C /* GoogleParser.m in Sources */,
+				B0344C3A1AE4BC3F000BBFCE /* BKCardNumberFormatter.m in Sources */,
+				B0344C3C1AE4BC3F000BBFCE /* BKCardPatternInfo.m in Sources */,
 				B0963CC11AC8BDC6002FD859 /* ChildTraveler.m in Sources */,
+				B0344C381AE4BC3F000BBFCE /* BKCardExpiryField.m in Sources */,
 				B018C0451AD9BEC800DDCE2E /* GuestInfo.m in Sources */,
+				B0344C401AE4BC3F000BBFCE /* BKMoneyUtils.m in Sources */,
 				B09797CC1AC24BE20014FC7C /* MapViewController.m in Sources */,
+				B0344C391AE4BC3F000BBFCE /* BKCardNumberField.m in Sources */,
+				B0344C3B1AE4BC3F000BBFCE /* BKCardNumberLabel.m in Sources */,
 				B09797E21AC343DD0014FC7C /* HotelListingViewController.m in Sources */,
 				B075AB0C1ADB73560028C613 /* GooglePlaces.m in Sources */,
 				B0122E441AD0885D00E44319 /* EanHotelRoomAvailabilityResponse.m in Sources */,

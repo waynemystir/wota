@@ -12,6 +12,8 @@
 	<dict>
 		<key>38CF75A6C2BD0DAE0B17A7F3E55250F15C6BA567</key>
 		<string>github.com:waynemystir/wota.git</string>
+		<key>4CDD903768BF70883800462098001419CABEBB20</key>
+		<string>github.com:bkook/BKMoneyKit.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>ota-ios/ota-ios.xcodeproj</string>
@@ -19,6 +21,8 @@
 	<dict>
 		<key>38CF75A6C2BD0DAE0B17A7F3E55250F15C6BA567</key>
 		<string>../../..</string>
+		<key>4CDD903768BF70883800462098001419CABEBB20</key>
+		<string>../../../ota-ios/ota-ios/Libraries/BKMoneyKit/</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>github.com:waynemystir/wota.git</string>
@@ -28,6 +32,14 @@
 	<string>38CF75A6C2BD0DAE0B17A7F3E55250F15C6BA567</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>4CDD903768BF70883800462098001419CABEBB20</string>
+			<key>IDESourceControlWCCName</key>
+			<string>BKMoneyKit</string>
+		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
