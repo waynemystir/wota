@@ -82,6 +82,7 @@
 		B09C5EA31AD1930600A3D7E8 /* EanHotelListResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = B09C5EA21AD1930600A3D7E8 /* EanHotelListResponse.m */; };
 		B09C5EA61AD1A16E00A3D7E8 /* EanHotelListHotelSummary.m in Sources */ = {isa = PBXBuildFile; fileRef = B09C5EA51AD1A16E00A3D7E8 /* EanHotelListHotelSummary.m */; };
 		B0A87D681AD4B2B3001505A6 /* EanHotelRoomReservationResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = B0A87D671AD4B2B3001505A6 /* EanHotelRoomReservationResponse.m */; };
+		B0D02FB61AE5F92500B1E75F /* Luhn.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D02FB51AE5F92500B1E75F /* Luhn.m */; };
 		B0DF52341ADC74D400136661 /* GooglePlaceTableViewDelegateImplementation.m in Sources */ = {isa = PBXBuildFile; fileRef = B0DF52331ADC74D400136661 /* GooglePlaceTableViewDelegateImplementation.m */; };
 		B0DF52371ADC77BA00136661 /* PostalResultsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B0DF52361ADC77BA00136661 /* PostalResultsTableViewCell.m */; };
 		B0DF52391ADC77F100136661 /* PostResultsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0DF52381ADC77F100136661 /* PostResultsTableViewCell.xib */; };
@@ -226,6 +227,8 @@
 		B09C5EA51AD1A16E00A3D7E8 /* EanHotelListHotelSummary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanHotelListHotelSummary.m; sourceTree = "<group>"; };
 		B0A87D661AD4B2B3001505A6 /* EanHotelRoomReservationResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanHotelRoomReservationResponse.h; sourceTree = "<group>"; };
 		B0A87D671AD4B2B3001505A6 /* EanHotelRoomReservationResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanHotelRoomReservationResponse.m; sourceTree = "<group>"; };
+		B0D02FB41AE5F92500B1E75F /* Luhn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Luhn.h; sourceTree = "<group>"; };
+		B0D02FB51AE5F92500B1E75F /* Luhn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Luhn.m; sourceTree = "<group>"; };
 		B0DF52321ADC74D400136661 /* GooglePlaceTableViewDelegateImplementation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GooglePlaceTableViewDelegateImplementation.h; sourceTree = "<group>"; };
 		B0DF52331ADC74D400136661 /* GooglePlaceTableViewDelegateImplementation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GooglePlaceTableViewDelegateImplementation.m; sourceTree = "<group>"; };
 		B0DF52351ADC77BA00136661 /* PostalResultsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostalResultsTableViewCell.h; sourceTree = "<group>"; };
@@ -463,6 +466,8 @@
 				B0344C4C1AE5A6E0000BBFCE /* WotaCardNumberFormatter.m */,
 				B0344C4E1AE5A7BD000BBFCE /* WotaCardPatternInfo.h */,
 				B0344C4F1AE5A7BD000BBFCE /* WotaCardPatternInfo.m */,
+				B0D02FB41AE5F92500B1E75F /* Luhn.h */,
+				B0D02FB51AE5F92500B1E75F /* Luhn.m */,
 			);
 			path = WotaMoneyKit;
 			sourceTree = "<group>";
@@ -761,6 +766,7 @@
 				B0344C441AE5A560000BBFCE /* WotaMoneyUtils.m in Sources */,
 				B075AB0C1ADB73560028C613 /* GooglePlaces.m in Sources */,
 				B0122E441AD0885D00E44319 /* EanHotelRoomAvailabilityResponse.m in Sources */,
+				B0D02FB61AE5F92500B1E75F /* Luhn.m in Sources */,
 				B0122E4D1AD0A88500E44319 /* EanHotelDetails.m in Sources */,
 				B05BD62C1AC1FE53002C2882 /* PlaceAutoCompleteTableViewCell.m in Sources */,
 				B0122E501AD0E8C700E44319 /* EanHotelInformationSummary.m in Sources */,

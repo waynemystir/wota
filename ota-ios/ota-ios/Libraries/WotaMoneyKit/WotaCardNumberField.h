@@ -37,4 +37,9 @@
  */
 @property (nonatomic, strong, readonly) UIImageView *cardLogoImageView;
 
+/**
+ *
+ */
+@property (nonatomic, getter=isCompletelyFilled) BOOL isCompletelyFilledIn;
+
 @end

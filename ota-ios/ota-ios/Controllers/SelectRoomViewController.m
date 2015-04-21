@@ -25,6 +25,7 @@
 #import "EanPlace.h"
 #import <AudioToolbox/AudioToolbox.h>
 #import "WotaCardNumberField.h"
+#import "Luhn.h"
 
 typedef NS_ENUM(NSUInteger, LOAD_DATA) {
     LOAD_ROOM = 0,
@@ -430,7 +431,31 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 //    }
 }
 
+- (void)addInputAccessoryViewToCardNumber {
+    UIToolbar* numberToolbar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, 320, 50)];
+    numberToolbar.barStyle = UIBarStyleDefault;
+    numberToolbar.items = [NSArray arrayWithObjects:
+                           [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
+                           [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
+                           [[UIBarButtonItem alloc]initWithTitle:@"Next" style:UIBarButtonItemStyleDone target:self action:@selector(doneWithNumberPad)],
+                           nil];
+    [numberToolbar sizeToFit];
+    self.ccNumberOutlet.inputAccessoryView = numberToolbar;
+}
+
+-(void)doneWithNumberPad {
+    AudioServicesPlaySystemSound(0x450);
+    [self textFieldShouldReturn:self.ccNumberOutlet];
+}
+
 #pragma mark UITextFieldDelegate methods
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    if (textField == self.ccNumberOutlet) {
+        [self addInputAccessoryViewToCardNumber];
+    }
+    return YES;
+}
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
     if (textField != self.addressTextFieldOutlet) {
@@ -450,13 +475,15 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     if (textField == self.ccNumberOutlet) {
-        
+        NSString *cn = [((WotaCardNumberField *) textField).cardNumber stringByAppendingString:string];
+        [self validateCreditCardNumber:cn];
     } else if (textField == self.addressTextFieldOutlet) {
         [self autoCompleteCcBillAddress];
     } else if (textField == self.expirationOutlet) {
         
     } else if (textField == self.cardholderOutlet) {
-        [self validateCardholder];
+        NSString *ch = [textField.text stringByReplacingCharactersInRange:range withString:string];
+        [self validateCardholder:ch];
     }
     
     return YES;
@@ -489,7 +516,9 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 }
 
 - (BOOL)textFieldShouldClear:(UITextField *)textField {
-    if (textField == self.addressTextFieldOutlet) {
+    if (textField == self.ccNumberOutlet) {
+        self.ccNumberOutlet.backgroundColor = [UIColor whiteColor];
+    } else if (textField == self.addressTextFieldOutlet) {
         self.googlePlacesTableViewDelegate.tableData = nil;
         [self.googlePlacesTableView reloadData];
     } else if (textField == self.cardholderOutlet) {
@@ -869,8 +898,13 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 
 #pragma mark Validation methods
 
-- (BOOL)validateCreditCardNumber {
-    return YES;
+- (BOOL)validateCreditCardNumber:(NSString *)cardNumber {
+    if ([cardNumber isValidCreditCardNumber]) {
+        self.ccNumberOutlet.backgroundColor = kColorGoodToGo();
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
 - (BOOL)validateBillingAddress {
@@ -887,9 +921,9 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     return YES;
 }
 
-- (BOOL)validateCardholder {
-    NSArray *ch = [self.cardholderOutlet.text componentsSeparatedByString:@" "];
-    if ([ch count] != 2) {
+- (BOOL)validateCardholder:(NSString *)cardHolder {
+    NSArray *ch = [cardHolder componentsSeparatedByString:@" "];
+    if ([ch count] != 2 || [ch[1] length] < 2) {
         self.cardholderOutlet.backgroundColor = kColorNoGo();
         return NO;
     }
