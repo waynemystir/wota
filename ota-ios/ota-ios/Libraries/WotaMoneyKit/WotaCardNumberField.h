@@ -9,7 +9,7 @@
 #import "WotaForwardingTextField.h"
 #import "WotaCardNumberFormatter.h"
 
-@interface WotaCardNumberField : WotaForwardingTextField
+@interface WotaCardNumberField : WotaForwardingTextField <UIKeyInput>
 
 /**
  * A Boolean indicating whether shows card logo left side or not.
@@ -36,10 +36,5 @@
  * The card number logo image view.
  */
 @property (nonatomic, strong, readonly) UIImageView *cardLogoImageView;
-
-/**
- *
- */
-@property (nonatomic, getter=isCompletelyFilled) BOOL isCompletelyFilledIn;
 
 @end

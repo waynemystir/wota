@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "GooglePlaceDetail.h"
 
-@interface EanPlace : NSObject
+@interface EanPlace : NSObject <NSCoding>
 
 @property (nonatomic, strong) NSString *address1;
 @property (nonatomic, strong) NSString *city;

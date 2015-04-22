@@ -20,32 +20,6 @@
 
 @implementation WotaCardNumberField
 
-- (BOOL)isCompletelyFilled {
-    NSLog(@"TEXT:%@ CN:%@", self.text, self.cardNumber);
-    return [self.cardNumber isValidCreditCardNumber];
-}
-
-- (BOOL)isLuhnValid {
-    // (0) Original Number
-    NSString *originalNumber = self.cardNumber;
-    
-    // (1) Drop the last digit
-    NSString *lastDigitRemoved = [originalNumber substringToIndex:(originalNumber.length - 1)];
-    
-    // (2) Reverse the digits
-    
-    // (3) Multiple odd digits by 2
-    
-    // (4) Subtract 9 to numbers over 9
-    
-    // (5) Add all numbers
-    
-    // (6) Mod 10
-    
-    
-    return NO;
-}
-
 #pragma mark - Initialize
 
 - (void)commonInit

@@ -41,13 +41,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ota-ios/Libraries/WotaMoneyKit/WotaCardNumberField.m"
-            timestampString = "451279649.277484"
+            filePath = "ota-ios/Controllers/SelectRoomViewController.m"
+            timestampString = "451368720.335708"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "25"
-            endingLineNumber = "25"
-            landmarkName = "-isCompletelyFilled"
+            startingLineNumber = "446"
+            endingLineNumber = "446"
+            landmarkName = "-textField:shouldChangeCharactersInRange:replacementString:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

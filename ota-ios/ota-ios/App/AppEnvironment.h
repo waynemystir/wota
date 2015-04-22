@@ -16,10 +16,10 @@
  * Keychain keys
  */
 
-extern NSString * const kKeyDaNumber;
+extern NSString * const kKeyGuestInfo;
+extern NSString * const kKeyPaymentDetails1;
 extern NSString * const kKeyExpMonth;
 extern NSString * const kKeyExpYear;
-extern NSString * const kKeyPostalCode;
 
 /**
  * Ean stuff

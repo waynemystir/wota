@@ -15,6 +15,7 @@
 #import "ChildTraveler.h"
 #import "BookViewController.h"
 #import "GuestInfo.h"
+#import "PaymentDetails.h"
 #import "AppEnvironment.h"
 #import "JNKeychain.h"
 #import "GoogleParser.h"
@@ -25,7 +26,7 @@
 #import "EanPlace.h"
 #import <AudioToolbox/AudioToolbox.h>
 #import "WotaCardNumberField.h"
-#import "Luhn.h"
+#import "PTKCardNumber.h"
 
 typedef NS_ENUM(NSUInteger, LOAD_DATA) {
     LOAD_ROOM = 0,
@@ -78,6 +79,10 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 @property (nonatomic, strong) GooglePlaceTableViewDelegateImplementation *googlePlacesTableViewDelegate;
 @property (nonatomic) BOOL showingGooglePlacesTableView;
 @property (nonatomic, strong) EanPlace *selectedBillingAddress;
+
+@property (nonatomic) BOOL isValidCreditCard;
+@property (nonatomic) BOOL isValidBillingAddress;
+@property (nonatomic) BOOL isValidCardHolder;
 
 - (IBAction)justPushIt:(id)sender;
 
@@ -321,30 +326,6 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     }
 }
 
-//- (void)paintTheAddressLabel:(GooglePlaceDetail *)gpd {
-//    self.fillAddressButtonOutlet.enabled = NO;
-//    
-//    if (nil == gpd) {
-//        self.addressLabelOutlet.text = kNoLocationsFoundMessage;
-//        GuestInfo *gi = [GuestInfo singleton];
-//        gi.city = nil;
-//        gi.stateProvinceCode = nil;
-//        gi.countryCode = nil;
-//        return;
-//    }
-//    
-//    NSString *localityString = gpd.localityShortName ? [gpd.localityShortName stringByAppendingString:@", "] : @"";
-//    NSString *stateStr = gpd.administrativeAreaLevel1ShortName ? [gpd.administrativeAreaLevel1ShortName stringByAppendingString:@", "] : @"";
-//    NSString *cntryStr = gpd.countryShortName ? : @"";
-//    NSString *addressString = [NSString stringWithFormat:@"%@%@%@", localityString, stateStr, cntryStr];
-//    self.addressLabelOutlet.text = addressString;
-//    
-//    GuestInfo *gi = [GuestInfo singleton];
-//    gi.city = gpd.localityShortName;
-//    gi.stateProvinceCode = gpd.administrativeAreaLevel1ShortName;
-//    gi.countryCode = gpd.countryShortName;
-//}
-
 - (void)bookIt {
     if (nil == self.expandedIndexPath) {
         return;
@@ -353,6 +334,7 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     self.selectedRoom = [self.tableData objectAtIndex:self.expandedIndexPath.row];
     SelectionCriteria *sc = [SelectionCriteria singleton];
     GuestInfo *gi = [GuestInfo singleton];
+    PaymentDetails *pd = [PaymentDetails card1];
     BookViewController *bvc = [BookViewController new];
     
     [[LoadEanData sharedInstance:bvc] bookHotelRoomWithHotelId:self.eanHrar.hotelId
@@ -371,26 +353,21 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
                                         room1SmokingPreference:@"NS"
                                        affiliateConfirmationId:[NSUUID UUID]
                                                          email:gi.email
-                                                     firstName:gi.firstName
-                                                      lastName:gi.lastName
+                                                     firstName:pd.cardHolderFirstName
+                                                      lastName:pd.cardHolderLastName
                                                      homePhone:gi.phoneNumber
                                                 creditCardType:@"CA"
-                                              creditCardNumber:[JNKeychain loadValueForKey:kKeyDaNumber]
+                                              creditCardNumber:pd.cardNumber
                                           creditCardIdentifier:@"123"
                                      creditCardExpirationMonth:[JNKeychain loadValueForKey:kKeyExpMonth]
                                       creditCardExpirationYear:[JNKeychain loadValueForKey:kKeyExpYear]
-                                                      address1:gi.address1
-                                                          city:gi.city
-                                             stateProvinceCode:gi.stateProvinceCode
-                                                   countryCode:gi.countryCode
-                                                    postalCode:[JNKeychain loadValueForKey:kKeyPostalCode]];
+                                                      address1:pd.billingAddress.address1
+                                                          city:pd.billingAddress.city
+                                             stateProvinceCode:pd.billingAddress.stateProvinceCode
+                                                   countryCode:pd.billingAddress.countryCode
+                                                    postalCode:pd.billingAddress.postalCode];
     
     [self.navigationController pushViewController:bvc animated:YES];
-}
-
-- (void)saveDaNumber:(NSString *)daNumber {
-    // TODO: validate the number
-    [JNKeychain saveValue:daNumber forKey:kKeyDaNumber];
 }
 
 - (void)saveDaExpiration:(NSString *)expirationString {
@@ -415,20 +392,6 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     NSString *nExpMonth = [dateFormatter stringFromDate:daDate];
     [JNKeychain saveValue:nExpMonth forKey:kKeyExpMonth];
     [JNKeychain saveValue:expYear forKey:kKeyExpYear];
-}
-
-- (void)saveNeumann:(NSString *)postalCode {
-    // TODO: Rather than users (mis)typing their city, state, and country codes
-    // I want to use some API (i.e. Google Places) to get them from the postal
-    // code. So I will probably need to save these values to GuestInfo here as
-    // well
-    [JNKeychain saveValue:postalCode forKey:kKeyPostalCode];
-    
-//    if (nil == self.addressLabelOutlet.text
-//            || [self.addressLabelOutlet.text isEqualToString:@""]
-//            || [self.addressLabelOutlet.text isEqualToString:kNoLocationsFoundMessage]) {
-//        [[LoadGooglePlacesData sharedInstance:self] loadPlaceDetailsWithPostalCode:postalCode];
-//    }
 }
 
 - (void)addInputAccessoryViewToCardNumber {
@@ -475,7 +438,15 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     if (textField == self.ccNumberOutlet) {
-        NSString *cn = [((WotaCardNumberField *) textField).cardNumber stringByAppendingString:string];
+        NSString *cn = nil;
+        if ([string isEqualToString:@""]) {
+            NSUInteger lastCharIndex = [((WotaCardNumberField *) textField).cardNumber length] - 1; // I assume string is not empty
+            NSRange wr = [((WotaCardNumberField *) textField).cardNumber rangeOfComposedCharacterSequenceAtIndex: lastCharIndex];
+
+            cn = [((WotaCardNumberField *) textField).cardNumber stringByReplacingCharactersInRange:wr withString:string];
+        } else {
+            cn = [((WotaCardNumberField *) textField).cardNumber stringByAppendingString:string];
+        }
         [self validateCreditCardNumber:cn];
     } else if (textField == self.addressTextFieldOutlet) {
         [self autoCompleteCcBillAddress];
@@ -517,11 +488,18 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 
 - (BOOL)textFieldShouldClear:(UITextField *)textField {
     if (textField == self.ccNumberOutlet) {
+        self.isValidCreditCard = NO;
+        [self isWeGood];
         self.ccNumberOutlet.backgroundColor = [UIColor whiteColor];
     } else if (textField == self.addressTextFieldOutlet) {
         self.googlePlacesTableViewDelegate.tableData = nil;
         [self.googlePlacesTableView reloadData];
+        self.isValidBillingAddress = NO;
+        [self isWeGood];
+        self.addressTextFieldOutlet.backgroundColor = [UIColor whiteColor];
     } else if (textField == self.cardholderOutlet) {
+        self.isValidCardHolder = NO;
+        [self isWeGood];
         self.cardholderOutlet.backgroundColor = [UIColor whiteColor];
     }
     
@@ -808,26 +786,22 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     self.expirationOutlet.delegate = self;
     self.cardholderOutlet.delegate = self;
     
+    PaymentDetails *pd = [PaymentDetails card1];
+    
     [self.ccNumberOutlet becomeFirstResponder];
     self.ccNumberOutlet.showsCardLogo = YES;
-    self.ccNumberOutlet.text = [JNKeychain loadValueForKey:kKeyDaNumber];
+    self.ccNumberOutlet.cardNumber = pd.cardNumber;
+    
+    self.selectedBillingAddress = pd.billingAddress;
+    self.addressTextFieldOutlet.text = self.selectedBillingAddress.formattedAddress;
+    
     [self updateTextInExpirationOutlet];
-//    GuestInfo *gi = [GuestInfo singleton];
-//    self.address1Outlet.text = gi.address1;
     
-//    self.postalOutlet.delegate = self;
-    NSString *neumannCode = [JNKeychain loadValueForKey:kKeyPostalCode];
-    if (nil != neumannCode && ![neumannCode isEqualToString:@""]) {
-//        self.postalOutlet.text = neumannCode;
-//        self.addressLabelOutlet.text = [NSString stringWithFormat:@"%@, %@, %@", gi.city, gi.stateProvinceCode, gi.countryCode];
-        self.navigationItem.rightBarButtonItem.enabled = YES;
-    } else {
-//        self.postalOutlet.text = nil;
-//        self.addressLabelOutlet.text = nil;
-        self.navigationItem.rightBarButtonItem.enabled = NO;
-    }
+    self.cardholderOutlet.text = [NSString stringWithFormat:@"%@ %@", pd.cardHolderFirstName, pd.cardHolderLastName];
     
-    self.expirationOutlet.delegate = self;
+    [self validateCreditCardNumber:self.ccNumberOutlet.cardNumber];
+    [self validateBillingAddress];
+    [self validateCardholder:self.cardholderOutlet.text];
     
     [UIView animateWithDuration:kAnimationDuration animations:^{
         paymentDetailsView.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
@@ -838,11 +812,12 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 
 - (void)dropPaymentDetailsView:(id)sender {
     if (sender == self.navigationItem.rightBarButtonItem) {
-//        GuestInfo *gi = [GuestInfo singleton];
-//        gi.address1 = self.address1Outlet.text;
-        [self saveDaNumber:self.ccNumberOutlet.text];
+        PaymentDetails *pd = [PaymentDetails card1];
+        pd.cardNumber = self.ccNumberOutlet.cardNumber;
+        pd.billingAddress = self.selectedBillingAddress;
         [self saveDaExpiration:self.expirationOutlet.text];
-//        [self saveNeumann:self.postalOutlet.text];
+        pd.cardHolderFirstName = [self.cardholderOutlet.text componentsSeparatedByString:@" "][0];
+        pd.cardHolderLastName = [self.cardholderOutlet.text componentsSeparatedByString:@" "][1];
     }
     
     [self dropGooglePlacesTableView];
@@ -898,38 +873,52 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 
 #pragma mark Validation methods
 
-- (BOOL)validateCreditCardNumber:(NSString *)cardNumber {
-    if ([cardNumber isValidCreditCardNumber]) {
-        self.ccNumberOutlet.backgroundColor = kColorGoodToGo();
-        return YES;
+- (void)isWeGood {
+    if (self.isValidCreditCard && self.isValidBillingAddress && self.isValidCardHolder) {
+        self.navigationItem.rightBarButtonItem.enabled = YES;
     } else {
-        return NO;
+        self.navigationItem.rightBarButtonItem.enabled = NO;
     }
 }
 
-- (BOOL)validateBillingAddress {
+- (void)validateCreditCardNumber:(NSString *)cardNumber {
+    if ([[PTKCardNumber cardNumberWithString:cardNumber] isValid]) {
+        self.ccNumberOutlet.backgroundColor = kColorGoodToGo();
+        self.isValidCreditCard = YES;
+    } else {
+        self.ccNumberOutlet.backgroundColor = [UIColor whiteColor];
+        self.isValidCreditCard = NO;
+    }
+    
+    [self isWeGood];
+}
+
+- (void)validateBillingAddress {
     if ([self.selectedBillingAddress isValidToSubmitAsBillingAddress]) {
         self.addressTextFieldOutlet.backgroundColor = kColorGoodToGo();
-        return YES;
+        self.isValidBillingAddress = YES;
     } else {
         self.addressTextFieldOutlet.backgroundColor = kColorNoGo();
-        return NO;
+        self.isValidBillingAddress = NO;
     }
+    
+    [self isWeGood];
 }
 
 - (BOOL)validateExpiration {
     return YES;
 }
 
-- (BOOL)validateCardholder:(NSString *)cardHolder {
+- (void)validateCardholder:(NSString *)cardHolder {
     NSArray *ch = [cardHolder componentsSeparatedByString:@" "];
     if ([ch count] != 2 || [ch[1] length] < 2) {
-        self.cardholderOutlet.backgroundColor = kColorNoGo();
-        return NO;
+        self.isValidCardHolder = NO;
+    } else {
+        self.cardholderOutlet.backgroundColor = kColorGoodToGo();
+        self.isValidCardHolder = YES;
     }
     
-    self.cardholderOutlet.backgroundColor = kColorGoodToGo();
-    return YES;
+    [self isWeGood];
 }
 
 @end

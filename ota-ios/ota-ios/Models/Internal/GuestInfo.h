@@ -7,18 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "EanPlace.h"
 
 @interface GuestInfo : NSObject <NSCoding>
 
-@property (nonatomic, strong, setter=setFirstName:) NSString *firstName;
-@property (nonatomic, strong, setter=setLastName:) NSString *lastName;
-@property (nonatomic, strong, setter=setEmail:) NSString *email;
-@property (nonatomic, strong, setter=setPhoneNumber:) NSString *phoneNumber;
-@property (nonatomic, strong, setter=setAddress1:) NSString *address1;
-@property (nonatomic, strong, setter=setCity:) NSString *city;
-@property (nonatomic, strong, setter=setStateProvinceCode:) NSString *stateProvinceCode;
-@property (nonatomic, strong, setter=setCountryCode:) NSString *countryCode;
-@property (nonatomic, strong, setter=setPostalCode:) NSString *postalCode;
+@property (nonatomic, strong) NSString *firstName;
+@property (nonatomic, strong) NSString *lastName;
+@property (nonatomic, strong) NSString *email;
+@property (nonatomic, strong) NSString *phoneNumber;
 
 + (GuestInfo *)singleton;
 

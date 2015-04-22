@@ -8,6 +8,14 @@
 
 #import "EanPlace.h"
 
+NSString * const kKeyAddress1 = @"address1";
+NSString * const kKeyCity = @"city";
+NSString * const kKeyStateProvCode = @"stateProvinceCode";
+NSString * const kKeyCountryCode = @"countryCode";
+NSString * const kKeyPostalCode = @"postalCode";
+NSString * const kKeyFormattedAddress = @"formattedAddress";
+NSString * const kKeyGoogleFormattedAddress = @"googleFormattedAddress";
+
 @implementation EanPlace
 
 - (BOOL)isValidToSubmitAsBillingAddress {
@@ -56,6 +64,32 @@
     ep.googleFormattedAddress = gpd.formattedAddress;
     
     return ep;
+}
+
+#pragma mark NSCoding methods
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    if (self = [super init]) {
+        _address1 = [aDecoder decodeObjectForKey:kKeyAddress1];
+        _city = [aDecoder decodeObjectForKey:kKeyCity];
+        _stateProvinceCode = [aDecoder decodeObjectForKey:kKeyStateProvCode];
+        _countryCode = [aDecoder decodeObjectForKey:kKeyCountryCode];
+        _postalCode = [aDecoder decodeObjectForKey:kKeyPostalCode];
+        _formattedAddress = [aDecoder decodeObjectForKey:kKeyFormattedAddress];
+        _googleFormattedAddress = [aDecoder decodeObjectForKey:kKeyGoogleFormattedAddress];
+    }
+    
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [aCoder encodeObject:_address1 forKey:kKeyAddress1];
+    [aCoder encodeObject:_city forKey:kKeyCity];
+    [aCoder encodeObject:_stateProvinceCode forKey:kKeyStateProvCode];
+    [aCoder encodeObject:_countryCode forKey:kKeyCountryCode];
+    [aCoder encodeObject:_postalCode forKey:kKeyPostalCode];
+    [aCoder encodeObject:_formattedAddress forKey:kKeyFormattedAddress];
+    [aCoder encodeObject:_googleFormattedAddress forKey:kKeyGoogleFormattedAddress];
 }
 
 @end

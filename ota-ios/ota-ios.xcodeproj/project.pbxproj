@@ -83,6 +83,37 @@
 		B09C5EA61AD1A16E00A3D7E8 /* EanHotelListHotelSummary.m in Sources */ = {isa = PBXBuildFile; fileRef = B09C5EA51AD1A16E00A3D7E8 /* EanHotelListHotelSummary.m */; };
 		B0A87D681AD4B2B3001505A6 /* EanHotelRoomReservationResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = B0A87D671AD4B2B3001505A6 /* EanHotelRoomReservationResponse.m */; };
 		B0D02FB61AE5F92500B1E75F /* Luhn.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D02FB51AE5F92500B1E75F /* Luhn.m */; };
+		B0D02FE21AE6123000B1E75F /* PTKAddressZip.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D02FB91AE6123000B1E75F /* PTKAddressZip.m */; };
+		B0D02FE31AE6123000B1E75F /* PTKCard.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D02FBB1AE6123000B1E75F /* PTKCard.m */; };
+		B0D02FE41AE6123000B1E75F /* PTKCardCVC.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D02FBD1AE6123000B1E75F /* PTKCardCVC.m */; };
+		B0D02FE51AE6123000B1E75F /* PTKCardExpiry.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D02FBF1AE6123000B1E75F /* PTKCardExpiry.m */; };
+		B0D02FE61AE6123000B1E75F /* PTKCardNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D02FC11AE6123000B1E75F /* PTKCardNumber.m */; };
+		B0D02FE71AE6123000B1E75F /* PTKComponent.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D02FC41AE6123000B1E75F /* PTKComponent.m */; };
+		B0D02FE81AE6123000B1E75F /* PTKTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D02FC61AE6123000B1E75F /* PTKTextField.m */; };
+		B0D02FE91AE6123000B1E75F /* PTKUSAddressZip.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D02FC81AE6123000B1E75F /* PTKUSAddressZip.m */; };
+		B0D02FEA1AE6123000B1E75F /* PTKView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D02FCA1AE6123000B1E75F /* PTKView.m */; };
+		B0D02FEB1AE6123000B1E75F /* amex.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D02FCD1AE6123000B1E75F /* amex.png */; };
+		B0D02FEC1AE6123000B1E75F /* amex@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D02FCE1AE6123000B1E75F /* amex@2x.png */; };
+		B0D02FED1AE6123000B1E75F /* cvc-amex.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D02FCF1AE6123000B1E75F /* cvc-amex.png */; };
+		B0D02FEE1AE6123000B1E75F /* cvc-amex@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D02FD01AE6123000B1E75F /* cvc-amex@2x.png */; };
+		B0D02FEF1AE6123000B1E75F /* cvc.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D02FD11AE6123000B1E75F /* cvc.png */; };
+		B0D02FF01AE6123000B1E75F /* cvc@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D02FD21AE6123000B1E75F /* cvc@2x.png */; };
+		B0D02FF11AE6123000B1E75F /* diners.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D02FD31AE6123000B1E75F /* diners.png */; };
+		B0D02FF21AE6123000B1E75F /* diners@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D02FD41AE6123000B1E75F /* diners@2x.png */; };
+		B0D02FF31AE6123000B1E75F /* discover.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D02FD51AE6123000B1E75F /* discover.png */; };
+		B0D02FF41AE6123000B1E75F /* discover@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D02FD61AE6123000B1E75F /* discover@2x.png */; };
+		B0D02FF51AE6123000B1E75F /* jcb.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D02FD71AE6123000B1E75F /* jcb.png */; };
+		B0D02FF61AE6123000B1E75F /* jcb@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D02FD81AE6123000B1E75F /* jcb@2x.png */; };
+		B0D02FF71AE6123000B1E75F /* mastercard.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D02FD91AE6123000B1E75F /* mastercard.png */; };
+		B0D02FF81AE6123000B1E75F /* mastercard@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D02FDA1AE6123000B1E75F /* mastercard@2x.png */; };
+		B0D02FF91AE6123000B1E75F /* placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D02FDB1AE6123000B1E75F /* placeholder.png */; };
+		B0D02FFA1AE6123000B1E75F /* placeholder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D02FDC1AE6123000B1E75F /* placeholder@2x.png */; };
+		B0D02FFB1AE6123000B1E75F /* visa.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D02FDD1AE6123000B1E75F /* visa.png */; };
+		B0D02FFC1AE6123000B1E75F /* visa@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D02FDE1AE6123000B1E75F /* visa@2x.png */; };
+		B0D02FFD1AE6123000B1E75F /* gradient@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D02FDF1AE6123000B1E75F /* gradient@2x.png */; };
+		B0D02FFE1AE6123000B1E75F /* textfield.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D02FE01AE6123000B1E75F /* textfield.png */; };
+		B0D02FFF1AE6123000B1E75F /* textfield@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D02FE11AE6123000B1E75F /* textfield@2x.png */; };
+		B0D030021AE7380F00B1E75F /* PaymentDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D030011AE7380F00B1E75F /* PaymentDetails.m */; };
 		B0DF52341ADC74D400136661 /* GooglePlaceTableViewDelegateImplementation.m in Sources */ = {isa = PBXBuildFile; fileRef = B0DF52331ADC74D400136661 /* GooglePlaceTableViewDelegateImplementation.m */; };
 		B0DF52371ADC77BA00136661 /* PostalResultsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B0DF52361ADC77BA00136661 /* PostalResultsTableViewCell.m */; };
 		B0DF52391ADC77F100136661 /* PostResultsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0DF52381ADC77F100136661 /* PostResultsTableViewCell.xib */; };
@@ -229,6 +260,48 @@
 		B0A87D671AD4B2B3001505A6 /* EanHotelRoomReservationResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanHotelRoomReservationResponse.m; sourceTree = "<group>"; };
 		B0D02FB41AE5F92500B1E75F /* Luhn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Luhn.h; sourceTree = "<group>"; };
 		B0D02FB51AE5F92500B1E75F /* Luhn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Luhn.m; sourceTree = "<group>"; };
+		B0D02FB81AE6123000B1E75F /* PTKAddressZip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTKAddressZip.h; sourceTree = "<group>"; };
+		B0D02FB91AE6123000B1E75F /* PTKAddressZip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTKAddressZip.m; sourceTree = "<group>"; };
+		B0D02FBA1AE6123000B1E75F /* PTKCard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTKCard.h; sourceTree = "<group>"; };
+		B0D02FBB1AE6123000B1E75F /* PTKCard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTKCard.m; sourceTree = "<group>"; };
+		B0D02FBC1AE6123000B1E75F /* PTKCardCVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTKCardCVC.h; sourceTree = "<group>"; };
+		B0D02FBD1AE6123000B1E75F /* PTKCardCVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTKCardCVC.m; sourceTree = "<group>"; };
+		B0D02FBE1AE6123000B1E75F /* PTKCardExpiry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTKCardExpiry.h; sourceTree = "<group>"; };
+		B0D02FBF1AE6123000B1E75F /* PTKCardExpiry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTKCardExpiry.m; sourceTree = "<group>"; };
+		B0D02FC01AE6123000B1E75F /* PTKCardNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTKCardNumber.h; sourceTree = "<group>"; };
+		B0D02FC11AE6123000B1E75F /* PTKCardNumber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTKCardNumber.m; sourceTree = "<group>"; };
+		B0D02FC21AE6123000B1E75F /* PTKCardType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTKCardType.h; sourceTree = "<group>"; };
+		B0D02FC31AE6123000B1E75F /* PTKComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTKComponent.h; sourceTree = "<group>"; };
+		B0D02FC41AE6123000B1E75F /* PTKComponent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTKComponent.m; sourceTree = "<group>"; };
+		B0D02FC51AE6123000B1E75F /* PTKTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTKTextField.h; sourceTree = "<group>"; };
+		B0D02FC61AE6123000B1E75F /* PTKTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTKTextField.m; sourceTree = "<group>"; };
+		B0D02FC71AE6123000B1E75F /* PTKUSAddressZip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTKUSAddressZip.h; sourceTree = "<group>"; };
+		B0D02FC81AE6123000B1E75F /* PTKUSAddressZip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTKUSAddressZip.m; sourceTree = "<group>"; };
+		B0D02FC91AE6123000B1E75F /* PTKView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTKView.h; sourceTree = "<group>"; };
+		B0D02FCA1AE6123000B1E75F /* PTKView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTKView.m; sourceTree = "<group>"; };
+		B0D02FCD1AE6123000B1E75F /* amex.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = amex.png; sourceTree = "<group>"; };
+		B0D02FCE1AE6123000B1E75F /* amex@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "amex@2x.png"; sourceTree = "<group>"; };
+		B0D02FCF1AE6123000B1E75F /* cvc-amex.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cvc-amex.png"; sourceTree = "<group>"; };
+		B0D02FD01AE6123000B1E75F /* cvc-amex@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cvc-amex@2x.png"; sourceTree = "<group>"; };
+		B0D02FD11AE6123000B1E75F /* cvc.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cvc.png; sourceTree = "<group>"; };
+		B0D02FD21AE6123000B1E75F /* cvc@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cvc@2x.png"; sourceTree = "<group>"; };
+		B0D02FD31AE6123000B1E75F /* diners.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = diners.png; sourceTree = "<group>"; };
+		B0D02FD41AE6123000B1E75F /* diners@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "diners@2x.png"; sourceTree = "<group>"; };
+		B0D02FD51AE6123000B1E75F /* discover.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = discover.png; sourceTree = "<group>"; };
+		B0D02FD61AE6123000B1E75F /* discover@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "discover@2x.png"; sourceTree = "<group>"; };
+		B0D02FD71AE6123000B1E75F /* jcb.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = jcb.png; sourceTree = "<group>"; };
+		B0D02FD81AE6123000B1E75F /* jcb@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "jcb@2x.png"; sourceTree = "<group>"; };
+		B0D02FD91AE6123000B1E75F /* mastercard.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mastercard.png; sourceTree = "<group>"; };
+		B0D02FDA1AE6123000B1E75F /* mastercard@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mastercard@2x.png"; sourceTree = "<group>"; };
+		B0D02FDB1AE6123000B1E75F /* placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = placeholder.png; sourceTree = "<group>"; };
+		B0D02FDC1AE6123000B1E75F /* placeholder@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "placeholder@2x.png"; sourceTree = "<group>"; };
+		B0D02FDD1AE6123000B1E75F /* visa.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = visa.png; sourceTree = "<group>"; };
+		B0D02FDE1AE6123000B1E75F /* visa@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "visa@2x.png"; sourceTree = "<group>"; };
+		B0D02FDF1AE6123000B1E75F /* gradient@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gradient@2x.png"; sourceTree = "<group>"; };
+		B0D02FE01AE6123000B1E75F /* textfield.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = textfield.png; sourceTree = "<group>"; };
+		B0D02FE11AE6123000B1E75F /* textfield@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "textfield@2x.png"; sourceTree = "<group>"; };
+		B0D030001AE7380F00B1E75F /* PaymentDetails.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaymentDetails.h; sourceTree = "<group>"; };
+		B0D030011AE7380F00B1E75F /* PaymentDetails.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaymentDetails.m; sourceTree = "<group>"; };
 		B0DF52321ADC74D400136661 /* GooglePlaceTableViewDelegateImplementation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GooglePlaceTableViewDelegateImplementation.h; sourceTree = "<group>"; };
 		B0DF52331ADC74D400136661 /* GooglePlaceTableViewDelegateImplementation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GooglePlaceTableViewDelegateImplementation.m; sourceTree = "<group>"; };
 		B0DF52351ADC77BA00136661 /* PostalResultsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostalResultsTableViewCell.h; sourceTree = "<group>"; };
@@ -313,6 +386,8 @@
 				B0963CC01AC8BDC6002FD859 /* ChildTraveler.m */,
 				B018C0431AD9BEC800DDCE2E /* GuestInfo.h */,
 				B018C0441AD9BEC800DDCE2E /* GuestInfo.m */,
+				B0D030001AE7380F00B1E75F /* PaymentDetails.h */,
+				B0D030011AE7380F00B1E75F /* PaymentDetails.m */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
@@ -546,6 +621,7 @@
 		B09797E81AC3BBDF0014FC7C /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				B0D02FB71AE6123000B1E75F /* PaymentKit */,
 				B0344C411AE5A448000BBFCE /* WotaMoneyKit */,
 				B018C0481ADA08CF00DDCE2E /* Keychain */,
 				B09797EB1AC3BC690014FC7C /* THDatePicker */,
@@ -602,6 +678,69 @@
 			name = HotelRoomReservationResponse;
 			path = "ota-ios/Models/Ean/HotelRoomReservationResponse";
 			sourceTree = SOURCE_ROOT;
+		};
+		B0D02FB71AE6123000B1E75F /* PaymentKit */ = {
+			isa = PBXGroup;
+			children = (
+				B0D02FB81AE6123000B1E75F /* PTKAddressZip.h */,
+				B0D02FB91AE6123000B1E75F /* PTKAddressZip.m */,
+				B0D02FBA1AE6123000B1E75F /* PTKCard.h */,
+				B0D02FBB1AE6123000B1E75F /* PTKCard.m */,
+				B0D02FBC1AE6123000B1E75F /* PTKCardCVC.h */,
+				B0D02FBD1AE6123000B1E75F /* PTKCardCVC.m */,
+				B0D02FBE1AE6123000B1E75F /* PTKCardExpiry.h */,
+				B0D02FBF1AE6123000B1E75F /* PTKCardExpiry.m */,
+				B0D02FC01AE6123000B1E75F /* PTKCardNumber.h */,
+				B0D02FC11AE6123000B1E75F /* PTKCardNumber.m */,
+				B0D02FC21AE6123000B1E75F /* PTKCardType.h */,
+				B0D02FC31AE6123000B1E75F /* PTKComponent.h */,
+				B0D02FC41AE6123000B1E75F /* PTKComponent.m */,
+				B0D02FC51AE6123000B1E75F /* PTKTextField.h */,
+				B0D02FC61AE6123000B1E75F /* PTKTextField.m */,
+				B0D02FC71AE6123000B1E75F /* PTKUSAddressZip.h */,
+				B0D02FC81AE6123000B1E75F /* PTKUSAddressZip.m */,
+				B0D02FC91AE6123000B1E75F /* PTKView.h */,
+				B0D02FCA1AE6123000B1E75F /* PTKView.m */,
+				B0D02FCB1AE6123000B1E75F /* Resources */,
+			);
+			path = PaymentKit;
+			sourceTree = "<group>";
+		};
+		B0D02FCB1AE6123000B1E75F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B0D02FCC1AE6123000B1E75F /* Cards */,
+				B0D02FDF1AE6123000B1E75F /* gradient@2x.png */,
+				B0D02FE01AE6123000B1E75F /* textfield.png */,
+				B0D02FE11AE6123000B1E75F /* textfield@2x.png */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		B0D02FCC1AE6123000B1E75F /* Cards */ = {
+			isa = PBXGroup;
+			children = (
+				B0D02FCD1AE6123000B1E75F /* amex.png */,
+				B0D02FCE1AE6123000B1E75F /* amex@2x.png */,
+				B0D02FCF1AE6123000B1E75F /* cvc-amex.png */,
+				B0D02FD01AE6123000B1E75F /* cvc-amex@2x.png */,
+				B0D02FD11AE6123000B1E75F /* cvc.png */,
+				B0D02FD21AE6123000B1E75F /* cvc@2x.png */,
+				B0D02FD31AE6123000B1E75F /* diners.png */,
+				B0D02FD41AE6123000B1E75F /* diners@2x.png */,
+				B0D02FD51AE6123000B1E75F /* discover.png */,
+				B0D02FD61AE6123000B1E75F /* discover@2x.png */,
+				B0D02FD71AE6123000B1E75F /* jcb.png */,
+				B0D02FD81AE6123000B1E75F /* jcb@2x.png */,
+				B0D02FD91AE6123000B1E75F /* mastercard.png */,
+				B0D02FDA1AE6123000B1E75F /* mastercard@2x.png */,
+				B0D02FDB1AE6123000B1E75F /* placeholder.png */,
+				B0D02FDC1AE6123000B1E75F /* placeholder@2x.png */,
+				B0D02FDD1AE6123000B1E75F /* visa.png */,
+				B0D02FDE1AE6123000B1E75F /* visa@2x.png */,
+			);
+			path = Cards;
+			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
@@ -689,17 +828,37 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0D02FF81AE6123000B1E75F /* mastercard@2x.png in Resources */,
 				B091B8971AD22FEF00BB6CB0 /* AvailableRoomTableViewCell.xib in Resources */,
+				B0D02FF01AE6123000B1E75F /* cvc@2x.png in Resources */,
+				B0D02FFC1AE6123000B1E75F /* visa@2x.png in Resources */,
 				B032F6351AC18F6700809395 /* Images.xcassets in Resources */,
+				B0D02FF21AE6123000B1E75F /* diners@2x.png in Resources */,
 				B09077871AE5AF5300F2D3CB /* WotaMoneyKit.bundle in Resources */,
+				B0D02FEC1AE6123000B1E75F /* amex@2x.png in Resources */,
 				B018C0471ADA01FA00DDCE2E /* PaymentDetailsView.xib in Resources */,
+				B0D02FEF1AE6123000B1E75F /* cvc.png in Resources */,
 				B09797F91AC3BC690014FC7C /* THDateDay.xib in Resources */,
+				B0D02FFD1AE6123000B1E75F /* gradient@2x.png in Resources */,
+				B0D02FF31AE6123000B1E75F /* discover.png in Resources */,
+				B0D02FEB1AE6123000B1E75F /* amex.png in Resources */,
+				B0D02FF51AE6123000B1E75F /* jcb.png in Resources */,
+				B0D02FF41AE6123000B1E75F /* discover@2x.png in Resources */,
+				B0D02FED1AE6123000B1E75F /* cvc-amex.png in Resources */,
+				B0D02FEE1AE6123000B1E75F /* cvc-amex@2x.png in Resources */,
+				B0D02FF11AE6123000B1E75F /* diners.png in Resources */,
 				B0DF52391ADC77F100136661 /* PostResultsTableViewCell.xib in Resources */,
+				B0D02FF91AE6123000B1E75F /* placeholder.png in Resources */,
+				B0D02FFF1AE6123000B1E75F /* textfield@2x.png in Resources */,
 				B09797FB1AC3BC690014FC7C /* THDatePickerViewController.xib in Resources */,
+				B0D02FF71AE6123000B1E75F /* mastercard.png in Resources */,
 				B0FE0F491AC6ED0000DAF635 /* BookView.xib in Resources */,
 				B032F6551AC193DB00809395 /* CriteriaView.xib in Resources */,
+				B0D02FFE1AE6123000B1E75F /* textfield.png in Resources */,
 				B05BD6321AC1FF54002C2882 /* PlaceAutoCompleteTableViewCell.xib in Resources */,
 				B018C0421AD96A7600DDCE2E /* GuestDetailsView.xib in Resources */,
+				B0D02FF61AE6123000B1E75F /* jcb@2x.png in Resources */,
+				B0D02FFA1AE6123000B1E75F /* placeholder@2x.png in Resources */,
 				B09797CE1AC2518D0014FC7C /* MapView.xib in Resources */,
 				B0963CC31AC8DFED002FD859 /* ChildSubView.xib in Resources */,
 				B080B7C91AC505DC00075A32 /* HotelInfoView.xib in Resources */,
@@ -708,6 +867,7 @@
 				B049D2161AC19D1400E2E18C /* GoogleMaps.bundle in Resources */,
 				B09797E71AC34DB70014FC7C /* HotelListingView.xib in Resources */,
 				B09797DF1AC33E760014FC7C /* HotelTableViewCell.xib in Resources */,
+				B0D02FFB1AE6123000B1E75F /* visa.png in Resources */,
 				B0FE0F4E1AC70A2500DAF635 /* SelectRoomView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -727,10 +887,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				B05BD6271AC1EA65002C2882 /* LoadGooglePlacesData.m in Sources */,
+				B0D02FE61AE6123000B1E75F /* PTKCardNumber.m in Sources */,
 				B080B7C71AC5057100075A32 /* HotelInfoViewController.m in Sources */,
 				B0DF52341ADC74D400136661 /* GooglePlaceTableViewDelegateImplementation.m in Sources */,
 				B0344C471AE5A5F8000BBFCE /* WotaForwardingTextField.m in Sources */,
 				B09C5EA31AD1930600A3D7E8 /* EanHotelListResponse.m in Sources */,
+				B0D02FE31AE6123000B1E75F /* PTKCard.m in Sources */,
 				B0963CC91AC912E5002FD859 /* ChildAgeSelectorViewController.m in Sources */,
 				B0963CC61AC8E034002FD859 /* ChildSubView.m in Sources */,
 				B0963CBC1AC89445002FD859 /* ChildViewController.m in Sources */,
@@ -741,7 +903,9 @@
 				B032F6301AC18F6700809395 /* MainViewController.m in Sources */,
 				B09797D11AC321F90014FC7C /* GooglePlaceDetail.m in Sources */,
 				B05BD6301AC1FEE3002C2882 /* GooglePlace.m in Sources */,
+				B0D02FE81AE6123000B1E75F /* PTKTextField.m in Sources */,
 				B0122E471AD088F800E44319 /* EanAvailabilityHotelRoomResponse.m in Sources */,
+				B0D02FEA1AE6123000B1E75F /* PTKView.m in Sources */,
 				B032F62D1AC18F6700809395 /* AppDelegate.m in Sources */,
 				B032F62A1AC18F6700809395 /* main.m in Sources */,
 				B0963CB91AC786E3002FD859 /* SelectionCriteria.m in Sources */,
@@ -749,25 +913,31 @@
 				B09797E51AC344340014FC7C /* LoadEanData.m in Sources */,
 				B0FE0F471AC6EB9500DAF635 /* BookViewController.m in Sources */,
 				B0DF52371ADC77BA00136661 /* PostalResultsTableViewCell.m in Sources */,
+				B0D02FE51AE6123000B1E75F /* PTKCardExpiry.m in Sources */,
 				B0A87D681AD4B2B3001505A6 /* EanHotelRoomReservationResponse.m in Sources */,
 				B091B8951AD22EFC00BB6CB0 /* AvailableRoomTableViewCell.m in Sources */,
 				B075AB091ADB687B0028C613 /* GoogleAddressComponent.m in Sources */,
+				B0D02FE21AE6123000B1E75F /* PTKAddressZip.m in Sources */,
 				B09797DA1AC33E040014FC7C /* HotelTableViewCell.m in Sources */,
 				B09797F81AC3BC690014FC7C /* THDateDay.m in Sources */,
 				B09797FA1AC3BC690014FC7C /* THDatePickerViewController.m in Sources */,
+				B0D030021AE7380F00B1E75F /* PaymentDetails.m in Sources */,
 				B05BD6241AC1E9FB002C2882 /* AppEnvironment.m in Sources */,
 				B09797C91AC23C1F0014FC7C /* GoogleParser.m in Sources */,
 				B0344C4A1AE5A696000BBFCE /* WotaCardNumberField.m in Sources */,
 				B0963CC11AC8BDC6002FD859 /* ChildTraveler.m in Sources */,
 				B018C0451AD9BEC800DDCE2E /* GuestInfo.m in Sources */,
 				B09797CC1AC24BE20014FC7C /* MapViewController.m in Sources */,
+				B0D02FE41AE6123000B1E75F /* PTKCardCVC.m in Sources */,
 				B09797E21AC343DD0014FC7C /* HotelListingViewController.m in Sources */,
 				B0344C501AE5A7BD000BBFCE /* WotaCardPatternInfo.m in Sources */,
 				B0344C441AE5A560000BBFCE /* WotaMoneyUtils.m in Sources */,
+				B0D02FE91AE6123000B1E75F /* PTKUSAddressZip.m in Sources */,
 				B075AB0C1ADB73560028C613 /* GooglePlaces.m in Sources */,
 				B0122E441AD0885D00E44319 /* EanHotelRoomAvailabilityResponse.m in Sources */,
 				B0D02FB61AE5F92500B1E75F /* Luhn.m in Sources */,
 				B0122E4D1AD0A88500E44319 /* EanHotelDetails.m in Sources */,
+				B0D02FE71AE6123000B1E75F /* PTKComponent.m in Sources */,
 				B05BD62C1AC1FE53002C2882 /* PlaceAutoCompleteTableViewCell.m in Sources */,
 				B0122E501AD0E8C700E44319 /* EanHotelInformationSummary.m in Sources */,
 				B032F6531AC193B300809395 /* CriteriaViewController.m in Sources */,
