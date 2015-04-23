@@ -64,6 +64,8 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 @property (weak, nonatomic) IBOutlet UITextField *cardholderOutlet;
 @property (nonatomic, strong) UIView *expirationInputView;
 @property (nonatomic, strong) UIPickerView *expirationPicker;
+@property (weak, nonatomic) IBOutlet UIButton *deleteCardOutlet;
+@property (weak, nonatomic) IBOutlet UIButton *cancelDeletionOutlet;
 @property (nonatomic, strong) UIButton *expirationNext;
 @property (weak, nonatomic) IBOutlet UIView *ccContainerOutlet;
 
@@ -177,7 +179,7 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
             NSLog(@"PLACESDETAIL:%@", response);
             GooglePlaceDetail *gpd = [GooglePlaceDetail placeDetailFromData:responseData];
             self.selectedBillingAddress = [EanPlace eanPlaceFromGooglePlaceDetail:gpd];
-            [self validateBillingAddress];
+            [self validateBillingAddressWithNoGoColor:YES];
             self.addressTextFieldOutlet.text = self.selectedBillingAddress.formattedAddress;
             break;
         }
@@ -361,11 +363,11 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
                                           creditCardIdentifier:@"123"
                                      creditCardExpirationMonth:[JNKeychain loadValueForKey:kKeyExpMonth]
                                       creditCardExpirationYear:[JNKeychain loadValueForKey:kKeyExpYear]
-                                                      address1:pd.billingAddress.address1
-                                                          city:pd.billingAddress.city
-                                             stateProvinceCode:pd.billingAddress.stateProvinceCode
-                                                   countryCode:pd.billingAddress.countryCode
-                                                    postalCode:pd.billingAddress.postalCode];
+                                                      address1:pd.billingAddress.apiAddress1
+                                                          city:pd.billingAddress.apiCity
+                                             stateProvinceCode:pd.billingAddress.apiStateProvCode
+                                                   countryCode:pd.billingAddress.apiCountryCode
+                                                    postalCode:pd.billingAddress.apiPostalCode];
     
     [self.navigationController pushViewController:bvc animated:YES];
 }
@@ -450,6 +452,7 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
         [self validateCreditCardNumber:cn];
     } else if (textField == self.addressTextFieldOutlet) {
         [self autoCompleteCcBillAddress];
+        [self loadGooglePlacesTableView];
     } else if (textField == self.expirationOutlet) {
         
     } else if (textField == self.cardholderOutlet) {
@@ -489,11 +492,12 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 - (BOOL)textFieldShouldClear:(UITextField *)textField {
     if (textField == self.ccNumberOutlet) {
         self.isValidCreditCard = NO;
-        [self isWeGood];
+        [self enableOrDisableRightBarButtonItem];
         self.ccNumberOutlet.backgroundColor = [UIColor whiteColor];
     } else if (textField == self.addressTextFieldOutlet) {
         self.googlePlacesTableViewDelegate.tableData = nil;
         [self.googlePlacesTableView reloadData];
+        [self loadGooglePlacesTableView];
         self.isValidBillingAddress = NO;
         [self isWeGood];
         self.addressTextFieldOutlet.backgroundColor = [UIColor whiteColor];
@@ -797,11 +801,18 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     
     [self updateTextInExpirationOutlet];
     
-    self.cardholderOutlet.text = [NSString stringWithFormat:@"%@ %@", pd.cardHolderFirstName, pd.cardHolderLastName];
+    if (nil != pd.cardHolderFirstName && nil != pd.cardHolderLastName) {
+        self.cardholderOutlet.text = [NSString stringWithFormat:@"%@ %@", pd.cardHolderFirstName, pd.cardHolderLastName];
+    }
     
     [self validateCreditCardNumber:self.ccNumberOutlet.cardNumber];
-    [self validateBillingAddress];
+    [self validateBillingAddressWithNoGoColor:NO];
     [self validateCardholder:self.cardholderOutlet.text];
+    
+    if ([self isWeGood]) {
+        self.deleteCardOutlet.hidden = NO;
+        [self.deleteCardOutlet addTarget:self action:@selector(initiateDeleteCard:) forControlEvents:UIControlEventTouchUpInside];
+    }
     
     [UIView animateWithDuration:kAnimationDuration animations:^{
         paymentDetailsView.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
@@ -811,13 +822,25 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 }
 
 - (void)dropPaymentDetailsView:(id)sender {
+    PaymentDetails *pd = [PaymentDetails card1];
+    
     if (sender == self.navigationItem.rightBarButtonItem) {
-        PaymentDetails *pd = [PaymentDetails card1];
         pd.cardNumber = self.ccNumberOutlet.cardNumber;
         pd.billingAddress = self.selectedBillingAddress;
         [self saveDaExpiration:self.expirationOutlet.text];
-        pd.cardHolderFirstName = [self.cardholderOutlet.text componentsSeparatedByString:@" "][0];
-        pd.cardHolderLastName = [self.cardholderOutlet.text componentsSeparatedByString:@" "][1];
+        
+        NSArray *chn = [self.cardholderOutlet.text componentsSeparatedByString:@" "];
+        if ([chn count] >= 2) {
+            pd.cardHolderFirstName = [self.cardholderOutlet.text componentsSeparatedByString:@" "][0];
+            pd.cardHolderLastName = [self.cardholderOutlet.text componentsSeparatedByString:@" "][1];
+        }
+    }
+    
+    if (sender == self.deleteCardOutlet) {
+        self.ccNumberOutlet.cardNumber = nil;
+        self.selectedBillingAddress = nil;
+        self.cardholderOutlet.text = nil;
+        [PaymentDetails deleteCard:pd];
     }
     
     [self dropGooglePlacesTableView];
@@ -873,12 +896,16 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 
 #pragma mark Validation methods
 
-- (void)isWeGood {
-    if (self.isValidCreditCard && self.isValidBillingAddress && self.isValidCardHolder) {
+- (void)enableOrDisableRightBarButtonItem {
+    if ([self isWeGood]) {
         self.navigationItem.rightBarButtonItem.enabled = YES;
     } else {
         self.navigationItem.rightBarButtonItem.enabled = NO;
     }
+}
+
+- (BOOL)isWeGood {
+    return self.isValidCreditCard && self.isValidBillingAddress && self.isValidCardHolder;
 }
 
 - (void)validateCreditCardNumber:(NSString *)cardNumber {
@@ -890,19 +917,30 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
         self.isValidCreditCard = NO;
     }
     
-    [self isWeGood];
+    [self enableOrDisableRightBarButtonItem];
 }
 
-- (void)validateBillingAddress {
-    if ([self.selectedBillingAddress isValidToSubmitAsBillingAddress]) {
-        self.addressTextFieldOutlet.backgroundColor = kColorGoodToGo();
-        self.isValidBillingAddress = YES;
-    } else {
-        self.addressTextFieldOutlet.backgroundColor = kColorNoGo();
-        self.isValidBillingAddress = NO;
+- (void)validateBillingAddressWithNoGoColor:(BOOL)withNoGoColor {
+    ADDRESS_VALIDITY_REASONS avr = [self.selectedBillingAddress isValidToSubmitToEanApiAsBillingAddress];
+    
+    switch (avr) {
+        case VALID_ADDRESS: {
+            self.addressTextFieldOutlet.backgroundColor = kColorGoodToGo();
+            self.isValidBillingAddress = YES;
+            break;
+        }
+        default: {
+            if (withNoGoColor) {
+                self.addressTextFieldOutlet.backgroundColor = kColorNoGo();
+            } else {
+                self.addressTextFieldOutlet.backgroundColor = [UIColor whiteColor];
+            }
+            self.isValidBillingAddress = NO;
+            break;
+        }
     }
     
-    [self isWeGood];
+    [self enableOrDisableRightBarButtonItem];
 }
 
 - (BOOL)validateExpiration {
@@ -912,13 +950,74 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 - (void)validateCardholder:(NSString *)cardHolder {
     NSArray *ch = [cardHolder componentsSeparatedByString:@" "];
     if ([ch count] != 2 || [ch[1] length] < 2) {
+        self.cardholderOutlet.backgroundColor = [UIColor whiteColor];
         self.isValidCardHolder = NO;
     } else {
         self.cardholderOutlet.backgroundColor = kColorGoodToGo();
         self.isValidCardHolder = YES;
     }
     
-    [self isWeGood];
+    [self enableOrDisableRightBarButtonItem];
+}
+
+#pragma mark Card Deletion Selectors
+
+- (void)initiateDeleteCard:(id)sender {
+    self.ccNumberOutlet.userInteractionEnabled = NO;
+    self.addressTextFieldOutlet.userInteractionEnabled = NO;
+    self.cardholderOutlet.userInteractionEnabled = NO;
+    
+    self.cancelDeletionOutlet.transform = CGAffineTransformMakeTranslation(300, 0);
+    self.cancelDeletionOutlet.hidden = NO;
+    [self.cancelDeletionOutlet addTarget:self action:@selector(cancelDeleteCard:) forControlEvents:UIControlEventTouchUpInside];
+    
+    [UIView animateWithDuration:0.4f animations:^{
+        self.cancelDeletionOutlet.transform = CGAffineTransformMakeTranslation(0, 0);
+    } completion:^(BOOL finished) {
+        ;
+    }];
+    
+    self.navigationItem.leftBarButtonItem.enabled = NO;
+    self.navigationItem.rightBarButtonItem.enabled = NO;
+    
+    self.ccNumberOutlet.backgroundColor = [UIColor grayColor];
+    self.addressTextFieldOutlet.backgroundColor = [UIColor grayColor];
+    self.cardholderOutlet.backgroundColor = [UIColor grayColor];
+    
+    self.ccNumberOutlet.textColor = [UIColor whiteColor];
+    self.addressTextFieldOutlet.textColor = [UIColor whiteColor];
+    self.cardholderOutlet.textColor = [UIColor whiteColor];
+    
+    [self.deleteCardOutlet setTitle:@"Confirm Deletion" forState:UIControlStateNormal];
+    [self.deleteCardOutlet removeTarget:self action:@selector(initiateDeleteCard:) forControlEvents:UIControlEventTouchUpInside];
+    [self.deleteCardOutlet addTarget:self action:@selector(dropPaymentDetailsView:) forControlEvents:UIControlEventTouchUpInside];
+}
+
+- (void)cancelDeleteCard:(id)sender {
+    self.ccNumberOutlet.userInteractionEnabled = YES;
+    self.addressTextFieldOutlet.userInteractionEnabled = YES;
+    self.cardholderOutlet.userInteractionEnabled = YES;
+    
+    [UIView animateWithDuration:0.4f animations:^{
+        self.cancelDeletionOutlet.transform = CGAffineTransformMakeTranslation(300, 0);
+    } completion:^(BOOL finished) {
+        self.cancelDeletionOutlet.hidden = YES;
+    }];
+    
+    self.navigationItem.leftBarButtonItem.enabled = YES;
+    
+    [self validateCreditCardNumber:self.ccNumberOutlet.cardNumber];
+    [self validateBillingAddressWithNoGoColor:NO];
+    [self validateCardholder:self.cardholderOutlet.text];
+    
+    self.ccNumberOutlet.textColor = [UIColor blackColor];
+    self.addressTextFieldOutlet.textColor = [UIColor blackColor];
+    self.cardholderOutlet.textColor = [UIColor blackColor];
+    
+    self.deleteCardOutlet.hidden = NO;
+    [self.deleteCardOutlet setTitle:@"Delete This Card" forState:UIControlStateNormal];
+    [self.deleteCardOutlet removeTarget:self action:@selector(dropPaymentDetailsView:) forControlEvents:UIControlEventTouchUpInside];
+    [self.deleteCardOutlet addTarget:self action:@selector(initiateDeleteCard:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 @end

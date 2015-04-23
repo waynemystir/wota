@@ -18,28 +18,30 @@ NSString * const kKeyGoogleFormattedAddress = @"googleFormattedAddress";
 
 @implementation EanPlace
 
-- (BOOL)isValidToSubmitAsBillingAddress {
+- (ADDRESS_VALIDITY_REASONS)isValidToSubmitToEanApiAsBillingAddress {
     if (nil == self.address1 || [self.address1 length] < 2) {
-        return NO;
+        return INVALID_STREET_ADDRESS;
     }
     
     if (nil == self.city) {
-        return NO;
+        return INVALID_CITY;
     }
     
-    if (nil == self.stateProvinceCode) {
-        return NO;
+    if ([self.countryCode isEqualToString:@"US"] || [self.countryCode isEqualToString:@"CA"] || [self.countryCode isEqualToString:@"AU"]) {
+        if (nil == self.stateProvinceCode) {
+            return INVALID_STATE;
+        }
     }
     
     if (nil == self.postalCode) {
-        return NO;
+        return INVALID_POSTAL;
     }
     
     if (nil == self.countryCode) {
-        return NO;
+        return INVALID_COUNTRY;
     }
     
-    return YES;
+    return VALID_ADDRESS;
 }
 
 + (EanPlace *)eanPlaceFromGooglePlaceDetail:(GooglePlaceDetail *)gpd {
@@ -49,7 +51,9 @@ NSString * const kKeyGoogleFormattedAddress = @"googleFormattedAddress";
     
     EanPlace *ep = [[EanPlace alloc] init];
     
-    ep.address1 = [NSString stringWithFormat:@"%@ %@", gpd.streetNumberLongName, gpd.routeLongName];
+    NSString *addressSpace = gpd.streetNumberLongName && gpd.routeLongName ? @" " : @"";
+    
+    ep.address1 = [[gpd.streetNumberLongName ? : @"" stringByAppendingString:addressSpace] stringByAppendingString:gpd.routeLongName ? : @""];
     
     ep.city = gpd.localityLongName ? : gpd.postalTownShortName ? : gpd.neighborhoodShortName ? : gpd.administrativeAreaLevel3ShortName;
     
@@ -59,7 +63,11 @@ NSString * const kKeyGoogleFormattedAddress = @"googleFormattedAddress";
     
     ep.postalCode = gpd.postalCodeShortName;
     
-    ep.formattedAddress = [NSString stringWithFormat:@"%@, %@, %@ %@ %@", ep.address1, ep.city, ep.stateProvinceCode, ep.postalCode, ep.countryCode];
+    if ([ep.countryCode isEqualToString:@"US"] || [ep.countryCode isEqualToString:@"CA"] || [ep.countryCode isEqualToString:@"AU"]) {
+        ep.formattedAddress = [NSString stringWithFormat:@"%@, %@, %@ %@, %@", ep.address1, ep.city, ep.stateProvinceCode, ep.postalCode, ep.countryCode];
+    } else {
+        ep.formattedAddress = [NSString stringWithFormat:@"%@, %@ %@, %@", ep.address1, ep.city, ep.postalCode, ep.countryCode];
+    }
     
     ep.googleFormattedAddress = gpd.formattedAddress;
     
@@ -90,6 +98,56 @@ NSString * const kKeyGoogleFormattedAddress = @"googleFormattedAddress";
     [aCoder encodeObject:_postalCode forKey:kKeyPostalCode];
     [aCoder encodeObject:_formattedAddress forKey:kKeyFormattedAddress];
     [aCoder encodeObject:_googleFormattedAddress forKey:kKeyGoogleFormattedAddress];
+}
+
+#pragma mark EAN API Getters
+
+- (NSString *)apiAddress1 {
+    return [self.address1 substringToIndex:28];
+}
+
+- (NSString *)apiCity {
+    return self.city;
+}
+
+- (NSString *)apiStateProvCode {
+    if ([self.countryCode isEqualToString:@"US"] || [self.countryCode isEqualToString:@"CA"]) {
+        
+        return self.stateProvinceCode;
+        
+    } else if ([self.countryCode isEqualToString:@"AU"]) {
+        
+        if ([self.stateProvinceCode isEqualToString:@"ACT"]) {
+            return @"AC";
+        } else if ([self.stateProvinceCode isEqualToString:@"NSW"]) {
+            return @"NW";
+        } else if ([self.stateProvinceCode isEqualToString:@"NT"]) {
+            return @"NT";
+        } else if ([self.stateProvinceCode isEqualToString:@"QLD"]) {
+            return @"QL";
+        } else if ([self.stateProvinceCode isEqualToString:@"SA"]) {
+            return @"SA";
+        } else if ([self.stateProvinceCode isEqualToString:@"TAS"]) {
+            return @"TS";
+        } else if ([self.stateProvinceCode isEqualToString:@"VIC"]) {
+            return @"VC";
+        } else if ([self.stateProvinceCode isEqualToString:@"WA"]) {
+            return @"WT";
+        } else {
+            return nil;
+        }
+        
+    } else {
+        return nil;
+    }
+}
+
+- (NSString *)apiCountryCode {
+    return self.countryCode;
+}
+
+- (NSString *)apiPostalCode {
+    return self.postalCode;
 }
 
 @end

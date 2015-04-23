@@ -18,4 +18,6 @@
 
 + (PaymentDetails *)card1;
 
++ (void)deleteCard:(PaymentDetails *)card;
+
 @end

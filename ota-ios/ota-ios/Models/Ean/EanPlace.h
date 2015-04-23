@@ -9,6 +9,15 @@
 #import <Foundation/Foundation.h>
 #import "GooglePlaceDetail.h"
 
+typedef NS_ENUM(NSUInteger, ADDRESS_VALIDITY_REASONS) {
+    INVALID_STREET_ADDRESS = 1,
+    INVALID_CITY = 2,
+    INVALID_STATE = 3,
+    INVALID_POSTAL = 4,
+    INVALID_COUNTRY = 5,
+    VALID_ADDRESS = 6
+};
+
 @interface EanPlace : NSObject <NSCoding>
 
 @property (nonatomic, strong) NSString *address1;
@@ -19,7 +28,16 @@
 @property (nonatomic, strong) NSString *formattedAddress;
 @property (nonatomic, strong) NSString *googleFormattedAddress;
 
-- (BOOL)isValidToSubmitAsBillingAddress;
+/**
+ *
+ */
+@property (nonatomic, strong, readonly) NSString *apiAddress1;
+@property (nonatomic, strong, readonly) NSString *apiCity;
+@property (nonatomic, strong, readonly) NSString *apiStateProvCode;
+@property (nonatomic, strong, readonly) NSString *apiCountryCode;
+@property (nonatomic, strong, readonly) NSString *apiPostalCode;
+
+- (ADDRESS_VALIDITY_REASONS)isValidToSubmitToEanApiAsBillingAddress;
 
 + (EanPlace *)eanPlaceFromGooglePlaceDetail:(GooglePlaceDetail *)gpd;
 

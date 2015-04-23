@@ -6,7 +6,15 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CriteriaViewController">
             <connections>
+                <outlet property="addAdultOutlet" destination="dtW-yk-Z64" id="gon-XK-l7N"/>
+                <outlet property="adultsLabel" destination="LDc-9B-Paw" id="eC3-GI-Wgw"/>
+                <outlet property="arrivalDateOutlet" destination="zKx-ZL-Pj9" id="ppM-aE-fbX"/>
+                <outlet property="checkHotelsOutlet" destination="z87-FF-p3g" id="wv4-49-qjk"/>
+                <outlet property="cupHolderOutlet" destination="kFk-pZ-S3t" id="WK9-SI-5fE"/>
+                <outlet property="kidsButton" destination="siV-2O-lDU" id="2JA-Lv-eDl"/>
                 <outlet property="mapButtonOutlet" destination="siT-74-Zl3" id="JXl-Ne-lui"/>
+                <outlet property="minusAdultOutlet" destination="wDc-E8-qCD" id="jCG-wO-mkO"/>
+                <outlet property="returnDateOutlet" destination="jp2-aZ-cy3" id="sSF-8t-hL6"/>
                 <outlet property="view" destination="iN0-l3-epB" id="nJX-7O-cmC"/>
                 <outlet property="whereToTextFieldOutlet" destination="RXh-qF-H7q" id="pPJ-Vd-7wf"/>
             </connections>
@@ -30,6 +38,73 @@
                         <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="Jh1-3W-a0v"/>
                     </connections>
                 </button>
+                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kFk-pZ-S3t" userLabel="cupHolder">
+                    <rect key="frame" x="10" y="137" width="300" height="400"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zKx-ZL-Pj9" userLabel="arrivalDateButton" customClass="WotaButton">
+                            <rect key="frame" x="50" y="37" width="200" height="30"/>
+                            <state key="normal" title="Arrival Date">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="Q7b-Uv-B65"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jp2-aZ-cy3" userLabel="returnDateButton" customClass="WotaButton">
+                            <rect key="frame" x="50" y="90" width="200" height="30"/>
+                            <state key="normal" title="Return Date">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="xNp-g9-Td7"/>
+                            </connections>
+                        </button>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="222 Adults" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LDc-9B-Paw" userLabel="adultsLabel">
+                            <rect key="frame" x="100" y="157" width="100" height="21"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wDc-E8-qCD" userLabel="minusAdultButton" customClass="WotaButton">
+                            <rect key="frame" x="33" y="153" width="46" height="30"/>
+                            <state key="normal" title="-">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="akC-a3-IzZ"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dtW-yk-Z64" userLabel="addAdultButton" customClass="WotaButton">
+                            <rect key="frame" x="217" y="153" width="46" height="30"/>
+                            <state key="normal" title="+">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="B72-x9-GsV"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="siV-2O-lDU" userLabel="kidsButton" customClass="WotaButton">
+                            <rect key="frame" x="75" y="214" width="150" height="30"/>
+                            <state key="normal" title="Add Children">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="b6q-0c-OaN"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="z87-FF-p3g" userLabel="checkHotelsButton" customClass="WotaButton">
+                            <rect key="frame" x="83" y="275" width="137" height="39"/>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                            <state key="normal" title="Find Hotels">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="zXP-Ou-3YV"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                </view>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <point key="canvasLocation" x="286" y="386"/>

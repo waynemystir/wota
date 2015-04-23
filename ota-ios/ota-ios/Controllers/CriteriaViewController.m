@@ -18,7 +18,6 @@
 #import "HotelListingViewController.h"
 #import "THDatePickerViewController.h"
 #import "ChildViewController.h"
-#import <AudioToolbox/AudioToolbox.h>
 
 @interface CriteriaViewController () <LoadDataProtocol, UITableViewDataSource, UITableViewDelegate, THDatePickerDelegate>
 
@@ -33,14 +32,14 @@
 //autoComplete is NO and placeDetails is YES
 @property (nonatomic) BOOL autoCompleteOrPlaceDetails;
 
-@property (nonatomic, strong) UIView *cupHolder;
-@property (nonatomic, strong) UIButton *arrivalDateOutlet;
-@property (nonatomic, strong) UIButton *returnDateOutlet;
-@property (nonatomic, strong) UILabel *adultsLabel;
-@property (nonatomic, strong) UIButton *addAdultButton;
-@property (nonatomic, strong) UIButton *minusAdultButton;
-@property (nonatomic, strong) UIButton *checkHotelsButton;
-@property (nonatomic, strong) UIButton *kidsButton;
+@property (nonatomic, strong) IBOutlet UIView *cupHolderOutlet;
+@property (nonatomic, strong) IBOutlet UIButton *arrivalDateOutlet;
+@property (nonatomic, strong) IBOutlet UIButton *returnDateOutlet;
+@property (nonatomic, strong) IBOutlet UILabel *adultsLabel;
+@property (nonatomic, strong) IBOutlet UIButton *addAdultOutlet;
+@property (nonatomic, strong) IBOutlet UIButton *minusAdultOutlet;
+@property (nonatomic, strong) IBOutlet UIButton *checkHotelsOutlet;
+@property (nonatomic, strong) IBOutlet UIButton *kidsButton;
 
 @property (nonatomic, strong) THDatePickerViewController *datePicker;
 @property BOOL arrivalOrReturn; //arrival == NO and return == YES
@@ -70,57 +69,8 @@
     self.automaticallyAdjustsScrollViewInsets = NO;
     //***********************************************************************
     
-    self.cupHolder = [[UIView alloc] initWithFrame:CGRectMake(13, 137, 300, 400)];
-//    self.cupHolder.backgroundColor = [UIColor redColor];
-    [self.view addSubview:self.cupHolder];
-    
-    self.arrivalDateOutlet = [[UIButton alloc] initWithFrame:CGRectMake(50, 20, 200, 50)];
-    self.arrivalDateOutlet.backgroundColor = [UIColor whiteColor];
-    [self.arrivalDateOutlet setTitle:@"Arrival Date" forState:UIControlStateNormal];
-    [self.arrivalDateOutlet setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [self.arrivalDateOutlet addTarget:self action:@selector(justPushIt:) forControlEvents:UIControlEventTouchUpInside];
-    [self.cupHolder addSubview: self.arrivalDateOutlet];
-    
-    self.returnDateOutlet = [[UIButton alloc] initWithFrame:CGRectMake(50, 90, 200, 50)];
-    self.returnDateOutlet.backgroundColor = [UIColor whiteColor];
-    [self.returnDateOutlet setTitle:@"Return Date" forState:UIControlStateNormal];
-    [self.returnDateOutlet setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [self.returnDateOutlet addTarget:self action:@selector(justPushIt:) forControlEvents:UIControlEventTouchUpInside];
-    [self.cupHolder addSubview: self.returnDateOutlet];
-    
-    self.adultsLabel = [[UILabel alloc] initWithFrame:CGRectMake(45, 160, 100, 50)];
-    self.adultsLabel.backgroundColor = [UIColor whiteColor];
     [self setNumberOfAdultsLabel:0];
-    self.adultsLabel.textColor = [UIColor blackColor];
-    [self.cupHolder addSubview: self.adultsLabel];
-    
-    self.minusAdultButton = [[UIButton alloc] initWithFrame:CGRectMake(155, 160, 50, 50)];
-    self.minusAdultButton.backgroundColor = [UIColor whiteColor];
-    [self.minusAdultButton setTitle:@"M" forState:UIControlStateNormal];
-    [self.minusAdultButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [self.minusAdultButton addTarget:self action:@selector(justPushIt:) forControlEvents:UIControlEventTouchUpInside];
-    [self.cupHolder addSubview: self.minusAdultButton];
-    
-    self.addAdultButton = [[UIButton alloc] initWithFrame:CGRectMake(205, 160, 50, 50)];
-    self.addAdultButton.backgroundColor = [UIColor whiteColor];
-    [self.addAdultButton setTitle:@"A" forState:UIControlStateNormal];
-    [self.addAdultButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [self.addAdultButton addTarget:self action:@selector(justPushIt:) forControlEvents:UIControlEventTouchUpInside];
-    [self.cupHolder addSubview: self.addAdultButton];
-    
-    self.kidsButton = [[UIButton alloc] initWithFrame:CGRectMake(50, 230, 200, 50)];
-    self.kidsButton.backgroundColor = [UIColor whiteColor];
     [self setNumberOfKidsButtonLabel];
-    [self.kidsButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [self.kidsButton addTarget:self action:@selector(justPushIt:) forControlEvents:UIControlEventTouchUpInside];
-    [self.cupHolder addSubview: self.kidsButton];
-    
-    self.checkHotelsButton = [[UIButton alloc] initWithFrame:CGRectMake(50, 300, 200, 50)];
-    self.checkHotelsButton.backgroundColor = [UIColor whiteColor];
-    [self.checkHotelsButton setTitle:@"Find Hotels" forState:UIControlStateNormal];
-    [self.checkHotelsButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [self.checkHotelsButton addTarget:self action:@selector(justPushIt:) forControlEvents:UIControlEventTouchUpInside];
-    [self.cupHolder addSubview: self.checkHotelsButton];
     
     self.viewFormatter = [[NSDateFormatter alloc] init];
     [_viewFormatter setDateFormat:@"MMMM dd, yyyy"];
@@ -162,13 +112,10 @@
 }
 
 - (IBAction)justPushIt:(id)sender {
-    
-    AudioServicesPlaySystemSound(0x450);
-    
     if (sender == self.mapButtonOutlet) {
         MapViewController *mvc = [MapViewController new];
         [self.navigationController pushViewController:mvc animated:YES];
-    } else if (sender == self.checkHotelsButton) {
+    } else if (sender == self.checkHotelsOutlet) {
         [self letsFindHotels];
     } else if (sender == self.arrivalDateOutlet) {
         self.arrivalOrReturn = NO;
@@ -176,9 +123,9 @@
     } else if (sender == self.returnDateOutlet) {
         self.arrivalOrReturn = YES;
         [self presentTheDatePicker];
-    } else if (sender == self.minusAdultButton) {
+    } else if (sender == self.minusAdultOutlet) {
         [self setNumberOfAdultsLabel:-1];
-    } else if (sender == self.addAdultButton) {
+    } else if (sender == self.addAdultOutlet) {
         [self setNumberOfAdultsLabel:1];
     } else if (sender == self.kidsButton) {
         [self presentKidsSelector];
@@ -315,8 +262,8 @@
         CGRect acp = strongSelf.autoCompleteTableViewOutlet.frame;
         strongSelf.autoCompleteTableViewOutlet.frame = CGRectMake(acp.origin.x, acp.origin.y, acp.size.width, 322.0f);
         
-        CGRect chf = strongSelf.cupHolder.frame;
-        strongSelf.cupHolder.frame = CGRectMake(chf.origin.x, chf.origin.y + 322.0f, chf.size.width, chf.size.height);
+//        CGRect chf = strongSelf.cupHolder.frame;
+//        strongSelf.cupHolder.frame = CGRectMake(chf.origin.x, chf.origin.y + 322.0f, chf.size.width, chf.size.height);
     } completion:^(BOOL finished) {
         typeof(self) strongSelf = weakSelf;
         strongSelf.isAutoCompleteTableViewExpanded = YES;
@@ -330,8 +277,8 @@
         CGRect acp = strongSelf.autoCompleteTableViewOutlet.frame;
         strongSelf.autoCompleteTableViewOutlet.frame = CGRectMake(acp.origin.x, acp.origin.y, acp.size.width, 0.0f);
         
-        CGRect chf = strongSelf.cupHolder.frame;
-        strongSelf.cupHolder.frame = CGRectMake(chf.origin.x, chf.origin.y - 322.0f, chf.size.width, chf.size.height);
+//        CGRect chf = strongSelf.cupHolder.frame;
+//        strongSelf.cupHolder.frame = CGRectMake(chf.origin.x, chf.origin.y - 322.0f, chf.size.width, chf.size.height);
     } completion:^(BOOL finished) {
         typeof(self) strongSelf = weakSelf;
         strongSelf.isAutoCompleteTableViewExpanded = NO;

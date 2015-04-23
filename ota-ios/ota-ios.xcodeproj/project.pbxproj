@@ -43,6 +43,7 @@
 		B049D2101AC19B2300E2E18C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B049D2051AC19B2300E2E18C /* SystemConfiguration.framework */; };
 		B049D2141AC19CB200E2E18C /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B049D2131AC19CB200E2E18C /* GoogleMaps.framework */; };
 		B049D2161AC19D1400E2E18C /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B049D2151AC19D1400E2E18C /* GoogleMaps.bundle */; };
+		B058A4941AE8B52C00E42594 /* WotaButton.m in Sources */ = {isa = PBXBuildFile; fileRef = B058A4931AE8B52C00E42594 /* WotaButton.m */; };
 		B05BD6241AC1E9FB002C2882 /* AppEnvironment.m in Sources */ = {isa = PBXBuildFile; fileRef = B05BD6231AC1E9FB002C2882 /* AppEnvironment.m */; };
 		B05BD6271AC1EA65002C2882 /* LoadGooglePlacesData.m in Sources */ = {isa = PBXBuildFile; fileRef = B05BD6251AC1EA65002C2882 /* LoadGooglePlacesData.m */; };
 		B05BD62C1AC1FE53002C2882 /* PlaceAutoCompleteTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B05BD62B1AC1FE53002C2882 /* PlaceAutoCompleteTableViewCell.m */; };
@@ -189,6 +190,8 @@
 		B049D2051AC19B2300E2E18C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		B049D2131AC19CB200E2E18C /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMaps.framework; sourceTree = "<group>"; };
 		B049D2151AC19D1400E2E18C /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = Frameworks/GoogleMaps.framework/Versions/A/Resources/GoogleMaps.bundle; sourceTree = SOURCE_ROOT; };
+		B058A4921AE8B52C00E42594 /* WotaButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WotaButton.h; sourceTree = "<group>"; };
+		B058A4931AE8B52C00E42594 /* WotaButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WotaButton.m; sourceTree = "<group>"; };
 		B05BD6221AC1E9FB002C2882 /* AppEnvironment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppEnvironment.h; sourceTree = "<group>"; };
 		B05BD6231AC1E9FB002C2882 /* AppEnvironment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppEnvironment.m; sourceTree = "<group>"; };
 		B05BD6251AC1EA65002C2882 /* LoadGooglePlacesData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadGooglePlacesData.m; sourceTree = "<group>"; };
@@ -596,6 +599,8 @@
 				B0DF52331ADC74D400136661 /* GooglePlaceTableViewDelegateImplementation.m */,
 				B0DF52351ADC77BA00136661 /* PostalResultsTableViewCell.h */,
 				B0DF52361ADC77BA00136661 /* PostalResultsTableViewCell.m */,
+				B058A4921AE8B52C00E42594 /* WotaButton.h */,
+				B058A4931AE8B52C00E42594 /* WotaButton.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -897,6 +902,7 @@
 				B0963CC61AC8E034002FD859 /* ChildSubView.m in Sources */,
 				B0963CBC1AC89445002FD859 /* ChildViewController.m in Sources */,
 				B0FE0F4C1AC70A0700DAF635 /* SelectRoomViewController.m in Sources */,
+				B058A4941AE8B52C00E42594 /* WotaButton.m in Sources */,
 				B03B42FD1ADDFE1B0083A6EA /* EanPlace.m in Sources */,
 				B09C5EA61AD1A16E00A3D7E8 /* EanHotelListHotelSummary.m in Sources */,
 				B018C04B1ADA08CF00DDCE2E /* JNKeychain.m in Sources */,

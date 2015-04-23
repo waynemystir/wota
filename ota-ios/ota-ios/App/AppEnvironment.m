@@ -26,7 +26,8 @@ NSString * const EAN_ROOMS_AVAILABLE = @"hotel/v3/avail";
 NSString * const EAN_BOOK_RESERVATION = @"hotel/v3/res";
 NSString * const EAN_GEO_SEARCH = @"hotel/v3/geoSearch";
 
-NSString * const GOOGLE_API_KEY = @"AIzaSyBTMg_o0S630MntWlqDC4J9tuNrh_YkLIo";
+//NSString * const GOOGLE_API_KEY = @"AIzaSyBTMg_o0S630MntWlqDC4J9tuNrh_YkLIo";
+NSString * const GOOGLE_API_KEY = @"AIzaSyDXmlmSp43YsY1QfPMaBP5Ww5UIXWNXXho";
 
 int const URL_REQUEST_TIMEOUT = 30;
 NSString * const WOTA_CACHE_DIRECTORY = @"wota_cache_directory";

@@ -10,6 +10,8 @@
 #import "JNKeychain.h"
 #import "AppEnvironment.h"
 
+static PaymentDetails *_card1 = nil;
+
 NSString * const kKeyDaNumber = @"AcBrCeDdEiFtGcHaIrJdKnLuMmNbOePr";
 NSString * const kKeyBillingAddress = @"billingAddress";
 NSString * const kKeyCardHolderFirstName = @"cardHolderFirstName";
@@ -18,7 +20,6 @@ NSString * const kKeyCardHolderLastName = @"cardHolderLastName";
 @implementation PaymentDetails
 
 + (PaymentDetails *)card1 {
-    static PaymentDetails *_card1 = nil;
     static dispatch_once_t onceToken;
     
     dispatch_once(&onceToken, ^{
@@ -35,6 +36,15 @@ NSString * const kKeyCardHolderLastName = @"cardHolderLastName";
 - (void)save {
     if (![JNKeychain saveValue:self forKey:kKeyPaymentDetails1]) {
         NSLog(@"ERROR: There was a problem saving payment details");
+    }
+}
+
++ (void)deleteCard:(PaymentDetails *)card {
+    if (card == _card1) {
+        _card1 = nil;
+        if (![JNKeychain deleteValueForKey:kKeyPaymentDetails1]) {
+            NSLog(@"ERROR: There was a problem deleting payment details");
+        }
     }
 }
 
