@@ -14,6 +14,8 @@ static PaymentDetails *_card1 = nil;
 
 NSString * const kKeyDaNumber = @"AcBrCeDdEiFtGcHaIrJdKnLuMmNbOePr";
 NSString * const kKeyBillingAddress = @"billingAddress";
+NSString * const kKeyExpirMonth = @"expirationMonth";
+NSString * const kKeyExpirYear = @"expirationYear";
 NSString * const kKeyCardHolderFirstName = @"cardHolderFirstName";
 NSString * const kKeyCardHolderLastName = @"cardHolderLastName";
 
@@ -54,6 +56,8 @@ NSString * const kKeyCardHolderLastName = @"cardHolderLastName";
     if (self = [super init]) {
         _cardNumber = [aDecoder decodeObjectForKey:kKeyDaNumber];
         _billingAddress = [aDecoder decodeObjectForKey:kKeyBillingAddress];
+        _expirationMonth = [aDecoder decodeObjectForKey:kKeyExpirMonth];
+        _expirationYear = [aDecoder decodeObjectForKey:kKeyExpirYear];
         _cardHolderFirstName = [aDecoder decodeObjectForKey:kKeyCardHolderFirstName];
         _cardHolderLastName = [aDecoder decodeObjectForKey:kKeyCardHolderLastName];
     }
@@ -64,6 +68,8 @@ NSString * const kKeyCardHolderLastName = @"cardHolderLastName";
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [aCoder encodeObject:_cardNumber forKey:kKeyDaNumber];
     [aCoder encodeObject:_billingAddress forKey:kKeyBillingAddress];
+    [aCoder encodeObject:_expirationMonth forKey:kKeyExpirMonth];
+    [aCoder encodeObject:_expirationYear forKey:kKeyExpirYear];
     [aCoder encodeObject:_cardHolderFirstName forKey:kKeyCardHolderFirstName];
     [aCoder encodeObject:_cardHolderLastName forKey:kKeyCardHolderLastName];
 }
@@ -77,6 +83,16 @@ NSString * const kKeyCardHolderLastName = @"cardHolderLastName";
 
 - (void)setBillingAddress:(EanPlace *)billingAddress {
     _billingAddress = billingAddress;
+    [self save];
+}
+
+- (void)setExpirationMonth:(NSString *)expirationMonth {
+    _expirationMonth = expirationMonth;
+    [self save];
+}
+
+- (void)setExpirationYear:(NSString *)expirationYear {
+    _expirationYear = expirationYear;
     [self save];
 }
 

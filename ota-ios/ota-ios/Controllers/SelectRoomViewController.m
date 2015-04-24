@@ -17,7 +17,6 @@
 #import "GuestInfo.h"
 #import "PaymentDetails.h"
 #import "AppEnvironment.h"
-#import "JNKeychain.h"
 #import "GoogleParser.h"
 #import "GooglePlaces.h"
 #import "GooglePlaceDetail.h"
@@ -84,6 +83,7 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 
 @property (nonatomic) BOOL isValidCreditCard;
 @property (nonatomic) BOOL isValidBillingAddress;
+@property (nonatomic) BOOL isValidExpiration;
 @property (nonatomic) BOOL isValidCardHolder;
 
 - (IBAction)justPushIt:(id)sender;
@@ -361,8 +361,8 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
                                                 creditCardType:@"CA"
                                               creditCardNumber:pd.cardNumber
                                           creditCardIdentifier:@"123"
-                                     creditCardExpirationMonth:[JNKeychain loadValueForKey:kKeyExpMonth]
-                                      creditCardExpirationYear:[JNKeychain loadValueForKey:kKeyExpYear]
+                                     creditCardExpirationMonth:pd.expirationMonth
+                                      creditCardExpirationYear:pd.expirationYear
                                                       address1:pd.billingAddress.apiAddress1
                                                           city:pd.billingAddress.apiCity
                                              stateProvinceCode:pd.billingAddress.apiStateProvCode
@@ -372,14 +372,12 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     [self.navigationController pushViewController:bvc animated:YES];
 }
 
-- (void)saveDaExpiration:(NSString *)expirationString {
-    // TODO: somehow check for valid expiration?
-    
-    if (nil == expirationString) {
+- (void)saveDaExpiration {
+    if (nil == self.expirationOutlet.text) {
         return;
     }
     
-    NSArray *expArr = [expirationString componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" "]];
+    NSArray *expArr = [self.expirationOutlet.text componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" "]];
     
     if (nil == expArr || [expArr count] != 2) {
         return;
@@ -392,8 +390,9 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     [dateFormatter setDateFormat:@"MM"];
     NSDate *daDate = [dateFormatter dateFromString:expMonth];
     NSString *nExpMonth = [dateFormatter stringFromDate:daDate];
-    [JNKeychain saveValue:nExpMonth forKey:kKeyExpMonth];
-    [JNKeychain saveValue:expYear forKey:kKeyExpYear];
+    
+    [PaymentDetails card1].expirationMonth = nExpMonth;
+    [PaymentDetails card1].expirationYear = expYear;
 }
 
 - (void)addInputAccessoryViewToCardNumber {
@@ -557,17 +556,17 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     self.expirationPicker.delegate = self;
     
     NSDateComponents *components = [[NSCalendar currentCalendar] components:NSCalendarUnitMonth|NSCalendarUnitYear fromDate:[NSDate date]];
-    NSInteger savedExpMonth = [[JNKeychain loadValueForKey:kKeyExpMonth] integerValue];
+    NSInteger savedExpMonth = [[PaymentDetails card1].expirationMonth integerValue];
     if (savedExpMonth > 0 && savedExpMonth < 13) {
-        [self.expirationPicker selectRow:(savedExpMonth - 1) inComponent:0 animated:NO];
+        [self.expirationPicker selectRow:savedExpMonth inComponent:0 animated:NO];
     } else {
-        [self.expirationPicker selectRow:([components month]) inComponent:0 animated:NO];// yes I want to select next month
+        [self.expirationPicker selectRow:0 inComponent:0 animated:NO];
     }
     
-    NSInteger savedExpYear = [[JNKeychain loadValueForKey:kKeyExpYear] integerValue];
+    NSInteger savedExpYear = [[PaymentDetails card1].expirationYear integerValue];
     NSInteger layerCake = savedExpYear - [components year];
     if (layerCake >= 0 && layerCake < 1000) {
-        [self.expirationPicker selectRow:(savedExpYear - [components year]) inComponent:1 animated:NO];
+        [self.expirationPicker selectRow:(savedExpYear - [components year] + 1) inComponent:1 animated:NO];
     } else {
         [self.expirationPicker selectRow:0 inComponent:1 animated:NO];
     }
@@ -577,7 +576,14 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     NSString *ms = [self pickerView:self.expirationPicker titleForRow:[self.expirationPicker selectedRowInComponent:0] forComponent:0];
     ms = [ms componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" "]][0];
     NSString *ys = [self pickerView:self.expirationPicker titleForRow:[self.expirationPicker selectedRowInComponent:1] forComponent:1];
-    self.expirationOutlet.text = [NSString stringWithFormat:@"%@ %@", ms, ys];
+    
+    if (nil == ms || nil == ys) {
+        self.expirationOutlet.text = nil;
+    } else {
+        self.expirationOutlet.text = [NSString stringWithFormat:@"%@ %@", ms, ys];
+    }
+    
+    [self validateExpiration];
 }
 
 #pragma mark UIPickerViewDataSource methods
@@ -590,7 +596,7 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     if (1 == component) {
         return 1000;
     } else {
-        return 12;
+        return 13;
     }
 }
 
@@ -616,9 +622,17 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     }
     
     if (1 == component) {
-        return [NSString stringWithFormat:@"%ld", (long)([components year] + row)];
+        if (row == 0) {
+            return nil;
+        }
+        
+        return [NSString stringWithFormat:@"%ld", (long)([components year] + row - 1)];
     } else {
-        NSDate *wd = [dateFormatter dateFromString:[NSString stringWithFormat: @"%ld", (long)(1 + row)]];
+        if (row == 0) {
+            return nil;
+        }
+        
+        NSDate *wd = [dateFormatter dateFromString:[NSString stringWithFormat: @"%ld", (long)(row)]];
         return [NSString stringWithFormat:@"%@ (%@)", [formatter stringFromDate:wd], [dateFormatter stringFromDate:wd]];
     }
 }
@@ -792,7 +806,6 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     
     PaymentDetails *pd = [PaymentDetails card1];
     
-    [self.ccNumberOutlet becomeFirstResponder];
     self.ccNumberOutlet.showsCardLogo = YES;
     self.ccNumberOutlet.cardNumber = pd.cardNumber;
     
@@ -814,20 +827,23 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
         [self.deleteCardOutlet addTarget:self action:@selector(initiateDeleteCard:) forControlEvents:UIControlEventTouchUpInside];
     }
     
+    __weak typeof(self) wes = self;
     [UIView animateWithDuration:kAnimationDuration animations:^{
         paymentDetailsView.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+        [wes.ccNumberOutlet becomeFirstResponder];
     } completion:^(BOOL finished) {
         ;
     }];
 }
 
 - (void)dropPaymentDetailsView:(id)sender {
+    [self.view endEditing:YES];
     PaymentDetails *pd = [PaymentDetails card1];
     
     if (sender == self.navigationItem.rightBarButtonItem) {
         pd.cardNumber = self.ccNumberOutlet.cardNumber;
         pd.billingAddress = self.selectedBillingAddress;
-        [self saveDaExpiration:self.expirationOutlet.text];
+        [self saveDaExpiration];
         
         NSArray *chn = [self.cardholderOutlet.text componentsSeparatedByString:@" "];
         if ([chn count] >= 2) {
@@ -839,6 +855,9 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     if (sender == self.deleteCardOutlet) {
         self.ccNumberOutlet.cardNumber = nil;
         self.selectedBillingAddress = nil;
+        [self.expirationPicker selectRow:0 inComponent:0 animated:NO];
+        [self.expirationPicker selectRow:0 inComponent:1 animated:NO];
+        self.expirationOutlet.text = nil;
         self.cardholderOutlet.text = nil;
         [PaymentDetails deleteCard:pd];
     }
@@ -852,8 +871,6 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     CGFloat toY = pboCenter.y - paymentDetailsView.center.y;
     __block CGAffineTransform toTransform = CGAffineTransformMakeTranslation(toX, toY);
     
-    //    [self.ccNumberOutlet resignFirstResponder];
-    [self.view endEditing:YES];
     self.navigationItem.leftBarButtonItem = self.navigationItem.backBarButtonItem;
     self.navigationItem.rightBarButtonItem = nil;
     [UIView animateWithDuration:kAnimationDuration animations:^{
@@ -905,7 +922,7 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 }
 
 - (BOOL)isWeGood {
-    return self.isValidCreditCard && self.isValidBillingAddress && self.isValidCardHolder;
+    return self.isValidCreditCard && self.isValidBillingAddress && self.isValidExpiration && self.isValidCardHolder;
 }
 
 - (void)validateCreditCardNumber:(NSString *)cardNumber {
@@ -943,8 +960,52 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     [self enableOrDisableRightBarButtonItem];
 }
 
-- (BOOL)validateExpiration {
-    return YES;
+- (void)validateExpiration {
+    if (nil == self.expirationOutlet.text || 0 == [self.expirationOutlet.text length]
+            || [self.expirationOutlet.text isEqualToString:@""]) {
+        self.expirationOutlet.backgroundColor = [UIColor whiteColor];
+        self.isValidExpiration = NO;
+        [self enableOrDisableRightBarButtonItem];
+        return;
+    }
+    
+    NSArray *expArr = [self.expirationOutlet.text componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" "]];
+    
+    if (nil == expArr || [expArr count] != 2) {
+        self.expirationOutlet.backgroundColor = kColorNoGo();
+        self.isValidExpiration = NO;
+        [self enableOrDisableRightBarButtonItem];
+        return;
+    }
+    
+    NSString *expMonth = expArr[0];
+    NSString *expYear = expArr[1];
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"MM"];
+    NSDate *daDate = [dateFormatter dateFromString:expMonth];
+    NSString *nExpMonth = [dateFormatter stringFromDate:daDate];
+    
+    NSInteger intExpMonth = [nExpMonth integerValue];
+    NSInteger intExpYear = [expYear integerValue];
+    
+    NSDateComponents *components = [[NSCalendar currentCalendar] components:NSCalendarUnitMonth|NSCalendarUnitYear fromDate:[NSDate date]];
+    
+    if (intExpMonth <= 0 || intExpMonth >= 13 || intExpYear < [components year]) {
+        self.expirationOutlet.backgroundColor = kColorNoGo();
+        self.isValidExpiration = NO;
+    } else if (intExpYear > [components year]) {
+        self.expirationOutlet.backgroundColor = kColorGoodToGo();
+        self.isValidExpiration = YES;
+    } else if (intExpMonth >= [components month]) {
+        self.expirationOutlet.backgroundColor = kColorGoodToGo();
+        self.isValidExpiration = YES;
+    } else {
+        self.expirationOutlet.backgroundColor = kColorNoGo();
+        self.isValidExpiration = NO;
+    }
+    
+    [self enableOrDisableRightBarButtonItem];
 }
 
 - (void)validateCardholder:(NSString *)cardHolder {
@@ -965,6 +1026,7 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 - (void)initiateDeleteCard:(id)sender {
     self.ccNumberOutlet.userInteractionEnabled = NO;
     self.addressTextFieldOutlet.userInteractionEnabled = NO;
+    self.expirationOutlet.userInteractionEnabled = NO;
     self.cardholderOutlet.userInteractionEnabled = NO;
     
     self.cancelDeletionOutlet.transform = CGAffineTransformMakeTranslation(300, 0);
@@ -980,13 +1042,17 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     self.navigationItem.leftBarButtonItem.enabled = NO;
     self.navigationItem.rightBarButtonItem.enabled = NO;
     
+    self.ccNumberOutlet.cardLogoImageView.alpha = 0.2f;
+    
     self.ccNumberOutlet.backgroundColor = [UIColor grayColor];
     self.addressTextFieldOutlet.backgroundColor = [UIColor grayColor];
+    self.expirationOutlet.backgroundColor = [UIColor grayColor];
     self.cardholderOutlet.backgroundColor = [UIColor grayColor];
     
-    self.ccNumberOutlet.textColor = [UIColor whiteColor];
-    self.addressTextFieldOutlet.textColor = [UIColor whiteColor];
-    self.cardholderOutlet.textColor = [UIColor whiteColor];
+    self.ccNumberOutlet.textColor = [UIColor lightGrayColor];
+    self.addressTextFieldOutlet.textColor = [UIColor lightGrayColor];
+    self.expirationOutlet.textColor = [UIColor lightGrayColor];
+    self.cardholderOutlet.textColor = [UIColor lightGrayColor];
     
     [self.deleteCardOutlet setTitle:@"Confirm Deletion" forState:UIControlStateNormal];
     [self.deleteCardOutlet removeTarget:self action:@selector(initiateDeleteCard:) forControlEvents:UIControlEventTouchUpInside];
@@ -996,6 +1062,7 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 - (void)cancelDeleteCard:(id)sender {
     self.ccNumberOutlet.userInteractionEnabled = YES;
     self.addressTextFieldOutlet.userInteractionEnabled = YES;
+    self.expirationOutlet.userInteractionEnabled = YES;
     self.cardholderOutlet.userInteractionEnabled = YES;
     
     [UIView animateWithDuration:0.4f animations:^{
@@ -1008,10 +1075,14 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     
     [self validateCreditCardNumber:self.ccNumberOutlet.cardNumber];
     [self validateBillingAddressWithNoGoColor:NO];
+    [self validateExpiration];
     [self validateCardholder:self.cardholderOutlet.text];
+    
+    self.ccNumberOutlet.cardLogoImageView.alpha = 1.0f;
     
     self.ccNumberOutlet.textColor = [UIColor blackColor];
     self.addressTextFieldOutlet.textColor = [UIColor blackColor];
+    self.expirationOutlet.textColor = [UIColor blackColor];
     self.cardholderOutlet.textColor = [UIColor blackColor];
     
     self.deleteCardOutlet.hidden = NO;

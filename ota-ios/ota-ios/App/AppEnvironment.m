@@ -10,8 +10,6 @@
 
 NSString * const kKeyGuestInfo = @"LgAuYeEsRtCiAnKfEo";
 NSString * const kKeyPaymentDetails1 = @"pJaIyMmMeYnBtUdFeFtEaTiWlEsS1";
-NSString * const kKeyExpMonth = @"ZeYxXpWeVrUiTaStRiQoPnOmNoMnLtKh";
-NSString * const kKeyExpYear = @"eLxApYeErRiCaAtKiEoMnOyVeIaEr";
 
 NSString * const EAN_CID = @"55505";
 NSString * const EAN_API_KEY = @"ds5gqba7fbetw3wwgq7nnjku";

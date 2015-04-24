@@ -38,8 +38,6 @@
         // Delete values from keychain here
         [JNKeychain deleteValueForKey:kKeyGuestInfo];
         [JNKeychain deleteValueForKey:kKeyPaymentDetails1];
-        [JNKeychain deleteValueForKey:kKeyExpMonth];
-        [JNKeychain deleteValueForKey:kKeyExpYear];
         
         [[NSUserDefaults standardUserDefaults] setValue:@"da1stRun" forKey:@"daFirstRun"];
         [[NSUserDefaults standardUserDefaults] synchronize];

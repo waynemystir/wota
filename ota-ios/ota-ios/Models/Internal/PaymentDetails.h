@@ -13,6 +13,8 @@
 
 @property (nonatomic, strong) NSString *cardNumber;
 @property (nonatomic, strong) EanPlace *billingAddress;
+@property (nonatomic, strong) NSString *expirationMonth;
+@property (nonatomic, strong) NSString *expirationYear;
 @property (nonatomic, strong) NSString *cardHolderFirstName;
 @property (nonatomic, strong) NSString *cardHolderLastName;
 

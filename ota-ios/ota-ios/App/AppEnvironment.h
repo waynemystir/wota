@@ -18,8 +18,6 @@
 
 extern NSString * const kKeyGuestInfo;
 extern NSString * const kKeyPaymentDetails1;
-extern NSString * const kKeyExpMonth;
-extern NSString * const kKeyExpYear;
 
 /**
  * Ean stuff
