@@ -11,8 +11,25 @@
 
 @implementation WotaButton
 
++ (WotaButton *)wbWithFrame:(CGRect)frame {
+    WotaButton *wb = [self buttonFromNib];
+    wb.frame = frame;
+    return wb;
+}
+
++ (WotaButton *)buttonFromNib {
+    NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"WotaButton" owner:self options:nil];
+    if ([views count] != 1) {
+        return nil;
+    }
+    
+    id wb = views[0];
+    return (WotaButton *)wb;
+}
+
 - (id)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
+        self.titleEdgeInsets = UIEdgeInsetsMake(0, 6, 0, 6);
         [self drawButton];
         [self addTarget:self action:@selector(touchDown:) forControlEvents:UIControlEventTouchDown];
         [self addTarget:self action:@selector(touchUpInside:) forControlEvents:UIControlEventTouchUpInside];

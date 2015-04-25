@@ -103,7 +103,8 @@ NSString * const kKeyGoogleFormattedAddress = @"googleFormattedAddress";
 #pragma mark EAN API Getters
 
 - (NSString *)apiAddress1 {
-    return [self.address1 substringToIndex:28];
+    NSUInteger len = MIN(28, [self.address1 length]);
+    return [self.address1 substringToIndex:len];
 }
 
 - (NSString *)apiCity {

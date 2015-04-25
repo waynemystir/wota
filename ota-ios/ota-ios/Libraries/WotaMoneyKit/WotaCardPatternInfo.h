@@ -21,6 +21,12 @@
 @property (nonatomic, strong, readonly) NSString      *shortName;
 
 /**
+ * Expedia Affiliation Network Card Type. (e.g., VI, CA, ...)
+ * Refer to http://developer.ean.com/general-info/valid-card-types#validation
+ */
+@property (nonatomic, strong, readonly) NSString      *eanType;
+
+/**
  *
  */
 @property (nonatomic, readonly) NSInteger numberOfGroups;

@@ -12,6 +12,7 @@
 
 @property (nonatomic, strong) NSString              *companyName;
 @property (nonatomic, strong) NSString              *shortName;
+@property (nonatomic, strong) NSString              *eanType;
 @property (nonatomic, strong) NSRegularExpression   *patternRegularExpression;
 @property (nonatomic, strong) NSArray               *numberGrouping;
 @property (nonatomic, strong) NSArray               *lengths;
@@ -29,6 +30,7 @@
         self.patternRegularExpression = [[NSRegularExpression alloc] initWithPattern:pattern options:0 error:nil];
         self.companyName = aDictionary[@"companyName"];
         self.shortName = aDictionary[@"shortName"];
+        self.eanType = aDictionary[@"eantype"];
         self.numberGrouping = [[self class] numberArrayWithCommaSeparatedString:aDictionary[@"numberGrouping"] maxValue:NULL];
         
         NSInteger maxLength;

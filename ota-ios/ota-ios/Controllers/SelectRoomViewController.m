@@ -26,6 +26,9 @@
 #import <AudioToolbox/AudioToolbox.h>
 #import "WotaCardNumberField.h"
 #import "PTKCardNumber.h"
+#import "SelectBedTypeDelegateImplementation.h"
+#import "SelectSmokingPreferenceDelegateImplementation.h"
+#import "WotaButton.h"
 
 typedef NS_ENUM(NSUInteger, LOAD_DATA) {
     LOAD_ROOM = 0,
@@ -42,7 +45,7 @@ NSUInteger const kAvailRoomBorderViewTag = 13;
 NSUInteger const kNightlyRateViewTag = 19;
 NSString * const kNoLocationsFoundMessage = @"No locations found for this postal code. Please try again.";
 
-@interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, SelectGooglePlaceDelegate>
+@interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, SelectGooglePlaceDelegate, SelectBedTypeDelegate, SelectSmokingPrefDelegate>
 
 @property (nonatomic) LOAD_DATA load_data_type;
 
@@ -74,7 +77,15 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 @property (nonatomic, strong) NSIndexPath *expandedIndexPath;
 @property (nonatomic) CGRect rectOfCellInSuperview;
 @property (nonatomic) CGRect rectOfAvailRoomContView;
-@property (nonatomic, strong) UIButton *doneButton;
+@property (nonatomic, strong) WotaButton *bedTypeButton;
+@property (nonatomic, strong) WotaButton *smokingButton;
+@property (nonatomic, strong) UIView *bedTypePickerContainer;
+@property (nonatomic, strong) UIButton *bedTypePickerDone;
+@property (nonatomic, strong) UIPickerView *bedTypePickerView;
+@property (nonatomic, strong) SelectBedTypeDelegateImplementation *bedTypePickerDelegate;
+@property (nonatomic) BOOL isBedTypePickerShowing;
+@property (nonatomic, strong) UIPickerView *smokingPrefPickerView;
+@property (nonatomic, strong) SelectSmokingPreferenceDelegateImplementation *smokePrefDelegImplem;
 
 @property (nonatomic, strong) UITableView *googlePlacesTableView;
 @property (nonatomic, strong) GooglePlaceTableViewDelegateImplementation *googlePlacesTableViewDelegate;
@@ -118,10 +129,14 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 //    }
     
     [self setupExpirationPicker];
+    [self setupBedTypePicker];
     
     self.inputBookOutlet.hidden = YES;
 //    self.inputBookOutlet.frame = CGRectMake(10.0f, 412.0f, 300.0f, 0.0f);
     self.inputBookOutlet.transform = [self hiddenGuestInputTransform];
+    self.inputBookOutlet.layer.cornerRadius = 6.0f;
+    self.inputBookOutlet.layer.borderWidth = 1.0f;
+    self.inputBookOutlet.layer.borderColor = [UIColor blackColor].CGColor;
     
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
 }
@@ -217,8 +232,6 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     cell.borderViewOutlet.layer.borderWidth = 1.0f;
     cell.borderViewOutlet.layer.borderColor = [UIColor blackColor].CGColor;
     
-//    EanAvailabilityHotelRoomResponse *room = [EanAvailabilityHotelRoomResponse roomFromDict:[self.tableData objectAtIndex:indexPath.row]];
-    
     EanAvailabilityHotelRoomResponse *room = [self.tableData objectAtIndex:indexPath.row];
     
     cell.roomTypeDescriptionOutlet.text = room.roomTypeDescription;
@@ -228,6 +241,8 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     NSString *currency = [currencyStyle stringFromNumber:room.nightlyRateToPresent];
     
     cell.rateOutlet.text = currency;
+    
+    cell.nonrefundOutlet.text = room.nonRefundableString;
     
     return cell;
 }
@@ -263,6 +278,7 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     tableViewPopout.backgroundColor = [UIColor whiteColor];
 //    tableViewPopout.hidden = YES;
     tableViewPopout.clipsToBounds = YES;
+    tableViewPopout.autoresizesSubviews = YES;
     [self.view addSubview:tableViewPopout];
     
     UIView *cellV = [[UIView alloc] initWithFrame:tableViewPopout.bounds];
@@ -277,8 +293,6 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     borderView.layer.cornerRadius = 8.0f;
     borderView.tag = kAvailRoomBorderViewTag;
     [cv addSubview:borderView];
-    
-    //    EanAvailabilityHotelRoomResponse *room = [EanAvailabilityHotelRoomResponse roomFromDict:[self.tableData objectAtIndex:self.expandedIndexPath.row]];
     
     EanAvailabilityHotelRoomResponse *room = [self.tableData objectAtIndex:self.expandedIndexPath.row];
     
@@ -299,12 +313,27 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     rateLabel.text = currency;
     [borderView addSubview:rateLabel];
     
-    self.doneButton = [[UIButton alloc] initWithFrame:CGRectMake(100, 100, 100, 50)];
-    [self.doneButton setTitle:@"Done" forState:UIControlStateNormal];
-    [self.doneButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    self.doneButton.backgroundColor = [UIColor whiteColor];
-    [self.doneButton addTarget:self action:@selector(dropRoomDetailsView:) forControlEvents:UIControlEventTouchUpInside];
-    [tableViewPopout addSubview:self.doneButton];
+    UILabel *nonreundLabel = [[UILabel alloc] initWithFrame:CGRectMake(176, 69, 136, 21)];
+    nonreundLabel.backgroundColor = [UIColor colorWithRed:255/255.0f green:141/255.0f blue:9/255.0f alpha:1.0f];
+    nonreundLabel.font = [UIFont systemFontOfSize:15.0f];
+    nonreundLabel.textAlignment = NSTextAlignmentRight;
+    nonreundLabel.text = room.nonRefundableString;
+    [borderView addSubview:nonreundLabel];
+    
+    self.bedTypeButton = [WotaButton wbWithFrame:CGRectMake(5, 264, 186, 30)];
+    [self.bedTypeButton setTitle:room.selectedBedType.bedTypeDescription forState:UIControlStateNormal];
+    [self.bedTypeButton addTarget:self action:@selector(clickBedType:) forControlEvents:UIControlEventTouchUpInside];
+    [tableViewPopout addSubview:self.bedTypeButton];
+    
+    self.smokingButton = [WotaButton wbWithFrame:CGRectMake(194, 264, 120, 30)];
+    [self.smokingButton setTitle:[SelectSmokingPreferenceDelegateImplementation smokingPrefStringForEanSmokeCode:room.selectedSmokingPreference] forState:UIControlStateNormal];
+    [self.smokingButton addTarget:self action:@selector(clickSmokingPref:) forControlEvents:UIControlEventTouchUpInside];
+    [tableViewPopout addSubview:self.smokingButton];
+    
+//    self.doneButton = [WotaButton wbWithFrame:CGRectMake(194, 264, 120, 30)];
+//    [self.doneButton setTitle:@"Different Room" forState:UIControlStateNormal];
+//    [self.doneButton addTarget:self action:@selector(dropRoomDetailsView:) forControlEvents:UIControlEventTouchUpInside];
+//    [tableViewPopout addSubview:self.doneButton];
     return tableViewPopout;
 }
 
@@ -316,6 +345,48 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 - (CGAffineTransform)shownGuestInputTransform {
     CGAffineTransform shownTransform = CGAffineTransformMakeTranslation(0.0f, 0.0f);
     return CGAffineTransformScale(shownTransform, 1.0f, 1.0f);
+}
+
+- (void)clickBedType:(id)sender {
+    self.bedTypePickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 0, 320, 162)];
+    self.bedTypePickerView.backgroundColor = UIColorFromRGB(0xe3e3e3);
+    self.bedTypePickerDelegate = [SelectBedTypeDelegateImplementation new];
+    self.bedTypePickerDelegate.bedTypeDelegate = self;
+    EanAvailabilityHotelRoomResponse *room = [self.tableData objectAtIndex:self.expandedIndexPath.row];
+    self.bedTypePickerDelegate.pickerData = room.bedTypesArray;
+    self.bedTypePickerView.dataSource = self.bedTypePickerDelegate;
+    self.bedTypePickerView.delegate = self.bedTypePickerDelegate;
+    NSUInteger sbti = [self.bedTypePickerDelegate.pickerData indexOfObject:room.selectedBedType];
+    [self.bedTypePickerView selectRow:sbti inComponent:0 animated:NO];
+    
+    [self.bedTypePickerContainer addSubview:self.bedTypePickerView];
+    self.isBedTypePickerShowing = YES;
+    [UIView animateWithDuration:kAnimationDuration animations:^{
+        self.bedTypePickerContainer.frame = CGRectMake(0, 364, 320, 204);
+    } completion:^(BOOL finished) {
+        ;
+    }];
+}
+
+- (void)clickSmokingPref:(id)sender {
+    self.smokingPrefPickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 0, 320, 162)];
+    self.smokingPrefPickerView.backgroundColor = UIColorFromRGB(0xe3e3e3);
+    self.smokePrefDelegImplem = [SelectSmokingPreferenceDelegateImplementation new];
+    self.smokePrefDelegImplem.smokePrefDelegate = self;
+    EanAvailabilityHotelRoomResponse *room = [self.tableData objectAtIndex:self.expandedIndexPath.row];
+    self.smokePrefDelegImplem.pickerData = room.smokingPreferencesArray;
+    self.smokingPrefPickerView.dataSource = self.smokePrefDelegImplem;
+    self.smokingPrefPickerView.delegate = self.smokePrefDelegImplem;
+    NSUInteger sspi = [self.smokePrefDelegImplem.pickerData indexOfObject:room.selectedSmokingPreference];
+    [self.smokingPrefPickerView selectRow:sspi inComponent:0 animated:NO];
+    
+    [self.bedTypePickerContainer addSubview:self.smokingPrefPickerView];
+    self.isBedTypePickerShowing = YES;
+    [UIView animateWithDuration:kAnimationDuration animations:^{
+        self.bedTypePickerContainer.frame = CGRectMake(0, 364, 320, 204);
+    } completion:^(BOOL finished) {
+        ;
+    }];
 }
 
 - (IBAction)justPushIt:(id)sender {
@@ -351,21 +422,21 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
                                                 childTravelers:[ChildTraveler childTravelers]
                                                 room1FirstName:gi.firstName
                                                  room1LastName:gi.lastName
-                                                room1BedTypeId:@"23"
-                                        room1SmokingPreference:@"NS"
+                                                room1BedTypeId:self.selectedRoom.selectedBedType.bedTypeId
+                                        room1SmokingPreference:self.selectedRoom.selectedSmokingPreference
                                        affiliateConfirmationId:[NSUUID UUID]
                                                          email:gi.email
                                                      firstName:pd.cardHolderFirstName
                                                       lastName:pd.cardHolderLastName
                                                      homePhone:gi.phoneNumber
-                                                creditCardType:@"CA"
-                                              creditCardNumber:pd.cardNumber
+                                                creditCardType:pd.eanCardType
+                                              creditCardNumber:@"5401999999999999"/*pd.cardNumber*/
                                           creditCardIdentifier:@"123"
                                      creditCardExpirationMonth:pd.expirationMonth
                                       creditCardExpirationYear:pd.expirationYear
                                                       address1:pd.billingAddress.apiAddress1
                                                           city:pd.billingAddress.apiCity
-                                             stateProvinceCode:pd.billingAddress.apiStateProvCode
+                                             stateProvinceCode:nil/*pd.billingAddress.apiStateProvCode*/
                                                    countryCode:pd.billingAddress.apiCountryCode
                                                     postalCode:pd.billingAddress.apiPostalCode];
     
@@ -510,6 +581,56 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 }
 
 #pragma mark Expiration Picker and Outlet methods
+
+- (void)tdBedTypeDone:(id)sender {
+    ((UIButton *)sender).backgroundColor = [UIColor whiteColor];
+    AudioServicesPlaySystemSound(0x450);
+}
+
+- (void)tuiBedTypeDone:(id)sender {
+    if (!self.isBedTypePickerShowing) {
+        return;
+    }
+    
+    ((UIButton *) sender).backgroundColor = UIColorFromRGB(0xc4c4c4);
+    
+    self.isBedTypePickerShowing = NO;
+    [UIView animateWithDuration:kAnimationDuration animations:^{
+        self.bedTypePickerContainer.frame = CGRectMake(0, 600, 320, 204);
+    } completion:^(BOOL finished) {
+        ;
+    }];
+}
+
+- (void)tuoBedTypeDone:(id)sender {
+    ((UIButton *) sender).backgroundColor = UIColorFromRGB(0xc4c4c4);
+}
+
+- (void)setupBedTypePicker {
+    self.bedTypePickerContainer = [[UIView alloc] initWithFrame:CGRectMake(0, 600, 320, 204)];
+    self.bedTypePickerContainer.backgroundColor = [UIColor whiteColor];
+    [self.view addSubview:self.bedTypePickerContainer];
+    
+    self.bedTypePickerDone = [[UIButton alloc] initWithFrame:CGRectMake(242, 163, 75, 38)];
+    self.bedTypePickerDone.backgroundColor = UIColorFromRGB(0xc4c4c4);
+    self.bedTypePickerDone.layer.cornerRadius = 4.0f;
+    self.bedTypePickerDone.layer.masksToBounds = NO;
+    self.bedTypePickerDone.layer.borderWidth = 0.8f;
+    self.bedTypePickerDone.layer.borderColor = UIColorFromRGB(0xb5b5b5).CGColor;
+    
+    self.bedTypePickerDone.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.bedTypePickerDone.layer.shadowOpacity = 0.8;
+    self.bedTypePickerDone.layer.shadowRadius = 1;
+    self.bedTypePickerDone.layer.shadowOffset = CGSizeMake(1.0f, 1.0f);
+    
+    [self.bedTypePickerDone setTitle:@"Done" forState:UIControlStateNormal];
+    self.bedTypePickerDone.titleLabel.font = [UIFont systemFontOfSize:17.0f];
+    [self.bedTypePickerDone setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [self.bedTypePickerDone addTarget:self action:@selector(tdBedTypeDone:) forControlEvents:UIControlEventTouchDown];
+    [self.bedTypePickerDone addTarget:self action:@selector(tuiBedTypeDone:) forControlEvents:UIControlEventTouchUpInside];
+    [self.bedTypePickerDone addTarget:self action:@selector(tuoBedTypeDone:) forControlEvents:UIControlEventTouchUpOutside];
+    [self.bedTypePickerContainer addSubview:self.bedTypePickerDone];
+}
 
 - (void)tdExpirNext:(id)sender {
     AudioServicesPlaySystemSound(0x450);
@@ -659,6 +780,22 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     [self dropGooglePlacesTableView];
 }
 
+#pragma mark SelectBedTypeDelegate method
+
+- (void)didSelectBedType:(EanBedType *)eanBedType {
+    EanAvailabilityHotelRoomResponse *room = [self.tableData objectAtIndex:self.expandedIndexPath.row];
+    room.selectedBedType = eanBedType;
+    [self.bedTypeButton setTitle:eanBedType.bedTypeDescription forState:UIControlStateNormal];
+}
+
+#pragma mark SelectSmokingPreferenceDelegate method
+
+- (void)didSelectSmokingPref:(NSString *)eanSmokeCode {
+    EanAvailabilityHotelRoomResponse *room = [self.tableData objectAtIndex:self.expandedIndexPath.row];
+    room.selectedSmokingPreference = eanSmokeCode;
+    [self.smokingButton setTitle:[SelectSmokingPreferenceDelegateImplementation smokingPrefStringForEanSmokeCode:eanSmokeCode] forState:UIControlStateNormal];
+}
+
 #pragma mark Animation methods
 
 - (void)loadRoomDetailsView {
@@ -674,15 +811,24 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     self.rectOfAvailRoomContView = cv.frame;
     tvp.hidden = NO;
     ibo.hidden = NO;
-    __block UIButton *doneB = self.doneButton;
-    doneB.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/3)), 0.01f, 0.01f);
+    
+    UIBarButtonItem *lbbi = [[UIBarButtonItem alloc] initWithTitle:@"Different Room" style:UIBarButtonItemStyleDone target:self action:@selector(dropRoomDetailsView:)];
+    [self.navigationItem setLeftBarButtonItem:lbbi animated:YES];
+    
+    self.bedTypeButton.alpha = self.smokingButton.alpha/* = self.doneButton.alpha*/ = 0.0f;
+    self.bedTypeButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/0.55)), 0.001f, 0.001f);
+    self.smokingButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/0.55f)), 0.001f, 0.001f);
+//    self.doneButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/0.55f)), 0.001f, 0.001f);
     [UIView animateWithDuration:kAnimationDuration animations:^{
         tvp.frame = CGRectMake(0.0f, 64.0f, 320.0f, 300.0f);
         cv.frame = tvp.bounds;
         borderView.frame = CGRectMake(2.0f, 2.0f, cv.frame.size.width - 4.0f, cv.frame.size.height - 4.0f);
         rtv.transform = CGAffineTransformMakeScale(0.01, 0.01);
         ibo.transform = [weakSelf shownGuestInputTransform];
-        doneB.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 0), 1.0f, 1.0f);
+        weakSelf.bedTypeButton.alpha = weakSelf.smokingButton.alpha/* = weakSelf.doneButton.alpha*/ = 1.0f;
+        weakSelf.bedTypeButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 0), 1.0f, 1.0f);
+        weakSelf.smokingButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 0), 1.0f, 1.0f);
+//        weakSelf.doneButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 0), 1.0f, 1.0f);
     } completion:^(BOOL finished) {
         rtv.hidden = YES;
     }];
@@ -690,8 +836,8 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 
 - (void)dropRoomDetailsView:(id)sender {
     __weak typeof(self) weakSelf = self;
-    __weak UIView *db = self.doneButton;
-    __weak UIView *tvp = self.doneButton.superview;
+//    __weak UIView *tvp = self.doneButton.superview;
+    __weak UIView *tvp = self.bedTypeButton.superview;
     __weak UIView *cv = [tvp viewWithTag:kAvailRoomCellContViewTag];
     __weak UIView *borderView = [cv viewWithTag:kAvailRoomBorderViewTag];
     __weak UIView *rtv = self.roomsTableViewOutlet;
@@ -699,8 +845,13 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     self.expandedIndexPath = nil;
     
     rtv.hidden = NO;
+    [self tuiBedTypeDone:nil];
+    [self.navigationItem setLeftBarButtonItem:self.navigationItem.backBarButtonItem animated:YES];
     [UIView animateWithDuration:kAnimationDuration animations:^{
-        db.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/6)), 0.01f, 0.01f);
+        weakSelf.bedTypeButton.alpha = weakSelf.smokingButton.alpha/* = weakSelf.doneButton.alpha*/ = 0.0f;
+        weakSelf.bedTypeButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/1.5f)), 0.001f, 0.001f);
+        weakSelf.smokingButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/1.5f)), 0.001f, 0.001f);
+//        weakSelf.doneButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/1.5f)), 0.001f, 0.001f);
         tvp.frame = weakSelf.rectOfCellInSuperview;
         cv.frame = weakSelf.rectOfAvailRoomContView;
         borderView.frame = CGRectMake(2.0f, 2.0f, weakSelf.rectOfAvailRoomContView.size.width - 4.0f, weakSelf.rectOfAvailRoomContView.size.height - 4.0f);
@@ -768,7 +919,7 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     
     //    [self.firstNameOutlet resignFirstResponder];
     [self.view endEditing:YES];
-    self.navigationItem.leftBarButtonItem = self.navigationItem.backBarButtonItem;
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Different Room" style:UIBarButtonItemStyleDone target:self action:@selector(dropRoomDetailsView:)];
     self.navigationItem.rightBarButtonItem = nil;
     [UIView animateWithDuration:kAnimationDuration animations:^{
         guestDetailsView.transform = CGAffineTransformScale(toTransform, 0.01f, 0.01f);
@@ -842,6 +993,7 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     
     if (sender == self.navigationItem.rightBarButtonItem) {
         pd.cardNumber = self.ccNumberOutlet.cardNumber;
+        pd.eanCardType = self.ccNumberOutlet.eanType;
         pd.billingAddress = self.selectedBillingAddress;
         [self saveDaExpiration];
         
@@ -871,7 +1023,7 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     CGFloat toY = pboCenter.y - paymentDetailsView.center.y;
     __block CGAffineTransform toTransform = CGAffineTransformMakeTranslation(toX, toY);
     
-    self.navigationItem.leftBarButtonItem = self.navigationItem.backBarButtonItem;
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Different Room" style:UIBarButtonItemStyleDone target:self action:@selector(dropRoomDetailsView:)];
     self.navigationItem.rightBarButtonItem = nil;
     [UIView animateWithDuration:kAnimationDuration animations:^{
         paymentDetailsView.transform = CGAffineTransformScale(toTransform, 0.01f, 0.01f);

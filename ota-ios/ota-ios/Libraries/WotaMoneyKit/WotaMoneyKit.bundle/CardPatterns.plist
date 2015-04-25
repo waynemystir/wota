@@ -13,6 +13,8 @@
 		<string>4,6,4</string>
 		<key>length</key>
 		<string>14</string>
+		<key>eantype</key>
+		<string>DC</string>
 	</dict>
 	<dict>
 		<key>pattern</key>
@@ -25,6 +27,8 @@
 		<string>4,4,4,4</string>
 		<key>length</key>
 		<string>16</string>
+		<key>eantype</key>
+		<string>JC</string>
 	</dict>
 	<dict>
 		<key>pattern</key>
@@ -37,6 +41,8 @@
 		<string>4,6,5</string>
 		<key>length</key>
 		<string>15</string>
+		<key>eantype</key>
+		<string>AX</string>
 	</dict>
 	<dict>
 		<key>pattern</key>
@@ -49,6 +55,8 @@
 		<string>4,4,4,4</string>
 		<key>length</key>
 		<string>16,17,18,19</string>
+		<key>eantype</key>
+		<string>LC</string>
 	</dict>
 	<dict>
 		<key>pattern</key>
@@ -61,6 +69,8 @@
 		<string>4,4,4,4</string>
 		<key>length</key>
 		<string>13,14,15,16</string>
+		<key>eantype</key>
+		<string>VI</string>
 	</dict>
 	<dict>
 		<key>pattern</key>
@@ -73,6 +83,8 @@
 		<string>19</string>
 		<key>length</key>
 		<string>16,17,18,19</string>
+		<key>eantype</key>
+		<string>CU</string>
 	</dict>
 	<dict>
 		<key>pattern</key>
@@ -85,6 +97,8 @@
 		<string>4,4,4,4</string>
 		<key>length</key>
 		<string>16</string>
+		<key>eantype</key>
+		<string>CA</string>
 	</dict>
 	<dict>
 		<key>pattern</key>
@@ -97,6 +111,8 @@
 		<string>4,4,4,4</string>
 		<key>length</key>
 		<string>12,13,14,15,16,17,18,19</string>
+		<key>eantype</key>
+		<string>TO</string>
 	</dict>
 	<dict>
 		<key>pattern</key>
@@ -109,6 +125,8 @@
 		<string>4,4,4,4</string>
 		<key>length</key>
 		<string>16</string>
+		<key>eantype</key>
+		<string>DS</string>
 	</dict>
 </array>
 </plist>

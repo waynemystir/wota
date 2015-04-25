@@ -22,7 +22,7 @@
                 <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lvY-Yf-X5X" userLabel="inputBookView">
                     <rect key="frame" x="10" y="370" width="300" height="158"/>
                     <subviews>
-                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rqc-YR-Rdm" userLabel="guestButton">
+                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rqc-YR-Rdm" userLabel="guestButton" customClass="WotaButton">
                             <rect key="frame" x="31" y="14" width="131" height="35"/>
                             <fontDescription key="fontDescription" type="system" pointSize="19"/>
                             <state key="normal" title="Guest Details">
@@ -32,7 +32,7 @@
                                 <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="JjG-w4-w8P"/>
                             </connections>
                         </button>
-                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Aff-y2-VbT" userLabel="paymentButton">
+                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Aff-y2-VbT" userLabel="paymentButton" customClass="WotaButton">
                             <rect key="frame" x="31" y="64" width="137" height="35"/>
                             <fontDescription key="fontDescription" type="system" pointSize="19"/>
                             <state key="normal" title="Payment Details">
@@ -42,7 +42,7 @@
                                 <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="ASO-0W-OUs"/>
                             </connections>
                         </button>
-                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bAk-VO-vQt" userLabel="bookButton">
+                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bAk-VO-vQt" userLabel="bookButton" customClass="WotaButton">
                             <rect key="frame" x="31" y="114" width="120" height="30"/>
                             <fontDescription key="fontDescription" type="system" pointSize="19"/>
                             <state key="normal" title="Book">
@@ -53,7 +53,6 @@
                             </connections>
                         </button>
                     </subviews>
-                    <color key="backgroundColor" red="1" green="0.55226835210000003" blue="0.033859193480000001" alpha="1" colorSpace="calibratedRGB"/>
                 </view>
                 <tableView clipsSubviews="YES" contentMode="scaleAspectFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" rowHeight="88" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="jZC-PK-cHb" userLabel="roomsTableView">
                     <rect key="frame" x="0.0" y="64" width="600" height="536"/>

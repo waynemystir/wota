@@ -9,7 +9,7 @@
 #import "WotaForwardingTextField.h"
 #import "WotaCardNumberFormatter.h"
 
-@interface WotaCardNumberField : WotaForwardingTextField <UIKeyInput>
+@interface WotaCardNumberField : WotaForwardingTextField
 
 /**
  * A Boolean indicating whether shows card logo left side or not.
@@ -26,6 +26,12 @@
  * The card company name. (e.g., Visa, Master, ...)
  */
 @property (nonatomic, readonly) NSString *cardCompanyName;
+
+/**
+ * Expedia Affiliation Network Card Type. (e.g., VI, CA, ...)
+ * Refer to http://developer.ean.com/general-info/valid-card-types#validation
+ */
+@property (nonatomic, strong, readonly) NSString      *eanType;
 
 /**
  * The card number formatter. You can change formatting behavior using this property.

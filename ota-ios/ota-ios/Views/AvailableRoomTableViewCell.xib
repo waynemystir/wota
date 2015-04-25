@@ -27,6 +27,12 @@
                                 <color key="textColor" red="0.050980392156862744" green="0.61176470588235299" blue="0.011764705882352941" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GHw-b6-Lcp" userLabel="nonrefundLabel">
+                                <rect key="frame" x="176" y="69" width="136" height="21"/>
+                                <color key="backgroundColor" red="1" green="0.55294117647058827" blue="0.035294117647058823" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -34,6 +40,7 @@
             </tableViewCellContentView>
             <connections>
                 <outlet property="borderViewOutlet" destination="Si8-AH-KtS" id="tgO-72-Kxp"/>
+                <outlet property="nonrefundOutlet" destination="GHw-b6-Lcp" id="jZ0-Km-eM4"/>
                 <outlet property="rateOutlet" destination="qk8-ap-PBd" id="ffk-pg-iyF"/>
                 <outlet property="roomTypeDescriptionOutlet" destination="dnJ-sW-RrZ" id="M0i-Kd-BMr"/>
             </connections>

@@ -67,6 +67,8 @@
                         </label>
                         <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wDc-E8-qCD" userLabel="minusAdultButton" customClass="WotaButton">
                             <rect key="frame" x="42" y="153" width="46" height="30"/>
+                            <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="27"/>
+                            <inset key="contentEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="3"/>
                             <state key="normal" title="-">
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
@@ -76,6 +78,8 @@
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dtW-yk-Z64" userLabel="addAdultButton" customClass="WotaButton">
                             <rect key="frame" x="213" y="153" width="46" height="30"/>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="27"/>
+                            <inset key="contentEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="3"/>
                             <state key="normal" title="+">
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                             </state>

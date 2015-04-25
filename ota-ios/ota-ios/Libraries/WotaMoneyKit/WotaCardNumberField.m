@@ -158,4 +158,8 @@
     return self.cardNumberFormatter.cardPatternInfo.companyName;
 }
 
+- (NSString *)eanType {
+    return self.cardNumberFormatter.cardPatternInfo.eanType;
+}
+
 @end

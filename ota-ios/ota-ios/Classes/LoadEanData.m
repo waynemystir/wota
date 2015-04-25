@@ -215,7 +215,7 @@
                      EAN_PK_CC_CITY, city,
                      EAN_PK_CC_STATE_PROV_CODE, stateProvinceCode,
                      EAN_PK_CC_COUNTRY_CODE, countryCode,
-                     EAN_PK_CC_POSTAL_CODE, postalCode] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                     EAN_PK_CC_POSTAL_CODE, postalCode] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSLog(@"BOOKING:%@", urlString);
     
     NSURL *url = [NSURL URLWithString:urlString];

@@ -10,4 +10,7 @@
 
 @interface WotaButton : UIButton
 
++ (WotaButton *)wbWithFrame:(CGRect)frame;
++ (WotaButton *)buttonFromNib;
+
 @end

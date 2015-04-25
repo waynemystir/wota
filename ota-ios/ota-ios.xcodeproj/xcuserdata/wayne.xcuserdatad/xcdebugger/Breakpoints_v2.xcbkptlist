@@ -22,16 +22,32 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ota-ios/Models/Ean/HotelRoomAvailabilityResponse/EanAvailabilityHotelRoomResponse.m"
-            timestampString = "450923800.286984"
+            filePath = "ota-ios/Classes/LoadEanData.m"
+            timestampString = "451539431.221993"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "51"
-            endingLineNumber = "51"
-            landmarkName = "+roomFromDict:"
+            startingLineNumber = "221"
+            endingLineNumber = "221"
+            landmarkName = "-bookHotelRoomWithHotelId:arrivalDate:departureDate:supplierType:rateKey:roomTypeCode:rateCode:chargeableRate:numberOfAdults:childTravelers:room1FirstName:room1LastName:room1BedTypeId:room1SmokingPreference:affiliateConfirmationId:email:firstName:lastName:homePhone:creditCardType:creditCardNumber:creditCardIdentifier:creditCardExpirationMonth:creditCardExpirationYear:address1:city:stateProvinceCode:countryCode:postalCode:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ota-ios/Classes/LoadEanData.m"
+            timestampString = "451540047.381154"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "222"
+            endingLineNumber = "222"
+            landmarkName = "-bookHotelRoomWithHotelId:arrivalDate:departureDate:supplierType:rateKey:roomTypeCode:rateCode:chargeableRate:numberOfAdults:childTravelers:room1FirstName:room1LastName:room1BedTypeId:room1SmokingPreference:affiliateConfirmationId:email:firstName:lastName:homePhone:creditCardType:creditCardNumber:creditCardIdentifier:creditCardExpirationMonth:creditCardExpirationYear:address1:city:stateProvinceCode:countryCode:postalCode:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
