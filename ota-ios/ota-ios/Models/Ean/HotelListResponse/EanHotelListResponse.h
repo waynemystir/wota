@@ -7,8 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "EanAbstractResponse.h"
 
-@interface EanHotelListResponse : NSObject
+@interface EanHotelListResponse : EanAbstractResponse
 
 @property (nonatomic, strong) NSString *customerSessionId;
 @property (nonatomic) NSUInteger numberOfRoomsRequested;
@@ -19,8 +20,5 @@
 @property (nonatomic) NSUInteger size;
 @property (nonatomic) NSUInteger activePropertyCount;
 @property (nonatomic, strong) NSArray *hotelList;
-
-+ (NSArray *)hotelListFromData:(NSData *)data;
-+ (EanHotelListResponse *)hotelListResponseFromData:(NSData *)data;
 
 @end

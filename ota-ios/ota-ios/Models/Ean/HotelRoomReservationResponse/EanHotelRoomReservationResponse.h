@@ -7,8 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "EanAbstractResponse.h"
 
-@interface EanHotelRoomReservationResponse : NSObject
+@interface EanHotelRoomReservationResponse : EanAbstractResponse
 
 @property (nonatomic, strong) NSString *customerSessionId;
 @property (nonatomic) NSInteger itineraryId;
@@ -34,7 +35,5 @@
 @property (nonatomic, strong) NSDictionary *cancelPolicyInfoList;
 @property (nonatomic) BOOL nonRefundable;
 @property (nonatomic) NSInteger rateOccupancyPerRoom;
-
-+ (EanHotelRoomReservationResponse *)roomReservationFromData:(NSData *)data;
 
 @end

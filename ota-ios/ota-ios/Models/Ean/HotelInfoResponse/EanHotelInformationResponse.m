@@ -10,36 +10,16 @@
 
 @implementation EanHotelInformationResponse
 
-+ (EanHotelInformationResponse *)hotelInfoFromData:(NSData *)data {
-    if (data == nil) {
++ (instancetype)eanObjectFromApiJsonResponse:(id)jsonResponse {
+    if (jsonResponse == nil) {
         return nil;
     }
     
-    NSError *error = nil;
-    id respDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-    if (error != nil) {
-        NSLog(@"ERROR:%@", error);
+    if (![jsonResponse isKindOfClass:[NSDictionary class]]) {
         return nil;
     }
     
-    if (![NSJSONSerialization isValidJSONObject:respDict]) {
-        NSLog(@"%@.%@ Response is not valid JSON", NSStringFromClass(self.class), NSStringFromSelector(_cmd));
-        return nil;
-    }
-    
-    return [self hotelInfoFromObject:respDict];
-}
-
-+ (EanHotelInformationResponse *)hotelInfoFromObject:(id)object {
-    if (object == nil) {
-        return nil;
-    }
-    
-    if (![object isKindOfClass:[NSDictionary class]]) {
-        return nil;
-    }
-    
-    id hir = [object objectForKey:@"HotelInformationResponse"];
+    id hir = [jsonResponse objectForKey:@"HotelInformationResponse"];
     
     if (hir == nil) {
         return nil;

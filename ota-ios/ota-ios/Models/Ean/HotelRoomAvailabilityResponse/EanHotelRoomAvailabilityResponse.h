@@ -7,8 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "EanAbstractResponse.h"
 
-@interface EanHotelRoomAvailabilityResponse : NSObject
+@interface EanHotelRoomAvailabilityResponse : EanAbstractResponse
 
 @property (nonatomic) NSUInteger size;
 @property (nonatomic, strong) NSString *customerSessionId;
@@ -23,9 +24,8 @@
 @property (nonatomic) NSUInteger numberOfRoomsRequested;
 @property (nonatomic, strong) NSString *checkInInstructions;
 @property (nonatomic, strong) NSNumber *tripAdvisorRating;
-@property (nonatomic, strong) NSString *rateKey;
+@property (nonatomic) NSUInteger tripAdvisorReviewCount;
+@property (nonatomic, strong) NSString *tripAdvisorRatingUrl;
 @property (nonatomic, strong) NSArray *hotelRoomArray;
-
-+ (EanHotelRoomAvailabilityResponse *)roomsAvailableResponseFromData:(NSData *)data;
 
 @end

@@ -98,6 +98,7 @@
     
     room.rateInfos = [dict objectForKey:@"RateInfos"];
     room.rateInfo = [room.rateInfos objectForKey:@"RateInfo"];
+    room.roomGroup = [EanRoomGroup roomGroupFromDict:[room.rateInfo objectForKey:@"RoomGroup"]];
     room.chargeableRateInfo = [room.rateInfo objectForKey:@"ChargeableRateInfo"];
     room.chargeableRate = [[room.chargeableRateInfo objectForKey:@"@total"] floatValue];
     room.currencyCode = [room.chargeableRateInfo objectForKey:@"@currencyCode"];

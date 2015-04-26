@@ -51,7 +51,7 @@
 }
 
 - (void)requestFinished:(NSData *)responseData {
-    NSArray *hotelList = [EanHotelListResponse hotelListFromData:responseData];
+    NSArray *hotelList = [EanHotelListResponse eanObjectFromApiResponseData:responseData].hotelList;
     
     if (hotelList != nil) {
         self.hotelData = hotelList;

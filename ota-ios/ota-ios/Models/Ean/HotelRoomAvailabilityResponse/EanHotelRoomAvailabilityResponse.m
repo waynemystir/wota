@@ -11,38 +11,16 @@
 
 @implementation EanHotelRoomAvailabilityResponse
 
-+ (EanHotelRoomAvailabilityResponse *)roomsAvailableResponseFromData:(NSData *)data {
-    if (data == nil) {
++ (instancetype)eanObjectFromApiJsonResponse:(id)jsonResponse {
+    if (nil == jsonResponse) {
         return nil;
     }
     
-    NSError *error = nil;
-    id respDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-    if (error != nil) {
-        NSLog(@"ERROR:%@", error);
+    if (![jsonResponse isKindOfClass:[NSDictionary class]]) {
         return nil;
     }
     
-    if (![NSJSONSerialization isValidJSONObject:respDict]) {
-        NSLog(@"%@.%@ Response is not valid JSON", NSStringFromClass(self.class), NSStringFromSelector(_cmd));
-        return nil;
-    }
-    
-    NSString *respString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    NSLog(@"QQQQ:%@", respString);
-    return [self roomsAvailableResponseFromDict:respDict];
-}
-
-+ (EanHotelRoomAvailabilityResponse *)roomsAvailableResponseFromDict:(NSDictionary *)dict {
-    if (nil == dict) {
-        return nil;
-    }
-    
-    if (![dict isKindOfClass:[NSDictionary class]]) {
-        return nil;
-    }
-    
-    id idHrar = [dict objectForKey:@"HotelRoomAvailabilityResponse"];
+    id idHrar = [jsonResponse objectForKey:@"HotelRoomAvailabilityResponse"];
     
     if (nil == idHrar) {
         return nil;
@@ -66,14 +44,15 @@
     hrar.numberOfRoomsRequested = [[idHrar objectForKey:@"numberOfRoomsRequested"] integerValue];
     hrar.checkInInstructions = [idHrar objectForKey:@"checkInInstructions"];
     hrar.tripAdvisorRating = [idHrar objectForKey:@"tripAdvisorRating"];
-    hrar.rateKey = [idHrar objectForKey:@"rateKey"];
+    hrar.tripAdvisorReviewCount = [[idHrar objectForKey:@"tripAdvisorReviewCount"] integerValue];
+    hrar.tripAdvisorRatingUrl = [idHrar objectForKey:@"tripAdvisorRatingUrl"];
     
     id hrr = [idHrar objectForKey:@"HotelRoomResponse"];
     
     if (nil == hrr) {
         hrar.hotelRoomArray = nil;
     } else if ([hrr isKindOfClass:[NSArray class]]) {
-//        hrar.hotelRoomArray = hrr;
+        //        hrar.hotelRoomArray = hrr;
         
         // I previously would just return an array of NSDictionary's
         // that needed to be re-parsed with "roomFromDict" by the table
@@ -88,10 +67,10 @@
         }
         
         hrar.hotelRoomArray = [NSArray arrayWithArray:tmpRooms];
-
+        
     } else if ([hrr isKindOfClass:[NSDictionary class]]) {
         
-//        hrar.hotelRoomArray = [NSArray arrayWithObject:hrr];
+        //        hrar.hotelRoomArray = [NSArray arrayWithObject:hrr];
         
         // Believe it or not, Ean API will not return an array if there
         // is a single room response. Instead they just return a dict

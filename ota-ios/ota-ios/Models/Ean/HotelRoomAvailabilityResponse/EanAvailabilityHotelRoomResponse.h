@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "EanAvailabilityRoomType.h"
 #import "EanBedType.h"
+#import "EanRoomGroup.h"
 
 @interface EanAvailabilityHotelRoomResponse : NSObject
 
@@ -30,6 +31,7 @@
 @property (nonatomic) NSInteger minGuestAge;
 @property (nonatomic, strong) NSDictionary *rateInfos;
 @property (nonatomic, strong) NSDictionary *rateInfo;
+@property (nonatomic, strong) EanRoomGroup *roomGroup;
 @property (nonatomic, strong) NSDictionary *chargeableRateInfo;
 @property (nonatomic) float chargeableRate;
 @property (nonatomic, strong) NSString *currencyCode;

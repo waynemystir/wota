@@ -180,7 +180,7 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 - (void)requestFinished:(NSData *)responseData {
     switch (self.load_data_type) {
         case LOAD_ROOM: {
-            self.eanHrar = [EanHotelRoomAvailabilityResponse roomsAvailableResponseFromData:responseData];
+            self.eanHrar = [EanHotelRoomAvailabilityResponse eanObjectFromApiResponseData:responseData];
             self.tableData = self.eanHrar.hotelRoomArray;
             [self.roomsTableViewOutlet reloadData];
             break;
@@ -427,7 +427,7 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
                                                    arrivalDate:sc.arrivalDateEanString
                                                  departureDate:sc.returnDateEanString
                                                   supplierType:self.selectedRoom.supplierType
-                                                       rateKey:self.eanHrar.rateKey
+                                                       rateKey:self.selectedRoom.roomGroup.rateKey
                                                   roomTypeCode:self.selectedRoom.roomTypeCode
                                                       rateCode:self.selectedRoom.rateCode
                                                 chargeableRate:self.selectedRoom.chargeableRate

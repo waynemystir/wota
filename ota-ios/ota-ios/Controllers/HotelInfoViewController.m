@@ -91,7 +91,7 @@
 }
 
 - (void)requestFinished:(NSData *)responseData {
-    self.eanHotelInformationResponse = [EanHotelInformationResponse hotelInfoFromData:responseData];
+    self.eanHotelInformationResponse = [EanHotelInformationResponse eanObjectFromApiResponseData:responseData];
     [self loadupTheImageScroller];
     self.someLabelOutlet.text = [NSString stringWithFormat:@"lat:%f long:%f", _eanHotel.latitude, _eanHotel.longitude];
 }

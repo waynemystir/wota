@@ -11,36 +11,16 @@
 
 @implementation EanHotelRoomReservationResponse
 
-+ (EanHotelRoomReservationResponse *)roomReservationFromData:(NSData *)data {
-    if (data == nil) {
++ (instancetype)eanObjectFromApiJsonResponse:(id)jsonResponse {
+    if (nil == jsonResponse) {
         return nil;
     }
     
-    NSError *error = nil;
-    id respDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-    if (error != nil) {
-        NSLog(@"ERROR:%@", error);
+    if (![jsonResponse isKindOfClass:[NSDictionary class]]) {
         return nil;
     }
     
-    if (![NSJSONSerialization isValidJSONObject:respDict]) {
-        NSLog(@"%@.%@ Response is not valid JSON", NSStringFromClass(self.class), NSStringFromSelector(_cmd));
-        return nil;
-    }
-    
-    return [self roomReservationFromDict:respDict];
-}
-
-+ (EanHotelRoomReservationResponse *)roomReservationFromDict:(NSDictionary *)dict {
-    if (nil == dict) {
-        return nil;
-    }
-    
-    if (![dict isKindOfClass:[NSDictionary class]]) {
-        return nil;
-    }
-    
-    id idHrrr = [dict objectForKey:@"HotelRoomReservationResponse"];
+    id idHrrr = [jsonResponse objectForKey:@"HotelRoomReservationResponse"];
     
     if (nil == idHrrr) {
         return nil;

@@ -33,7 +33,7 @@
 
 - (void)requestFinished:(NSData *)responseData {
     NSString *respString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
-    EanHotelRoomReservationResponse *hrrr = [EanHotelRoomReservationResponse roomReservationFromData:responseData];
+    EanHotelRoomReservationResponse *hrrr = [EanHotelRoomReservationResponse eanObjectFromApiResponseData:responseData];
     self.itineraryOutlet.text = [NSString stringWithFormat:@"Itin:%ld", (long)hrrr.itineraryId];
     NSLog(@"%@.%@:::%@", self.class, NSStringFromSelector(_cmd), respString);
 }
