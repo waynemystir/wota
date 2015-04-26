@@ -9,9 +9,10 @@
 #import <Foundation/Foundation.h>
 
 /**
- * This is an abstrast class and should never be instantiated
+ * See the word 'Abstract' in the class name? It's
+ * not there just so I can sound cool, although I have
+ * to admit it does make me sound rather choice.
  */
-
 @interface EanAbstractResponse : NSObject
 
 + (instancetype)eanObjectFromApiResponseData:(NSData *)data;
