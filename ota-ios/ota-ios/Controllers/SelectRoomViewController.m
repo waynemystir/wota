@@ -79,13 +79,14 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 @property (nonatomic) CGRect rectOfAvailRoomContView;
 @property (nonatomic, strong) WotaButton *bedTypeButton;
 @property (nonatomic, strong) WotaButton *smokingButton;
-@property (nonatomic, strong) UIView *bedTypePickerContainer;
-@property (nonatomic, strong) UIButton *bedTypePickerDone;
+@property (nonatomic, strong) UIView *pickerViewContainer;
+@property (nonatomic, strong) UIButton *pickerViewDoneButton;
 @property (nonatomic, strong) UIPickerView *bedTypePickerView;
 @property (nonatomic, strong) SelectBedTypeDelegateImplementation *bedTypePickerDelegate;
 @property (nonatomic) BOOL isBedTypePickerShowing;
 @property (nonatomic, strong) UIPickerView *smokingPrefPickerView;
 @property (nonatomic, strong) SelectSmokingPreferenceDelegateImplementation *smokePrefDelegImplem;
+@property (nonatomic, strong) UIView *overlayDisable;
 
 @property (nonatomic, strong) UITableView *googlePlacesTableView;
 @property (nonatomic, strong) GooglePlaceTableViewDelegateImplementation *googlePlacesTableViewDelegate;
@@ -129,7 +130,11 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 //    }
     
     [self setupExpirationPicker];
-    [self setupBedTypePicker];
+    [self setupPickerViewContainer];
+    self.overlayDisable = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 364)];
+    self.overlayDisable.backgroundColor = [UIColor blackColor];
+    self.overlayDisable.alpha = 0.8f;
+    self.overlayDisable.userInteractionEnabled = YES;
     
     self.inputBookOutlet.hidden = YES;
 //    self.inputBookOutlet.frame = CGRectMake(10.0f, 412.0f, 300.0f, 0.0f);
@@ -359,10 +364,14 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     NSUInteger sbti = [self.bedTypePickerDelegate.pickerData indexOfObject:room.selectedBedType];
     [self.bedTypePickerView selectRow:sbti inComponent:0 animated:NO];
     
-    [self.bedTypePickerContainer addSubview:self.bedTypePickerView];
+    self.overlayDisable.alpha = 0.0f;
+    [self.view addSubview:self.overlayDisable];
+    [self.view bringSubviewToFront:self.overlayDisable];
+    [self.pickerViewContainer addSubview:self.bedTypePickerView];
     self.isBedTypePickerShowing = YES;
     [UIView animateWithDuration:kAnimationDuration animations:^{
-        self.bedTypePickerContainer.frame = CGRectMake(0, 364, 320, 204);
+        self.overlayDisable.alpha = 0.8f;
+        self.pickerViewContainer.frame = CGRectMake(0, 364, 320, 204);
     } completion:^(BOOL finished) {
         ;
     }];
@@ -380,10 +389,14 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     NSUInteger sspi = [self.smokePrefDelegImplem.pickerData indexOfObject:room.selectedSmokingPreference];
     [self.smokingPrefPickerView selectRow:sspi inComponent:0 animated:NO];
     
-    [self.bedTypePickerContainer addSubview:self.smokingPrefPickerView];
+    self.overlayDisable.alpha = 0.0f;
+    [self.view addSubview:self.overlayDisable];
+    [self.view bringSubviewToFront:self.overlayDisable];
+    [self.pickerViewContainer addSubview:self.smokingPrefPickerView];
     self.isBedTypePickerShowing = YES;
     [UIView animateWithDuration:kAnimationDuration animations:^{
-        self.bedTypePickerContainer.frame = CGRectMake(0, 364, 320, 204);
+        self.overlayDisable.alpha = 0.8f;
+        self.pickerViewContainer.frame = CGRectMake(0, 364, 320, 204);
     } completion:^(BOOL finished) {
         ;
     }];
@@ -596,9 +609,10 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     
     self.isBedTypePickerShowing = NO;
     [UIView animateWithDuration:kAnimationDuration animations:^{
-        self.bedTypePickerContainer.frame = CGRectMake(0, 600, 320, 204);
+        self.overlayDisable.alpha = 0.0f;
+        self.pickerViewContainer.frame = CGRectMake(0, 600, 320, 204);
     } completion:^(BOOL finished) {
-        ;
+        [self.overlayDisable removeFromSuperview];
     }];
 }
 
@@ -606,30 +620,30 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     ((UIButton *) sender).backgroundColor = UIColorFromRGB(0xc4c4c4);
 }
 
-- (void)setupBedTypePicker {
-    self.bedTypePickerContainer = [[UIView alloc] initWithFrame:CGRectMake(0, 600, 320, 204)];
-    self.bedTypePickerContainer.backgroundColor = [UIColor whiteColor];
-    [self.view addSubview:self.bedTypePickerContainer];
+- (void)setupPickerViewContainer {
+    self.pickerViewContainer = [[UIView alloc] initWithFrame:CGRectMake(0, 600, 320, 204)];
+    self.pickerViewContainer.backgroundColor = [UIColor whiteColor];
+    [self.view addSubview:self.pickerViewContainer];
     
-    self.bedTypePickerDone = [[UIButton alloc] initWithFrame:CGRectMake(242, 163, 75, 38)];
-    self.bedTypePickerDone.backgroundColor = UIColorFromRGB(0xc4c4c4);
-    self.bedTypePickerDone.layer.cornerRadius = 4.0f;
-    self.bedTypePickerDone.layer.masksToBounds = NO;
-    self.bedTypePickerDone.layer.borderWidth = 0.8f;
-    self.bedTypePickerDone.layer.borderColor = UIColorFromRGB(0xb5b5b5).CGColor;
+    self.pickerViewDoneButton = [[UIButton alloc] initWithFrame:CGRectMake(242, 163, 75, 38)];
+    self.pickerViewDoneButton.backgroundColor = UIColorFromRGB(0xc4c4c4);
+    self.pickerViewDoneButton.layer.cornerRadius = 4.0f;
+    self.pickerViewDoneButton.layer.masksToBounds = NO;
+    self.pickerViewDoneButton.layer.borderWidth = 0.8f;
+    self.pickerViewDoneButton.layer.borderColor = UIColorFromRGB(0xb5b5b5).CGColor;
     
-    self.bedTypePickerDone.layer.shadowColor = [UIColor blackColor].CGColor;
-    self.bedTypePickerDone.layer.shadowOpacity = 0.8;
-    self.bedTypePickerDone.layer.shadowRadius = 1;
-    self.bedTypePickerDone.layer.shadowOffset = CGSizeMake(1.0f, 1.0f);
+    self.pickerViewDoneButton.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.pickerViewDoneButton.layer.shadowOpacity = 0.8;
+    self.pickerViewDoneButton.layer.shadowRadius = 1;
+    self.pickerViewDoneButton.layer.shadowOffset = CGSizeMake(1.0f, 1.0f);
     
-    [self.bedTypePickerDone setTitle:@"Done" forState:UIControlStateNormal];
-    self.bedTypePickerDone.titleLabel.font = [UIFont systemFontOfSize:17.0f];
-    [self.bedTypePickerDone setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [self.bedTypePickerDone addTarget:self action:@selector(tdBedTypeDone:) forControlEvents:UIControlEventTouchDown];
-    [self.bedTypePickerDone addTarget:self action:@selector(tuiBedTypeDone:) forControlEvents:UIControlEventTouchUpInside];
-    [self.bedTypePickerDone addTarget:self action:@selector(tuoBedTypeDone:) forControlEvents:UIControlEventTouchUpOutside];
-    [self.bedTypePickerContainer addSubview:self.bedTypePickerDone];
+    [self.pickerViewDoneButton setTitle:@"Done" forState:UIControlStateNormal];
+    self.pickerViewDoneButton.titleLabel.font = [UIFont systemFontOfSize:17.0f];
+    [self.pickerViewDoneButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [self.pickerViewDoneButton addTarget:self action:@selector(tdBedTypeDone:) forControlEvents:UIControlEventTouchDown];
+    [self.pickerViewDoneButton addTarget:self action:@selector(tuiBedTypeDone:) forControlEvents:UIControlEventTouchUpInside];
+    [self.pickerViewDoneButton addTarget:self action:@selector(tuoBedTypeDone:) forControlEvents:UIControlEventTouchUpOutside];
+    [self.pickerViewContainer addSubview:self.pickerViewDoneButton];
 }
 
 - (void)tdExpirNext:(id)sender {

@@ -8,6 +8,7 @@
 
 #import "EanAvailabilityHotelRoomResponse.h"
 
+
 @implementation EanAvailabilityHotelRoomResponse
 
 + (EanAvailabilityHotelRoomResponse *)roomFromDict:(NSDictionary *)dict {
@@ -20,35 +21,14 @@
     }
     
     EanAvailabilityHotelRoomResponse *room = [[EanAvailabilityHotelRoomResponse alloc] init];
-    room.cancellationPolicy = [dict objectForKey:@"cancellationPolicy"];
     room.rateCode = [dict objectForKey:@"rateCode"];
-    room.roomTypeCode = [dict objectForKey:@"roomTypeCode"];
     room.rateDescription = [dict objectForKey:@"rateDescription"];
-    room.roomTypeDescription = [dict objectForKey:@"roomTypeDescription"];
+    room.roomType = [EanAvailabilityRoomType roomTypeFromDict:[dict objectForKey:@"RoomType"]];
+    room.roomTypeCode = room.roomType.roomCode;
+    room.roomTypeDescription = room.roomType.roomTypeDescrition;
     room.supplierType = [dict objectForKey:@"supplierType"];
-    room.taxRate = [dict objectForKey:@"taxRate"];
-    room.rateChange = [[dict objectForKey:@"rateChange"] boolValue];
-    room.nonRefundable = [[dict objectForKey:@"nonRefundable"] boolValue];
-    room.nonRefundableString = room.nonRefundable ? @"Non-refundable" : @"Free Cancellation";
-    room.guaranteeRequired = [[dict objectForKey:@"guaranteeRequired"] boolValue];
-    room.depositRequired = [[dict objectForKey:@"depositRequired"] boolValue];
-    room.immediateChargeRequired = [[dict objectForKey:@"immediateChargeRequired"] boolValue];
-    room.currentAllotment = [[dict objectForKey:@"currentAllotment"] integerValue];
     room.propertyId = [dict objectForKey:@"propertyId"];
     room.bedTypes = [dict objectForKey:@"BedTypes"];
-    room.cancelPolicyInfoList = [dict objectForKey:@"CancelPolicyInfoList"];
-    room.smokingPreferences = [dict objectForKey:@"smokingPreferences"];
-    room.smokingPreferencesArray = [room.smokingPreferences componentsSeparatedByString:@","];
-    room.rateOccupancyPerRoom = [[dict objectForKey:@"rateOccupancyPerRoom"] integerValue];
-    room.quotedOccupancy = [[dict objectForKey:@"quotedOccupancy"] integerValue];
-    room.minGuestAge = [[dict objectForKey:@"minGuestAge"] integerValue];
-    room.rateInfo = [dict objectForKey:@"RateInfo"];
-    room.chargeableRateInfo = [room.rateInfo objectForKey:@"ChargeableRateInfo"];
-    room.chargeableRate = [[room.chargeableRateInfo objectForKey:@"@total"] floatValue];
-    room.currencyCode = [room.chargeableRateInfo objectForKey:@"@currencyCode"];
-    room.deepLink = [dict objectForKey:@"deepLink"];
-    
-    room.nightlyRateToPresent = [NSNumber numberWithDouble:[[room.chargeableRateInfo objectForKey:@"@averageRate"] doubleValue]];
     
     id bta = [room.bedTypes objectForKey:@"BedType"];
     NSMutableArray *btma = [NSMutableArray array];
@@ -81,6 +61,9 @@
         room.selectedBedType = room.bedTypesArray[0];
     }
     
+    room.smokingPreferences = [dict objectForKey:@"smokingPreferences"];
+    room.smokingPreferencesArray = [room.smokingPreferences componentsSeparatedByString:@","];
+    
     if ([room.smokingPreferencesArray count] == 0) {
         room.selectedSmokingPreference = nil;
     } else if ([room.smokingPreferencesArray count] == 1) {
@@ -108,6 +91,31 @@
             room.selectedSmokingPreference = nil;
         }
     }
+    
+    room.rateOccupancyPerRoom = [[dict objectForKey:@"rateOccupancyPerRoom"] integerValue];
+    room.quotedOccupancy = [[dict objectForKey:@"quotedOccupancy"] integerValue];
+    room.minGuestAge = [[dict objectForKey:@"minGuestAge"] integerValue];
+    
+    room.rateInfos = [dict objectForKey:@"RateInfos"];
+    room.rateInfo = [room.rateInfos objectForKey:@"RateInfo"];
+    room.chargeableRateInfo = [room.rateInfo objectForKey:@"ChargeableRateInfo"];
+    room.chargeableRate = [[room.chargeableRateInfo objectForKey:@"@total"] floatValue];
+    room.currencyCode = [room.chargeableRateInfo objectForKey:@"@currencyCode"];
+    room.nightlyRateToPresent = [NSNumber numberWithDouble:[[room.chargeableRateInfo objectForKey:@"@averageRate"] doubleValue]];
+    
+    
+    room.cancellationPolicy = [dict objectForKey:@"cancellationPolicy"];
+    room.taxRate = [dict objectForKey:@"taxRate"];
+    room.rateChange = [[dict objectForKey:@"rateChange"] boolValue];
+    room.nonRefundable = [[dict objectForKey:@"nonRefundable"] boolValue];
+    room.nonRefundableString = room.nonRefundable ? @"Non-refundable" : @"Free Cancellation";
+    room.guaranteeRequired = [[dict objectForKey:@"guaranteeRequired"] boolValue];
+    room.depositRequired = [[dict objectForKey:@"depositRequired"] boolValue];
+    room.immediateChargeRequired = [[dict objectForKey:@"immediateChargeRequired"] boolValue];
+    room.currentAllotment = [[dict objectForKey:@"currentAllotment"] integerValue];
+    room.cancelPolicyInfoList = [dict objectForKey:@"CancelPolicyInfoList"];
+    room.deepLink = [dict objectForKey:@"deepLink"];
+    
     
     return room;
 }

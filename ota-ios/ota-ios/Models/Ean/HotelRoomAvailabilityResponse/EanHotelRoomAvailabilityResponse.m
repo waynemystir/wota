@@ -28,6 +28,8 @@
         return nil;
     }
     
+    NSString *respString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSLog(@"QQQQ:%@", respString);
     return [self roomsAvailableResponseFromDict:respDict];
 }
 

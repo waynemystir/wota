@@ -44,7 +44,7 @@
                      longitude:(double)longitude
                    arrivalDate:(NSString *)arrivalDate
                     returnDate:(NSString *)returnDate {
-    NSURL *url = [NSURL URLWithString:[self hotelUrlWithLatitude:latitude longitude:longitude arrivalDate:arrivalDate returnDate:returnDate]];
+    NSURL *url = [NSURL URLWithString:[self URLhotelListWithLatitude:latitude longitude:longitude arrivalDate:arrivalDate returnDate:returnDate]];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setTimeoutInterval:URL_REQUEST_TIMEOUT];
     [request setHTTPMethod:@"GET"];
@@ -56,10 +56,10 @@
     [self notifyDelegateRequestHasStarted:url];
 }
 
-- (NSString *)hotelUrlWithLatitude:(double)latitude
-                         longitude:(double)longitude
-                       arrivalDate:(NSString *)arrivalDate
-                        returnDate:(NSString *)returnDate {
+- (NSString *)URLhotelListWithLatitude:(double)latitude
+                             longitude:(double)longitude
+                           arrivalDate:(NSString *)arrivalDate
+                            returnDate:(NSString *)returnDate {
     NSString *appendage = nil;
     
     if (arrivalDate == nil || returnDate == nil) {
@@ -70,15 +70,13 @@
                      EAN_PK_DEPART_DATE, returnDate];
     }
     
-    return [[[self hotelUrlWithLatitude:latitude longitude:longitude] stringByAppendingString:appendage] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    return [[[self URLhotelListWithLatitude:latitude longitude:longitude] stringByAppendingString:appendage] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 }
 
-- (NSString *)hotelUrlWithLatitude:(double)latitude
-                         longitude:(double)longitude {
-    return [NSString stringWithFormat:@"%@?%@=%@&%@=%@&%@=%f&%@=%f&%@=%@&%@=%@&%@=%@",
-            kEanHotelListRequestUrl(),
-            EAN_PK_CID, EAN_CID,
-            EAN_PK_API_KEY, EAN_API_KEY,
+- (NSString *)URLhotelListWithLatitude:(double)latitude
+                             longitude:(double)longitude {
+    return [NSString stringWithFormat:@"%@&%@=%f&%@=%f&%@=%@&%@=%@&%@=%@",
+            kURLeanHotelList(),
             EAN_PK_LATITUDE, latitude,
             EAN_PK_LONGITUDE, longitude,
             EAN_PK_SEARCH_RADIUS, @10,
@@ -87,7 +85,7 @@
 }
 
 - (void)loadHotelDetailsWithId:(NSString *)hotelId {
-    NSURL *url = [NSURL URLWithString:[self hotelInfoUrlWithId:hotelId]];
+    NSURL *url = [NSURL URLWithString:[self URLhotelInfoWithId:hotelId]];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setTimeoutInterval:URL_REQUEST_TIMEOUT];
     [request setHTTPMethod:@"GET"];
@@ -99,12 +97,8 @@
     [self notifyDelegateRequestHasStarted:url];
 }
 
-- (NSString *)hotelInfoUrlWithId:(NSString *)hotelId {
-    return [NSString stringWithFormat:@"%@?%@=%@&%@=%@&%@=%@",
-            kEanHotelInfoRequestUrl(),
-            EAN_PK_CID, EAN_CID,
-            EAN_PK_API_KEY, EAN_API_KEY,
-            @"hotelId", hotelId];
+- (NSString *)URLhotelInfoWithId:(NSString *)hotelId {
+    return [[NSString stringWithFormat:@"%@&%@=%@", kURLeanHotelInfo(), EAN_PK_HOTEL_ID, hotelId] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 }
 
 - (void)loadAvailableRoomsWithHotelId:(NSString *)hotelId
@@ -112,7 +106,8 @@
                         departureDate:(NSString *)departureDate
                        numberOfAdults:(NSUInteger)numberOfAdults
                        childTravelers:(NSArray *)childTravelers {
-    NSURL *url = [NSURL URLWithString:[self loadAvailableRoomsUrlWithHotelId:hotelId arrivalDate:arrivalDate departureDate:departureDate numberOfAdults:numberOfAdults childTravelers:childTravelers]];
+    NSURL *url = [NSURL URLWithString:[self URLavailRoomsWithHotelId:hotelId arrivalDate:arrivalDate departureDate:departureDate numberOfAdults:numberOfAdults childTravelers:childTravelers]];
+    NSLog(@"AAAVVV:%@", [url absoluteString]);
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setTimeoutInterval:URL_REQUEST_TIMEOUT];
     [request setHTTPMethod:@"GET"];
@@ -124,19 +119,20 @@
     [self notifyDelegateRequestHasStarted:url];
 }
 
-- (NSString *)loadAvailableRoomsUrlWithHotelId:(NSString *)hotelId
-                                   arrivalDate:(NSString *)arrivalDate
-                                 departureDate:(NSString *)departureDate
-                                numberOfAdults:(NSUInteger)numberOfAdults
-                                childTravelers:(NSArray *)childTravelers {
-    return [[NSString stringWithFormat:@"%@?%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@",
-            kEanAvailableRoomsRequestUrl(),
-            EAN_PK_CID, EAN_CID,
-            EAN_PK_API_KEY, EAN_API_KEY,
-            @"hotelId", hotelId,
-            EAN_PK_ARRIVAL_DATE, arrivalDate,
-            EAN_PK_DEPART_DATE, departureDate,
-            [self getRoomGroupParamWithNumberOfAdults:numberOfAdults childTravelers:childTravelers]] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+- (NSString *)URLavailRoomsWithHotelId:(NSString *)hotelId
+                           arrivalDate:(NSString *)arrivalDate
+                         departureDate:(NSString *)departureDate
+                        numberOfAdults:(NSUInteger)numberOfAdults
+                        childTravelers:(NSArray *)childTravelers {
+    return [[NSString stringWithFormat:@"%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@&%@=%@",
+             kURLeanAvailRooms(),
+             EAN_PK_HOTEL_ID, hotelId,
+             EAN_PK_ARRIVAL_DATE, arrivalDate,
+             EAN_PK_DEPART_DATE, departureDate,
+             EAN_PK_INCLUDE_DETAILS, @"true",
+             EAN_PK_INCLUDE_ROOM_IMAGES, @"true",
+             [self getRoomGroupParamWithNumberOfAdults:numberOfAdults childTravelers:childTravelers],
+             EAN_PK_OPTIONS, [NSString stringWithFormat:@"%@", EAN_ROOM_TYPES]] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 }
 
 - (NSString *)getRoomGroupParamWithNumberOfAdults:(NSUInteger)numberOfAdults
@@ -184,10 +180,8 @@
                stateProvinceCode:(NSString *)stateProvinceCode
                      countryCode:(NSString *)countryCode
                       postalCode:(NSString *)postalCode {
-    NSString *urlString = [[NSString stringWithFormat:@"%@?%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%f&%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@",
-                     kEanBookReservationUrl(),
-                     EAN_PK_CID, EAN_CID,
-                     EAN_PK_API_KEY, EAN_API_KEY,
+    NSString *urlString = [[NSString stringWithFormat:@"%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%f&%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@",
+                     kURLeanBookReservation(),
                      EAN_PK_HOTEL_ID, hotelId,
                      EAN_PK_ARRIVAL_DATE, arrivalDate,
                      EAN_PK_DEPART_DATE, departureDate,
