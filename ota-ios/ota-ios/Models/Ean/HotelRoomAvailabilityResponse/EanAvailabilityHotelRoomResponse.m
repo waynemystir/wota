@@ -8,7 +8,6 @@
 
 #import "EanAvailabilityHotelRoomResponse.h"
 
-
 @implementation EanAvailabilityHotelRoomResponse
 
 + (EanAvailabilityHotelRoomResponse *)roomFromDict:(NSDictionary *)dict {
@@ -97,26 +96,15 @@
     room.minGuestAge = [[dict objectForKey:@"minGuestAge"] integerValue];
     
     room.rateInfos = [dict objectForKey:@"RateInfos"];
-    room.rateInfo = [room.rateInfos objectForKey:@"RateInfo"];
-    room.roomGroup = [EanRoomGroup roomGroupFromDict:[room.rateInfo objectForKey:@"RoomGroup"]];
-    room.chargeableRateInfo = [room.rateInfo objectForKey:@"ChargeableRateInfo"];
-    room.chargeableRate = [[room.chargeableRateInfo objectForKey:@"@total"] floatValue];
-    room.currencyCode = [room.chargeableRateInfo objectForKey:@"@currencyCode"];
-    room.nightlyRateToPresent = [NSNumber numberWithDouble:[[room.chargeableRateInfo objectForKey:@"@averageRate"] doubleValue]];
     
-    
-    room.cancellationPolicy = [dict objectForKey:@"cancellationPolicy"];
-    room.taxRate = [dict objectForKey:@"taxRate"];
-    room.rateChange = [[dict objectForKey:@"rateChange"] boolValue];
-    room.nonRefundable = [[dict objectForKey:@"nonRefundable"] boolValue];
-    room.nonRefundableString = room.nonRefundable ? @"Non-refundable" : @"Free Cancellation";
-    room.guaranteeRequired = [[dict objectForKey:@"guaranteeRequired"] boolValue];
-    room.depositRequired = [[dict objectForKey:@"depositRequired"] boolValue];
-    room.immediateChargeRequired = [[dict objectForKey:@"immediateChargeRequired"] boolValue];
-    room.currentAllotment = [[dict objectForKey:@"currentAllotment"] integerValue];
-    room.cancelPolicyInfoList = [dict objectForKey:@"CancelPolicyInfoList"];
+    // TODO: I am assuming here that RateInfos contains exactly one RateInfo.
+    // Is there ever a case where RateInfos contains more than one RateInfo?
+    room.rateInfo = [EanRateInfo rateInfoFromDict:[room.rateInfos objectForKey:@"RateInfo"]];
     room.deepLink = [dict objectForKey:@"deepLink"];
     
+    room.roomImages = [dict objectForKey:@"RoomImages"];
+    // TODO: Again, can RoomImages contain more than one RoomImage?
+    room.roomImage = [EanRoomImage roomImageFromDict:[room.roomImages objectForKey:@"RoomImage"]];
     
     return room;
 }

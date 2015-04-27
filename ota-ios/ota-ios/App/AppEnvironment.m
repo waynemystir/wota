@@ -86,3 +86,5 @@ UIColor * kColorGoodToGo() {
 UIColor * kColorNoGo() {
     return [UIColor colorWithRed:255 green:0 blue:0 alpha:0.75f];
 }
+
+CGFloat const WOTA_CORNER_RADIUS = 6.0f;

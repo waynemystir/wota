@@ -33,6 +33,8 @@
 		B0344C4D1AE5A6E0000BBFCE /* WotaCardNumberFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = B0344C4C1AE5A6E0000BBFCE /* WotaCardNumberFormatter.m */; };
 		B0344C501AE5A7BD000BBFCE /* WotaCardPatternInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B0344C4F1AE5A7BD000BBFCE /* WotaCardPatternInfo.m */; };
 		B03B42FD1ADDFE1B0083A6EA /* EanPlace.m in Sources */ = {isa = PBXBuildFile; fileRef = B03B42FC1ADDFE1B0083A6EA /* EanPlace.m */; };
+		B03C2BAA1AED74E700C13AC5 /* EanRateInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B03C2BA91AED74E700C13AC5 /* EanRateInfo.m */; };
+		B03C2BAD1AED8FAD00C13AC5 /* EanRoomImage.m in Sources */ = {isa = PBXBuildFile; fileRef = B03C2BAC1AED8FAD00C13AC5 /* EanRoomImage.m */; };
 		B049D1FA1AC19B2200E2E18C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B049D1F81AC19AC100E2E18C /* AVFoundation.framework */; };
 		B049D2061AC19B2300E2E18C /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B049D1FB1AC19B2300E2E18C /* CoreData.framework */; };
 		B049D2071AC19B2300E2E18C /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B049D1FC1AC19B2300E2E18C /* CoreLocation.framework */; };
@@ -191,6 +193,10 @@
 		B0344C4F1AE5A7BD000BBFCE /* WotaCardPatternInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WotaCardPatternInfo.m; sourceTree = "<group>"; };
 		B03B42FB1ADDFE1A0083A6EA /* EanPlace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanPlace.h; sourceTree = "<group>"; };
 		B03B42FC1ADDFE1B0083A6EA /* EanPlace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanPlace.m; sourceTree = "<group>"; };
+		B03C2BA81AED74E700C13AC5 /* EanRateInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanRateInfo.h; sourceTree = "<group>"; };
+		B03C2BA91AED74E700C13AC5 /* EanRateInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanRateInfo.m; sourceTree = "<group>"; };
+		B03C2BAB1AED8FAD00C13AC5 /* EanRoomImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanRoomImage.h; sourceTree = "<group>"; };
+		B03C2BAC1AED8FAD00C13AC5 /* EanRoomImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanRoomImage.m; sourceTree = "<group>"; };
 		B049D1F81AC19AC100E2E18C /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		B049D1FB1AC19B2300E2E18C /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		B049D1FC1AC19B2300E2E18C /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -698,10 +704,14 @@
 				B0122E461AD088F800E44319 /* EanAvailabilityHotelRoomResponse.m */,
 				B00872CE1AEC99CB00CB2B9D /* EanAvailabilityRoomType.h */,
 				B00872CF1AEC99CB00CB2B9D /* EanAvailabilityRoomType.m */,
+				B03C2BA81AED74E700C13AC5 /* EanRateInfo.h */,
+				B03C2BA91AED74E700C13AC5 /* EanRateInfo.m */,
 				B00872D11AECE5FB00CB2B9D /* EanRoomGroup.h */,
 				B00872D21AECE5FB00CB2B9D /* EanRoomGroup.m */,
 				B09E417E1AEA8C11000A718D /* EanBedType.h */,
 				B09E417F1AEA8C11000A718D /* EanBedType.m */,
+				B03C2BAB1AED8FAD00C13AC5 /* EanRoomImage.h */,
+				B03C2BAC1AED8FAD00C13AC5 /* EanRoomImage.m */,
 			);
 			name = HotelRoomAvailabilityResponse;
 			path = "ota-ios/Models/Ean/HotelRoomAvailabilityResponse";
@@ -935,6 +945,7 @@
 				B0963CC91AC912E5002FD859 /* ChildAgeSelectorViewController.m in Sources */,
 				B0963CC61AC8E034002FD859 /* ChildSubView.m in Sources */,
 				B0963CBC1AC89445002FD859 /* ChildViewController.m in Sources */,
+				B03C2BAA1AED74E700C13AC5 /* EanRateInfo.m in Sources */,
 				B0FE0F4C1AC70A0700DAF635 /* SelectRoomViewController.m in Sources */,
 				B058A4941AE8B52C00E42594 /* WotaButton.m in Sources */,
 				B09E41831AEB2D9B000A718D /* SelectBedTypeDelegateImplementation.m in Sources */,
@@ -949,6 +960,7 @@
 				B09E41801AEA8C11000A718D /* EanBedType.m in Sources */,
 				B0D02FEA1AE6123000B1E75F /* PTKView.m in Sources */,
 				B032F62D1AC18F6700809395 /* AppDelegate.m in Sources */,
+				B03C2BAD1AED8FAD00C13AC5 /* EanRoomImage.m in Sources */,
 				B032F62A1AC18F6700809395 /* main.m in Sources */,
 				B0963CB91AC786E3002FD859 /* SelectionCriteria.m in Sources */,
 				B09C5E9F1AD1735500A3D7E8 /* EanHotelInfoImage.m in Sources */,

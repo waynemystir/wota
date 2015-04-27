@@ -9,7 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "EanAvailabilityRoomType.h"
 #import "EanBedType.h"
-#import "EanRoomGroup.h"
+#import "EanRateInfo.h"
+#import "EanRoomImage.h"
 
 @interface EanAvailabilityHotelRoomResponse : NSObject
 
@@ -30,26 +31,10 @@
 @property (nonatomic) NSInteger quotedOccupancy;
 @property (nonatomic) NSInteger minGuestAge;
 @property (nonatomic, strong) NSDictionary *rateInfos;
-@property (nonatomic, strong) NSDictionary *rateInfo;
-@property (nonatomic, strong) EanRoomGroup *roomGroup;
-@property (nonatomic, strong) NSDictionary *chargeableRateInfo;
-@property (nonatomic) float chargeableRate;
-@property (nonatomic, strong) NSString *currencyCode;
-@property (nonatomic, strong) NSNumber *nightlyRateToPresent;
-
-
-@property (nonatomic, strong) NSString *cancellationPolicy;
-@property (nonatomic, strong) NSNumber *taxRate;
-@property (nonatomic) BOOL rateChange;
-@property (nonatomic) BOOL nonRefundable;
-@property (nonatomic) NSString *nonRefundableString;
-@property (nonatomic) BOOL guaranteeRequired;
-@property (nonatomic) BOOL depositRequired;
-@property (nonatomic) BOOL immediateChargeRequired;
-@property (nonatomic) NSUInteger currentAllotment;
-@property (nonatomic, strong) NSDictionary *cancelPolicyInfoList;
+@property (nonatomic, strong) EanRateInfo *rateInfo;
 @property (nonatomic, strong) NSString *deepLink;
-
+@property (nonatomic, strong) NSDictionary *roomImages;
+@property (nonatomic, strong) EanRoomImage *roomImage;
 
 + (EanAvailabilityHotelRoomResponse *)roomFromDict:(NSDictionary *)dict;
 

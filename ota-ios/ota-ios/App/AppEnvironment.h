@@ -15,10 +15,12 @@
 /**
  * Keychain keys
  */
-
 extern NSString * const kKeyGuestInfo;
 extern NSString * const kKeyPaymentDetails1;
 
+/**
+ * Google stuff
+ */
 extern NSString * const GOOGLE_API_KEY;
 
 extern int const URL_REQUEST_TIMEOUT;
@@ -41,4 +43,9 @@ extern NSNumberFormatter * kPriceRoundOffFormatter(NSString * currencyCode);
  */
 extern UIColor * kColorGoodToGo();
 extern UIColor * kColorNoGo();
+
+/**
+ * What not
+ */
+extern CGFloat const WOTA_CORNER_RADIUS;
 

@@ -26,13 +26,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ota-ios/Models/Ean/HotelRoomAvailabilityResponse/EanAvailabilityHotelRoomResponse.m"
-            timestampString = "451734206.635742"
+            timestampString = "451777867.563046"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "121"
-            endingLineNumber = "121"
-            landmarkName = "+roomFromDict:"
-            landmarkType = "5">
+            startingLineNumber = "111"
+            endingLineNumber = "111"
+            landmarkName = "@implementation EanAvailabilityHotelRoomResponse"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

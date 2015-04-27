@@ -29,6 +29,7 @@
 #import "SelectBedTypeDelegateImplementation.h"
 #import "SelectSmokingPreferenceDelegateImplementation.h"
 #import "WotaButton.h"
+#import <SDWebImage/UIImageView+WebCache.h>
 
 typedef NS_ENUM(NSUInteger, LOAD_DATA) {
     LOAD_ROOM = 0,
@@ -43,7 +44,6 @@ NSUInteger const kAvailRoomCellTag = 13456;
 NSUInteger const kAvailRoomCellContViewTag = 19191;
 NSUInteger const kAvailRoomBorderViewTag = 13;
 NSUInteger const kNightlyRateViewTag = 19;
-NSString * const kNoLocationsFoundMessage = @"No locations found for this postal code. Please try again.";
 
 @interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, SelectGooglePlaceDelegate, SelectBedTypeDelegate, SelectSmokingPrefDelegate>
 
@@ -139,7 +139,7 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     self.inputBookOutlet.hidden = YES;
 //    self.inputBookOutlet.frame = CGRectMake(10.0f, 412.0f, 300.0f, 0.0f);
     self.inputBookOutlet.transform = [self hiddenGuestInputTransform];
-    self.inputBookOutlet.layer.cornerRadius = 6.0f;
+    self.inputBookOutlet.layer.cornerRadius = WOTA_CORNER_RADIUS;
     self.inputBookOutlet.layer.borderWidth = 1.0f;
     self.inputBookOutlet.layer.borderColor = [UIColor blackColor].CGColor;
     
@@ -233,21 +233,25 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     cell.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     cell.clipsToBounds = YES;
     
-    cell.borderViewOutlet.layer.cornerRadius = 8.0f;
+    cell.borderViewOutlet.layer.cornerRadius = WOTA_CORNER_RADIUS;
     cell.borderViewOutlet.layer.borderWidth = 1.0f;
     cell.borderViewOutlet.layer.borderColor = [UIColor blackColor].CGColor;
+    cell.borderViewOutlet.layer.masksToBounds = YES;
     
     EanAvailabilityHotelRoomResponse *room = [self.tableData objectAtIndex:indexPath.row];
     
     cell.roomTypeDescriptionOutlet.text = room.roomTypeDescription;
     
-    NSNumberFormatter *currencyStyle = kPriceRoundOffFormatter(room.currencyCode);
+    NSNumberFormatter *currencyStyle = kPriceRoundOffFormatter(room.rateInfo.currencyCode);
 //    [currencyStyle setLocale:locale];
-    NSString *currency = [currencyStyle stringFromNumber:room.nightlyRateToPresent];
+    NSString *currency = [currencyStyle stringFromNumber:room.rateInfo.nightlyRateToPresent];
     
     cell.rateOutlet.text = currency;
     
-    cell.nonrefundOutlet.text = room.nonRefundableString;
+    cell.nonrefundOutlet.text = room.rateInfo.nonRefundableString;
+    
+    [self addRoomImageGradient:cell.roomImageViewOutlet];
+    [cell.roomImageViewOutlet setImageWithURL:[NSURL URLWithString:room.roomImage.imageUrl]];
     
     return cell;
 }
@@ -273,7 +277,7 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
 //}
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 100.0f;
+    return 130.0f;
 }
 
 #pragma mark Various methods
@@ -292,38 +296,46 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     UIView *cv = [[UIView alloc] initWithFrame:CGRectMake(0, 0, cellV.bounds.size.width, cellV.bounds.size.height - 1)];
     cv.tag = kAvailRoomCellContViewTag;
     [cellV addSubview:cv];
-    UIView *borderView = [[UIView alloc] initWithFrame:CGRectMake(2, 2, 316, 95)];
+    UIView *borderView = [[UIView alloc] initWithFrame:CGRectMake(2, 2, 316, 125)];
     borderView.layer.borderColor = [UIColor blackColor].CGColor;
     borderView.layer.borderWidth = 1.0f;
-    borderView.layer.cornerRadius = 8.0f;
+    borderView.layer.cornerRadius = WOTA_CORNER_RADIUS;
+    borderView.layer.masksToBounds = YES;
     borderView.tag = kAvailRoomBorderViewTag;
     [cv addSubview:borderView];
     
     EanAvailabilityHotelRoomResponse *room = [self.tableData objectAtIndex:self.expandedIndexPath.row];
     
-    UILabel *rtd = [[UILabel alloc] initWithFrame:CGRectMake(3, 8, 244, 63)];
+    UILabel *rtd = [[UILabel alloc] initWithFrame:CGRectMake(3, 71, 244, 53)];
     rtd.lineBreakMode = NSLineBreakByWordWrapping;
     rtd.numberOfLines = 2;
+    rtd.font = [UIFont boldSystemFontOfSize:17.0f];
     rtd.text = room.roomTypeDescription;
     [borderView addSubview:rtd];
     
-    UILabel *rateLabel = [[UILabel alloc] initWithFrame:CGRectMake(256, 26, 56, 28)];
+    UILabel *rateLabel = [[UILabel alloc] initWithFrame:CGRectMake(256, 70, 56, 28)];
     rateLabel.textColor = UIColorFromRGB(0x0D9C03);
     rateLabel.textAlignment = NSTextAlignmentRight;
 //    [rateLabel setFont:[UIFont boldSystemFontOfSize:18.0f]];
     [rateLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18.0f]];
-    NSNumberFormatter *currencyStyle = kPriceRoundOffFormatter(room.currencyCode);
+    NSNumberFormatter *currencyStyle = kPriceRoundOffFormatter(room.rateInfo.currencyCode);
     //    [currencyStyle setLocale:locale];
-    NSString *currency = [currencyStyle stringFromNumber:room.nightlyRateToPresent];
+    NSString *currency = [currencyStyle stringFromNumber:room.rateInfo.nightlyRateToPresent];
     rateLabel.text = currency;
     [borderView addSubview:rateLabel];
     
-    UILabel *nonreundLabel = [[UILabel alloc] initWithFrame:CGRectMake(176, 69, 136, 21)];
+    UILabel *nonreundLabel = [[UILabel alloc] initWithFrame:CGRectMake(176, 104, 136, 21)];
     nonreundLabel.backgroundColor = [UIColor colorWithRed:255/255.0f green:141/255.0f blue:9/255.0f alpha:1.0f];
     nonreundLabel.font = [UIFont systemFontOfSize:15.0f];
     nonreundLabel.textAlignment = NSTextAlignmentRight;
-    nonreundLabel.text = room.nonRefundableString;
+    nonreundLabel.text = room.rateInfo.nonRefundableString;
     [borderView addSubview:nonreundLabel];
+    
+    UIImageView *roomImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 316, 84)];
+    roomImageView.contentMode = UIViewContentModeScaleAspectFill;
+    [self addRoomImageGradient:roomImageView];
+    [roomImageView setImageWithURL:[NSURL URLWithString:room.roomImage.imageUrl]];
+    [borderView addSubview:roomImageView];
     
     self.bedTypeButton = [WotaButton wbWithFrame:CGRectMake(5, 264, 186, 30)];
     [self.bedTypeButton setTitle:room.selectedBedType.bedTypeDescription forState:UIControlStateNormal];
@@ -427,10 +439,10 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
                                                    arrivalDate:sc.arrivalDateEanString
                                                  departureDate:sc.returnDateEanString
                                                   supplierType:self.selectedRoom.supplierType
-                                                       rateKey:self.selectedRoom.roomGroup.rateKey
+                                                       rateKey:self.selectedRoom.rateInfo.roomGroup.rateKey
                                                   roomTypeCode:self.selectedRoom.roomTypeCode
                                                       rateCode:self.selectedRoom.rateCode
-                                                chargeableRate:self.selectedRoom.chargeableRate
+                                                chargeableRate:self.selectedRoom.rateInfo.chargeableRate
                                                 numberOfAdults:sc.numberOfAdults
                                                 childTravelers:[ChildTraveler childTravelers]
                                                 room1FirstName:gi.firstName
@@ -1255,6 +1267,17 @@ NSString * const kNoLocationsFoundMessage = @"No locations found for this postal
     [self.deleteCardOutlet setTitle:@"Delete This Card" forState:UIControlStateNormal];
     [self.deleteCardOutlet removeTarget:self action:@selector(dropPaymentDetailsView:) forControlEvents:UIControlEventTouchUpInside];
     [self.deleteCardOutlet addTarget:self action:@selector(initiateDeleteCard:) forControlEvents:UIControlEventTouchUpInside];
+}
+
+#pragma mark UIImageView morphing methods
+
+- (void)addRoomImageGradient:(UIImageView *)iv {
+    CAGradientLayer *gradientLayer = [CAGradientLayer layer];
+    gradientLayer.frame = iv.bounds;
+    gradientLayer.colors = [NSArray arrayWithObjects:(id)[UIColor whiteColor].CGColor, (id)[UIColor clearColor].CGColor, nil];
+    gradientLayer.startPoint = CGPointMake(1.0f, 0.5f);
+    gradientLayer.endPoint = CGPointMake(1.0f, 1.0f);
+    iv.layer.mask = gradientLayer;
 }
 
 @end
