@@ -37,7 +37,7 @@ typedef NS_ENUM(NSUInteger, LOAD_DATA) {
     LOAD_PLACE = 2
 };
 
-NSTimeInterval const kAnimationDuration = 0.7f;
+NSTimeInterval const kSrAnimationDuration = 0.7f;
 NSUInteger const kGuestDetailsViewTag = 51;
 NSUInteger const kPaymentDetailsViewTag = 52;
 NSUInteger const kAvailRoomCellTag = 13456;
@@ -51,6 +51,7 @@ NSUInteger const kRoomRateViewTag = 171720;
 NSUInteger const kRoomNonRefundViewTag = 171721;
 NSUInteger const kRoomBedTypeButtonTag = 171722;
 NSUInteger const kRoomSmokingButtonTag = 171723;
+NSUInteger const kRoomTypeDescrLongTag = 171724;
 
 @interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, SelectGooglePlaceDelegate, SelectBedTypeDelegate, SelectSmokingPrefDelegate>
 
@@ -146,7 +147,7 @@ NSUInteger const kRoomSmokingButtonTag = 171723;
     [self initializeTheTableViewPopOut];
     [self setupExpirationPicker];
     [self setupPickerViewContainer];
-    self.overlayDisable = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 364)];
+    self.overlayDisable = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 568)];
     self.overlayDisable.backgroundColor = [UIColor blackColor];
     self.overlayDisable.alpha = 0.8f;
     self.overlayDisable.userInteractionEnabled = YES;
@@ -320,6 +321,9 @@ NSUInteger const kRoomSmokingButtonTag = 171723;
     UILabel *nonrefundLabel = (UILabel *) [_tableViewPopOut viewWithTag:kRoomNonRefundViewTag];
     nonrefundLabel.text = room.rateInfo.nonRefundableString;
     
+    UILabel *rtdL = (UILabel *) [_tableViewPopOut viewWithTag:kRoomTypeDescrLongTag];
+    rtdL.text = room.roomType.descriptionLong;
+    
     [self.bedTypeButton setTitle:room.selectedBedType.bedTypeDescription forState:UIControlStateNormal];
     [self.smokingButton setTitle:[SelectSmokingPreferenceDelegateImplementation smokingPrefStringForEanSmokeCode:room.selectedSmokingPreference] forState:UIControlStateNormal];
     
@@ -384,11 +388,18 @@ NSUInteger const kRoomSmokingButtonTag = 171723;
     nonreundLabel.textAlignment = NSTextAlignmentRight;
     [borderView addSubview:nonreundLabel];
     
-    self.bedTypeButton = [WotaButton wbWithFrame:CGRectMake(5, 264, 186, 30)];
+    UILabel *rtdL = [[UILabel alloc] initWithFrame:CGRectMake(3, 257, 312, 100)];
+    rtdL.tag = kRoomTypeDescrLongTag;
+    rtdL.lineBreakMode = NSLineBreakByWordWrapping;
+    rtdL.numberOfLines = 4;
+    rtdL.font = [UIFont systemFontOfSize:12.0f];
+    [borderView addSubview:rtdL];
+    
+    self.bedTypeButton = [WotaButton wbWithFrame:CGRectMake(5, 364, 186, 30)];
     [self.bedTypeButton addTarget:self action:@selector(clickBedType:) forControlEvents:UIControlEventTouchUpInside];
     [tableViewPopout addSubview:self.bedTypeButton];
     
-    self.smokingButton = [WotaButton wbWithFrame:CGRectMake(194, 264, 120, 30)];
+    self.smokingButton = [WotaButton wbWithFrame:CGRectMake(194, 364, 120, 30)];
     [self.smokingButton addTarget:self action:@selector(clickSmokingPref:) forControlEvents:UIControlEventTouchUpInside];
     [tableViewPopout addSubview:self.smokingButton];
     
@@ -421,8 +432,9 @@ NSUInteger const kRoomSmokingButtonTag = 171723;
     [self.view addSubview:self.overlayDisable];
     [self.view bringSubviewToFront:self.overlayDisable];
     [self.pickerViewContainer addSubview:self.bedTypePickerView];
+    [self.view bringSubviewToFront:self.pickerViewContainer];
     self.isBedTypePickerShowing = YES;
-    [UIView animateWithDuration:kAnimationDuration animations:^{
+    [UIView animateWithDuration:kSrAnimationDuration animations:^{
         self.overlayDisable.alpha = 0.8f;
         self.pickerViewContainer.frame = CGRectMake(0, 364, 320, 204);
     } completion:^(BOOL finished) {
@@ -446,8 +458,9 @@ NSUInteger const kRoomSmokingButtonTag = 171723;
     [self.view addSubview:self.overlayDisable];
     [self.view bringSubviewToFront:self.overlayDisable];
     [self.pickerViewContainer addSubview:self.smokingPrefPickerView];
+    [self.view bringSubviewToFront:self.pickerViewContainer];
     self.isBedTypePickerShowing = YES;
-    [UIView animateWithDuration:kAnimationDuration animations:^{
+    [UIView animateWithDuration:kSrAnimationDuration animations:^{
         self.overlayDisable.alpha = 0.8f;
         self.pickerViewContainer.frame = CGRectMake(0, 364, 320, 204);
     } completion:^(BOOL finished) {
@@ -661,7 +674,7 @@ NSUInteger const kRoomSmokingButtonTag = 171723;
     ((UIButton *) sender).backgroundColor = UIColorFromRGB(0xc4c4c4);
     
     self.isBedTypePickerShowing = NO;
-    [UIView animateWithDuration:kAnimationDuration animations:^{
+    [UIView animateWithDuration:kSrAnimationDuration animations:^{
         self.overlayDisable.alpha = 0.0f;
         self.pickerViewContainer.frame = CGRectMake(0, 600, 320, 204);
     } completion:^(BOOL finished) {
@@ -875,6 +888,7 @@ NSUInteger const kRoomSmokingButtonTag = 171723;
     __weak UIView *rtd = [borderView viewWithTag:kRoomTypeDescViewTag];
     __weak UIView *rtl = [borderView viewWithTag:kRoomRateViewTag];
     __weak UIView *nrl = [borderView viewWithTag:kRoomNonRefundViewTag];
+    __weak UIView *rtdl = [borderView viewWithTag:kRoomTypeDescrLongTag];
     __weak UIView *rtv = self.roomsTableViewOutlet;
     __weak UIView *ibo = self.inputBookOutlet;
     
@@ -887,12 +901,13 @@ NSUInteger const kRoomSmokingButtonTag = 171723;
     UIBarButtonItem *lbbi = [[UIBarButtonItem alloc] initWithTitle:@"Different Room" style:UIBarButtonItemStyleDone target:self action:@selector(dropRoomDetailsView:)];
     [self.navigationItem setLeftBarButtonItem:lbbi animated:YES];
     
-    self.bedTypeButton.alpha = self.smokingButton.alpha = 0.0f;
+    self.bedTypeButton.alpha = self.smokingButton.alpha = rtdl.alpha = 0.0f;
+    rtdl.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/1.05)), 0.001f, 0.001f);
     self.bedTypeButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/0.55)), 0.001f, 0.001f);
     self.smokingButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/0.55f)), 0.001f, 0.001f);
     
-    [UIView animateWithDuration:kAnimationDuration animations:^{
-        tvp.frame = CGRectMake(0.0f, 64.0f, 320.0f, 300.0f);
+    [UIView animateWithDuration:kSrAnimationDuration animations:^{
+        tvp.frame = CGRectMake(0.0f, 64.0f, 320.0f, 400.0f);
         cv.frame = CGRectMake(0, 0, tvp.bounds.size.width, tvp.bounds.size.height);
         borderView.frame = CGRectMake(2.0f, 2.0f, cv.frame.size.width - 4.0f, cv.frame.size.height - 4.0f);
         riv.frame = CGRectMake(0, 0, 316, 210);
@@ -900,9 +915,10 @@ NSUInteger const kRoomSmokingButtonTag = 171723;
         rtd.frame = CGRectMake(3, 200, 244, 53);
         rtl.frame = CGRectMake(219, 200, 93, 28);
         nrl.frame = CGRectMake(176, 233, 136, 21);
+        rtdl.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 0), 1.0f, 1.0f);
         rtv.transform = CGAffineTransformMakeScale(0.01, 0.01);
         ibo.transform = [weakSelf shownGuestInputTransform];
-        weakSelf.bedTypeButton.alpha = weakSelf.smokingButton.alpha/* = weakSelf.doneButton.alpha*/ = 1.0f;
+        weakSelf.bedTypeButton.alpha = weakSelf.smokingButton.alpha = rtdl.alpha = 1.0f;
         weakSelf.bedTypeButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 0), 1.0f, 1.0f);
         weakSelf.smokingButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 0), 1.0f, 1.0f);
     } completion:^(BOOL finished) {
@@ -920,6 +936,7 @@ NSUInteger const kRoomSmokingButtonTag = 171723;
     __weak UIView *rtd = [borderView viewWithTag:kRoomTypeDescViewTag];
     __weak UIView *rtl = [borderView viewWithTag:kRoomRateViewTag];
     __weak UIView *nrl = [borderView viewWithTag:kRoomNonRefundViewTag];
+    __weak UIView *rtdl = [borderView viewWithTag:kRoomTypeDescrLongTag];
     __weak UIView *rtv = self.roomsTableViewOutlet;
     __weak UIView *ibo = self.inputBookOutlet;
     self.expandedIndexPath = nil;
@@ -928,8 +945,9 @@ NSUInteger const kRoomSmokingButtonTag = 171723;
     [self tuiBedTypeDone:nil];
     [self.navigationItem setLeftBarButtonItem:self.navigationItem.backBarButtonItem animated:YES];
     
-    [UIView animateWithDuration:kAnimationDuration animations:^{
-        weakSelf.bedTypeButton.alpha = weakSelf.smokingButton.alpha/* = weakSelf.doneButton.alpha*/ = 0.0f;
+    [UIView animateWithDuration:kSrAnimationDuration animations:^{
+        weakSelf.bedTypeButton.alpha = weakSelf.smokingButton.alpha = rtdl.alpha = 0.0f;
+        rtdl.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/2.5f)), 0.001f, 0.001f);
         weakSelf.bedTypeButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/1.5f)), 0.001f, 0.001f);
         weakSelf.smokingButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/1.5f)), 0.001f, 0.001f);
         tvp.frame = weakSelf.rectOfCellInSuperview;
@@ -979,7 +997,7 @@ NSUInteger const kRoomSmokingButtonTag = 171723;
     self.lastNameOutlet.text = gi.lastName;
     self.emailOutlet.text = gi.email;
     self.phoneOutlet.text = gi.phoneNumber;
-    [UIView animateWithDuration:kAnimationDuration animations:^{
+    [UIView animateWithDuration:kSrAnimationDuration animations:^{
         guestDetailsView.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
     } completion:^(BOOL finished) {
         ;
@@ -1006,7 +1024,7 @@ NSUInteger const kRoomSmokingButtonTag = 171723;
     [self.view endEditing:YES];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Different Room" style:UIBarButtonItemStyleDone target:self action:@selector(dropRoomDetailsView:)];
     self.navigationItem.rightBarButtonItem = nil;
-    [UIView animateWithDuration:kAnimationDuration animations:^{
+    [UIView animateWithDuration:kSrAnimationDuration animations:^{
         guestDetailsView.transform = CGAffineTransformScale(toTransform, 0.01f, 0.01f);
     } completion:^(BOOL finished) {
         [guestDetailsView removeFromSuperview];;
@@ -1064,7 +1082,7 @@ NSUInteger const kRoomSmokingButtonTag = 171723;
     }
     
     __weak typeof(self) wes = self;
-    [UIView animateWithDuration:kAnimationDuration animations:^{
+    [UIView animateWithDuration:kSrAnimationDuration animations:^{
         paymentDetailsView.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
         [wes.ccNumberOutlet becomeFirstResponder];
     } completion:^(BOOL finished) {
@@ -1110,7 +1128,7 @@ NSUInteger const kRoomSmokingButtonTag = 171723;
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Different Room" style:UIBarButtonItemStyleDone target:self action:@selector(dropRoomDetailsView:)];
     self.navigationItem.rightBarButtonItem = nil;
-    [UIView animateWithDuration:kAnimationDuration animations:^{
+    [UIView animateWithDuration:kSrAnimationDuration animations:^{
         paymentDetailsView.transform = CGAffineTransformScale(toTransform, 0.01f, 0.01f);
     } completion:^(BOOL finished) {
         [paymentDetailsView removeFromSuperview];;
@@ -1127,7 +1145,7 @@ NSUInteger const kRoomSmokingButtonTag = 171723;
     __weak UITableView *gptv = self.googlePlacesTableView;
     gptv.transform = CGAffineTransformMakeTranslation(0.0f, 400.0f);
     [self.view addSubview:self.googlePlacesTableView];
-    [UIView animateWithDuration:kAnimationDuration animations:^{
+    [UIView animateWithDuration:kSrAnimationDuration animations:^{
         gptv.transform = CGAffineTransformMakeTranslation(0.0f, 0.0f);
     } completion:^(BOOL finished) {
     }];
@@ -1141,7 +1159,7 @@ NSUInteger const kRoomSmokingButtonTag = 171723;
     self.showingGooglePlacesTableView = NO;
     
     __weak UITableView *gptv = self.googlePlacesTableView;
-    [UIView animateWithDuration:kAnimationDuration animations:^{
+    [UIView animateWithDuration:kSrAnimationDuration animations:^{
         gptv.transform = CGAffineTransformMakeTranslation(0.0f, 400.0f);
     } completion:^(BOOL finished) {
         [gptv removeFromSuperview];

@@ -13,7 +13,7 @@
 #import "UIViewController+KNSemiModal.h"
 #import "AppEnvironment.h"
 
-NSTimeInterval const kAnimationDuration = 0.6;
+NSTimeInterval const kCvAnimationDuration = 0.6;
 
 @interface ChildViewController () <UIPickerViewDataSource, UIPickerViewDelegate>
 
@@ -129,7 +129,7 @@ NSTimeInterval const kAnimationDuration = 0.6;
     toTransform = CGAffineTransformScale(toTransform, 1.0f, 1.0f);
     
     [self.view addSubview:asv];
-    [UIView animateWithDuration:kAnimationDuration animations:^{
+    [UIView animateWithDuration:kCvAnimationDuration animations:^{
         asv.transform = toTransform;
     } completion:^(BOOL finished) {
         // Let's re-enable the gesture recognizer
@@ -200,7 +200,7 @@ NSTimeInterval const kAnimationDuration = 0.6;
     __block CGAffineTransform transform = CGAffineTransformMakeTranslation(toX, toY);
     transform = CGAffineTransformScale(transform, 0.01f, 0.01f);
     
-    [UIView animateWithDuration:kAnimationDuration animations:^{
+    [UIView animateWithDuration:kCvAnimationDuration animations:^{
         snv.transform = transform;
     } completion:^(BOOL finished) {
         [snv removeFromSuperview];
@@ -223,7 +223,7 @@ NSTimeInterval const kAnimationDuration = 0.6;
     __block CGAffineTransform toTransform = CGAffineTransformMakeTranslation(0.0f, 0.0f);
     toTransform = CGAffineTransformScale(toTransform, 1.0f, 1.0f);
     
-    [UIView animateWithDuration:kAnimationDuration animations:^{
+    [UIView animateWithDuration:kCvAnimationDuration animations:^{
         childSubView.transform = toTransform;
     } completion:^(BOOL finished) {
         ;
@@ -243,7 +243,7 @@ NSTimeInterval const kAnimationDuration = 0.6;
     __block CGAffineTransform toTransform = CGAffineTransformMakeTranslation(toX, toY);
     toTransform = CGAffineTransformScale(toTransform, 0.01f, 0.01f);
     
-    [UIView animateWithDuration:kAnimationDuration animations:^{
+    [UIView animateWithDuration:kCvAnimationDuration animations:^{
         childSubView.transform = toTransform;
     } completion:^(BOOL finished) {
         childSubView.worbelOutlet.text = @"Select age";

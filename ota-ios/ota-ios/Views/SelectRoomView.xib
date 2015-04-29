@@ -20,10 +20,10 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lvY-Yf-X5X" userLabel="inputBookView">
-                    <rect key="frame" x="10" y="370" width="300" height="158"/>
+                    <rect key="frame" x="10" y="465" width="300" height="100"/>
                     <subviews>
-                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rqc-YR-Rdm" userLabel="guestButton" customClass="WotaButton">
-                            <rect key="frame" x="31" y="14" width="131" height="35"/>
+                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="rqc-YR-Rdm" userLabel="guestButton" customClass="WotaButton">
+                            <rect key="frame" x="3" y="3" width="95" height="94"/>
                             <fontDescription key="fontDescription" type="system" pointSize="19"/>
                             <state key="normal" title="Guest Details">
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -32,8 +32,8 @@
                                 <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="JjG-w4-w8P"/>
                             </connections>
                         </button>
-                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Aff-y2-VbT" userLabel="paymentButton" customClass="WotaButton">
-                            <rect key="frame" x="31" y="64" width="137" height="35"/>
+                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Aff-y2-VbT" userLabel="paymentButton" customClass="WotaButton">
+                            <rect key="frame" x="98" y="3" width="95" height="94"/>
                             <fontDescription key="fontDescription" type="system" pointSize="19"/>
                             <state key="normal" title="Payment Details">
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -42,8 +42,8 @@
                                 <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="ASO-0W-OUs"/>
                             </connections>
                         </button>
-                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bAk-VO-vQt" userLabel="bookButton" customClass="WotaButton">
-                            <rect key="frame" x="31" y="114" width="120" height="30"/>
+                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="bAk-VO-vQt" userLabel="bookButton" customClass="WotaButton">
+                            <rect key="frame" x="196" y="3" width="95" height="94"/>
                             <fontDescription key="fontDescription" type="system" pointSize="19"/>
                             <state key="normal" title="Book">
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
