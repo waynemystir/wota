@@ -37,13 +37,20 @@ typedef NS_ENUM(NSUInteger, LOAD_DATA) {
     LOAD_PLACE = 2
 };
 
-NSTimeInterval const kAnimationDuration = 0.6f;
+NSTimeInterval const kAnimationDuration = 0.7f;
 NSUInteger const kGuestDetailsViewTag = 51;
 NSUInteger const kPaymentDetailsViewTag = 52;
 NSUInteger const kAvailRoomCellTag = 13456;
 NSUInteger const kAvailRoomCellContViewTag = 19191;
 NSUInteger const kAvailRoomBorderViewTag = 13;
 NSUInteger const kNightlyRateViewTag = 19;
+NSUInteger const kRoomImageViewTag = 171717;
+NSUInteger const kRoomGradientCover = 171718;
+NSUInteger const kRoomTypeDescViewTag = 171719;
+NSUInteger const kRoomRateViewTag = 171720;
+NSUInteger const kRoomNonRefundViewTag = 171721;
+NSUInteger const kRoomBedTypeButtonTag = 171722;
+NSUInteger const kRoomSmokingButtonTag = 171723;
 
 @interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, SelectGooglePlaceDelegate, SelectBedTypeDelegate, SelectSmokingPrefDelegate>
 
@@ -98,6 +105,10 @@ NSUInteger const kNightlyRateViewTag = 19;
 @property (nonatomic) BOOL isValidExpiration;
 @property (nonatomic) BOOL isValidCardHolder;
 
+@property (nonatomic, strong) NSArray *roomImageGradientColorsFirst;
+@property (nonatomic, strong) NSArray *roomImageGradientColorsSecond;
+@property (nonatomic, strong) UIView *tableViewPopOut;
+
 - (IBAction)justPushIt:(id)sender;
 
 @end
@@ -129,6 +140,10 @@ NSUInteger const kNightlyRateViewTag = 19;
 //        [self.roomsTableViewOutlet setSeparatorInset:UIEdgeInsetsZero];
 //    }
     
+    self.roomImageGradientColorsFirst = [NSArray arrayWithObjects:(id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:1].CGColor, nil];
+    self.roomImageGradientColorsSecond = [NSArray arrayWithObjects:(id)[UIColor clearColor].CGColor, (id)[UIColor clearColor].CGColor, nil];
+    
+    [self initializeTheTableViewPopOut];
     [self setupExpirationPicker];
     [self setupPickerViewContainer];
     self.overlayDisable = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 364)];
@@ -243,15 +258,16 @@ NSUInteger const kNightlyRateViewTag = 19;
     cell.roomTypeDescriptionOutlet.text = room.roomTypeDescription;
     
     NSNumberFormatter *currencyStyle = kPriceRoundOffFormatter(room.rateInfo.currencyCode);
-//    [currencyStyle setLocale:locale];
     NSString *currency = [currencyStyle stringFromNumber:room.rateInfo.nightlyRateToPresent];
     
     cell.rateOutlet.text = currency;
     
     cell.nonrefundOutlet.text = room.rateInfo.nonRefundableString;
     
-    [self addRoomImageGradient:cell.roomImageViewOutlet];
+//    [self addRoomImageGradient:cell.roomImageViewOutlet];
     [cell.roomImageViewOutlet setImageWithURL:[NSURL URLWithString:room.roomImage.imageUrl]];
+    
+    [self addRoomImageGradient:cell.gradientRoomImageCover];
     
     return cell;
 }
@@ -282,7 +298,35 @@ NSUInteger const kNightlyRateViewTag = 19;
 
 #pragma mark Various methods
 
-- (UIView *)getTableViewPopOut {
+- (UIView *)tableViewPopOut {
+    _tableViewPopOut.frame = self.rectOfCellInSuperview;
+    
+    UIView *cv = [_tableViewPopOut viewWithTag:kAvailRoomCellContViewTag];
+    cv.frame = CGRectMake(0, 0, 320, 129);
+    
+    EanAvailabilityHotelRoomResponse *room = [self.tableData objectAtIndex:self.expandedIndexPath.row];
+    
+    UIImageView *roomImageView = (UIImageView *) [_tableViewPopOut viewWithTag:kRoomImageViewTag];
+    [roomImageView setImageWithURL:[NSURL URLWithString:room.roomImage.imageUrl]];
+    
+    UILabel *rtd = (UILabel *) [_tableViewPopOut viewWithTag:kRoomTypeDescViewTag];
+    rtd.text = room.roomTypeDescription;
+    
+    UILabel *rateLabel = (UILabel *) [_tableViewPopOut viewWithTag:kRoomRateViewTag];
+    NSNumberFormatter *currencyStyle = kPriceRoundOffFormatter(room.rateInfo.currencyCode);
+    NSString *currency = [currencyStyle stringFromNumber:room.rateInfo.nightlyRateToPresent];
+    rateLabel.text = currency;
+    
+    UILabel *nonrefundLabel = (UILabel *) [_tableViewPopOut viewWithTag:kRoomNonRefundViewTag];
+    nonrefundLabel.text = room.rateInfo.nonRefundableString;
+    
+    [self.bedTypeButton setTitle:room.selectedBedType.bedTypeDescription forState:UIControlStateNormal];
+    [self.smokingButton setTitle:[SelectSmokingPreferenceDelegateImplementation smokingPrefStringForEanSmokeCode:room.selectedSmokingPreference] forState:UIControlStateNormal];
+    
+    return _tableViewPopOut;
+}
+
+- (void)initializeTheTableViewPopOut {
     UIView *tableViewPopout = [[UIView alloc] initWithFrame:self.rectOfCellInSuperview];
     tableViewPopout.backgroundColor = [UIColor whiteColor];
 //    tableViewPopout.hidden = YES;
@@ -293,65 +337,62 @@ NSUInteger const kNightlyRateViewTag = 19;
     UIView *cellV = [[UIView alloc] initWithFrame:tableViewPopout.bounds];
     cellV.tag = kAvailRoomCellTag;
     [tableViewPopout addSubview:cellV];
-    UIView *cv = [[UIView alloc] initWithFrame:CGRectMake(0, 0, cellV.bounds.size.width, cellV.bounds.size.height - 1)];
+    UIView *cv = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 129)];
     cv.tag = kAvailRoomCellContViewTag;
+//    cv.backgroundColor = [UIColor redColor];
     [cellV addSubview:cv];
     UIView *borderView = [[UIView alloc] initWithFrame:CGRectMake(2, 2, 316, 125)];
     borderView.layer.borderColor = [UIColor blackColor].CGColor;
     borderView.layer.borderWidth = 1.0f;
     borderView.layer.cornerRadius = WOTA_CORNER_RADIUS;
     borderView.layer.masksToBounds = YES;
+    borderView.clipsToBounds = YES;
     borderView.tag = kAvailRoomBorderViewTag;
     [cv addSubview:borderView];
     
-    EanAvailabilityHotelRoomResponse *room = [self.tableData objectAtIndex:self.expandedIndexPath.row];
+    UIImageView *roomImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 316, 84)];
+    roomImageView.tag = kRoomImageViewTag;
+    roomImageView.clipsToBounds = YES;
+    roomImageView.contentMode = UIViewContentModeScaleAspectFill;
+    [borderView addSubview:roomImageView];
+    
+    UIView *gradientRoomImageCover = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 316, 84)];
+    gradientRoomImageCover.tag = kRoomGradientCover;
+    gradientRoomImageCover.clipsToBounds = YES;
+    [self addRoomImageGradient:gradientRoomImageCover];
+    [borderView addSubview:gradientRoomImageCover];
     
     UILabel *rtd = [[UILabel alloc] initWithFrame:CGRectMake(3, 71, 244, 53)];
+    rtd.tag = kRoomTypeDescViewTag;
     rtd.lineBreakMode = NSLineBreakByWordWrapping;
     rtd.numberOfLines = 2;
     rtd.font = [UIFont boldSystemFontOfSize:17.0f];
-    rtd.text = room.roomTypeDescription;
     [borderView addSubview:rtd];
     
-    UILabel *rateLabel = [[UILabel alloc] initWithFrame:CGRectMake(256, 70, 56, 28)];
+    UILabel *rateLabel = [[UILabel alloc] initWithFrame:CGRectMake(219, 70, 56, 28)];
+    rateLabel.tag = kRoomRateViewTag;
     rateLabel.textColor = UIColorFromRGB(0x0D9C03);
     rateLabel.textAlignment = NSTextAlignmentRight;
 //    [rateLabel setFont:[UIFont boldSystemFontOfSize:18.0f]];
     [rateLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18.0f]];
-    NSNumberFormatter *currencyStyle = kPriceRoundOffFormatter(room.rateInfo.currencyCode);
-    //    [currencyStyle setLocale:locale];
-    NSString *currency = [currencyStyle stringFromNumber:room.rateInfo.nightlyRateToPresent];
-    rateLabel.text = currency;
     [borderView addSubview:rateLabel];
     
     UILabel *nonreundLabel = [[UILabel alloc] initWithFrame:CGRectMake(176, 104, 136, 21)];
     nonreundLabel.backgroundColor = [UIColor colorWithRed:255/255.0f green:141/255.0f blue:9/255.0f alpha:1.0f];
+    nonreundLabel.tag = kRoomNonRefundViewTag;
     nonreundLabel.font = [UIFont systemFontOfSize:15.0f];
     nonreundLabel.textAlignment = NSTextAlignmentRight;
-    nonreundLabel.text = room.rateInfo.nonRefundableString;
     [borderView addSubview:nonreundLabel];
     
-    UIImageView *roomImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 316, 84)];
-    roomImageView.contentMode = UIViewContentModeScaleAspectFill;
-    [self addRoomImageGradient:roomImageView];
-    [roomImageView setImageWithURL:[NSURL URLWithString:room.roomImage.imageUrl]];
-    [borderView addSubview:roomImageView];
-    
     self.bedTypeButton = [WotaButton wbWithFrame:CGRectMake(5, 264, 186, 30)];
-    [self.bedTypeButton setTitle:room.selectedBedType.bedTypeDescription forState:UIControlStateNormal];
     [self.bedTypeButton addTarget:self action:@selector(clickBedType:) forControlEvents:UIControlEventTouchUpInside];
     [tableViewPopout addSubview:self.bedTypeButton];
     
     self.smokingButton = [WotaButton wbWithFrame:CGRectMake(194, 264, 120, 30)];
-    [self.smokingButton setTitle:[SelectSmokingPreferenceDelegateImplementation smokingPrefStringForEanSmokeCode:room.selectedSmokingPreference] forState:UIControlStateNormal];
     [self.smokingButton addTarget:self action:@selector(clickSmokingPref:) forControlEvents:UIControlEventTouchUpInside];
     [tableViewPopout addSubview:self.smokingButton];
     
-//    self.doneButton = [WotaButton wbWithFrame:CGRectMake(194, 264, 120, 30)];
-//    [self.doneButton setTitle:@"Different Room" forState:UIControlStateNormal];
-//    [self.doneButton addTarget:self action:@selector(dropRoomDetailsView:) forControlEvents:UIControlEventTouchUpInside];
-//    [tableViewPopout addSubview:self.doneButton];
-    return tableViewPopout;
+    self.tableViewPopOut = tableViewPopout;
 }
 
 - (CGAffineTransform)hiddenGuestInputTransform {
@@ -826,9 +867,14 @@ NSUInteger const kNightlyRateViewTag = 19;
 
 - (void)loadRoomDetailsView {
     __weak typeof(self) weakSelf = self;
-    __block UIView *tvp = [self getTableViewPopOut];
+    __weak UIView *tvp = self.tableViewPopOut;
     __weak UIView *cv = [tvp viewWithTag:kAvailRoomCellContViewTag];
     __weak UIView *borderView = [cv viewWithTag:kAvailRoomBorderViewTag];
+    __weak UIView *riv = [borderView viewWithTag:kRoomImageViewTag];
+    __weak UIView *gic = [borderView viewWithTag:kRoomGradientCover];
+    __weak UIView *rtd = [borderView viewWithTag:kRoomTypeDescViewTag];
+    __weak UIView *rtl = [borderView viewWithTag:kRoomRateViewTag];
+    __weak UIView *nrl = [borderView viewWithTag:kRoomNonRefundViewTag];
     __weak UIView *rtv = self.roomsTableViewOutlet;
     __weak UIView *ibo = self.inputBookOutlet;
     
@@ -841,20 +887,24 @@ NSUInteger const kNightlyRateViewTag = 19;
     UIBarButtonItem *lbbi = [[UIBarButtonItem alloc] initWithTitle:@"Different Room" style:UIBarButtonItemStyleDone target:self action:@selector(dropRoomDetailsView:)];
     [self.navigationItem setLeftBarButtonItem:lbbi animated:YES];
     
-    self.bedTypeButton.alpha = self.smokingButton.alpha/* = self.doneButton.alpha*/ = 0.0f;
+    self.bedTypeButton.alpha = self.smokingButton.alpha = 0.0f;
     self.bedTypeButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/0.55)), 0.001f, 0.001f);
     self.smokingButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/0.55f)), 0.001f, 0.001f);
-//    self.doneButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/0.55f)), 0.001f, 0.001f);
+    
     [UIView animateWithDuration:kAnimationDuration animations:^{
         tvp.frame = CGRectMake(0.0f, 64.0f, 320.0f, 300.0f);
-        cv.frame = tvp.bounds;
+        cv.frame = CGRectMake(0, 0, tvp.bounds.size.width, tvp.bounds.size.height);
         borderView.frame = CGRectMake(2.0f, 2.0f, cv.frame.size.width - 4.0f, cv.frame.size.height - 4.0f);
+        riv.frame = CGRectMake(0, 0, 316, 210);
+        gic.frame = CGRectMake(0, 180, 316, 30);
+        rtd.frame = CGRectMake(3, 200, 244, 53);
+        rtl.frame = CGRectMake(219, 200, 93, 28);
+        nrl.frame = CGRectMake(176, 233, 136, 21);
         rtv.transform = CGAffineTransformMakeScale(0.01, 0.01);
         ibo.transform = [weakSelf shownGuestInputTransform];
         weakSelf.bedTypeButton.alpha = weakSelf.smokingButton.alpha/* = weakSelf.doneButton.alpha*/ = 1.0f;
         weakSelf.bedTypeButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 0), 1.0f, 1.0f);
         weakSelf.smokingButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 0), 1.0f, 1.0f);
-//        weakSelf.doneButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 0), 1.0f, 1.0f);
     } completion:^(BOOL finished) {
         rtv.hidden = YES;
     }];
@@ -862,10 +912,14 @@ NSUInteger const kNightlyRateViewTag = 19;
 
 - (void)dropRoomDetailsView:(id)sender {
     __weak typeof(self) weakSelf = self;
-//    __weak UIView *tvp = self.doneButton.superview;
     __weak UIView *tvp = self.bedTypeButton.superview;
     __weak UIView *cv = [tvp viewWithTag:kAvailRoomCellContViewTag];
     __weak UIView *borderView = [cv viewWithTag:kAvailRoomBorderViewTag];
+    __weak UIView *riv = [borderView viewWithTag:kRoomImageViewTag];
+    __weak UIView *gic = [borderView viewWithTag:kRoomGradientCover];
+    __weak UIView *rtd = [borderView viewWithTag:kRoomTypeDescViewTag];
+    __weak UIView *rtl = [borderView viewWithTag:kRoomRateViewTag];
+    __weak UIView *nrl = [borderView viewWithTag:kRoomNonRefundViewTag];
     __weak UIView *rtv = self.roomsTableViewOutlet;
     __weak UIView *ibo = self.inputBookOutlet;
     self.expandedIndexPath = nil;
@@ -873,14 +927,19 @@ NSUInteger const kNightlyRateViewTag = 19;
     rtv.hidden = NO;
     [self tuiBedTypeDone:nil];
     [self.navigationItem setLeftBarButtonItem:self.navigationItem.backBarButtonItem animated:YES];
+    
     [UIView animateWithDuration:kAnimationDuration animations:^{
         weakSelf.bedTypeButton.alpha = weakSelf.smokingButton.alpha/* = weakSelf.doneButton.alpha*/ = 0.0f;
         weakSelf.bedTypeButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/1.5f)), 0.001f, 0.001f);
         weakSelf.smokingButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/1.5f)), 0.001f, 0.001f);
-//        weakSelf.doneButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/1.5f)), 0.001f, 0.001f);
         tvp.frame = weakSelf.rectOfCellInSuperview;
         cv.frame = weakSelf.rectOfAvailRoomContView;
         borderView.frame = CGRectMake(2.0f, 2.0f, weakSelf.rectOfAvailRoomContView.size.width - 4.0f, weakSelf.rectOfAvailRoomContView.size.height - 4.0f);
+        riv.frame = CGRectMake(0, 0, 316, 84);
+        gic.frame = CGRectMake(0, 0, 316, 84);
+        rtd.frame = CGRectMake(3, 71, 244, 53);
+        rtl.frame = CGRectMake(219, 71, 93, 28);
+        nrl.frame = CGRectMake(176, 104, 136, 21);
         rtv.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
         ibo.transform = [weakSelf hiddenGuestInputTransform];
     } completion:^(BOOL finished) {
@@ -1271,13 +1330,18 @@ NSUInteger const kNightlyRateViewTag = 19;
 
 #pragma mark UIImageView morphing methods
 
-- (void)addRoomImageGradient:(UIImageView *)iv {
+- (void)addRoomImageGradient:(UIView *)iv {
+    if ([iv.layer.sublayers count] > 0) {
+        return;
+    }
+    
     CAGradientLayer *gradientLayer = [CAGradientLayer layer];
     gradientLayer.frame = iv.bounds;
-    gradientLayer.colors = [NSArray arrayWithObjects:(id)[UIColor whiteColor].CGColor, (id)[UIColor clearColor].CGColor, nil];
-    gradientLayer.startPoint = CGPointMake(1.0f, 0.5f);
+    gradientLayer.colors = self.roomImageGradientColorsFirst;
+    gradientLayer.startPoint = CGPointMake(1.0f, 0.0f);
     gradientLayer.endPoint = CGPointMake(1.0f, 1.0f);
-    iv.layer.mask = gradientLayer;
+//    iv.layer.mask = gradientLayer;
+    [iv.layer addSublayer:gradientLayer];
 }
 
 @end

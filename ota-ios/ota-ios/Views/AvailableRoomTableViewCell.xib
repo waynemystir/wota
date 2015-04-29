@@ -15,27 +15,33 @@
                     <view tag="13" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Si8-AH-KtS" userLabel="borderView">
                         <rect key="frame" x="2" y="2" width="316" height="125"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" tag="11" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="roomTypeDescription" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dnJ-sW-RrZ" userLabel="roomTypeDescription">
-                                <rect key="frame" x="3" y="71" width="244" height="53"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" tag="19" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="CUR 1,999" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qk8-ap-PBd" userLabel="rateLabel">
-                                <rect key="frame" x="219" y="71" width="93" height="28"/>
-                                <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="18"/>
-                                <color key="textColor" red="0.050980392156862744" green="0.61176470588235299" blue="0.011764705882352941" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ivg-jm-Y5x" userLabel="roomImageView">
+                                <rect key="frame" x="0.0" y="0.0" width="316" height="84"/>
+                            </imageView>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eaK-WL-85C" userLabel="gradientRoomImage">
+                                <rect key="frame" x="0.0" y="0.0" width="316" height="84"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GHw-b6-Lcp" userLabel="nonrefundLabel">
                                 <rect key="frame" x="176" y="104" width="136" height="21"/>
                                 <color key="backgroundColor" red="1" green="0.55294117647058827" blue="0.035294117647058823" alpha="1" colorSpace="calibratedRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ivg-jm-Y5x" userLabel="roomImageView">
-                                <rect key="frame" x="0.0" y="0.0" width="316" height="84"/>
-                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" tag="19" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="CUR 1,999" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qk8-ap-PBd" userLabel="rateLabel">
+                                <rect key="frame" x="219" y="71" width="93" height="28"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="18"/>
+                                <color key="textColor" red="0.050980392156862744" green="0.61176470588235299" blue="0.011764705882352941" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" tag="11" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="roomTypeDescription" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dnJ-sW-RrZ" userLabel="roomTypeDescription">
+                                <rect key="frame" x="3" y="71" width="244" height="53"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -43,6 +49,7 @@
             </tableViewCellContentView>
             <connections>
                 <outlet property="borderViewOutlet" destination="Si8-AH-KtS" id="tgO-72-Kxp"/>
+                <outlet property="gradientRoomImageCover" destination="eaK-WL-85C" id="yl2-qf-c9d"/>
                 <outlet property="nonrefundOutlet" destination="GHw-b6-Lcp" id="jZ0-Km-eM4"/>
                 <outlet property="rateOutlet" destination="qk8-ap-PBd" id="ffk-pg-iyF"/>
                 <outlet property="roomImageViewOutlet" destination="ivg-jm-Y5x" id="T8S-eh-gFQ"/>

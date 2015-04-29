@@ -15,5 +15,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *rateOutlet;
 @property (weak, nonatomic) IBOutlet UILabel *nonrefundOutlet;
 @property (weak, nonatomic) IBOutlet UIImageView *roomImageViewOutlet;
+@property (weak, nonatomic) IBOutlet UIView *gradientRoomImageCover;
 
 @end
