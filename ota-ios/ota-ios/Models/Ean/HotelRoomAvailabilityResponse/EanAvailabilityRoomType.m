@@ -7,6 +7,7 @@
 //
 
 #import "EanAvailabilityRoomType.h"
+#import "AppEnvironment.h"
 
 @implementation EanAvailabilityRoomType
 
@@ -27,6 +28,10 @@
     rt.descriptionLong = [dict objectForKey:@"descriptionLong"];
     
     return rt;
+}
+
+- (NSString *)descriptionLongStripped {
+    return stringByStrippingHTML(self.descriptionLong);
 }
 
 @end

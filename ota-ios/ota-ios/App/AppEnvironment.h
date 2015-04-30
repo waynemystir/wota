@@ -26,6 +26,11 @@ extern NSString * const GOOGLE_API_KEY;
 extern int const URL_REQUEST_TIMEOUT;
 
 /**
+ * Various utilities
+ */
+extern NSString * stringByStrippingHTML(NSString * s);
+
+/**
  * Various directories to persist the cache
  */
 extern NSString * kWotaCacheDirectory();

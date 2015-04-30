@@ -28,6 +28,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *shortDescLabelOutlet;
 @property (weak, nonatomic) IBOutlet UIButton *bookButtonOutlet;
 @property (nonatomic, strong) EanHotelInformationResponse *eanHotelInformationResponse;
+@property (nonatomic, strong) SelectRoomViewController *selectRoomViewController;
 
 - (IBAction)justPushIt:(id)sender;
 
@@ -94,6 +95,8 @@
     self.eanHotelInformationResponse = [EanHotelInformationResponse eanObjectFromApiResponseData:responseData];
     [self loadupTheImageScroller];
     self.someLabelOutlet.text = [NSString stringWithFormat:@"lat:%f long:%f", _eanHotel.latitude, _eanHotel.longitude];
+    
+//    [self prepareTheSelectRoomViewController];
 }
 
 - (void)loadupTheImageScroller {
@@ -101,22 +104,29 @@
     for (int j = 0; j < [ims count]; j++) {
         EanHotelInfoImage *image = [EanHotelInfoImage imageFromDict:ims[j]];
         UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(j * 320, 0, 320.0f, 195.0f)];
-        [iv setImageWithURL:[NSURL URLWithString:image.url]];
+        [iv setImageWithURL:[NSURL URLWithString:image.url] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+            if (j == 0) {
+                [self prepareTheSelectRoomViewControllerWithPlaceholderImageUrlString:image];
+            }
+        }];
         self.imageScrollerOutlet.contentSize = CGSizeMake(320 + j * 320, 195.0f);
         [self.imageScrollerOutlet addSubview:iv];
     }
 }
 
+- (void)prepareTheSelectRoomViewControllerWithPlaceholderImageUrlString:(UIImage *)phi {
+    self.selectRoomViewController = [[SelectRoomViewController alloc] initWithPlaceholderImage:phi];
+    SelectionCriteria *sc = [SelectionCriteria singleton];
+    [[LoadEanData sharedInstance:self.selectRoomViewController] loadAvailableRoomsWithHotelId:_eanHotel.hotelId
+                                                         arrivalDate:sc.arrivalDateEanString
+                                                       departureDate:sc.returnDateEanString
+                                                      numberOfAdults:sc.numberOfAdults
+                                                      childTravelers:[ChildTraveler childTravelers]];
+}
+
 - (IBAction)justPushIt:(id)sender {
     if (sender == self.bookButtonOutlet) {
-        SelectRoomViewController *srvc = [SelectRoomViewController new];
-        SelectionCriteria *sc = [SelectionCriteria singleton];
-        [[LoadEanData sharedInstance:srvc] loadAvailableRoomsWithHotelId:_eanHotel.hotelId
-                                                             arrivalDate:sc.arrivalDateEanString
-                                                           departureDate:sc.returnDateEanString
-                                                          numberOfAdults:sc.numberOfAdults
-                                                          childTravelers:[ChildTraveler childTravelers]];
-        [self.navigationController pushViewController:srvc animated:YES];
+        [self.navigationController pushViewController:self.selectRoomViewController animated:YES];
     }
 }
 @end

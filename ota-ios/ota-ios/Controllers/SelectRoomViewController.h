@@ -11,4 +11,6 @@
 
 @interface SelectRoomViewController : UIViewController <LoadDataProtocol>
 
+- (id)initWithPlaceholderImage:(UIImage *)placeholderImage;
+
 @end

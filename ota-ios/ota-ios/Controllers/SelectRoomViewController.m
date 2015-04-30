@@ -57,6 +57,7 @@ NSUInteger const kRoomTypeDescrLongTag = 171724;
 
 @property (nonatomic) LOAD_DATA load_data_type;
 
+@property (nonatomic, strong) UIImage *placeholderImage;
 @property (weak, nonatomic) IBOutlet UITableView *roomsTableViewOutlet;
 @property (weak, nonatomic) IBOutlet UIView *inputBookOutlet;
 @property (weak, nonatomic) IBOutlet UIButton *bookButtonOutlet;
@@ -118,6 +119,14 @@ NSUInteger const kRoomTypeDescrLongTag = 171724;
 
 - (id)init {
     self = [super initWithNibName:@"SelectRoomView" bundle:nil];
+    return self;
+}
+
+- (id)initWithPlaceholderImage:(UIImage *)placeholderImage {
+    if (self = [self init]) {
+        _placeholderImage = placeholderImage;
+    }
+    
     return self;
 }
 
@@ -266,7 +275,7 @@ NSUInteger const kRoomTypeDescrLongTag = 171724;
     cell.nonrefundOutlet.text = room.rateInfo.nonRefundableString;
     
 //    [self addRoomImageGradient:cell.roomImageViewOutlet];
-    [cell.roomImageViewOutlet setImageWithURL:[NSURL URLWithString:room.roomImage.imageUrl]];
+    [cell.roomImageViewOutlet setImageWithURL:[NSURL URLWithString:room.roomImage.imageUrl] placeholderImage:self.placeholderImage];
     
     [self addRoomImageGradient:cell.gradientRoomImageCover];
     
@@ -308,7 +317,7 @@ NSUInteger const kRoomTypeDescrLongTag = 171724;
     EanAvailabilityHotelRoomResponse *room = [self.tableData objectAtIndex:self.expandedIndexPath.row];
     
     UIImageView *roomImageView = (UIImageView *) [_tableViewPopOut viewWithTag:kRoomImageViewTag];
-    [roomImageView setImageWithURL:[NSURL URLWithString:room.roomImage.imageUrl]];
+    [roomImageView setImageWithURL:[NSURL URLWithString:room.roomImage.imageUrl] placeholderImage:self.placeholderImage];
     
     UILabel *rtd = (UILabel *) [_tableViewPopOut viewWithTag:kRoomTypeDescViewTag];
     rtd.text = room.roomTypeDescription;
@@ -322,7 +331,7 @@ NSUInteger const kRoomTypeDescrLongTag = 171724;
     nonrefundLabel.text = room.rateInfo.nonRefundableString;
     
     UILabel *rtdL = (UILabel *) [_tableViewPopOut viewWithTag:kRoomTypeDescrLongTag];
-    rtdL.text = room.roomType.descriptionLong;
+    rtdL.text = room.roomType.descriptionLongStripped;
     
     [self.bedTypeButton setTitle:room.selectedBedType.bedTypeDescription forState:UIControlStateNormal];
     [self.smokingButton setTitle:[SelectSmokingPreferenceDelegateImplementation smokingPrefStringForEanSmokeCode:room.selectedSmokingPreference] forState:UIControlStateNormal];

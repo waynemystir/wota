@@ -7,6 +7,7 @@
 //
 
 #import "EanRoomImage.h"
+#import <SDWebImage/SDWebImageManager.h>
 
 @implementation EanRoomImage
 
@@ -21,6 +22,16 @@
     
     EanRoomImage *ri = [[EanRoomImage alloc] init];
     ri.imageUrl = [dict objectForKey:@"url"];
+    
+    [[SDWebImageManager sharedManager] downloadWithURL:[NSURL URLWithString:ri.imageUrl]
+                                               options:0
+                                              progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+                                                  ;
+                                              }
+                                             completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished) {
+                                                 ;
+                                             }];
+    
     return ri;
 }
 

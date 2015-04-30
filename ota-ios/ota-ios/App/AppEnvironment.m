@@ -16,6 +16,16 @@ NSString * const GOOGLE_API_KEY = @"AIzaSyDXmlmSp43YsY1QfPMaBP5Ww5UIXWNXXho";
 
 int const URL_REQUEST_TIMEOUT = 30;
 
+NSString * stringByStrippingHTML(NSString * s) {
+    s = [s stringByReplacingOccurrencesOfString:@"<br />" withString:@" "];
+    s = [s stringByReplacingOccurrencesOfString:@"<br/>" withString:@""];
+    
+    NSRange r;
+    while ((r = [s rangeOfString:@"<[^>]+>" options:NSRegularExpressionSearch]).location != NSNotFound)
+        s = [s stringByReplacingCharactersInRange:r withString:@""];
+        return s;
+}
+
 NSString * const WOTA_CACHE_DIRECTORY = @"wota_cache_directory";
 NSString * const WOTA_CACHE_CHILD_TRAVELERS_DIRECTORY = @"child_travelers_directory";
 NSString * const WOTA_CACHE_GOOGLE_PLACE_DETAIL_DIRECTORY = @"google_place_detail_directory";

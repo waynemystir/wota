@@ -14,6 +14,7 @@
 @property (nonatomic, strong) NSString *roomCode;
 @property (nonatomic, strong) NSString *roomTypeDescrition;
 @property (nonatomic, strong) NSString *descriptionLong;
+@property (nonatomic, strong, readonly) NSString *descriptionLongStripped;
 
 + (EanAvailabilityRoomType *)roomTypeFromDict:(NSDictionary *)dict;
 
