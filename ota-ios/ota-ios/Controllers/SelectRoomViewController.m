@@ -54,6 +54,7 @@ NSUInteger const kRoomBedTypeButtonTag = 171723;
 NSUInteger const kRoomSmokingButtonTag = 171724;
 NSUInteger const kRoomTypeDescrLongTag = 171725;
 NSUInteger const kRoomTotalViewTag = 171726;
+NSUInteger const kRoomTotalWithTaxTag = 171727;
 
 @interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, SelectGooglePlaceDelegate, SelectBedTypeDelegate, SelectSmokingPrefDelegate>
 
@@ -340,12 +341,18 @@ NSUInteger const kRoomTotalViewTag = 171726;
     rateLabel.text = currency;
     
     UILabel *totalLabel = (UILabel *) [_tableViewPopOut viewWithTag:kRoomTotalViewTag];
-    NSString *totalAmt = [currencyStyle stringFromNumber:room.rateInfo.chargeableRateInfo.total];
+    totalLabel.frame = CGRectMake(219, 69, 93, 22);
+    NSNumberFormatter *twoDigit = kPriceTwoDigitFormatter(room.rateInfo.chargeableRateInfo.currencyCode);
+    NSString *totalAmt = [twoDigit stringFromNumber:room.rateInfo.chargeableRateInfo.total];
     totalLabel.text = totalAmt;
     totalLabel.alpha = 0.0f;
     
     UILabel *perNightLabel = (UILabel *) [_tableViewPopOut viewWithTag:kRoomPerNightTag];
     perNightLabel.text = room.rateInfo.chargeableRateInfo.nightlyRateTypeDescription;
+    
+    UIView *totalWithTaxLabel = [_tableViewPopOut viewWithTag:kRoomTotalWithTaxTag];
+    totalWithTaxLabel.frame = CGRectMake(214, 69, 88, 22);
+    totalWithTaxLabel.alpha = 0.0f;
     
     UILabel *nonrefundLabel = (UILabel *) [_tableViewPopOut viewWithTag:kRoomNonRefundViewTag];
     nonrefundLabel.text = room.rateInfo.nonRefundableString;
@@ -412,6 +419,7 @@ NSUInteger const kRoomTotalViewTag = 171726;
     
     UILabel *totalLabel = [[UILabel alloc] initWithFrame:CGRectMake(219, 69, 93, 22)];
     totalLabel.tag = kRoomTotalViewTag;
+    totalLabel.lineBreakMode = NSLineBreakByClipping;
     totalLabel.textColor = UIColorFromRGB(0x0D9C03);
     totalLabel.textAlignment = NSTextAlignmentRight;
     [totalLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:22.0f]];
@@ -422,6 +430,16 @@ NSUInteger const kRoomTotalViewTag = 171726;
     perNightLabel.textAlignment = NSTextAlignmentRight;
     [perNightLabel setFont:[UIFont systemFontOfSize:12.0f]];
     [borderView addSubview:perNightLabel];
+    
+    UILabel *totalWithTaxLabel = [[UILabel alloc] initWithFrame:CGRectMake(214, 69, 88, 22)];
+    totalWithTaxLabel.tag = kRoomTotalWithTaxTag;
+    totalWithTaxLabel.lineBreakMode = NSLineBreakByClipping;
+    totalWithTaxLabel.text = @"Total With Tax";
+    totalWithTaxLabel.textAlignment = NSTextAlignmentRight;
+    totalWithTaxLabel.textColor = UIColorFromRGB(0x0D9C03);
+    totalWithTaxLabel.textAlignment = NSTextAlignmentCenter;
+    [totalWithTaxLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:15.0f]];
+    [borderView addSubview:totalWithTaxLabel];
     
     UILabel *nonreundLabel = [[UILabel alloc] initWithFrame:CGRectMake(198, 104, 118, 21)];
     nonreundLabel.clipsToBounds = YES;
@@ -935,6 +953,7 @@ NSUInteger const kRoomTotalViewTag = 171726;
     __weak UIView *rtl = [borderView viewWithTag:kRoomRateViewTag];
     __weak UIView *tal = [borderView viewWithTag:kRoomTotalViewTag];
     __weak UIView *pnt = [borderView viewWithTag:kRoomPerNightTag];
+    __weak UIView *twt = [borderView viewWithTag:kRoomTotalWithTaxTag];
     __weak UIView *nrl = [borderView viewWithTag:kRoomNonRefundViewTag];
     __weak UIView *rtdl = [borderView viewWithTag:kRoomTypeDescrLongTag];
     __weak UIView *rtv = self.roomsTableViewOutlet;
@@ -963,10 +982,12 @@ NSUInteger const kRoomTotalViewTag = 171726;
         rtd.frame = CGRectMake(3, 200, 190, 53);
         rtl.frame = CGRectMake(219, 230, 93, 22);
         rtl.alpha = 0.0f;
-        tal.frame = CGRectMake(219, 230, 93, 33);
+        tal.frame = CGRectMake(193, 230, 119, 33);
         tal.alpha = 1.0f;
         pnt.frame = CGRectMake(262, 248, 50, 15);
         pnt.alpha = 0.0f;
+        twt.frame = CGRectMake(209, 212, 103, 22);
+        twt.alpha = 1.0f;
         nrl.frame = CGRectMake(3, 256, 118, 21);
         rtdl.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 0), 1.0f, 1.0f);
         rtv.transform = CGAffineTransformMakeScale(0.01, 0.01);
@@ -990,6 +1011,7 @@ NSUInteger const kRoomTotalViewTag = 171726;
     __weak UIView *rtl = [borderView viewWithTag:kRoomRateViewTag];
     __weak UIView *tal = [borderView viewWithTag:kRoomTotalViewTag];
     __weak UIView *pnt = [borderView viewWithTag:kRoomPerNightTag];
+    __weak UIView *twt = [borderView viewWithTag:kRoomTotalWithTaxTag];
     __weak UIView *nrl = [borderView viewWithTag:kRoomNonRefundViewTag];
     __weak UIView *rtdl = [borderView viewWithTag:kRoomTypeDescrLongTag];
     __weak UIView *rtv = self.roomsTableViewOutlet;
@@ -1013,10 +1035,12 @@ NSUInteger const kRoomTotalViewTag = 171726;
         rtd.frame = CGRectMake(3, 71, 190, 53);
         rtl.frame = CGRectMake(219, 69, 93, 22);
         rtl.alpha = 1.0f;
-        tal.frame = CGRectMake(219, 69, 93, 22);
+        tal.frame = CGRectMake(193, 69, 119, 22);
         tal.alpha = 0.0f;
         pnt.frame = CGRectMake(262, 87, 50, 15);
         pnt.alpha = 1.0f;
+        twt.frame = CGRectMake(209, 69, 103, 22);
+        twt.alpha = 0.0f;
         nrl.frame = CGRectMake(198, 104, 118, 21);
         rtv.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
         ibo.transform = [weakSelf hiddenGuestInputTransform];

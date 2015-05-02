@@ -89,6 +89,24 @@ NSNumberFormatter * kPriceRoundOffFormatter(NSString * currencyCode) {
     return _currencyStyle;
 }
 
+NSNumberFormatter * kPriceTwoDigitFormatter(NSString * currencyCode) {
+    static NSNumberFormatter *_currencyStyle = nil;
+    
+    NSString *ccc = _currencyStyle.currencyCode;
+    
+    if (nil == _currencyStyle || nil == ccc || ![ccc isEqualToString:currencyCode]) {
+        
+        _currencyStyle = [[NSNumberFormatter alloc] init];
+        [_currencyStyle setCurrencyCode:currencyCode];
+        [_currencyStyle setNumberStyle:NSNumberFormatterCurrencyStyle];
+        [_currencyStyle setMaximumFractionDigits:2];
+        [_currencyStyle setRoundingMode: NSNumberFormatterRoundHalfUp];
+        
+    }
+    
+    return _currencyStyle;
+}
+
 UIColor * kColorGoodToGo() {
     return [UIColor colorWithRed:0 green:255 blue:0 alpha:0.75f];
 }
