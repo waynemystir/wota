@@ -48,10 +48,12 @@ NSUInteger const kRoomImageViewTag = 171717;
 NSUInteger const kRoomGradientCover = 171718;
 NSUInteger const kRoomTypeDescViewTag = 171719;
 NSUInteger const kRoomRateViewTag = 171720;
-NSUInteger const kRoomNonRefundViewTag = 171721;
-NSUInteger const kRoomBedTypeButtonTag = 171722;
-NSUInteger const kRoomSmokingButtonTag = 171723;
-NSUInteger const kRoomTypeDescrLongTag = 171724;
+NSUInteger const kRoomPerNightTag = 171721;
+NSUInteger const kRoomNonRefundViewTag = 171722;
+NSUInteger const kRoomBedTypeButtonTag = 171723;
+NSUInteger const kRoomSmokingButtonTag = 171724;
+NSUInteger const kRoomTypeDescrLongTag = 171725;
+NSUInteger const kRoomTotalViewTag = 171726;
 
 @interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, SelectGooglePlaceDelegate, SelectBedTypeDelegate, SelectSmokingPrefDelegate>
 
@@ -265,13 +267,21 @@ NSUInteger const kRoomTypeDescrLongTag = 171724;
     
     EanAvailabilityHotelRoomResponse *room = [self.tableData objectAtIndex:indexPath.row];
     
-    cell.roomTypeDescriptionOutlet.text = room.roomTypeDescription;
+    cell.roomTypeDescriptionOutlet.text = room.roomType.roomTypeDescrition;
     
-    NSNumberFormatter *currencyStyle = kPriceRoundOffFormatter(room.rateInfo.currencyCode);
-    NSString *currency = [currencyStyle stringFromNumber:room.rateInfo.nightlyRateToPresent];
+//    NSNumberFormatter *currencyStyle = kPriceRoundOffFormatter(room.rateInfo.currencyCode);
+//    NSString *currency = [currencyStyle stringFromNumber:room.rateInfo.nightlyRateToPresent];
+    NSNumberFormatter *currencyStyle = kPriceRoundOffFormatter(room.rateInfo.chargeableRateInfo.currencyCode);
+    NSString *currency = [currencyStyle stringFromNumber:room.rateInfo.chargeableRateInfo.averageBaseRate];
     
     cell.rateOutlet.text = currency;
     
+    cell.perNightOutlet.text = room.rateInfo.chargeableRateInfo.nightlyRateTypeDescription;
+    
+    cell.nonrefundOutlet.clipsToBounds = YES;
+    cell.nonrefundOutlet.layer.cornerRadius = WOTA_CORNER_RADIUS;
+    cell.nonrefundOutlet.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    cell.nonrefundOutlet.layer.borderWidth = 0.5f;
     cell.nonrefundOutlet.text = room.rateInfo.nonRefundableString;
     
 //    [self addRoomImageGradient:cell.roomImageViewOutlet];
@@ -320,12 +330,22 @@ NSUInteger const kRoomTypeDescrLongTag = 171724;
     [roomImageView setImageWithURL:[NSURL URLWithString:room.roomImage.imageUrl] placeholderImage:self.placeholderImage];
     
     UILabel *rtd = (UILabel *) [_tableViewPopOut viewWithTag:kRoomTypeDescViewTag];
-    rtd.text = room.roomTypeDescription;
+    rtd.text = room.roomType.roomTypeDescrition;
     
     UILabel *rateLabel = (UILabel *) [_tableViewPopOut viewWithTag:kRoomRateViewTag];
-    NSNumberFormatter *currencyStyle = kPriceRoundOffFormatter(room.rateInfo.currencyCode);
-    NSString *currency = [currencyStyle stringFromNumber:room.rateInfo.nightlyRateToPresent];
+//    NSNumberFormatter *currencyStyle = kPriceRoundOffFormatter(room.rateInfo.currencyCode);
+//    NSString *currency = [currencyStyle stringFromNumber:room.rateInfo.nightlyRateToPresent];
+    NSNumberFormatter *currencyStyle = kPriceRoundOffFormatter(room.rateInfo.chargeableRateInfo.currencyCode);
+    NSString *currency = [currencyStyle stringFromNumber:room.rateInfo.chargeableRateInfo.averageBaseRate];
     rateLabel.text = currency;
+    
+    UILabel *totalLabel = (UILabel *) [_tableViewPopOut viewWithTag:kRoomTotalViewTag];
+    NSString *totalAmt = [currencyStyle stringFromNumber:room.rateInfo.chargeableRateInfo.total];
+    totalLabel.text = totalAmt;
+    totalLabel.alpha = 0.0f;
+    
+    UILabel *perNightLabel = (UILabel *) [_tableViewPopOut viewWithTag:kRoomPerNightTag];
+    perNightLabel.text = room.rateInfo.chargeableRateInfo.nightlyRateTypeDescription;
     
     UILabel *nonrefundLabel = (UILabel *) [_tableViewPopOut viewWithTag:kRoomNonRefundViewTag];
     nonrefundLabel.text = room.rateInfo.nonRefundableString;
@@ -375,14 +395,14 @@ NSUInteger const kRoomTypeDescrLongTag = 171724;
     [self addRoomImageGradient:gradientRoomImageCover];
     [borderView addSubview:gradientRoomImageCover];
     
-    UILabel *rtd = [[UILabel alloc] initWithFrame:CGRectMake(3, 71, 244, 53)];
+    UILabel *rtd = [[UILabel alloc] initWithFrame:CGRectMake(3, 71, 190, 53)];
     rtd.tag = kRoomTypeDescViewTag;
     rtd.lineBreakMode = NSLineBreakByWordWrapping;
     rtd.numberOfLines = 2;
     rtd.font = [UIFont boldSystemFontOfSize:17.0f];
     [borderView addSubview:rtd];
     
-    UILabel *rateLabel = [[UILabel alloc] initWithFrame:CGRectMake(219, 70, 56, 28)];
+    UILabel *rateLabel = [[UILabel alloc] initWithFrame:CGRectMake(219, 69, 93, 22)];
     rateLabel.tag = kRoomRateViewTag;
     rateLabel.textColor = UIColorFromRGB(0x0D9C03);
     rateLabel.textAlignment = NSTextAlignmentRight;
@@ -390,11 +410,28 @@ NSUInteger const kRoomTypeDescrLongTag = 171724;
     [rateLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18.0f]];
     [borderView addSubview:rateLabel];
     
-    UILabel *nonreundLabel = [[UILabel alloc] initWithFrame:CGRectMake(176, 104, 136, 21)];
-    nonreundLabel.backgroundColor = [UIColor colorWithRed:255/255.0f green:141/255.0f blue:9/255.0f alpha:1.0f];
+    UILabel *totalLabel = [[UILabel alloc] initWithFrame:CGRectMake(219, 69, 93, 22)];
+    totalLabel.tag = kRoomTotalViewTag;
+    totalLabel.textColor = UIColorFromRGB(0x0D9C03);
+    totalLabel.textAlignment = NSTextAlignmentRight;
+    [totalLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:22.0f]];
+    [borderView addSubview:totalLabel];
+    
+    UILabel *perNightLabel = [[UILabel alloc] initWithFrame:CGRectMake(262, 87, 50, 15)];
+    perNightLabel.tag = kRoomPerNightTag;
+    perNightLabel.textAlignment = NSTextAlignmentRight;
+    [perNightLabel setFont:[UIFont systemFontOfSize:12.0f]];
+    [borderView addSubview:perNightLabel];
+    
+    UILabel *nonreundLabel = [[UILabel alloc] initWithFrame:CGRectMake(198, 104, 118, 21)];
+    nonreundLabel.clipsToBounds = YES;
+    nonreundLabel.layer.cornerRadius = WOTA_CORNER_RADIUS;
+    nonreundLabel.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    nonreundLabel.layer.borderWidth = 0.5f;
+//    nonreundLabel.backgroundColor = [UIColor colorWithRed:255/255.0f green:141/255.0f blue:9/255.0f alpha:1.0f];
     nonreundLabel.tag = kRoomNonRefundViewTag;
-    nonreundLabel.font = [UIFont systemFontOfSize:15.0f];
-    nonreundLabel.textAlignment = NSTextAlignmentRight;
+    nonreundLabel.font = [UIFont boldSystemFontOfSize:13.0f];
+    nonreundLabel.textAlignment = NSTextAlignmentCenter;
     [borderView addSubview:nonreundLabel];
     
     UILabel *rtdL = [[UILabel alloc] initWithFrame:CGRectMake(3, 257, 312, 100)];
@@ -503,9 +540,9 @@ NSUInteger const kRoomTypeDescrLongTag = 171724;
                                                  departureDate:sc.returnDateEanString
                                                   supplierType:self.selectedRoom.supplierType
                                                        rateKey:self.selectedRoom.rateInfo.roomGroup.rateKey
-                                                  roomTypeCode:self.selectedRoom.roomTypeCode
+                                                  roomTypeCode:self.selectedRoom.roomType.roomCode
                                                       rateCode:self.selectedRoom.rateCode
-                                                chargeableRate:self.selectedRoom.rateInfo.chargeableRate
+                                                chargeableRate:[self.selectedRoom.rateInfo.chargeableRateInfo.total floatValue]
                                                 numberOfAdults:sc.numberOfAdults
                                                 childTravelers:[ChildTraveler childTravelers]
                                                 room1FirstName:gi.firstName
@@ -896,6 +933,8 @@ NSUInteger const kRoomTypeDescrLongTag = 171724;
     __weak UIView *gic = [borderView viewWithTag:kRoomGradientCover];
     __weak UIView *rtd = [borderView viewWithTag:kRoomTypeDescViewTag];
     __weak UIView *rtl = [borderView viewWithTag:kRoomRateViewTag];
+    __weak UIView *tal = [borderView viewWithTag:kRoomTotalViewTag];
+    __weak UIView *pnt = [borderView viewWithTag:kRoomPerNightTag];
     __weak UIView *nrl = [borderView viewWithTag:kRoomNonRefundViewTag];
     __weak UIView *rtdl = [borderView viewWithTag:kRoomTypeDescrLongTag];
     __weak UIView *rtv = self.roomsTableViewOutlet;
@@ -921,9 +960,14 @@ NSUInteger const kRoomTypeDescrLongTag = 171724;
         borderView.frame = CGRectMake(2.0f, 2.0f, cv.frame.size.width - 4.0f, cv.frame.size.height - 4.0f);
         riv.frame = CGRectMake(0, 0, 316, 210);
         gic.frame = CGRectMake(0, 180, 316, 30);
-        rtd.frame = CGRectMake(3, 200, 244, 53);
-        rtl.frame = CGRectMake(219, 200, 93, 28);
-        nrl.frame = CGRectMake(176, 233, 136, 21);
+        rtd.frame = CGRectMake(3, 200, 190, 53);
+        rtl.frame = CGRectMake(219, 230, 93, 22);
+        rtl.alpha = 0.0f;
+        tal.frame = CGRectMake(219, 230, 93, 33);
+        tal.alpha = 1.0f;
+        pnt.frame = CGRectMake(262, 248, 50, 15);
+        pnt.alpha = 0.0f;
+        nrl.frame = CGRectMake(3, 256, 118, 21);
         rtdl.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 0), 1.0f, 1.0f);
         rtv.transform = CGAffineTransformMakeScale(0.01, 0.01);
         ibo.transform = [weakSelf shownGuestInputTransform];
@@ -944,6 +988,8 @@ NSUInteger const kRoomTypeDescrLongTag = 171724;
     __weak UIView *gic = [borderView viewWithTag:kRoomGradientCover];
     __weak UIView *rtd = [borderView viewWithTag:kRoomTypeDescViewTag];
     __weak UIView *rtl = [borderView viewWithTag:kRoomRateViewTag];
+    __weak UIView *tal = [borderView viewWithTag:kRoomTotalViewTag];
+    __weak UIView *pnt = [borderView viewWithTag:kRoomPerNightTag];
     __weak UIView *nrl = [borderView viewWithTag:kRoomNonRefundViewTag];
     __weak UIView *rtdl = [borderView viewWithTag:kRoomTypeDescrLongTag];
     __weak UIView *rtv = self.roomsTableViewOutlet;
@@ -964,9 +1010,14 @@ NSUInteger const kRoomTypeDescrLongTag = 171724;
         borderView.frame = CGRectMake(2.0f, 2.0f, weakSelf.rectOfAvailRoomContView.size.width - 4.0f, weakSelf.rectOfAvailRoomContView.size.height - 4.0f);
         riv.frame = CGRectMake(0, 0, 316, 84);
         gic.frame = CGRectMake(0, 0, 316, 84);
-        rtd.frame = CGRectMake(3, 71, 244, 53);
-        rtl.frame = CGRectMake(219, 71, 93, 28);
-        nrl.frame = CGRectMake(176, 104, 136, 21);
+        rtd.frame = CGRectMake(3, 71, 190, 53);
+        rtl.frame = CGRectMake(219, 69, 93, 22);
+        rtl.alpha = 1.0f;
+        tal.frame = CGRectMake(219, 69, 93, 22);
+        tal.alpha = 0.0f;
+        pnt.frame = CGRectMake(262, 87, 50, 15);
+        pnt.alpha = 1.0f;
+        nrl.frame = CGRectMake(198, 104, 118, 21);
         rtv.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
         ibo.transform = [weakSelf hiddenGuestInputTransform];
     } completion:^(BOOL finished) {

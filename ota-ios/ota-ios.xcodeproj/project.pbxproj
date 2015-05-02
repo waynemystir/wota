@@ -57,6 +57,9 @@
 		B05BD6321AC1FF54002C2882 /* PlaceAutoCompleteTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B05BD6311AC1FF54002C2882 /* PlaceAutoCompleteTableViewCell.xib */; };
 		B075AB091ADB687B0028C613 /* GoogleAddressComponent.m in Sources */ = {isa = PBXBuildFile; fileRef = B075AB081ADB687B0028C613 /* GoogleAddressComponent.m */; };
 		B075AB0C1ADB73560028C613 /* GooglePlaces.m in Sources */ = {isa = PBXBuildFile; fileRef = B075AB0B1ADB73560028C613 /* GooglePlaces.m */; };
+		B07958E61AF44A5800422182 /* EanChargeableRateInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B07958E51AF44A5800422182 /* EanChargeableRateInfo.m */; };
+		B07958E91AF451C000422182 /* EanNightlyRate.m in Sources */ = {isa = PBXBuildFile; fileRef = B07958E81AF451C000422182 /* EanNightlyRate.m */; };
+		B07958EC1AF4751100422182 /* EanSurcharge.m in Sources */ = {isa = PBXBuildFile; fileRef = B07958EB1AF4751100422182 /* EanSurcharge.m */; };
 		B080B7C41AC4ED7200075A32 /* SDWebImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B080B7C31AC4ED7200075A32 /* SDWebImage.framework */; };
 		B080B7C71AC5057100075A32 /* HotelInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B080B7C61AC5057100075A32 /* HotelInfoViewController.m */; };
 		B080B7C91AC505DC00075A32 /* HotelInfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B080B7C81AC505DC00075A32 /* HotelInfoView.xib */; };
@@ -227,6 +230,12 @@
 		B075AB081ADB687B0028C613 /* GoogleAddressComponent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleAddressComponent.m; sourceTree = "<group>"; };
 		B075AB0A1ADB73560028C613 /* GooglePlaces.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GooglePlaces.h; sourceTree = "<group>"; };
 		B075AB0B1ADB73560028C613 /* GooglePlaces.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GooglePlaces.m; sourceTree = "<group>"; };
+		B07958E41AF44A5800422182 /* EanChargeableRateInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanChargeableRateInfo.h; sourceTree = "<group>"; };
+		B07958E51AF44A5800422182 /* EanChargeableRateInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanChargeableRateInfo.m; sourceTree = "<group>"; };
+		B07958E71AF451C000422182 /* EanNightlyRate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanNightlyRate.h; sourceTree = "<group>"; };
+		B07958E81AF451C000422182 /* EanNightlyRate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanNightlyRate.m; sourceTree = "<group>"; };
+		B07958EA1AF4751100422182 /* EanSurcharge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanSurcharge.h; sourceTree = "<group>"; };
+		B07958EB1AF4751100422182 /* EanSurcharge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanSurcharge.m; sourceTree = "<group>"; };
 		B080B7C31AC4ED7200075A32 /* SDWebImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDWebImage.framework; sourceTree = "<group>"; };
 		B080B7C51AC5057100075A32 /* HotelInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotelInfoViewController.h; sourceTree = "<group>"; };
 		B080B7C61AC5057100075A32 /* HotelInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotelInfoViewController.m; sourceTree = "<group>"; };
@@ -708,6 +717,12 @@
 				B03C2BA91AED74E700C13AC5 /* EanRateInfo.m */,
 				B00872D11AECE5FB00CB2B9D /* EanRoomGroup.h */,
 				B00872D21AECE5FB00CB2B9D /* EanRoomGroup.m */,
+				B07958E41AF44A5800422182 /* EanChargeableRateInfo.h */,
+				B07958E51AF44A5800422182 /* EanChargeableRateInfo.m */,
+				B07958E71AF451C000422182 /* EanNightlyRate.h */,
+				B07958E81AF451C000422182 /* EanNightlyRate.m */,
+				B07958EA1AF4751100422182 /* EanSurcharge.h */,
+				B07958EB1AF4751100422182 /* EanSurcharge.m */,
 				B09E417E1AEA8C11000A718D /* EanBedType.h */,
 				B09E417F1AEA8C11000A718D /* EanBedType.m */,
 				B03C2BAB1AED8FAD00C13AC5 /* EanRoomImage.h */,
@@ -955,6 +970,7 @@
 				B032F6301AC18F6700809395 /* MainViewController.m in Sources */,
 				B09797D11AC321F90014FC7C /* GooglePlaceDetail.m in Sources */,
 				B05BD6301AC1FEE3002C2882 /* GooglePlace.m in Sources */,
+				B07958E91AF451C000422182 /* EanNightlyRate.m in Sources */,
 				B0D02FE81AE6123000B1E75F /* PTKTextField.m in Sources */,
 				B0122E471AD088F800E44319 /* EanAvailabilityHotelRoomResponse.m in Sources */,
 				B09E41801AEA8C11000A718D /* EanBedType.m in Sources */,
@@ -971,6 +987,7 @@
 				B00872D61AED4A9100CB2B9D /* EanAbstractResponse.m in Sources */,
 				B0A87D681AD4B2B3001505A6 /* EanHotelRoomReservationResponse.m in Sources */,
 				B091B8951AD22EFC00BB6CB0 /* AvailableRoomTableViewCell.m in Sources */,
+				B07958EC1AF4751100422182 /* EanSurcharge.m in Sources */,
 				B075AB091ADB687B0028C613 /* GoogleAddressComponent.m in Sources */,
 				B00872CD1AEC1D4900CB2B9D /* SelectSmokingPreferenceDelegateImplementation.m in Sources */,
 				B0D02FE21AE6123000B1E75F /* PTKAddressZip.m in Sources */,
@@ -979,6 +996,7 @@
 				B09797FA1AC3BC690014FC7C /* THDatePickerViewController.m in Sources */,
 				B00872D31AECE5FB00CB2B9D /* EanRoomGroup.m in Sources */,
 				B0D030021AE7380F00B1E75F /* PaymentDetails.m in Sources */,
+				B07958E61AF44A5800422182 /* EanChargeableRateInfo.m in Sources */,
 				B05BD6241AC1E9FB002C2882 /* AppEnvironment.m in Sources */,
 				B09797C91AC23C1F0014FC7C /* GoogleParser.m in Sources */,
 				B00872D01AEC99CB00CB2B9D /* EanAvailabilityRoomType.m in Sources */,

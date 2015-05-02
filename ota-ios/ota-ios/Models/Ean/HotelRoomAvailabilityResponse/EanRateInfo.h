@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "EanRoomGroup.h"
+#import "EanChargeableRateInfo.h"
 
 @interface EanRateInfo : NSObject
 
@@ -15,10 +16,10 @@
 @property (nonatomic) BOOL promo;
 @property (nonatomic) BOOL rateChange;
 @property (nonatomic, strong) EanRoomGroup *roomGroup;
-@property (nonatomic, strong) NSDictionary *chargeableRateInfo;
-@property (nonatomic) float chargeableRate;
-@property (nonatomic, strong) NSString *currencyCode;
-@property (nonatomic, strong) NSNumber *nightlyRateToPresent;
+@property (nonatomic, strong) EanChargeableRateInfo *chargeableRateInfo;
+//@property (nonatomic) float chargeableRate;
+//@property (nonatomic, strong) NSString *currencyCode;
+//@property (nonatomic, strong) NSNumber *nightlyRateToPresent;
 @property (nonatomic, strong) NSString *cancellationPolicy;
 @property (nonatomic, strong) NSDictionary *cancelPolicyInfoList;
 @property (nonatomic) BOOL nonRefundable;

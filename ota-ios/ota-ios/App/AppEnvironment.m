@@ -18,7 +18,7 @@ int const URL_REQUEST_TIMEOUT = 30;
 
 NSString * stringByStrippingHTML(NSString * s) {
     s = [s stringByReplacingOccurrencesOfString:@"<br />" withString:@" "];
-    s = [s stringByReplacingOccurrencesOfString:@"<br/>" withString:@""];
+    s = [s stringByReplacingOccurrencesOfString:@"<br/>" withString:@" "];
     
     NSRange r;
     while ((r = [s rangeOfString:@"<[^>]+>" options:NSRegularExpressionSearch]).location != NSNotFound)

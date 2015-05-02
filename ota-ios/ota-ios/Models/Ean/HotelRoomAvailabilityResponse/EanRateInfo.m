@@ -24,10 +24,10 @@
     ri.promo = [[dict objectForKey:@"@promo"] boolValue];
     ri.rateChange = [[dict objectForKey:@"@rateChange"] boolValue];
     ri.roomGroup = [EanRoomGroup roomGroupFromDict:[dict objectForKey:@"RoomGroup"]];
-    ri.chargeableRateInfo = [dict objectForKey:@"ChargeableRateInfo"];
-    ri.chargeableRate = [[ri.chargeableRateInfo objectForKey:@"@total"] floatValue];
-    ri.currencyCode = [ri.chargeableRateInfo objectForKey:@"@currencyCode"];
-    ri.nightlyRateToPresent = [NSNumber numberWithDouble:[[ri.chargeableRateInfo objectForKey:@"@averageRate"] doubleValue]];
+    ri.chargeableRateInfo = [EanChargeableRateInfo chargeableRateInfoFromDict:[dict objectForKey:@"ChargeableRateInfo"]];
+//    ri.chargeableRate = [[ri.chargeableRateInfo objectForKey:@"@total"] floatValue];
+//    ri.currencyCode = [ri.chargeableRateInfo objectForKey:@"@currencyCode"];
+//    ri.nightlyRateToPresent = [NSNumber numberWithDouble:[[ri.chargeableRateInfo objectForKey:@"@averageRate"] doubleValue]];
     ri.cancellationPolicy = [dict objectForKey:@"cancellationPolicy"];
     ri.cancelPolicyInfoList = [dict objectForKey:@"CancelPolicyInfoList"];
     ri.nonRefundable = [[dict objectForKey:@"nonRefundable"] boolValue];

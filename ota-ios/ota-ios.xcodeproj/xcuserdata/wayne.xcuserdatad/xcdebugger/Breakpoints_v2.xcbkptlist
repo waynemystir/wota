@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ota-ios/Models/Ean/HotelRoomAvailabilityResponse/EanAvailabilityHotelRoomResponse.m"
-            timestampString = "451777867.563046"
+            timestampString = "452234996.399462"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "111"
-            endingLineNumber = "111"
+            startingLineNumber = "109"
+            endingLineNumber = "109"
             landmarkName = "@implementation EanAvailabilityHotelRoomResponse"
             landmarkType = "3">
          </BreakpointContent>
@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ota-ios/Controllers/SelectRoomViewController.m"
-            timestampString = "452061639.955212"
+            timestampString = "452248157.969421"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "336"
-            endingLineNumber = "336"
+            startingLineNumber = "356"
+            endingLineNumber = "356"
             landmarkName = "-tableViewPopOut"
             landmarkType = "5">
          </BreakpointContent>
@@ -80,6 +80,38 @@
             startingLineNumber = "34"
             endingLineNumber = "34"
             landmarkName = "-descriptionLongStripped"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ota-ios/Classes/LoadEanData.m"
+            timestampString = "452225363.926471"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "342"
+            endingLineNumber = "342"
+            landmarkName = "-bookHotelRoomWithHotelId:arrivalDate:departureDate:supplierType:rateKey:roomTypeCode:rateCode:chargeableRate:numberOfAdults:childTravelers:room1FirstName:room1LastName:room1BedTypeId:room1SmokingPreference:affiliateConfirmationId:email:firstName:lastName:homePhone:creditCardType:creditCardNumber:creditCardIdentifier:creditCardExpirationMonth:creditCardExpirationYear:address1:city:stateProvinceCode:countryCode:postalCode:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ota-ios/Models/Ean/HotelRoomAvailabilityResponse/EanChargeableRateInfo.m"
+            timestampString = "452241139.870328"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "89"
+            endingLineNumber = "89"
+            landmarkName = "+chargeableRateInfoFromDict:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

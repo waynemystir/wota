@@ -22,24 +22,30 @@
                                 <rect key="frame" x="0.0" y="0.0" width="316" height="84"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GHw-b6-Lcp" userLabel="nonrefundLabel">
-                                <rect key="frame" x="176" y="104" width="136" height="21"/>
-                                <color key="backgroundColor" red="1" green="0.55294117647058827" blue="0.035294117647058823" alpha="1" colorSpace="calibratedRGB"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Free Cancellation" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GHw-b6-Lcp" userLabel="nonrefundLabel">
+                                <rect key="frame" x="198" y="104" width="118" height="21"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="13"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" tag="19" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="CUR 1,999" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qk8-ap-PBd" userLabel="rateLabel">
-                                <rect key="frame" x="219" y="71" width="93" height="28"/>
+                                <rect key="frame" x="219" y="69" width="93" height="22"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="18"/>
                                 <color key="textColor" red="0.050980392156862744" green="0.61176470588235299" blue="0.011764705882352941" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" tag="11" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="roomTypeDescription" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dnJ-sW-RrZ" userLabel="roomTypeDescription">
-                                <rect key="frame" x="3" y="71" width="244" height="53"/>
+                                <rect key="frame" x="3" y="71" width="190" height="53"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="per night" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ckz-ay-KmX" userLabel="perNightLabel">
+                                <rect key="frame" x="262" y="87" width="50" height="15"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
@@ -51,6 +57,7 @@
                 <outlet property="borderViewOutlet" destination="Si8-AH-KtS" id="tgO-72-Kxp"/>
                 <outlet property="gradientRoomImageCover" destination="eaK-WL-85C" id="yl2-qf-c9d"/>
                 <outlet property="nonrefundOutlet" destination="GHw-b6-Lcp" id="jZ0-Km-eM4"/>
+                <outlet property="perNightOutlet" destination="ckz-ay-KmX" id="VU7-as-77z"/>
                 <outlet property="rateOutlet" destination="qk8-ap-PBd" id="ffk-pg-iyF"/>
                 <outlet property="roomImageViewOutlet" destination="ivg-jm-Y5x" id="T8S-eh-gFQ"/>
                 <outlet property="roomTypeDescriptionOutlet" destination="dnJ-sW-RrZ" id="M0i-Kd-BMr"/>

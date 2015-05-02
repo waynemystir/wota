@@ -17,8 +17,6 @@
 @property (nonatomic, strong) NSString *rateCode;
 @property (nonatomic, strong) NSString *rateDescription;
 @property (nonatomic, strong) EanAvailabilityRoomType *roomType;
-@property (nonatomic) id roomTypeCode;
-@property (nonatomic, strong) NSString *roomTypeDescription;
 @property (nonatomic, strong) NSString *supplierType;
 @property (nonatomic, strong) NSString *propertyId;
 @property (nonatomic, strong) NSDictionary *bedTypes;

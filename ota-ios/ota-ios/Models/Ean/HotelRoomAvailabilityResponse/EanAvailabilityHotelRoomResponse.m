@@ -23,8 +23,6 @@
     room.rateCode = [dict objectForKey:@"rateCode"];
     room.rateDescription = [dict objectForKey:@"rateDescription"];
     room.roomType = [EanAvailabilityRoomType roomTypeFromDict:[dict objectForKey:@"RoomType"]];
-    room.roomTypeCode = room.roomType.roomCode;
-    room.roomTypeDescription = room.roomType.roomTypeDescrition;
     room.supplierType = [dict objectForKey:@"supplierType"];
     room.propertyId = [dict objectForKey:@"propertyId"];
     room.bedTypes = [dict objectForKey:@"BedTypes"];

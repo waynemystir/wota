@@ -106,7 +106,7 @@
         UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(j * 320, 0, 320.0f, 195.0f)];
         [iv setImageWithURL:[NSURL URLWithString:image.url] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
             if (j == 0) {
-                [self prepareTheSelectRoomViewControllerWithPlaceholderImageUrlString:image];
+                [self prepareTheSelectRoomViewControllerWithPlaceholderImage:image];
             }
         }];
         self.imageScrollerOutlet.contentSize = CGSizeMake(320 + j * 320, 195.0f);
@@ -114,7 +114,7 @@
     }
 }
 
-- (void)prepareTheSelectRoomViewControllerWithPlaceholderImageUrlString:(UIImage *)phi {
+- (void)prepareTheSelectRoomViewControllerWithPlaceholderImage:(UIImage *)phi {
     self.selectRoomViewController = [[SelectRoomViewController alloc] initWithPlaceholderImage:phi];
     SelectionCriteria *sc = [SelectionCriteria singleton];
     [[LoadEanData sharedInstance:self.selectRoomViewController] loadAvailableRoomsWithHotelId:_eanHotel.hotelId
