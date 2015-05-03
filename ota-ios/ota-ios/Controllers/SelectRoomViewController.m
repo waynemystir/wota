@@ -45,7 +45,7 @@ NSUInteger const kAvailRoomCellContViewTag = 19191;
 NSUInteger const kAvailRoomBorderViewTag = 13;
 NSUInteger const kNightlyRateViewTag = 19;
 NSUInteger const kRoomImageViewTag = 171717;
-NSUInteger const kRoomGradientCover = 171718;
+NSUInteger const kPriceGradientCoverTag = 171718;
 NSUInteger const kRoomTypeDescViewTag = 171719;
 NSUInteger const kRoomRateViewTag = 171720;
 NSUInteger const kRoomPerNightTag = 171721;
@@ -55,6 +55,8 @@ NSUInteger const kRoomSmokingButtonTag = 171724;
 NSUInteger const kRoomTypeDescrLongTag = 171725;
 NSUInteger const kRoomTotalViewTag = 171726;
 NSUInteger const kRoomTotalWithTaxTag = 171727;
+NSUInteger const kBottomGradientCoverTag = 171728;
+NSUInteger const kRoomNonRefundLongTag = 171729;
 
 @interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, SelectGooglePlaceDelegate, SelectBedTypeDelegate, SelectSmokingPrefDelegate>
 
@@ -110,8 +112,9 @@ NSUInteger const kRoomTotalWithTaxTag = 171727;
 @property (nonatomic) BOOL isValidExpiration;
 @property (nonatomic) BOOL isValidCardHolder;
 
-@property (nonatomic, strong) NSArray *roomImageGradientColorsFirst;
-@property (nonatomic, strong) NSArray *roomImageGradientColorsSecond;
+@property (nonatomic, strong) NSArray *bottomGradientColors;
+@property (nonatomic, strong) NSArray *bottomsUpGradientColors;
+@property (nonatomic, strong) NSArray *priceGradientColors;
 @property (nonatomic, strong) UIView *tableViewPopOut;
 
 - (IBAction)justPushIt:(id)sender;
@@ -121,7 +124,11 @@ NSUInteger const kRoomTotalWithTaxTag = 171727;
 @implementation SelectRoomViewController
 
 - (id)init {
-    self = [super initWithNibName:@"SelectRoomView" bundle:nil];
+    if (self = [super initWithNibName:@"SelectRoomView" bundle:nil]) {
+        _bottomGradientColors = [NSArray arrayWithObjects:(id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:1].CGColor, nil];
+        _bottomsUpGradientColors = [NSArray arrayWithObjects:(id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.1f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.2].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.3f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.4f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.5f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.6f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.7f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.8f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.9f].CGColor, (id)[UIColor colorWithWhite:1 alpha:1.0f].CGColor, nil];
+        _priceGradientColors = [NSArray arrayWithObjects:(id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.1f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.2].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.3f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.4f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.5f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.6f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.7f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.8f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.9f].CGColor, (id)[UIColor colorWithWhite:1 alpha:1.0f].CGColor, nil];
+    }
     return self;
 }
 
@@ -153,9 +160,6 @@ NSUInteger const kRoomTotalWithTaxTag = 171727;
 //        [self.roomsTableViewOutlet setSeparatorInset:UIEdgeInsetsZero];
 //    }
     
-    self.roomImageGradientColorsFirst = [NSArray arrayWithObjects:(id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:1].CGColor, nil];
-    self.roomImageGradientColorsSecond = [NSArray arrayWithObjects:(id)[UIColor clearColor].CGColor, (id)[UIColor clearColor].CGColor, nil];
-    
     [self initializeTheTableViewPopOut];
     [self setupExpirationPicker];
     [self setupPickerViewContainer];
@@ -167,9 +171,9 @@ NSUInteger const kRoomTotalWithTaxTag = 171727;
     self.inputBookOutlet.hidden = YES;
 //    self.inputBookOutlet.frame = CGRectMake(10.0f, 412.0f, 300.0f, 0.0f);
     self.inputBookOutlet.transform = [self hiddenGuestInputTransform];
-    self.inputBookOutlet.layer.cornerRadius = WOTA_CORNER_RADIUS;
-    self.inputBookOutlet.layer.borderWidth = 1.0f;
-    self.inputBookOutlet.layer.borderColor = [UIColor blackColor].CGColor;
+//    self.inputBookOutlet.layer.cornerRadius = WOTA_CORNER_RADIUS;
+//    self.inputBookOutlet.layer.borderWidth = 1.0f;
+//    self.inputBookOutlet.layer.borderColor = [UIColor blackColor].CGColor;
     
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
 }
@@ -288,7 +292,8 @@ NSUInteger const kRoomTotalWithTaxTag = 171727;
 //    [self addRoomImageGradient:cell.roomImageViewOutlet];
     [cell.roomImageViewOutlet setImageWithURL:[NSURL URLWithString:room.roomImage.imageUrl] placeholderImage:self.placeholderImage];
     
-    [self addRoomImageGradient:cell.gradientRoomImageCover];
+    [self addPriceGradient:cell.priceGradientOutlet];
+    [self addBottomGradient:cell.bottomGradientOutlet];
     
     return cell;
 }
@@ -334,14 +339,11 @@ NSUInteger const kRoomTotalWithTaxTag = 171727;
     rtd.text = room.roomType.roomTypeDescrition;
     
     UILabel *rateLabel = (UILabel *) [_tableViewPopOut viewWithTag:kRoomRateViewTag];
-//    NSNumberFormatter *currencyStyle = kPriceRoundOffFormatter(room.rateInfo.currencyCode);
-//    NSString *currency = [currencyStyle stringFromNumber:room.rateInfo.nightlyRateToPresent];
     NSNumberFormatter *currencyStyle = kPriceRoundOffFormatter(room.rateInfo.chargeableRateInfo.currencyCode);
     NSString *currency = [currencyStyle stringFromNumber:room.rateInfo.chargeableRateInfo.averageBaseRate];
     rateLabel.text = currency;
     
     UILabel *totalLabel = (UILabel *) [_tableViewPopOut viewWithTag:kRoomTotalViewTag];
-    totalLabel.frame = CGRectMake(219, 69, 93, 22);
     NSNumberFormatter *twoDigit = kPriceTwoDigitFormatter(room.rateInfo.chargeableRateInfo.currencyCode);
     NSString *totalAmt = [twoDigit stringFromNumber:room.rateInfo.chargeableRateInfo.total];
     totalLabel.text = totalAmt;
@@ -356,6 +358,9 @@ NSUInteger const kRoomTotalWithTaxTag = 171727;
     
     UILabel *nonrefundLabel = (UILabel *) [_tableViewPopOut viewWithTag:kRoomNonRefundViewTag];
     nonrefundLabel.text = room.rateInfo.nonRefundableString;
+    
+    UILabel *nonreundLongLabel = (UILabel *) [_tableViewPopOut viewWithTag:kRoomNonRefundLongTag];
+    nonreundLongLabel.text = room.rateInfo.nonRefundableLongString;
     
     UILabel *rtdL = (UILabel *) [_tableViewPopOut viewWithTag:kRoomTypeDescrLongTag];
     rtdL.text = room.roomType.descriptionLongStripped;
@@ -379,7 +384,6 @@ NSUInteger const kRoomTotalWithTaxTag = 171727;
     [tableViewPopout addSubview:cellV];
     UIView *cv = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 129)];
     cv.tag = kAvailRoomCellContViewTag;
-//    cv.backgroundColor = [UIColor redColor];
     [cellV addSubview:cv];
     UIView *borderView = [[UIView alloc] initWithFrame:CGRectMake(2, 2, 316, 125)];
     borderView.layer.borderColor = [UIColor blackColor].CGColor;
@@ -396,11 +400,22 @@ NSUInteger const kRoomTotalWithTaxTag = 171727;
     roomImageView.contentMode = UIViewContentModeScaleAspectFill;
     [borderView addSubview:roomImageView];
     
-    UIView *gradientRoomImageCover = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 316, 84)];
-    gradientRoomImageCover.tag = kRoomGradientCover;
-    gradientRoomImageCover.clipsToBounds = YES;
-    [self addRoomImageGradient:gradientRoomImageCover];
-    [borderView addSubview:gradientRoomImageCover];
+    UIView *priceGradientCover = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 316, 84)];
+    priceGradientCover.tag = kPriceGradientCoverTag;
+    priceGradientCover.clipsToBounds = YES;
+    [self addPriceGradient:priceGradientCover];
+    [borderView addSubview:priceGradientCover];
+    
+    UIView *bottomGradientCover = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 316, 84)];
+    bottomGradientCover.tag = kBottomGradientCoverTag;
+    bottomGradientCover.clipsToBounds = YES;
+    [self addBottomGradient:bottomGradientCover];
+    [borderView addSubview:bottomGradientCover];
+    
+    UIView *bottomsUpGradientCover = [[UIView alloc] initWithFrame:CGRectMake(0, 190, 316, 20)];
+    bottomsUpGradientCover.clipsToBounds = YES;
+    [self addBottomsUpGradient:bottomsUpGradientCover];
+    [borderView addSubview:bottomsUpGradientCover];
     
     UILabel *rtd = [[UILabel alloc] initWithFrame:CGRectMake(3, 71, 190, 53)];
     rtd.tag = kRoomTypeDescViewTag;
@@ -417,7 +432,7 @@ NSUInteger const kRoomTotalWithTaxTag = 171727;
     [rateLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18.0f]];
     [borderView addSubview:rateLabel];
     
-    UILabel *totalLabel = [[UILabel alloc] initWithFrame:CGRectMake(219, 69, 93, 22)];
+    UILabel *totalLabel = [[UILabel alloc] initWithFrame:CGRectMake(153, 230, 159, 33)];
     totalLabel.tag = kRoomTotalViewTag;
     totalLabel.lineBreakMode = NSLineBreakByClipping;
     totalLabel.textColor = UIColorFromRGB(0x0D9C03);
@@ -443,14 +458,27 @@ NSUInteger const kRoomTotalWithTaxTag = 171727;
     
     UILabel *nonreundLabel = [[UILabel alloc] initWithFrame:CGRectMake(198, 104, 118, 21)];
     nonreundLabel.clipsToBounds = YES;
+    nonreundLabel.lineBreakMode = NSLineBreakByClipping;
     nonreundLabel.layer.cornerRadius = WOTA_CORNER_RADIUS;
     nonreundLabel.layer.borderColor = [UIColor lightGrayColor].CGColor;
     nonreundLabel.layer.borderWidth = 0.5f;
-//    nonreundLabel.backgroundColor = [UIColor colorWithRed:255/255.0f green:141/255.0f blue:9/255.0f alpha:1.0f];
+    //    nonreundLabel.backgroundColor = [UIColor colorWithRed:255/255.0f green:141/255.0f blue:9/255.0f alpha:1.0f];
     nonreundLabel.tag = kRoomNonRefundViewTag;
     nonreundLabel.font = [UIFont boldSystemFontOfSize:13.0f];
     nonreundLabel.textAlignment = NSTextAlignmentCenter;
     [borderView addSubview:nonreundLabel];
+    
+    UILabel *nonreundLongLabel = [[UILabel alloc] initWithFrame:CGRectMake(3, 234, 148, 42)];
+    nonreundLongLabel.clipsToBounds = YES;
+    nonreundLongLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    nonreundLongLabel.numberOfLines = 2;
+    nonreundLongLabel.layer.cornerRadius = WOTA_CORNER_RADIUS;
+    nonreundLongLabel.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    nonreundLongLabel.layer.borderWidth = 0.5f;
+    nonreundLongLabel.tag = kRoomNonRefundLongTag;
+    nonreundLongLabel.font = [UIFont boldSystemFontOfSize:13.0f];
+    nonreundLongLabel.textAlignment = NSTextAlignmentCenter;
+    [borderView addSubview:nonreundLongLabel];
     
     UILabel *rtdL = [[UILabel alloc] initWithFrame:CGRectMake(3, 257, 312, 100)];
     rtdL.tag = kRoomTypeDescrLongTag;
@@ -948,13 +976,15 @@ NSUInteger const kRoomTotalWithTaxTag = 171727;
     __weak UIView *cv = [tvp viewWithTag:kAvailRoomCellContViewTag];
     __weak UIView *borderView = [cv viewWithTag:kAvailRoomBorderViewTag];
     __weak UIView *riv = [borderView viewWithTag:kRoomImageViewTag];
-    __weak UIView *gic = [borderView viewWithTag:kRoomGradientCover];
+    __weak UIView *gic = [borderView viewWithTag:kPriceGradientCoverTag];
+    __weak UIView *cgc = [borderView viewWithTag:kBottomGradientCoverTag];
     __weak UIView *rtd = [borderView viewWithTag:kRoomTypeDescViewTag];
     __weak UIView *rtl = [borderView viewWithTag:kRoomRateViewTag];
     __weak UIView *tal = [borderView viewWithTag:kRoomTotalViewTag];
     __weak UIView *pnt = [borderView viewWithTag:kRoomPerNightTag];
     __weak UIView *twt = [borderView viewWithTag:kRoomTotalWithTaxTag];
     __weak UIView *nrl = [borderView viewWithTag:kRoomNonRefundViewTag];
+    __weak UIView *nrr = [borderView viewWithTag:kRoomNonRefundLongTag];
     __weak UIView *rtdl = [borderView viewWithTag:kRoomTypeDescrLongTag];
     __weak UIView *rtv = self.roomsTableViewOutlet;
     __weak UIView *ibo = self.inputBookOutlet;
@@ -969,6 +999,8 @@ NSUInteger const kRoomTotalWithTaxTag = 171727;
     [self.navigationItem setLeftBarButtonItem:lbbi animated:YES];
     
     self.bedTypeButton.alpha = self.smokingButton.alpha = rtdl.alpha = 0.0f;
+    tal.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(40.0f, -(tvp.frame.size.height/0.90)), 0.001f, 0.001f);
+    nrr.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/1.05)), 0.001f, 0.001f);
     rtdl.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/1.05)), 0.001f, 0.001f);
     self.bedTypeButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/0.55)), 0.001f, 0.001f);
     self.smokingButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/0.55f)), 0.001f, 0.001f);
@@ -978,17 +1010,22 @@ NSUInteger const kRoomTotalWithTaxTag = 171727;
         cv.frame = CGRectMake(0, 0, tvp.bounds.size.width, tvp.bounds.size.height);
         borderView.frame = CGRectMake(2.0f, 2.0f, cv.frame.size.width - 4.0f, cv.frame.size.height - 4.0f);
         riv.frame = CGRectMake(0, 0, 316, 210);
-        gic.frame = CGRectMake(0, 180, 316, 30);
-        rtd.frame = CGRectMake(3, 200, 190, 53);
+        gic.frame = CGRectMake(0, 210, 316, 30);
+//        cgc.alpha = 1.0f;
+        cgc.frame = CGRectMake(0, 126, 316, 84);
+        rtd.frame = CGRectMake(3, 185, 190, 53);
         rtl.frame = CGRectMake(219, 230, 93, 22);
         rtl.alpha = 0.0f;
-        tal.frame = CGRectMake(193, 230, 119, 33);
+        tal.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 0), 1.0f, 1.0f);
         tal.alpha = 1.0f;
         pnt.frame = CGRectMake(262, 248, 50, 15);
         pnt.alpha = 0.0f;
         twt.frame = CGRectMake(209, 212, 103, 22);
         twt.alpha = 1.0f;
-        nrl.frame = CGRectMake(3, 256, 118, 21);
+//        nrl.frame = CGRectMake(3, 256, 218, 21);
+        nrl.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, 160), 0.001f, 0.001f);
+//        nrl.alpha = 0.0f;
+        nrr.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 0), 1.0f, 1.0f);
         rtdl.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 0), 1.0f, 1.0f);
         rtv.transform = CGAffineTransformMakeScale(0.01, 0.01);
         ibo.transform = [weakSelf shownGuestInputTransform];
@@ -1006,13 +1043,15 @@ NSUInteger const kRoomTotalWithTaxTag = 171727;
     __weak UIView *cv = [tvp viewWithTag:kAvailRoomCellContViewTag];
     __weak UIView *borderView = [cv viewWithTag:kAvailRoomBorderViewTag];
     __weak UIView *riv = [borderView viewWithTag:kRoomImageViewTag];
-    __weak UIView *gic = [borderView viewWithTag:kRoomGradientCover];
+    __weak UIView *gic = [borderView viewWithTag:kPriceGradientCoverTag];
+    __weak UIView *cgc = [borderView viewWithTag:kBottomGradientCoverTag];
     __weak UIView *rtd = [borderView viewWithTag:kRoomTypeDescViewTag];
     __weak UIView *rtl = [borderView viewWithTag:kRoomRateViewTag];
     __weak UIView *tal = [borderView viewWithTag:kRoomTotalViewTag];
     __weak UIView *pnt = [borderView viewWithTag:kRoomPerNightTag];
     __weak UIView *twt = [borderView viewWithTag:kRoomTotalWithTaxTag];
     __weak UIView *nrl = [borderView viewWithTag:kRoomNonRefundViewTag];
+    __weak UIView *nrr = [borderView viewWithTag:kRoomNonRefundLongTag];
     __weak UIView *rtdl = [borderView viewWithTag:kRoomTypeDescrLongTag];
     __weak UIView *rtv = self.roomsTableViewOutlet;
     __weak UIView *ibo = self.inputBookOutlet;
@@ -1024,6 +1063,8 @@ NSUInteger const kRoomTotalWithTaxTag = 171727;
     
     [UIView animateWithDuration:kSrAnimationDuration animations:^{
         weakSelf.bedTypeButton.alpha = weakSelf.smokingButton.alpha = rtdl.alpha = 0.0f;
+        tal.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(40.0f, -(tvp.frame.size.height/2.5f)), 0.001f, 0.001f);
+        nrr.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/3.5f)), 0.001f, 0.001f);
         rtdl.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/2.5f)), 0.001f, 0.001f);
         weakSelf.bedTypeButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/1.5f)), 0.001f, 0.001f);
         weakSelf.smokingButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/1.5f)), 0.001f, 0.001f);
@@ -1032,16 +1073,19 @@ NSUInteger const kRoomTotalWithTaxTag = 171727;
         borderView.frame = CGRectMake(2.0f, 2.0f, weakSelf.rectOfAvailRoomContView.size.width - 4.0f, weakSelf.rectOfAvailRoomContView.size.height - 4.0f);
         riv.frame = CGRectMake(0, 0, 316, 84);
         gic.frame = CGRectMake(0, 0, 316, 84);
+//        cgc.alpha = 0.0f;
+        cgc.frame = CGRectMake(0, 0, 316, 84);
         rtd.frame = CGRectMake(3, 71, 190, 53);
         rtl.frame = CGRectMake(219, 69, 93, 22);
         rtl.alpha = 1.0f;
-        tal.frame = CGRectMake(193, 69, 119, 22);
-        tal.alpha = 0.0f;
+//        tal.frame = CGRectMake(153, 69, 159, 22);
+//        tal.alpha = 0.0f;
         pnt.frame = CGRectMake(262, 87, 50, 15);
         pnt.alpha = 1.0f;
         twt.frame = CGRectMake(209, 69, 103, 22);
         twt.alpha = 0.0f;
-        nrl.frame = CGRectMake(198, 104, 118, 21);
+//        nrl.frame = CGRectMake(198, 104, 118, 21);
+        nrl.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 0), 1.0f, 1.0f);
         rtv.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
         ibo.transform = [weakSelf hiddenGuestInputTransform];
     } completion:^(BOOL finished) {
@@ -1430,20 +1474,46 @@ NSUInteger const kRoomTotalWithTaxTag = 171727;
     [self.deleteCardOutlet addTarget:self action:@selector(initiateDeleteCard:) forControlEvents:UIControlEventTouchUpInside];
 }
 
-#pragma mark UIImageView morphing methods
+#pragma mark Add gradient methods
 
-- (void)addRoomImageGradient:(UIView *)iv {
-    if ([iv.layer.sublayers count] > 0) {
+- (void)addPriceGradient:(UIView *)view {
+    if ([view.layer.sublayers count] > 0) {
         return;
     }
     
     CAGradientLayer *gradientLayer = [CAGradientLayer layer];
-    gradientLayer.frame = iv.bounds;
-    gradientLayer.colors = self.roomImageGradientColorsFirst;
-    gradientLayer.startPoint = CGPointMake(1.0f, 0.0f);
-    gradientLayer.endPoint = CGPointMake(1.0f, 1.0f);
+    gradientLayer.frame = view.bounds;
+    gradientLayer.colors = self.priceGradientColors;
+    gradientLayer.startPoint = CGPointMake(0.65f, 0.45f);
+    gradientLayer.endPoint = CGPointMake(0.95f, 0.88f);
 //    iv.layer.mask = gradientLayer;
-    [iv.layer addSublayer:gradientLayer];
+    [view.layer addSublayer:gradientLayer];
+}
+
+- (void)addBottomGradient:(UIView *)view {
+    if ([view.layer.sublayers count] > 0) {
+        return;
+    }
+    
+    CAGradientLayer *cornerGradLayer = [CAGradientLayer layer];
+    cornerGradLayer.frame = view.bounds;
+    cornerGradLayer.colors = self.bottomGradientColors;
+    cornerGradLayer.startPoint = CGPointMake(0.5f, 0.0f);
+    cornerGradLayer.endPoint = CGPointMake(0.5f, 1.0f);
+    [view.layer addSublayer:cornerGradLayer];
+}
+
+- (void)addBottomsUpGradient:(UIView *)view {
+    if ([view.layer.sublayers count] > 0) {
+        return;
+    }
+    
+    CAGradientLayer *cornerGradLayer = [CAGradientLayer layer];
+    cornerGradLayer.frame = view.bounds;
+    cornerGradLayer.colors = self.bottomsUpGradientColors;
+    cornerGradLayer.startPoint = CGPointMake(0.7f, 0.0f);
+    cornerGradLayer.endPoint = CGPointMake(0.5f, 0.9f);
+    [view.layer addSublayer:cornerGradLayer];
 }
 
 @end

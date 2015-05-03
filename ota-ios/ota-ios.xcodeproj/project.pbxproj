@@ -55,6 +55,7 @@
 		B05BD62C1AC1FE53002C2882 /* PlaceAutoCompleteTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B05BD62B1AC1FE53002C2882 /* PlaceAutoCompleteTableViewCell.m */; };
 		B05BD6301AC1FEE3002C2882 /* GooglePlace.m in Sources */ = {isa = PBXBuildFile; fileRef = B05BD62F1AC1FEE3002C2882 /* GooglePlace.m */; };
 		B05BD6321AC1FF54002C2882 /* PlaceAutoCompleteTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B05BD6311AC1FF54002C2882 /* PlaceAutoCompleteTableViewCell.xib */; };
+		B0617ACF1AF5BE5500AEA216 /* EanCancelPolicyInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B0617ACE1AF5BE5500AEA216 /* EanCancelPolicyInfo.m */; };
 		B075AB091ADB687B0028C613 /* GoogleAddressComponent.m in Sources */ = {isa = PBXBuildFile; fileRef = B075AB081ADB687B0028C613 /* GoogleAddressComponent.m */; };
 		B075AB0C1ADB73560028C613 /* GooglePlaces.m in Sources */ = {isa = PBXBuildFile; fileRef = B075AB0B1ADB73560028C613 /* GooglePlaces.m */; };
 		B07958E61AF44A5800422182 /* EanChargeableRateInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B07958E51AF44A5800422182 /* EanChargeableRateInfo.m */; };
@@ -226,6 +227,8 @@
 		B05BD62E1AC1FEE3002C2882 /* GooglePlace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GooglePlace.h; sourceTree = "<group>"; };
 		B05BD62F1AC1FEE3002C2882 /* GooglePlace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GooglePlace.m; sourceTree = "<group>"; };
 		B05BD6311AC1FF54002C2882 /* PlaceAutoCompleteTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlaceAutoCompleteTableViewCell.xib; sourceTree = "<group>"; };
+		B0617ACD1AF5BE5500AEA216 /* EanCancelPolicyInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanCancelPolicyInfo.h; sourceTree = "<group>"; };
+		B0617ACE1AF5BE5500AEA216 /* EanCancelPolicyInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanCancelPolicyInfo.m; sourceTree = "<group>"; };
 		B075AB071ADB687B0028C613 /* GoogleAddressComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleAddressComponent.h; sourceTree = "<group>"; };
 		B075AB081ADB687B0028C613 /* GoogleAddressComponent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleAddressComponent.m; sourceTree = "<group>"; };
 		B075AB0A1ADB73560028C613 /* GooglePlaces.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GooglePlaces.h; sourceTree = "<group>"; };
@@ -727,6 +730,8 @@
 				B09E417F1AEA8C11000A718D /* EanBedType.m */,
 				B03C2BAB1AED8FAD00C13AC5 /* EanRoomImage.h */,
 				B03C2BAC1AED8FAD00C13AC5 /* EanRoomImage.m */,
+				B0617ACD1AF5BE5500AEA216 /* EanCancelPolicyInfo.h */,
+				B0617ACE1AF5BE5500AEA216 /* EanCancelPolicyInfo.m */,
 			);
 			name = HotelRoomAvailabilityResponse;
 			path = "ota-ios/Models/Ean/HotelRoomAvailabilityResponse";
@@ -980,6 +985,7 @@
 				B032F62A1AC18F6700809395 /* main.m in Sources */,
 				B0963CB91AC786E3002FD859 /* SelectionCriteria.m in Sources */,
 				B09C5E9F1AD1735500A3D7E8 /* EanHotelInfoImage.m in Sources */,
+				B0617ACF1AF5BE5500AEA216 /* EanCancelPolicyInfo.m in Sources */,
 				B09797E51AC344340014FC7C /* LoadEanData.m in Sources */,
 				B0FE0F471AC6EB9500DAF635 /* BookViewController.m in Sources */,
 				B0DF52371ADC77BA00136661 /* PostalResultsTableViewCell.m in Sources */,

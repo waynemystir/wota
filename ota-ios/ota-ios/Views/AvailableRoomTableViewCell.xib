@@ -18,7 +18,11 @@
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ivg-jm-Y5x" userLabel="roomImageView">
                                 <rect key="frame" x="0.0" y="0.0" width="316" height="84"/>
                             </imageView>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eaK-WL-85C" userLabel="gradientRoomImage">
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PUJ-CG-FhH" userLabel="bottomGradientCover">
+                                <rect key="frame" x="0.0" y="0.0" width="316" height="84"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </view>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eaK-WL-85C" userLabel="priceGradientCover">
                                 <rect key="frame" x="0.0" y="0.0" width="316" height="84"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </view>
@@ -55,9 +59,10 @@
             </tableViewCellContentView>
             <connections>
                 <outlet property="borderViewOutlet" destination="Si8-AH-KtS" id="tgO-72-Kxp"/>
-                <outlet property="gradientRoomImageCover" destination="eaK-WL-85C" id="yl2-qf-c9d"/>
+                <outlet property="bottomGradientOutlet" destination="PUJ-CG-FhH" id="pBP-mq-cXB"/>
                 <outlet property="nonrefundOutlet" destination="GHw-b6-Lcp" id="jZ0-Km-eM4"/>
                 <outlet property="perNightOutlet" destination="ckz-ay-KmX" id="VU7-as-77z"/>
+                <outlet property="priceGradientOutlet" destination="eaK-WL-85C" id="KQQ-3W-fcO"/>
                 <outlet property="rateOutlet" destination="qk8-ap-PBd" id="ffk-pg-iyF"/>
                 <outlet property="roomImageViewOutlet" destination="ivg-jm-Y5x" id="T8S-eh-gFQ"/>
                 <outlet property="roomTypeDescriptionOutlet" destination="dnJ-sW-RrZ" id="M0i-Kd-BMr"/>

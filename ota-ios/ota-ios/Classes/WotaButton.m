@@ -36,6 +36,7 @@
         [self addTarget:self action:@selector(touchUpInside:) forControlEvents:UIControlEventTouchUpInside];
         [self addTarget:self action:@selector(touchUpOutside:) forControlEvents:UIControlEventTouchUpOutside];
         [self addTarget:self action:@selector(touchUpOutside:) forControlEvents:UIControlEventTouchDragOutside];
+        [self.titleLabel setTextAlignment:NSTextAlignmentCenter];
     }
     return self;
 }

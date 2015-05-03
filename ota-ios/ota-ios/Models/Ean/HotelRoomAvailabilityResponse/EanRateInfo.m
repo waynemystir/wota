@@ -7,6 +7,10 @@
 //
 
 #import "EanRateInfo.h"
+#import "EanCancelPolicyInfo.h"
+
+NSString * const kNonrefundableString = @"This rate is non-refundable";
+NSString * const kFreeCancellationString = @"Free Cancellation by Oct 20";
 
 @implementation EanRateInfo
 
@@ -25,18 +29,33 @@
     ri.rateChange = [[dict objectForKey:@"@rateChange"] boolValue];
     ri.roomGroup = [EanRoomGroup roomGroupFromDict:[dict objectForKey:@"RoomGroup"]];
     ri.chargeableRateInfo = [EanChargeableRateInfo chargeableRateInfoFromDict:[dict objectForKey:@"ChargeableRateInfo"]];
-//    ri.chargeableRate = [[ri.chargeableRateInfo objectForKey:@"@total"] floatValue];
-//    ri.currencyCode = [ri.chargeableRateInfo objectForKey:@"@currencyCode"];
-//    ri.nightlyRateToPresent = [NSNumber numberWithDouble:[[ri.chargeableRateInfo objectForKey:@"@averageRate"] doubleValue]];
     ri.cancellationPolicy = [dict objectForKey:@"cancellationPolicy"];
     ri.cancelPolicyInfoList = [dict objectForKey:@"CancelPolicyInfoList"];
+    
+    id idCancelPolicyArray = [ri.cancelPolicyInfoList objectForKey:@"CancelPolicyInfo"];
+    if ([idCancelPolicyArray isKindOfClass:[NSArray class]]) {
+        NSMutableArray *mutCancelPolicyInfoArray = [NSMutableArray array];
+        for (int j = 0; j < [idCancelPolicyArray count]; j++) {
+            EanCancelPolicyInfo *cpi = [EanCancelPolicyInfo cancelPolicyFromDict:idCancelPolicyArray[j]];
+            [mutCancelPolicyInfoArray addObject:cpi];
+        }
+        ri.cancelPolicyInfoArray = [NSArray arrayWithArray:mutCancelPolicyInfoArray];
+    }
+    
     ri.nonRefundable = [[dict objectForKey:@"nonRefundable"] boolValue];
     ri.nonRefundableString = ri.nonRefundable ? @"Non-refundable" : @"Free Cancellation";
+    
+    if (ri.nonRefundable) {
+        ri.nonRefundableLongString = kNonrefundableString;
+    } else if ([ri.cancelPolicyInfoArray count] > 0) {
+        NSString *s = [NSString stringWithFormat:@"%@ %@", kFreeCancellationString, ((EanCancelPolicyInfo *)ri.cancelPolicyInfoArray[0]).cancelTime];
+        ri.nonRefundableLongString = s;
+    }
+    
     ri.currentAllotment = [[dict objectForKey:@"currentAllotment"] integerValue];
     ri.guaranteeRequired = [[dict objectForKey:@"guaranteeRequired"] boolValue];
     ri.depositRequired = [[dict objectForKey:@"depositRequired"] boolValue];
     ri.taxRate = [dict objectForKey:@"taxRate"];
-    
     
     return ri;
 }
