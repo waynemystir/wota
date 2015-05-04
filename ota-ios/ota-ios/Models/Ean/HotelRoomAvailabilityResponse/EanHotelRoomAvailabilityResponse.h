@@ -14,8 +14,10 @@
 @property (nonatomic) NSUInteger size;
 @property (nonatomic, strong) NSString *customerSessionId;
 @property (nonatomic, strong) NSString *hotelId;
-@property (nonatomic, strong) id arrivalDate;
-@property (nonatomic, strong) id departureDate;
+@property (nonatomic, strong) NSString *arrivalDateString;
+@property (nonatomic, strong) NSString *departureDateString;
+@property (nonatomic, strong) NSDate *arrivalDate;
+@property (nonatomic, strong) NSDate *departureDate;
 @property (nonatomic, strong) NSString *hotelName;
 @property (nonatomic, strong) NSString *hotelAddress;
 @property (nonatomic, strong) NSString *hotelCity;

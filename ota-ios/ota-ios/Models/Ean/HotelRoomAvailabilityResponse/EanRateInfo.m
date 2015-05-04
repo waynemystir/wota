@@ -9,9 +9,6 @@
 #import "EanRateInfo.h"
 #import "EanCancelPolicyInfo.h"
 
-NSString * const kNonrefundableString = @"This rate is non-refundable";
-NSString * const kFreeCancellationString = @"Free Cancellation by Oct 20";
-
 @implementation EanRateInfo
 
 + (EanRateInfo *)rateInfoFromDict:(NSDictionary *)dict {
@@ -44,13 +41,6 @@ NSString * const kFreeCancellationString = @"Free Cancellation by Oct 20";
     
     ri.nonRefundable = [[dict objectForKey:@"nonRefundable"] boolValue];
     ri.nonRefundableString = ri.nonRefundable ? @"Non-refundable" : @"Free Cancellation";
-    
-    if (ri.nonRefundable) {
-        ri.nonRefundableLongString = kNonrefundableString;
-    } else if ([ri.cancelPolicyInfoArray count] > 0) {
-        NSString *s = [NSString stringWithFormat:@"%@ %@", kFreeCancellationString, ((EanCancelPolicyInfo *)ri.cancelPolicyInfoArray[0]).cancelTime];
-        ri.nonRefundableLongString = s;
-    }
     
     ri.currentAllotment = [[dict objectForKey:@"currentAllotment"] integerValue];
     ri.guaranteeRequired = [[dict objectForKey:@"guaranteeRequired"] boolValue];

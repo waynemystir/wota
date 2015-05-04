@@ -54,7 +54,7 @@ NSUInteger const kRoomBedTypeButtonTag = 171723;
 NSUInteger const kRoomSmokingButtonTag = 171724;
 NSUInteger const kRoomTypeDescrLongTag = 171725;
 NSUInteger const kRoomTotalViewTag = 171726;
-NSUInteger const kRoomTotalWithTaxTag = 171727;
+NSUInteger const kRoomTotalAmountTag = 171727;
 NSUInteger const kBottomGradientCoverTag = 171728;
 NSUInteger const kRoomNonRefundLongTag = 171729;
 
@@ -273,6 +273,11 @@ NSUInteger const kRoomNonRefundLongTag = 171729;
     EanAvailabilityHotelRoomResponse *room = [self.tableData objectAtIndex:indexPath.row];
     
     cell.roomTypeDescriptionOutlet.text = room.roomType.roomTypeDescrition;
+    if ([cell.roomTypeDescriptionOutlet.text length] > 32) {
+        cell.roomTypeDescriptionOutlet.font = [UIFont boldSystemFontOfSize:18.0f];
+    } else {
+        cell.roomTypeDescriptionOutlet.font = [UIFont boldSystemFontOfSize:19.0f];
+    }
     
 //    NSNumberFormatter *currencyStyle = kPriceRoundOffFormatter(room.rateInfo.currencyCode);
 //    NSString *currency = [currencyStyle stringFromNumber:room.rateInfo.nightlyRateToPresent];
@@ -337,24 +342,26 @@ NSUInteger const kRoomNonRefundLongTag = 171729;
     
     UILabel *rtd = (UILabel *) [_tableViewPopOut viewWithTag:kRoomTypeDescViewTag];
     rtd.text = room.roomType.roomTypeDescrition;
+    if ([rtd.text length] > 32) {
+        rtd.font = [UIFont boldSystemFontOfSize:18.0f];
+    } else {
+        rtd.font = [UIFont boldSystemFontOfSize:19.0f];
+    }
     
     UILabel *rateLabel = (UILabel *) [_tableViewPopOut viewWithTag:kRoomRateViewTag];
     NSNumberFormatter *currencyStyle = kPriceRoundOffFormatter(room.rateInfo.chargeableRateInfo.currencyCode);
     NSString *currency = [currencyStyle stringFromNumber:room.rateInfo.chargeableRateInfo.averageBaseRate];
     rateLabel.text = currency;
     
-    UILabel *totalLabel = (UILabel *) [_tableViewPopOut viewWithTag:kRoomTotalViewTag];
+    UIView *totalContainer = [_tableViewPopOut viewWithTag:kRoomTotalViewTag];
+    
+    UILabel *totalLabel = (UILabel *) [totalContainer viewWithTag:kRoomTotalAmountTag];
     NSNumberFormatter *twoDigit = kPriceTwoDigitFormatter(room.rateInfo.chargeableRateInfo.currencyCode);
     NSString *totalAmt = [twoDigit stringFromNumber:room.rateInfo.chargeableRateInfo.total];
     totalLabel.text = totalAmt;
-    totalLabel.alpha = 0.0f;
     
     UILabel *perNightLabel = (UILabel *) [_tableViewPopOut viewWithTag:kRoomPerNightTag];
     perNightLabel.text = room.rateInfo.chargeableRateInfo.nightlyRateTypeDescription;
-    
-    UIView *totalWithTaxLabel = [_tableViewPopOut viewWithTag:kRoomTotalWithTaxTag];
-    totalWithTaxLabel.frame = CGRectMake(214, 69, 88, 22);
-    totalWithTaxLabel.alpha = 0.0f;
     
     UILabel *nonrefundLabel = (UILabel *) [_tableViewPopOut viewWithTag:kRoomNonRefundViewTag];
     nonrefundLabel.text = room.rateInfo.nonRefundableString;
@@ -421,7 +428,7 @@ NSUInteger const kRoomNonRefundLongTag = 171729;
     rtd.tag = kRoomTypeDescViewTag;
     rtd.lineBreakMode = NSLineBreakByWordWrapping;
     rtd.numberOfLines = 2;
-    rtd.font = [UIFont boldSystemFontOfSize:17.0f];
+    rtd.font = [UIFont boldSystemFontOfSize:19.0f];
     [borderView addSubview:rtd];
     
     UILabel *rateLabel = [[UILabel alloc] initWithFrame:CGRectMake(219, 69, 93, 22)];
@@ -432,29 +439,41 @@ NSUInteger const kRoomNonRefundLongTag = 171729;
     [rateLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18.0f]];
     [borderView addSubview:rateLabel];
     
-    UILabel *totalLabel = [[UILabel alloc] initWithFrame:CGRectMake(153, 230, 159, 33)];
-    totalLabel.tag = kRoomTotalViewTag;
-    totalLabel.lineBreakMode = NSLineBreakByClipping;
-    totalLabel.textColor = UIColorFromRGB(0x0D9C03);
-    totalLabel.textAlignment = NSTextAlignmentRight;
-    [totalLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:22.0f]];
-    [borderView addSubview:totalLabel];
-    
     UILabel *perNightLabel = [[UILabel alloc] initWithFrame:CGRectMake(262, 87, 50, 15)];
     perNightLabel.tag = kRoomPerNightTag;
     perNightLabel.textAlignment = NSTextAlignmentRight;
     [perNightLabel setFont:[UIFont systemFontOfSize:12.0f]];
     [borderView addSubview:perNightLabel];
     
-    UILabel *totalWithTaxLabel = [[UILabel alloc] initWithFrame:CGRectMake(214, 69, 88, 22)];
-    totalWithTaxLabel.tag = kRoomTotalWithTaxTag;
+    UIView *totalView = [[UIView alloc] initWithFrame:CGRectMake(142, 240, 171, 40)];
+    totalView.tag = kRoomTotalViewTag;
+    totalView.backgroundColor = [UIColor clearColor];
+    totalView.layer.cornerRadius = WOTA_CORNER_RADIUS;
+    totalView.layer.borderColor = UIColorFromRGB(0x0D9C03).CGColor;
+    totalView.layer.borderWidth = 0.5f;
+    [borderView addSubview:totalView];
+    
+    UILabel *totalLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 12, 146, 33)];
+    totalLabel.tag = kRoomTotalAmountTag;
+    totalLabel.lineBreakMode = NSLineBreakByClipping;
+    totalLabel.textColor = UIColorFromRGB(0x0D9C03);
+    totalLabel.textAlignment = NSTextAlignmentRight;
+    [totalLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:21.0f]];
+    [totalView addSubview:totalLabel];
+
+    UILabel *totalInquiry = [[UILabel alloc] initWithFrame:CGRectMake(148, 12, 22, 33)];
+    totalInquiry.text = @"ℹ️";
+    totalInquiry.textAlignment = NSTextAlignmentRight;
+    [totalView addSubview:totalInquiry];
+    
+    UILabel *totalWithTaxLabel = [[UILabel alloc] initWithFrame:CGRectMake(65, 0, 103, 16)];
     totalWithTaxLabel.lineBreakMode = NSLineBreakByClipping;
     totalWithTaxLabel.text = @"Total With Tax";
     totalWithTaxLabel.textAlignment = NSTextAlignmentRight;
     totalWithTaxLabel.textColor = UIColorFromRGB(0x0D9C03);
     totalWithTaxLabel.textAlignment = NSTextAlignmentCenter;
     [totalWithTaxLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:15.0f]];
-    [borderView addSubview:totalWithTaxLabel];
+    [totalView addSubview:totalWithTaxLabel];
     
     UILabel *nonreundLabel = [[UILabel alloc] initWithFrame:CGRectMake(198, 104, 118, 21)];
     nonreundLabel.clipsToBounds = YES;
@@ -468,7 +487,7 @@ NSUInteger const kRoomNonRefundLongTag = 171729;
     nonreundLabel.textAlignment = NSTextAlignmentCenter;
     [borderView addSubview:nonreundLabel];
     
-    UILabel *nonreundLongLabel = [[UILabel alloc] initWithFrame:CGRectMake(3, 234, 148, 42)];
+    UILabel *nonreundLongLabel = [[UILabel alloc] initWithFrame:CGRectMake(3, 242, 136, 36)];
     nonreundLongLabel.clipsToBounds = YES;
     nonreundLongLabel.lineBreakMode = NSLineBreakByWordWrapping;
     nonreundLongLabel.numberOfLines = 2;
@@ -480,10 +499,10 @@ NSUInteger const kRoomNonRefundLongTag = 171729;
     nonreundLongLabel.textAlignment = NSTextAlignmentCenter;
     [borderView addSubview:nonreundLongLabel];
     
-    UILabel *rtdL = [[UILabel alloc] initWithFrame:CGRectMake(3, 257, 312, 100)];
+    UILabel *rtdL = [[UILabel alloc] initWithFrame:CGRectMake(3, 278, 312, 82)];
     rtdL.tag = kRoomTypeDescrLongTag;
     rtdL.lineBreakMode = NSLineBreakByWordWrapping;
-    rtdL.numberOfLines = 4;
+    rtdL.numberOfLines = 5;
     rtdL.font = [UIFont systemFontOfSize:12.0f];
     [borderView addSubview:rtdL];
     
@@ -496,6 +515,18 @@ NSUInteger const kRoomNonRefundLongTag = 171729;
     [tableViewPopout addSubview:self.smokingButton];
     
     self.tableViewPopOut = tableViewPopout;
+}
+
+- (void)popupThePriceDetails:(id)sender {
+    UIView *pdPopup = [[UIView alloc] initWithFrame:CGRectMake(30, 100, 260, 368)];
+    pdPopup.backgroundColor = [UIColor redColor];
+    pdPopup.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
+    [self.view addSubview:pdPopup];
+    [UIView animateWithDuration:kSrAnimationDuration animations:^{
+        pdPopup.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+    } completion:^(BOOL finished) {
+        ;
+    }];
 }
 
 - (CGAffineTransform)hiddenGuestInputTransform {
@@ -982,7 +1013,6 @@ NSUInteger const kRoomNonRefundLongTag = 171729;
     __weak UIView *rtl = [borderView viewWithTag:kRoomRateViewTag];
     __weak UIView *tal = [borderView viewWithTag:kRoomTotalViewTag];
     __weak UIView *pnt = [borderView viewWithTag:kRoomPerNightTag];
-    __weak UIView *twt = [borderView viewWithTag:kRoomTotalWithTaxTag];
     __weak UIView *nrl = [borderView viewWithTag:kRoomNonRefundViewTag];
     __weak UIView *nrr = [borderView viewWithTag:kRoomNonRefundLongTag];
     __weak UIView *rtdl = [borderView viewWithTag:kRoomTypeDescrLongTag];
@@ -999,7 +1029,7 @@ NSUInteger const kRoomNonRefundLongTag = 171729;
     [self.navigationItem setLeftBarButtonItem:lbbi animated:YES];
     
     self.bedTypeButton.alpha = self.smokingButton.alpha = rtdl.alpha = 0.0f;
-    tal.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(40.0f, -(tvp.frame.size.height/0.90)), 0.001f, 0.001f);
+    tal.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(60.0f, -(tvp.frame.size.height/0.80)), 0.001f, 0.001f);
     nrr.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/1.05)), 0.001f, 0.001f);
     rtdl.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/1.05)), 0.001f, 0.001f);
     self.bedTypeButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/0.55)), 0.001f, 0.001f);
@@ -1011,20 +1041,15 @@ NSUInteger const kRoomNonRefundLongTag = 171729;
         borderView.frame = CGRectMake(2.0f, 2.0f, cv.frame.size.width - 4.0f, cv.frame.size.height - 4.0f);
         riv.frame = CGRectMake(0, 0, 316, 210);
         gic.frame = CGRectMake(0, 210, 316, 30);
-//        cgc.alpha = 1.0f;
         cgc.frame = CGRectMake(0, 126, 316, 84);
-        rtd.frame = CGRectMake(3, 185, 190, 53);
+        rtd.frame = CGRectMake(3, 188, 190, 53);
         rtl.frame = CGRectMake(219, 230, 93, 22);
         rtl.alpha = 0.0f;
         tal.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 0), 1.0f, 1.0f);
         tal.alpha = 1.0f;
         pnt.frame = CGRectMake(262, 248, 50, 15);
         pnt.alpha = 0.0f;
-        twt.frame = CGRectMake(209, 212, 103, 22);
-        twt.alpha = 1.0f;
-//        nrl.frame = CGRectMake(3, 256, 218, 21);
         nrl.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, 160), 0.001f, 0.001f);
-//        nrl.alpha = 0.0f;
         nrr.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 0), 1.0f, 1.0f);
         rtdl.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 0), 1.0f, 1.0f);
         rtv.transform = CGAffineTransformMakeScale(0.01, 0.01);
@@ -1049,7 +1074,6 @@ NSUInteger const kRoomNonRefundLongTag = 171729;
     __weak UIView *rtl = [borderView viewWithTag:kRoomRateViewTag];
     __weak UIView *tal = [borderView viewWithTag:kRoomTotalViewTag];
     __weak UIView *pnt = [borderView viewWithTag:kRoomPerNightTag];
-    __weak UIView *twt = [borderView viewWithTag:kRoomTotalWithTaxTag];
     __weak UIView *nrl = [borderView viewWithTag:kRoomNonRefundViewTag];
     __weak UIView *nrr = [borderView viewWithTag:kRoomNonRefundLongTag];
     __weak UIView *rtdl = [borderView viewWithTag:kRoomTypeDescrLongTag];
@@ -1063,7 +1087,7 @@ NSUInteger const kRoomNonRefundLongTag = 171729;
     
     [UIView animateWithDuration:kSrAnimationDuration animations:^{
         weakSelf.bedTypeButton.alpha = weakSelf.smokingButton.alpha = rtdl.alpha = 0.0f;
-        tal.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(40.0f, -(tvp.frame.size.height/2.5f)), 0.001f, 0.001f);
+        tal.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(80.0f, -(tvp.frame.size.height/2.3f)), 0.001f, 0.001f);
         nrr.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/3.5f)), 0.001f, 0.001f);
         rtdl.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/2.5f)), 0.001f, 0.001f);
         weakSelf.bedTypeButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/1.5f)), 0.001f, 0.001f);
@@ -1078,13 +1102,8 @@ NSUInteger const kRoomNonRefundLongTag = 171729;
         rtd.frame = CGRectMake(3, 71, 190, 53);
         rtl.frame = CGRectMake(219, 69, 93, 22);
         rtl.alpha = 1.0f;
-//        tal.frame = CGRectMake(153, 69, 159, 22);
-//        tal.alpha = 0.0f;
         pnt.frame = CGRectMake(262, 87, 50, 15);
         pnt.alpha = 1.0f;
-        twt.frame = CGRectMake(209, 69, 103, 22);
-        twt.alpha = 0.0f;
-//        nrl.frame = CGRectMake(198, 104, 118, 21);
         nrl.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 0), 1.0f, 1.0f);
         rtv.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
         ibo.transform = [weakSelf hiddenGuestInputTransform];

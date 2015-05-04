@@ -54,4 +54,5 @@ extern UIColor * kColorNoGo();
  * What not
  */
 extern CGFloat const WOTA_CORNER_RADIUS;
+extern NSDate * kAddDays(int days, NSDate * toDate);
 

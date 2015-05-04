@@ -116,3 +116,10 @@ UIColor * kColorNoGo() {
 }
 
 CGFloat const WOTA_CORNER_RADIUS = 6.0f;
+
+NSDate * kAddDays(int days, NSDate * toDate) {
+    NSDateComponents *dayComponent = [[NSDateComponents alloc] init];
+    dayComponent.day = days;
+    NSCalendar *theCalendar = [NSCalendar currentCalendar];
+    return [theCalendar dateByAddingComponents:dayComponent toDate:toDate options:0];
+}

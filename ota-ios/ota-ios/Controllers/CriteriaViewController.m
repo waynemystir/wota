@@ -18,6 +18,7 @@
 #import "HotelListingViewController.h"
 #import "THDatePickerViewController.h"
 #import "ChildViewController.h"
+#import "AppEnvironment.h"
 
 @interface CriteriaViewController () <LoadDataProtocol, UITableViewDataSource, UITableViewDelegate, THDatePickerDelegate>
 
@@ -329,7 +330,7 @@
 -(void)refreshDisplayedArrivalDate {
     SelectionCriteria *sc = [SelectionCriteria singleton];
     if (sc.arrivalDate == nil) {
-        sc.arrivalDate = [self addDays:3 ToDate:[NSDate date]];
+        sc.arrivalDate = kAddDays(3, [NSDate date]);
     }
     
     [self.arrivalDateOutlet setTitle:[_viewFormatter stringFromDate:sc.arrivalDate] forState:UIControlStateNormal];
@@ -338,17 +339,10 @@
 -(void)refreshDisplayedReturnDate {
     SelectionCriteria *sc = [SelectionCriteria singleton];
     if (sc.returnDate == nil) {
-        sc.returnDate = [self addDays:6 ToDate:[NSDate date]];
+        sc.returnDate = kAddDays(6, [NSDate date]);
     }
     
     [self.returnDateOutlet setTitle:[_viewFormatter stringFromDate:sc.returnDate] forState:UIControlStateNormal];
-}
-
-- (NSDate *)addDays:(int)days ToDate:(NSDate *)toDate {
-    NSDateComponents *dayComponent = [[NSDateComponents alloc] init];
-    dayComponent.day = days;
-    NSCalendar *theCalendar = [NSCalendar currentCalendar];
-    return [theCalendar dateByAddingComponents:dayComponent toDate:toDate options:0];
 }
 
 #pragma mark THDatePickerDelegate methods

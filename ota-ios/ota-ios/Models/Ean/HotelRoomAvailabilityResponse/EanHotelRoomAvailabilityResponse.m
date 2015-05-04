@@ -8,6 +8,12 @@
 
 #import "EanHotelRoomAvailabilityResponse.h"
 #import "EanAvailabilityHotelRoomResponse.h"
+#import "EanRateInfo.h"
+#import "EanCancelPolicyInfo.h"
+#import "AppEnvironment.h"
+
+NSString * const kNonrefundableString = @"This rate is non-refundable";
+NSString * const kFreeCancelString = @"Free Cancellation by";
 
 @implementation EanHotelRoomAvailabilityResponse
 
@@ -34,8 +40,10 @@
     hrar.size = [[idHrar objectForKey:@"@size"] integerValue];
     hrar.customerSessionId = [idHrar objectForKey:@"customerSessionId"];
     hrar.hotelId = [idHrar objectForKey:@"hotelId"];
-    hrar.arrivalDate = [idHrar objectForKey:@"arrivalDate"];
-    hrar.departureDate = [idHrar objectForKey:@"departureDate"];
+    hrar.arrivalDateString = [idHrar objectForKey:@"arrivalDate"];
+    hrar.departureDateString = [idHrar objectForKey:@"departureDate"];
+    hrar.arrivalDate = [kEanApiDateFormatter() dateFromString:hrar.arrivalDateString];
+    hrar.departureDate = [kEanApiDateFormatter() dateFromString:hrar.departureDateString];
     hrar.hotelName = [idHrar objectForKey:@"hotelName"];
     hrar.hotelAddress = [idHrar objectForKey:@"hotelAddress"];
     hrar.hotelCity = [idHrar objectForKey:@"hotelCity"];
@@ -52,14 +60,6 @@
     if (nil == hrr) {
         hrar.hotelRoomArray = nil;
     } else if ([hrr isKindOfClass:[NSArray class]]) {
-        //        hrar.hotelRoomArray = hrr;
-        
-        // I previously would just return an array of NSDictionary's
-        // that needed to be re-parsed with "roomFromDict" by the table
-        // view in SelectRoomView Controller. This seemed terribly
-        // inefficient. So now we're parsing the dicts once and the
-        // hotelRoomArray is an array of Ean...Room objects
-        
         NSMutableArray *tmpRooms = [NSMutableArray array];
         for (int j = 0; j < [hrr count]; j++) {
             EanAvailabilityHotelRoomResponse *room = [EanAvailabilityHotelRoomResponse roomFromDict:hrr[j]];
@@ -69,9 +69,6 @@
         hrar.hotelRoomArray = [NSArray arrayWithArray:tmpRooms];
         
     } else if ([hrr isKindOfClass:[NSDictionary class]]) {
-        
-        //        hrar.hotelRoomArray = [NSArray arrayWithObject:hrr];
-        
         // Believe it or not, Ean API will not return an array if there
         // is a single room response. Instead they just return a dict
         // of the room. Nice.
@@ -79,6 +76,41 @@
         
     } else {
         hrar.hotelRoomArray = nil;
+    }
+    
+    for (EanAvailabilityHotelRoomResponse *room in hrar.hotelRoomArray) {
+        EanRateInfo *ri = room.rateInfo;
+        
+        if (ri.nonRefundable) {
+            ri.nonRefundableLongString = kNonrefundableString;
+        } else if ([ri.cancelPolicyInfoArray count] == 2) {
+            
+            NSInteger startWindowHours = ((EanCancelPolicyInfo *)ri.cancelPolicyInfoArray[1]).startWindowHours;
+            int daysInAdvance = (int) startWindowHours / 24;
+            NSDate *lastDayToCancel = kAddDays(-daysInAdvance, hrar.arrivalDate);
+            NSDateFormatter *f = [[NSDateFormatter alloc] init];
+            NSString *fStr = [NSDateFormatter dateFormatFromTemplate:@"MMMd" options:0 locale:[NSLocale currentLocale]];
+            [f setLocale:[NSLocale currentLocale]];
+            [f setDateFormat:fStr];
+            
+            NSString *strLastDayToCancel = [f stringFromDate:lastDayToCancel];
+            
+            NSDateFormatter *tf = [[NSDateFormatter alloc] init];
+            [tf setDateFormat:@"HH:mm:ss"];
+            NSDate *ct = [tf dateFromString:((EanCancelPolicyInfo *)ri.cancelPolicyInfoArray[0]).cancelTime];
+            [tf setDateFormat:nil];
+            [tf setLocale:[NSLocale currentLocale]];
+            [tf setDateStyle:NSDateFormatterNoStyle];
+            [tf setTimeStyle:NSDateFormatterShortStyle];
+            NSString *cts = [tf stringFromDate:ct];
+            
+            NSString *s = [NSString stringWithFormat:@"%@ %@ %@", kFreeCancelString, strLastDayToCancel, cts];
+            
+            ri.nonRefundableLongString = s;
+            
+        } else {
+            ri.nonRefundableLongString = kNonrefundableString;
+        }
     }
     
     return hrar;
