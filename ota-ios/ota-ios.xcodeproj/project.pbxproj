@@ -19,6 +19,7 @@
 		B018C0451AD9BEC800DDCE2E /* GuestInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B018C0441AD9BEC800DDCE2E /* GuestInfo.m */; };
 		B018C0471ADA01FA00DDCE2E /* PaymentDetailsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B018C0461ADA01FA00DDCE2E /* PaymentDetailsView.xib */; };
 		B018C04B1ADA08CF00DDCE2E /* JNKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = B018C04A1ADA08CF00DDCE2E /* JNKeychain.m */; };
+		B01F0ECE1AF8669600C68BA8 /* WotaTappableView.m in Sources */ = {isa = PBXBuildFile; fileRef = B01F0ECD1AF8669600C68BA8 /* WotaTappableView.m */; };
 		B032F62A1AC18F6700809395 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B032F6291AC18F6700809395 /* main.m */; };
 		B032F62D1AC18F6700809395 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B032F62C1AC18F6700809395 /* AppDelegate.m */; };
 		B032F6301AC18F6700809395 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B032F62F1AC18F6700809395 /* MainViewController.m */; };
@@ -170,6 +171,8 @@
 		B018C0461ADA01FA00DDCE2E /* PaymentDetailsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PaymentDetailsView.xib; sourceTree = "<group>"; };
 		B018C0491ADA08CF00DDCE2E /* JNKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JNKeychain.h; sourceTree = "<group>"; };
 		B018C04A1ADA08CF00DDCE2E /* JNKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JNKeychain.m; sourceTree = "<group>"; };
+		B01F0ECC1AF8669600C68BA8 /* WotaTappableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WotaTappableView.h; sourceTree = "<group>"; };
+		B01F0ECD1AF8669600C68BA8 /* WotaTappableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WotaTappableView.m; sourceTree = "<group>"; };
 		B032F6241AC18F6700809395 /* ota-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ota-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B032F6281AC18F6700809395 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B032F6291AC18F6700809395 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -642,6 +645,8 @@
 				B0DF52361ADC77BA00136661 /* PostalResultsTableViewCell.m */,
 				B058A4921AE8B52C00E42594 /* WotaButton.h */,
 				B058A4931AE8B52C00E42594 /* WotaButton.m */,
+				B01F0ECC1AF8669600C68BA8 /* WotaTappableView.h */,
+				B01F0ECD1AF8669600C68BA8 /* WotaTappableView.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1023,6 +1028,7 @@
 				B05BD62C1AC1FE53002C2882 /* PlaceAutoCompleteTableViewCell.m in Sources */,
 				B0122E501AD0E8C700E44319 /* EanHotelInformationSummary.m in Sources */,
 				B032F6531AC193B300809395 /* CriteriaViewController.m in Sources */,
+				B01F0ECE1AF8669600C68BA8 /* WotaTappableView.m in Sources */,
 				B080B7CC1AC506B500075A32 /* EanHotelInformationResponse.m in Sources */,
 				B0344C4D1AE5A6E0000BBFCE /* WotaCardNumberFormatter.m in Sources */,
 				B09797FC1AC3BC690014FC7C /* UIViewController+KNSemiModal.m in Sources */,

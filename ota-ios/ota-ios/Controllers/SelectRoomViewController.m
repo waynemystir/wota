@@ -30,6 +30,7 @@
 #import "SelectSmokingPreferenceDelegateImplementation.h"
 #import "WotaButton.h"
 #import <SDWebImage/UIImageView+WebCache.h>
+#import "WotaTappableView.h"
 
 typedef NS_ENUM(NSUInteger, LOAD_DATA) {
     LOAD_ROOM = 0,
@@ -40,7 +41,6 @@ typedef NS_ENUM(NSUInteger, LOAD_DATA) {
 NSTimeInterval const kSrAnimationDuration = 0.7f;
 NSUInteger const kGuestDetailsViewTag = 51;
 NSUInteger const kPaymentDetailsViewTag = 52;
-NSUInteger const kAvailRoomCellTag = 13456;
 NSUInteger const kAvailRoomCellContViewTag = 19191;
 NSUInteger const kAvailRoomBorderViewTag = 13;
 NSUInteger const kNightlyRateViewTag = 19;
@@ -57,6 +57,7 @@ NSUInteger const kRoomTotalViewTag = 171726;
 NSUInteger const kRoomTotalAmountTag = 171727;
 NSUInteger const kBottomGradientCoverTag = 171728;
 NSUInteger const kRoomNonRefundLongTag = 171729;
+NSUInteger const kPriceDetailsPopupTag = 171730;
 
 @interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, SelectGooglePlaceDelegate, SelectBedTypeDelegate, SelectSmokingPrefDelegate>
 
@@ -101,6 +102,7 @@ NSUInteger const kRoomNonRefundLongTag = 171729;
 @property (nonatomic, strong) UIPickerView *smokingPrefPickerView;
 @property (nonatomic, strong) SelectSmokingPreferenceDelegateImplementation *smokePrefDelegImplem;
 @property (nonatomic, strong) UIView *overlayDisable;
+@property (nonatomic, strong) UIView *overlayDisableNav;
 
 @property (nonatomic, strong) UITableView *googlePlacesTableView;
 @property (nonatomic, strong) GooglePlaceTableViewDelegateImplementation *googlePlacesTableViewDelegate;
@@ -166,6 +168,10 @@ NSUInteger const kRoomNonRefundLongTag = 171729;
     self.overlayDisable = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 568)];
     self.overlayDisable.backgroundColor = [UIColor blackColor];
     self.overlayDisable.alpha = 0.8f;
+    self.overlayDisable.userInteractionEnabled = YES;
+    self.overlayDisableNav = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 64)];
+    self.overlayDisable.backgroundColor = [UIColor blackColor];
+    self.overlayDisable.alpha = 0.95f;
     self.overlayDisable.userInteractionEnabled = YES;
     
     self.inputBookOutlet.hidden = YES;
@@ -386,12 +392,10 @@ NSUInteger const kRoomNonRefundLongTag = 171729;
     tableViewPopout.autoresizesSubviews = YES;
     [self.view addSubview:tableViewPopout];
     
-    UIView *cellV = [[UIView alloc] initWithFrame:tableViewPopout.bounds];
-    cellV.tag = kAvailRoomCellTag;
-    [tableViewPopout addSubview:cellV];
     UIView *cv = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 129)];
     cv.tag = kAvailRoomCellContViewTag;
-    [cellV addSubview:cv];
+    [tableViewPopout addSubview:cv];
+    
     UIView *borderView = [[UIView alloc] initWithFrame:CGRectMake(2, 2, 316, 125)];
     borderView.layer.borderColor = [UIColor blackColor].CGColor;
     borderView.layer.borderWidth = 1.0f;
@@ -445,13 +449,22 @@ NSUInteger const kRoomNonRefundLongTag = 171729;
     [perNightLabel setFont:[UIFont systemFontOfSize:12.0f]];
     [borderView addSubview:perNightLabel];
     
-    UIView *totalView = [[UIView alloc] initWithFrame:CGRectMake(142, 240, 171, 40)];
+    WotaTappableView *totalView = [[WotaTappableView alloc] initWithFrame:CGRectMake(142, 240, 171, 40)];
+    totalView.tapColor = UIColorFromRGB(0x0D9C03);
+    totalView.untapColor = [UIColor clearColor];
     totalView.tag = kRoomTotalViewTag;
+    totalView.userInteractionEnabled = YES;
     totalView.backgroundColor = [UIColor clearColor];
     totalView.layer.cornerRadius = WOTA_CORNER_RADIUS;
     totalView.layer.borderColor = UIColorFromRGB(0x0D9C03).CGColor;
     totalView.layer.borderWidth = 0.5f;
     [borderView addSubview:totalView];
+    
+    UITapGestureRecognizer *tapper = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(popupThePriceDetails:)];
+    tapper.numberOfTapsRequired = 1;
+    tapper.numberOfTouchesRequired = 1;
+    tapper.cancelsTouchesInView = NO;
+    [totalView addGestureRecognizer:tapper];
     
     UILabel *totalLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 12, 146, 33)];
     totalLabel.tag = kRoomTotalAmountTag;
@@ -517,15 +530,51 @@ NSUInteger const kRoomNonRefundLongTag = 171729;
     self.tableViewPopOut = tableViewPopout;
 }
 
-- (void)popupThePriceDetails:(id)sender {
-    UIView *pdPopup = [[UIView alloc] initWithFrame:CGRectMake(30, 100, 260, 368)];
-    pdPopup.backgroundColor = [UIColor redColor];
-    pdPopup.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
-    [self.view addSubview:pdPopup];
+- (void)popupThePriceDetails:(UIGestureRecognizer *)sender {
+    UIView *pdp = [[UIView alloc] initWithFrame:CGRectMake(30, 100, 260, 368)];
+    pdp.tag = kPriceDetailsPopupTag;
+    pdp.backgroundColor = [UIColor whiteColor];
+    pdp.layer.cornerRadius = 8.0f;
+    pdp.layer.borderColor = [UIColor blackColor].CGColor;
+    pdp.layer.borderWidth = 3.0f;
+    pdp.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
+    
+    self.navigationController.navigationBar.clipsToBounds = NO;
+    self.overlayDisable.alpha = 0.0f;
+    self.overlayDisableNav.alpha = 0.0f;
+    [self.view addSubview:self.overlayDisable];
+    [self.navigationController.navigationBar addSubview:self.overlayDisableNav];
+    [self.view bringSubviewToFront:self.overlayDisable];
+    [self.navigationController.navigationBar bringSubviewToFront:self.overlayDisableNav];
+    [self.view addSubview:pdp];
+    [self.view bringSubviewToFront:pdp];
+    
+    WotaButton *wc = [WotaButton wbWithFrame:CGRectMake(200, 20, 50, 30)];
+    [wc setTitle:@"wc" forState:UIControlStateNormal];
+    [wc addTarget:self action:@selector(closePriceDetailsPopup) forControlEvents:UIControlEventTouchUpInside];
+    [pdp addSubview:wc];
+    
     [UIView animateWithDuration:kSrAnimationDuration animations:^{
-        pdPopup.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+        self.overlayDisable.alpha = 0.8f;
+        self.overlayDisableNav.alpha = 1.0f;
+        self.navigationController.navigationBar.alpha = 0.2f;
+        pdp.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
     } completion:^(BOOL finished) {
         ;
+    }];
+}
+
+- (void)closePriceDetailsPopup {
+    __weak UIView *w = [self.view viewWithTag:kPriceDetailsPopupTag];
+    [UIView animateWithDuration:kSrAnimationDuration animations:^{
+        self.overlayDisable.alpha = 0.0f;
+        self.overlayDisableNav.alpha = 0.0f;
+        self.navigationController.navigationBar.alpha = 1.0f;
+        w.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
+    } completion:^(BOOL finished) {
+        [self.overlayDisable removeFromSuperview];
+        [self.overlayDisableNav removeFromSuperview];
+        [w removeFromSuperview];
     }];
 }
 
@@ -1029,9 +1078,9 @@ NSUInteger const kRoomNonRefundLongTag = 171729;
     [self.navigationItem setLeftBarButtonItem:lbbi animated:YES];
     
     self.bedTypeButton.alpha = self.smokingButton.alpha = rtdl.alpha = 0.0f;
-    tal.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(60.0f, -(tvp.frame.size.height/0.80)), 0.001f, 0.001f);
-    nrr.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/1.05)), 0.001f, 0.001f);
-    rtdl.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/1.05)), 0.001f, 0.001f);
+    tal.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(60.0f, -(tvp.frame.size.height/0.80f)), 0.001f, 0.001f);
+    nrr.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/0.95f)), 0.001f, 0.001f);
+    rtdl.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/1.0f)), 0.001f, 0.001f);
     self.bedTypeButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/0.55)), 0.001f, 0.001f);
     self.smokingButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/0.55f)), 0.001f, 0.001f);
     
@@ -1084,12 +1133,13 @@ NSUInteger const kRoomNonRefundLongTag = 171729;
     rtv.hidden = NO;
     [self tuiBedTypeDone:nil];
     [self.navigationItem setLeftBarButtonItem:self.navigationItem.backBarButtonItem animated:YES];
+    [self closePriceDetailsPopup];
     
     [UIView animateWithDuration:kSrAnimationDuration animations:^{
         weakSelf.bedTypeButton.alpha = weakSelf.smokingButton.alpha = rtdl.alpha = 0.0f;
         tal.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(80.0f, -(tvp.frame.size.height/2.3f)), 0.001f, 0.001f);
-        nrr.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/3.5f)), 0.001f, 0.001f);
-        rtdl.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/2.5f)), 0.001f, 0.001f);
+        nrr.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/2.9f)), 0.001f, 0.001f);
+        rtdl.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/1.9f)), 0.001f, 0.001f);
         weakSelf.bedTypeButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/1.5f)), 0.001f, 0.001f);
         weakSelf.smokingButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/1.5f)), 0.001f, 0.001f);
         tvp.frame = weakSelf.rectOfCellInSuperview;

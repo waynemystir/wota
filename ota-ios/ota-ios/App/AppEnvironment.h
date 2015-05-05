@@ -47,6 +47,7 @@ extern NSNumberFormatter * kPriceTwoDigitFormatter(NSString * currencyCode);
 /**
  * Various colors
  */
+extern UIColor * kWotaColorOne();
 extern UIColor * kColorGoodToGo();
 extern UIColor * kColorNoGo();
 

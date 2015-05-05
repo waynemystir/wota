@@ -48,11 +48,11 @@
     
     layer.cornerRadius = WOTA_CORNER_RADIUS;
     layer.borderWidth = 1;
-    layer.borderColor = [UIColor colorWithRed:0.77f green:0.43f blue:0.00f alpha:1.00f].CGColor;
+    layer.borderColor = kWotaColorOne().CGColor;
 }
 
 - (void)touchDown:(WotaButton *)sender {
-    sender.backgroundColor = [UIColor colorWithRed:0.77f green:0.43f blue:0.00f alpha:1.00f];
+    sender.backgroundColor = kWotaColorOne();
     AudioServicesPlaySystemSound(0x450);
 }
 

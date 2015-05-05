@@ -107,6 +107,10 @@ NSNumberFormatter * kPriceTwoDigitFormatter(NSString * currencyCode) {
     return _currencyStyle;
 }
 
+UIColor * kWotaColorOne() {
+    return [UIColor colorWithRed:0.77f green:0.43f blue:0.00f alpha:1.00f];
+}
+
 UIColor * kColorGoodToGo() {
     return [UIColor colorWithRed:0 green:255 blue:0 alpha:0.75f];
 }
