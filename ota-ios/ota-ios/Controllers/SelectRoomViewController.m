@@ -31,6 +31,7 @@
 #import "WotaButton.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "WotaTappableView.h"
+#import "NightlyRateTableViewDelegateImplementation.h"
 
 typedef NS_ENUM(NSUInteger, LOAD_DATA) {
     LOAD_ROOM = 0,
@@ -118,6 +119,8 @@ NSUInteger const kPriceDetailsPopupTag = 171730;
 @property (nonatomic, strong) NSArray *bottomsUpGradientColors;
 @property (nonatomic, strong) NSArray *priceGradientColors;
 @property (nonatomic, strong) UIView *tableViewPopOut;
+
+@property (nonatomic, strong) NightlyRateTableViewDelegateImplementation *nrtvd;
 
 - (IBAction)justPushIt:(id)sender;
 
@@ -531,13 +534,41 @@ NSUInteger const kPriceDetailsPopupTag = 171730;
 }
 
 - (void)popupThePriceDetails:(UIGestureRecognizer *)sender {
-    UIView *pdp = [[UIView alloc] initWithFrame:CGRectMake(30, 100, 260, 368)];
+    NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"PriceDetailsPopupView" owner:self options:nil];
+    if (nil == views || [views count] != 1) {
+        return;
+    }
+    
+    UIView *pdp = views[0];
+    pdp.frame = CGRectMake(10, 100, 300, 368);
     pdp.tag = kPriceDetailsPopupTag;
     pdp.backgroundColor = [UIColor whiteColor];
     pdp.layer.cornerRadius = 8.0f;
     pdp.layer.borderColor = [UIColor blackColor].CGColor;
     pdp.layer.borderWidth = 3.0f;
-    pdp.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
+    
+    EanAvailabilityHotelRoomResponse *room = [self.tableData objectAtIndex:self.expandedIndexPath.row];
+    self.nrtvd = [[NightlyRateTableViewDelegateImplementation alloc] init];
+    self.nrtvd.tableData = room.rateInfo.chargeableRateInfo.nightlyRatesArray;
+    UITableView *nrtv = (UITableView *) [pdp viewWithTag:19171917];
+    nrtv.dataSource = self.nrtvd;
+    nrtv.layer.borderColor = [UIColor blackColor].CGColor;
+    nrtv.layer.borderWidth = 2;
+    
+    UILabel *numberNights = (UILabel *) [pdp viewWithTag:91827340];
+    NSUInteger c = [self.nrtvd.tableData count];
+    numberNights.text = [NSString stringWithFormat:@"%lu Night%@", (unsigned long) c, c > 1 ? @"s" : @""];
+    
+    UILabel *nightsTotal = (UILabel *) [pdp viewWithTag:14590834];
+    nightsTotal.text = [self.nrtvd.nightsTotal stringValue];
+    
+    UILabel *taxFeeTotal = (UILabel *) [pdp viewWithTag:61094356];
+    taxFeeTotal.text = [room.rateInfo.chargeableRateInfo.surchargeTotal stringValue];
+    
+    UILabel *tripTotal = (UILabel *) [pdp viewWithTag:1947284];
+    tripTotal.text = [room.rateInfo.chargeableRateInfo.total stringValue];
+    
+    pdp.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(60, 35), 0.001f, 0.001f);
     
     self.navigationController.navigationBar.clipsToBounds = NO;
     self.overlayDisable.alpha = 0.0f;
@@ -549,31 +580,33 @@ NSUInteger const kPriceDetailsPopupTag = 171730;
     [self.view addSubview:pdp];
     [self.view bringSubviewToFront:pdp];
     
-    WotaButton *wc = [WotaButton wbWithFrame:CGRectMake(200, 20, 50, 30)];
-    [wc setTitle:@"wc" forState:UIControlStateNormal];
+    WotaButton *wc = (WotaButton *)[pdp viewWithTag:9823754];
     [wc addTarget:self action:@selector(closePriceDetailsPopup) forControlEvents:UIControlEventTouchUpInside];
     [pdp addSubview:wc];
     
+    __weak typeof(self) weakSelf = self;
     [UIView animateWithDuration:kSrAnimationDuration animations:^{
-        self.overlayDisable.alpha = 0.8f;
-        self.overlayDisableNav.alpha = 1.0f;
-        self.navigationController.navigationBar.alpha = 0.2f;
+        weakSelf.overlayDisable.alpha = 0.8f;
+        weakSelf.overlayDisableNav.alpha = 1.0f;
+        weakSelf.navigationController.navigationBar.alpha = 0.3f;
         pdp.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+        NSLog(@"WTFE");
     } completion:^(BOOL finished) {
         ;
     }];
 }
 
 - (void)closePriceDetailsPopup {
+    __weak typeof(self) weakSelf = self;
     __weak UIView *w = [self.view viewWithTag:kPriceDetailsPopupTag];
     [UIView animateWithDuration:kSrAnimationDuration animations:^{
-        self.overlayDisable.alpha = 0.0f;
-        self.overlayDisableNav.alpha = 0.0f;
-        self.navigationController.navigationBar.alpha = 1.0f;
-        w.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
+        weakSelf.overlayDisable.alpha = 0.0f;
+        weakSelf.overlayDisableNav.alpha = 0.0f;
+        weakSelf.navigationController.navigationBar.alpha = 1.0f;
+        w.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(60, 35), 0.001f, 0.001f);
     } completion:^(BOOL finished) {
-        [self.overlayDisable removeFromSuperview];
-        [self.overlayDisableNav removeFromSuperview];
+        [weakSelf.overlayDisable removeFromSuperview];
+        [weakSelf.overlayDisableNav removeFromSuperview];
         [w removeFromSuperview];
     }];
 }

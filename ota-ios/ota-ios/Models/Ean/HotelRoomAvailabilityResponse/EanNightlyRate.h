@@ -13,6 +13,7 @@
 @property (nonatomic) BOOL promo;
 @property (nonatomic, strong) NSNumber *rate;
 @property (nonatomic, strong) NSNumber *baseRate;
+@property (nonatomic, strong) NSDate *daDate;
 
 + (EanNightlyRate *)nightRateFromDict:(NSDictionary *)dict;
 

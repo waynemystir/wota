@@ -11,6 +11,7 @@
 #import "EanRateInfo.h"
 #import "EanCancelPolicyInfo.h"
 #import "AppEnvironment.h"
+#import "EanNightlyRate.h"
 
 NSString * const kNonrefundableString = @"This rate is non-refundable";
 NSString * const kFreeCancelString = @"Free Cancellation by";
@@ -88,12 +89,8 @@ NSString * const kFreeCancelString = @"Free Cancellation by";
             NSInteger startWindowHours = ((EanCancelPolicyInfo *)ri.cancelPolicyInfoArray[1]).startWindowHours;
             int daysInAdvance = (int) startWindowHours / 24;
             NSDate *lastDayToCancel = kAddDays(-daysInAdvance, hrar.arrivalDate);
-            NSDateFormatter *f = [[NSDateFormatter alloc] init];
-            NSString *fStr = [NSDateFormatter dateFormatFromTemplate:@"MMMd" options:0 locale:[NSLocale currentLocale]];
-            [f setLocale:[NSLocale currentLocale]];
-            [f setDateFormat:fStr];
             
-            NSString *strLastDayToCancel = [f stringFromDate:lastDayToCancel];
+            NSString *strLastDayToCancel = [kShortDateFormatter() stringFromDate:lastDayToCancel];
             
             NSDateFormatter *tf = [[NSDateFormatter alloc] init];
             [tf setDateFormat:@"HH:mm:ss"];
@@ -110,6 +107,11 @@ NSString * const kFreeCancelString = @"Free Cancellation by";
             
         } else {
             ri.nonRefundableLongString = kNonrefundableString;
+        }
+        
+        int j = 0;
+        for (EanNightlyRate *nr in ri.chargeableRateInfo.nightlyRatesArray) {
+            nr.daDate = kAddDays(j++, hrar.arrivalDate);
         }
     }
     

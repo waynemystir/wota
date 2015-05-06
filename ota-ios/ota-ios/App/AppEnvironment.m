@@ -71,6 +71,18 @@ NSDateFormatter * kEanApiDateFormatter() {
     return _eanApiDateFormatter;
 }
 
+NSDateFormatter * kShortDateFormatter() {
+    static NSDateFormatter *f = nil;
+    static dispatch_once_t shortDateOnceToken;
+    dispatch_once(&shortDateOnceToken, ^{
+        f = [[NSDateFormatter alloc] init];
+        NSString *fStr = [NSDateFormatter dateFormatFromTemplate:@"MMMd" options:0 locale:[NSLocale currentLocale]];
+        [f setLocale:[NSLocale currentLocale]];
+        [f setDateFormat:fStr];
+    });
+    return f;
+}
+
 NSNumberFormatter * kPriceRoundOffFormatter(NSString * currencyCode) {
     static NSNumberFormatter *_currencyStyle = nil;
     
