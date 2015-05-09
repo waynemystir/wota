@@ -59,6 +59,8 @@ NSUInteger const kRoomTotalAmountTag = 171727;
 NSUInteger const kBottomGradientCoverTag = 171728;
 NSUInteger const kRoomNonRefundLongTag = 171729;
 NSUInteger const kPriceDetailsPopupTag = 171730;
+NSUInteger const kInfoDetailPopupRoomDetailsTag = 171731;
+NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
 
 @interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, SelectGooglePlaceDelegate, SelectBedTypeDelegate, SelectSmokingPrefDelegate>
 
@@ -291,7 +293,7 @@ NSUInteger const kPriceDetailsPopupTag = 171730;
 //    NSNumberFormatter *currencyStyle = kPriceRoundOffFormatter(room.rateInfo.currencyCode);
 //    NSString *currency = [currencyStyle stringFromNumber:room.rateInfo.nightlyRateToPresent];
     NSNumberFormatter *currencyStyle = kPriceRoundOffFormatter(room.rateInfo.chargeableRateInfo.currencyCode);
-    NSString *currency = [currencyStyle stringFromNumber:room.rateInfo.chargeableRateInfo.averageBaseRate];
+    NSString *currency = [currencyStyle stringFromNumber:room.rateInfo.chargeableRateInfo.averageRate];
     
     cell.rateOutlet.text = currency;
     
@@ -359,7 +361,7 @@ NSUInteger const kPriceDetailsPopupTag = 171730;
     
     UILabel *rateLabel = (UILabel *) [_tableViewPopOut viewWithTag:kRoomRateViewTag];
     NSNumberFormatter *currencyStyle = kPriceRoundOffFormatter(room.rateInfo.chargeableRateInfo.currencyCode);
-    NSString *currency = [currencyStyle stringFromNumber:room.rateInfo.chargeableRateInfo.averageBaseRate];
+    NSString *currency = [currencyStyle stringFromNumber:room.rateInfo.chargeableRateInfo.averageRate];
     rateLabel.text = currency;
     
     UIView *totalContainer = [_tableViewPopOut viewWithTag:kRoomTotalViewTag];
@@ -463,7 +465,7 @@ NSUInteger const kPriceDetailsPopupTag = 171730;
     totalView.layer.borderWidth = 0.5f;
     [borderView addSubview:totalView];
     
-    UITapGestureRecognizer *tapper = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(popupThePriceDetails:)];
+    UITapGestureRecognizer *tapper = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(loadPriceDetailsPopup:)];
     tapper.numberOfTapsRequired = 1;
     tapper.numberOfTouchesRequired = 1;
     tapper.cancelsTouchesInView = NO;
@@ -505,6 +507,7 @@ NSUInteger const kPriceDetailsPopupTag = 171730;
     
     UILabel *nonreundLongLabel = [[UILabel alloc] initWithFrame:CGRectMake(3, 242, 136, 36)];
     nonreundLongLabel.clipsToBounds = YES;
+    nonreundLongLabel.userInteractionEnabled = YES;
     nonreundLongLabel.lineBreakMode = NSLineBreakByWordWrapping;
     nonreundLongLabel.numberOfLines = 2;
     nonreundLongLabel.layer.cornerRadius = WOTA_CORNER_RADIUS;
@@ -517,10 +520,14 @@ NSUInteger const kPriceDetailsPopupTag = 171730;
     
     UILabel *rtdL = [[UILabel alloc] initWithFrame:CGRectMake(3, 278, 312, 82)];
     rtdL.tag = kRoomTypeDescrLongTag;
+    rtdL.userInteractionEnabled = YES;
     rtdL.lineBreakMode = NSLineBreakByWordWrapping;
     rtdL.numberOfLines = 5;
     rtdL.font = [UIFont systemFontOfSize:12.0f];
     [borderView addSubview:rtdL];
+    
+    [rtdL addGestureRecognizer:[self loadInfoPopupTapGesture]];
+    [nonreundLongLabel addGestureRecognizer:[self loadInfoPopupTapGesture]];
     
     self.bedTypeButton = [WotaButton wbWithFrame:CGRectMake(5, 364, 186, 30)];
     [self.bedTypeButton addTarget:self action:@selector(clickBedType:) forControlEvents:UIControlEventTouchUpInside];
@@ -533,82 +540,12 @@ NSUInteger const kPriceDetailsPopupTag = 171730;
     self.tableViewPopOut = tableViewPopout;
 }
 
-- (void)popupThePriceDetails:(UIGestureRecognizer *)sender {
-    NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"PriceDetailsPopupView" owner:self options:nil];
-    if (nil == views || [views count] != 1) {
-        return;
-    }
-    
-    UIView *pdp = views[0];
-    pdp.frame = CGRectMake(10, 100, 300, 368);
-    pdp.tag = kPriceDetailsPopupTag;
-    pdp.backgroundColor = [UIColor whiteColor];
-    pdp.layer.cornerRadius = 8.0f;
-    pdp.layer.borderColor = [UIColor blackColor].CGColor;
-    pdp.layer.borderWidth = 3.0f;
-    
-    EanAvailabilityHotelRoomResponse *room = [self.tableData objectAtIndex:self.expandedIndexPath.row];
-    self.nrtvd = [[NightlyRateTableViewDelegateImplementation alloc] init];
-    self.nrtvd.tableData = room.rateInfo.chargeableRateInfo.nightlyRatesArray;
-    UITableView *nrtv = (UITableView *) [pdp viewWithTag:19171917];
-    nrtv.dataSource = self.nrtvd;
-    nrtv.layer.borderColor = [UIColor blackColor].CGColor;
-    nrtv.layer.borderWidth = 2;
-    
-    UILabel *numberNights = (UILabel *) [pdp viewWithTag:91827340];
-    NSUInteger c = [self.nrtvd.tableData count];
-    numberNights.text = [NSString stringWithFormat:@"%lu Night%@", (unsigned long) c, c > 1 ? @"s" : @""];
-    
-    UILabel *nightsTotal = (UILabel *) [pdp viewWithTag:14590834];
-    nightsTotal.text = [self.nrtvd.nightsTotal stringValue];
-    
-    UILabel *taxFeeTotal = (UILabel *) [pdp viewWithTag:61094356];
-    taxFeeTotal.text = [room.rateInfo.chargeableRateInfo.surchargeTotal stringValue];
-    
-    UILabel *tripTotal = (UILabel *) [pdp viewWithTag:1947284];
-    tripTotal.text = [room.rateInfo.chargeableRateInfo.total stringValue];
-    
-    pdp.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(60, 35), 0.001f, 0.001f);
-    
-    self.navigationController.navigationBar.clipsToBounds = NO;
-    self.overlayDisable.alpha = 0.0f;
-    self.overlayDisableNav.alpha = 0.0f;
-    [self.view addSubview:self.overlayDisable];
-    [self.navigationController.navigationBar addSubview:self.overlayDisableNav];
-    [self.view bringSubviewToFront:self.overlayDisable];
-    [self.navigationController.navigationBar bringSubviewToFront:self.overlayDisableNav];
-    [self.view addSubview:pdp];
-    [self.view bringSubviewToFront:pdp];
-    
-    WotaButton *wc = (WotaButton *)[pdp viewWithTag:9823754];
-    [wc addTarget:self action:@selector(closePriceDetailsPopup) forControlEvents:UIControlEventTouchUpInside];
-    [pdp addSubview:wc];
-    
-    __weak typeof(self) weakSelf = self;
-    [UIView animateWithDuration:kSrAnimationDuration animations:^{
-        weakSelf.overlayDisable.alpha = 0.8f;
-        weakSelf.overlayDisableNav.alpha = 1.0f;
-        weakSelf.navigationController.navigationBar.alpha = 0.3f;
-        pdp.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
-        NSLog(@"WTFE");
-    } completion:^(BOOL finished) {
-        ;
-    }];
-}
-
-- (void)closePriceDetailsPopup {
-    __weak typeof(self) weakSelf = self;
-    __weak UIView *w = [self.view viewWithTag:kPriceDetailsPopupTag];
-    [UIView animateWithDuration:kSrAnimationDuration animations:^{
-        weakSelf.overlayDisable.alpha = 0.0f;
-        weakSelf.overlayDisableNav.alpha = 0.0f;
-        weakSelf.navigationController.navigationBar.alpha = 1.0f;
-        w.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(60, 35), 0.001f, 0.001f);
-    } completion:^(BOOL finished) {
-        [weakSelf.overlayDisable removeFromSuperview];
-        [weakSelf.overlayDisableNav removeFromSuperview];
-        [w removeFromSuperview];
-    }];
+- (UITapGestureRecognizer *)loadInfoPopupTapGesture {
+    UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(loadInfoDetailsPopup:)];
+    tgr.numberOfTapsRequired = 1;
+    tgr.numberOfTapsRequired = 1;
+    tgr.cancelsTouchesInView = NO;
+    return tgr;
 }
 
 - (CGAffineTransform)hiddenGuestInputTransform {
@@ -1166,7 +1103,6 @@ NSUInteger const kPriceDetailsPopupTag = 171730;
     rtv.hidden = NO;
     [self tuiBedTypeDone:nil];
     [self.navigationItem setLeftBarButtonItem:self.navigationItem.backBarButtonItem animated:YES];
-    [self closePriceDetailsPopup];
     
     [UIView animateWithDuration:kSrAnimationDuration animations:^{
         weakSelf.bedTypeButton.alpha = weakSelf.smokingButton.alpha = rtdl.alpha = 0.0f;
@@ -1393,6 +1329,195 @@ NSUInteger const kPriceDetailsPopupTag = 171730;
         gptv.transform = CGAffineTransformMakeTranslation(0.0f, 400.0f);
     } completion:^(BOOL finished) {
         [gptv removeFromSuperview];
+    }];
+}
+
+- (void)loadInfoDetailsPopup:(UITapGestureRecognizer *)sender {
+    __block UIView *wayne = [[UIView alloc] initWithFrame:CGRectMake(10, 100, 300, 356)];
+    wayne.tag = sender.view.tag == kRoomTypeDescrLongTag ? kInfoDetailPopupRoomDetailsTag : sender.view.tag == kRoomNonRefundLongTag ? kInfoDetailPopupCancelPolicTag : -1;
+    wayne.backgroundColor = [UIColor whiteColor];
+    wayne.layer.cornerRadius = 8.0f;
+    wayne.layer.borderColor = [UIColor blackColor].CGColor;
+    wayne.layer.borderWidth = 3.0f;
+    
+    UILabel *l = [[UILabel alloc] initWithFrame:CGRectMake(13, 12, 200, 30)];
+    l.text = sender.view.tag == kRoomTypeDescrLongTag ? @"Room Details" : sender.view.tag == kRoomNonRefundLongTag ? @"Cancellation Policy" : @"";
+    l.textColor = [UIColor blackColor];
+    l.textAlignment = NSTextAlignmentLeft;
+    l.backgroundColor = [UIColor clearColor];
+    l.font = [UIFont boldSystemFontOfSize:19.0f];
+    [wayne addSubview:l];
+    
+    WotaButton *b = [WotaButton wbWithFrame:CGRectMake(244, 6, 50, 30)];
+    [b setTitle:@"Done" forState:UIControlStateNormal];
+    [b addTarget:self action:@selector(dropRoomDescriptioPopup) forControlEvents:UIControlEventTouchUpInside];
+    [wayne addSubview:b];
+    
+    UITextView *wv = [[UITextView alloc] initWithFrame:CGRectMake(10, 45, 280, 100)];
+    wv.editable = NO;
+    wv.showsVerticalScrollIndicator = NO;
+    wv.layer.borderWidth = 1.0f;
+    wv.layer.borderColor = [UIColor blackColor].CGColor;
+    wv.layer.cornerRadius = 8.0f;
+    wv.font = [UIFont systemFontOfSize:17.0f];
+    
+    if (sender.view.tag == kRoomTypeDescrLongTag) {
+        wv.text = ((UILabel *)sender.view).text;
+    } else if (sender.view.tag == kRoomNonRefundLongTag) {
+        EanAvailabilityHotelRoomResponse *room = [self.tableData objectAtIndex:self.expandedIndexPath.row];
+        wv.text = room.rateInfo.cancellationPolicy;
+    }
+    
+    wv.textColor = [UIColor blackColor];
+    wv.backgroundColor = [UIColor whiteColor];
+    
+    CGFloat fixedWidth = wv.frame.size.width;
+    CGSize newSize = [wv sizeThatFits:CGSizeMake(fixedWidth, MAXFLOAT)];
+    CGRect newFrame = wv.frame;
+    newFrame.size = CGSizeMake(fixedWidth, fminf(newSize.height + 2, 384));
+    wv.frame = newFrame;
+    
+    CGFloat abc = wv.frame.origin.y + wv.frame.size.height + 10;
+    wayne.frame = CGRectMake(10, ((64 + 568 - abc)/2), 300, abc);
+    
+    [wayne addSubview:wv];
+    
+    CGFloat fromX = sender.view.center.x - wayne.center.x;
+    CGFloat fromY = sender.view.center.y - wayne.center.y + 64;
+    wayne.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(fromX, fromY), 0.001f, 0.001f);
+    
+//    wayne.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 65), 0.001f, 0.001f);
+    
+    self.navigationController.navigationBar.clipsToBounds = NO;
+    self.overlayDisable.alpha = 0.0f;
+    self.overlayDisableNav.alpha = 0.0f;
+    [self.view addSubview:self.overlayDisable];
+    [self.navigationController.navigationBar addSubview:self.overlayDisableNav];
+    [self.view bringSubviewToFront:self.overlayDisable];
+    [self.navigationController.navigationBar bringSubviewToFront:self.overlayDisableNav];
+    [self.view addSubview:wayne];
+    [self.view bringSubviewToFront:wayne];
+    
+    __weak typeof(self) weakSelf = self;
+    [UIView animateWithDuration:kSrAnimationDuration animations:^{
+        weakSelf.overlayDisable.alpha = 0.8f;
+        weakSelf.overlayDisableNav.alpha = 1.0f;
+        weakSelf.navigationController.navigationBar.alpha = 0.3f;
+        wayne.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+    } completion:^(BOOL finished) {
+        ;
+    }];
+}
+
+- (void)dropRoomDescriptioPopup {
+    __weak typeof(self) weakSelf = self;
+    __weak UIView *w = [self.view viewWithTag:kInfoDetailPopupRoomDetailsTag] ? : [self.view viewWithTag:kInfoDetailPopupCancelPolicTag];
+    
+    __weak UIView *originatingView = [self.view viewWithTag:kInfoDetailPopupRoomDetailsTag] ? [self.view viewWithTag:kRoomTypeDescrLongTag] : [self.view viewWithTag:kInfoDetailPopupCancelPolicTag] ? [self.view viewWithTag:kRoomNonRefundLongTag] : nil;
+    
+    CGFloat toX = originatingView.center.x - w.center.x;
+    CGFloat toY = originatingView.center.y - w.center.y + 64;
+    __block CGAffineTransform toTransform = CGAffineTransformScale(CGAffineTransformMakeTranslation(toX, toY), 0.001f, 0.001f);
+    
+    [UIView animateWithDuration:kSrAnimationDuration animations:^{
+        weakSelf.overlayDisable.alpha = 0.0f;
+        weakSelf.overlayDisableNav.alpha = 0.0f;
+        weakSelf.navigationController.navigationBar.alpha = 1.0f;
+        w.transform = toTransform;
+    } completion:^(BOOL finished) {
+        [weakSelf.overlayDisable removeFromSuperview];
+        [weakSelf.overlayDisableNav removeFromSuperview];
+        [w removeFromSuperview];
+    }];
+}
+
+- (void)loadPriceDetailsPopup:(UIGestureRecognizer *)sender {
+    NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"PriceDetailsPopupView" owner:self options:nil];
+    if (nil == views || [views count] != 1) {
+        return;
+    }
+    
+    __block UIView *pdp = views[0];
+    pdp.frame = CGRectMake(10, 100, 300, 368);
+    pdp.tag = kPriceDetailsPopupTag;
+    pdp.backgroundColor = [UIColor whiteColor];
+    pdp.layer.masksToBounds = YES;
+    pdp.layer.cornerRadius = 8.0f;
+    pdp.layer.borderColor = [UIColor blackColor].CGColor;
+    pdp.layer.borderWidth = 3.0f;
+    
+    EanAvailabilityHotelRoomResponse *room = [self.tableData objectAtIndex:self.expandedIndexPath.row];
+    self.nrtvd = [[NightlyRateTableViewDelegateImplementation alloc] init];
+    self.nrtvd.room = room;
+    self.nrtvd.tableData = room.rateInfo.chargeableRateInfo.nightlyRatesArray;
+    __weak UITableView *nrtv = (UITableView *) [pdp viewWithTag:19171917];
+    nrtv.dataSource = self.nrtvd;
+    nrtv.delegate = self.nrtvd;
+    nrtv.layer.borderColor = [UIColor blackColor].CGColor;
+    nrtv.layer.borderWidth = 2;
+    nrtv.layer.cornerRadius = 8.0f;
+    [nrtv reloadData];
+    
+    WotaButton *wc = (WotaButton *)[pdp viewWithTag:9823754];
+    [wc addTarget:self action:@selector(dropPriceDetailsPopup) forControlEvents:UIControlEventTouchUpInside];
+    //    nrtv.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+    CGFloat nrtvHeight = MIN(nrtv.contentSize.height, 343);
+    nrtv.frame = CGRectMake(nrtv.frame.origin.x, nrtv.frame.origin.y, nrtv.frame.size.width, nrtvHeight);
+    
+    NSNumberFormatter *tdf = kPriceTwoDigitFormatter(room.rateInfo.chargeableRateInfo.currencyCode);
+    
+    UIView *taxesFeesContainer = [pdp viewWithTag:84623089];
+    CGRect tfcf = taxesFeesContainer.frame;
+    taxesFeesContainer.frame = CGRectMake(tfcf.origin.x, 44.0f + nrtvHeight + 7.0f, tfcf.size.width, tfcf.size.height);
+    tfcf = taxesFeesContainer.frame;
+    
+    UILabel *taxFeeTotal = (UILabel *) [pdp viewWithTag:61094356];
+    taxFeeTotal.text = [tdf stringFromNumber:room.rateInfo.chargeableRateInfo.surchargeTotal];
+    
+    UIView *totalContainer = [pdp viewWithTag:396458172];
+    CGRect tcf = totalContainer.frame;
+    totalContainer.frame = CGRectMake(tcf.origin.x, tfcf.origin.y + tfcf.size.height + 3.0f, tcf.size.width, tcf.size.height);
+    tcf = totalContainer.frame;
+    
+    UILabel *tripTotal = (UILabel *) [pdp viewWithTag:1947284];
+    tripTotal.text = [tdf stringFromNumber:room.rateInfo.chargeableRateInfo.total];
+    
+    pdp.frame = CGRectMake(10, ((64 + 568 - tcf.origin.y - tcf.size.height)/2), 300, tcf.origin.y + tcf.size.height);
+    pdp.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(75, 15), 0.001f, 0.001f);
+    
+    self.navigationController.navigationBar.clipsToBounds = NO;
+    self.overlayDisable.alpha = 0.0f;
+    self.overlayDisableNav.alpha = 0.0f;
+    [self.view addSubview:self.overlayDisable];
+    [self.navigationController.navigationBar addSubview:self.overlayDisableNav];
+    [self.view bringSubviewToFront:self.overlayDisable];
+    [self.navigationController.navigationBar bringSubviewToFront:self.overlayDisableNav];
+    [self.view addSubview:pdp];
+    [self.view bringSubviewToFront:pdp];
+    
+    __weak typeof(self) weakSelf = self;
+    [UIView animateWithDuration:kSrAnimationDuration animations:^{
+        weakSelf.overlayDisable.alpha = 0.8f;
+        weakSelf.overlayDisableNav.alpha = 1.0f;
+        weakSelf.navigationController.navigationBar.alpha = 0.3f;
+        pdp.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+    } completion:^(BOOL finished) {
+        ;
+    }];
+}
+
+- (void)dropPriceDetailsPopup {
+    __weak typeof(self) weakSelf = self;
+    __weak UIView *w = [self.view viewWithTag:kPriceDetailsPopupTag];
+    [UIView animateWithDuration:kSrAnimationDuration animations:^{
+        weakSelf.overlayDisable.alpha = 0.0f;
+        weakSelf.overlayDisableNav.alpha = 0.0f;
+        weakSelf.navigationController.navigationBar.alpha = 1.0f;
+        w.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(75, 15), 0.001f, 0.001f);
+    } completion:^(BOOL finished) {
+        [weakSelf.overlayDisable removeFromSuperview];
+        [weakSelf.overlayDisableNav removeFromSuperview];
+        [w removeFromSuperview];
     }];
 }
 

@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "EanAvailabilityHotelRoomResponse.h"
 
 @interface NightlyRateTableViewDelegateImplementation : NSObject <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong) NSArray *tableData;
-@property (nonatomic, strong, readonly) NSNumber *nightsTotal;
+@property (nonatomic, strong) EanAvailabilityHotelRoomResponse *room;
 
 @end

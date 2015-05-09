@@ -57,9 +57,9 @@
         cri.nightlyRateTypeDescription = @"";
     } else {
         cri.nightlyRateTypeDescription = @"per night";
-        NSNumber *nRate = ((EanNightlyRate *)cri.nightlyRatesArray[0]).baseRate;
+        NSNumber *nRate = ((EanNightlyRate *)cri.nightlyRatesArray[0]).rate;
         for (EanNightlyRate *enr in cri.nightlyRatesArray) {
-            if ([nRate doubleValue] != [enr.baseRate doubleValue]) {
+            if (round(100*[nRate doubleValue])/100 != round(100*[enr.rate doubleValue])/100) {
                 cri.nightlyRateTypeDescription = @"avg/nt";
                 break;
             }

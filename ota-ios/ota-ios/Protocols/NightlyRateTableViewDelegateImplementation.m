@@ -31,19 +31,42 @@
     }
     
     EanNightlyRate *nr = [_tableData objectAtIndex:indexPath.row];
+    NSNumberFormatter *tdf = kPriceTwoDigitFormatter(self.room.rateInfo.chargeableRateInfo.currencyCode);
     
-    cell.rateOutlet.text = [nr.baseRate stringValue];
+    cell.rateOutlet.text = [tdf stringFromNumber:nr.rate];
     cell.dateOutlet.text = [kShortDateFormatter() stringFromDate:nr.daDate];
     
     return  cell;
 }
 
-- (NSNumber *)nightsTotal {
-    NSNumber *nt = 0;
-    for (EanNightlyRate *nr in _tableData) {
-        nt = [NSNumber numberWithDouble:[nt doubleValue] + [nr.baseRate doubleValue]];
-    }
-    return nt;
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 17.0f;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 27.0f;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    return 1.0f;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    UIView *hv = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 246, 27)];
+    
+    UILabel *numberNights = [[UILabel alloc] initWithFrame:CGRectMake(8, 4, 82, 19)];
+    numberNights.textAlignment = NSTextAlignmentLeft;
+    NSUInteger c = [self.tableData count];
+    numberNights.text = [NSString stringWithFormat:@"%lu Night%@", (unsigned long) c, c > 1 ? @"s" : @""];
+    [hv addSubview:numberNights];
+    
+    NSNumberFormatter *tdf = kPriceTwoDigitFormatter(self.room.rateInfo.chargeableRateInfo.currencyCode);
+    
+    UILabel *nightsTotal = [[UILabel alloc] initWithFrame:CGRectMake(90, 4, 149, 19)];
+    nightsTotal.textAlignment = NSTextAlignmentRight;
+    nightsTotal.text = [tdf stringFromNumber:self.room.rateInfo.chargeableRateInfo.nightlyRateTotal];
+    [hv addSubview:nightsTotal];
+    return hv;
 }
 
 @end

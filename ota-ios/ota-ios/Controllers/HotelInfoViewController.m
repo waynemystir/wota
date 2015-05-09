@@ -73,6 +73,8 @@
                                                                  zoom:6];
     mapView_ = [GMSMapView mapWithFrame:CGRectMake(10, 10, 280, 280) camera:camera];
     mapView_.myLocationEnabled = YES;
+    //Curtesy of http://stackoverflow.com/questions/26796466/ios-how-to-get-rid-of-app-is-using-your-location-notification
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
     //    self.view = mapView_;
     [self.mapContainerOutlet addSubview:mapView_];
     
@@ -85,6 +87,12 @@
     
     self.addressLabelOutlet.text = _eanHotel.hotelName;
     self.shortDescLabelOutlet.text = _eanHotel.shortDescription;
+}
+
+-(void)appWillResignActive:(NSNotification*)note
+{
+    //Curtesy of http://stackoverflow.com/questions/26796466/ios-how-to-get-rid-of-app-is-using-your-location-notification
+    mapView_.myLocationEnabled = NO;
 }
 
 - (void)requestStarted:(NSURL *)url {
