@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B032F6231AC18F6700809395"
-               BuildableName = "ota-ios.app"
+               BuildableName = "Trotter.app"
                BlueprintName = "ota-ios"
                ReferencedContainer = "container:ota-ios.xcodeproj">
             </BuildableReference>
@@ -57,7 +57,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B032F6231AC18F6700809395"
-            BuildableName = "ota-ios.app"
+            BuildableName = "Trotter.app"
             BlueprintName = "ota-ios"
             ReferencedContainer = "container:ota-ios.xcodeproj">
          </BuildableReference>
@@ -77,7 +77,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B032F6231AC18F6700809395"
-            BuildableName = "ota-ios.app"
+            BuildableName = "Trotter.app"
             BlueprintName = "ota-ios"
             ReferencedContainer = "container:ota-ios.xcodeproj">
          </BuildableReference>
@@ -96,7 +96,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B032F6231AC18F6700809395"
-            BuildableName = "ota-ios.app"
+            BuildableName = "Trotter.app"
             BlueprintName = "ota-ios"
             ReferencedContainer = "container:ota-ios.xcodeproj">
          </BuildableReference>

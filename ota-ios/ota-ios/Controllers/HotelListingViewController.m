@@ -13,6 +13,7 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "HotelInfoViewController.h"
 #import "LoadEanData.h"
+#import "AppEnvironment.h"
 
 @interface HotelListingViewController () <UITableViewDataSource, UITableViewDelegate>
 
@@ -96,7 +97,9 @@
     cell.latitude = hotel.latitude;
     cell.longitude = hotel.longitude;
     cell.hotelNameLabelOutlet.text = hotel.hotelName;
-    cell.roomRateLabelOutlet.text = [hotel.highRate stringValue];
+    NSNumberFormatter *pf = kPriceRoundOffFormatter(hotel.rateCurrencyCode);
+    cell.roomRateLabelOutlet.text = [pf stringFromNumber:hotel.lowRate];
+    cell.highRateOutlet.text = [pf stringFromNumber:hotel.highRate];
     cell.tripAdvisorRatingLabelOutlet.text = [hotel.tripAdvisorRating stringValue];
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {

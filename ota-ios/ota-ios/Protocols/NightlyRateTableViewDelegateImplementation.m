@@ -54,18 +54,20 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     UIView *hv = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 246, 27)];
     
-    UILabel *numberNights = [[UILabel alloc] initWithFrame:CGRectMake(8, 4, 82, 19)];
+    UILabel *numberNights = [[UILabel alloc] initWithFrame:CGRectMake(6, 4, 78, 19)];
     numberNights.textAlignment = NSTextAlignmentLeft;
     NSUInteger c = [self.tableData count];
     numberNights.text = [NSString stringWithFormat:@"%lu Night%@", (unsigned long) c, c > 1 ? @"s" : @""];
     [hv addSubview:numberNights];
+    NSLog(@"TVFFF:%@", numberNights.font);
     
     NSNumberFormatter *tdf = kPriceTwoDigitFormatter(self.room.rateInfo.chargeableRateInfo.currencyCode);
     
-    UILabel *nightsTotal = [[UILabel alloc] initWithFrame:CGRectMake(90, 4, 149, 19)];
+    UILabel *nightsTotal = [[UILabel alloc] initWithFrame:CGRectMake(90, 4, 153, 19)];
     nightsTotal.textAlignment = NSTextAlignmentRight;
     nightsTotal.text = [tdf stringFromNumber:self.room.rateInfo.chargeableRateInfo.nightlyRateTotal];
     [hv addSubview:nightsTotal];
+    NSLog(@"NTGGG:%@", nightsTotal.font);
     return hv;
 }
 

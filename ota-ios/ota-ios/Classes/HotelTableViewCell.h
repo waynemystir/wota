@@ -17,5 +17,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *roomRateLabelOutlet;
 @property (weak, nonatomic) IBOutlet UILabel *tripAdvisorRatingLabelOutlet;
 @property (weak, nonatomic) IBOutlet UIImageView *thumbImageViewOutlet;
+@property (weak, nonatomic) IBOutlet UILabel *highRateOutlet;
 
 @end

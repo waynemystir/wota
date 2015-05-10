@@ -19,6 +19,7 @@
 		B018C0451AD9BEC800DDCE2E /* GuestInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B018C0441AD9BEC800DDCE2E /* GuestInfo.m */; };
 		B018C0471ADA01FA00DDCE2E /* PaymentDetailsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B018C0461ADA01FA00DDCE2E /* PaymentDetailsView.xib */; };
 		B018C04B1ADA08CF00DDCE2E /* JNKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = B018C04A1ADA08CF00DDCE2E /* JNKeychain.m */; };
+		B01E25861AFDD33E001D02B1 /* EanHotelFee.m in Sources */ = {isa = PBXBuildFile; fileRef = B01E25851AFDD33E001D02B1 /* EanHotelFee.m */; };
 		B01F0ECE1AF8669600C68BA8 /* WotaTappableView.m in Sources */ = {isa = PBXBuildFile; fileRef = B01F0ECD1AF8669600C68BA8 /* WotaTappableView.m */; };
 		B032F62A1AC18F6700809395 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B032F6291AC18F6700809395 /* main.m */; };
 		B032F62D1AC18F6700809395 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B032F62C1AC18F6700809395 /* AppDelegate.m */; };
@@ -175,9 +176,11 @@
 		B018C0461ADA01FA00DDCE2E /* PaymentDetailsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PaymentDetailsView.xib; sourceTree = "<group>"; };
 		B018C0491ADA08CF00DDCE2E /* JNKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JNKeychain.h; sourceTree = "<group>"; };
 		B018C04A1ADA08CF00DDCE2E /* JNKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JNKeychain.m; sourceTree = "<group>"; };
+		B01E25841AFDD33E001D02B1 /* EanHotelFee.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanHotelFee.h; sourceTree = "<group>"; };
+		B01E25851AFDD33E001D02B1 /* EanHotelFee.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanHotelFee.m; sourceTree = "<group>"; };
 		B01F0ECC1AF8669600C68BA8 /* WotaTappableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WotaTappableView.h; sourceTree = "<group>"; };
 		B01F0ECD1AF8669600C68BA8 /* WotaTappableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WotaTappableView.m; sourceTree = "<group>"; };
-		B032F6241AC18F6700809395 /* ota-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ota-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B032F6241AC18F6700809395 /* Trotter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Trotter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B032F6281AC18F6700809395 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B032F6291AC18F6700809395 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		B032F62B1AC18F6700809395 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -485,7 +488,7 @@
 		B032F6251AC18F6700809395 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B032F6241AC18F6700809395 /* ota-ios.app */,
+				B032F6241AC18F6700809395 /* Trotter.app */,
 				B032F63D1AC18F6700809395 /* ota-iosTests.xctest */,
 			);
 			name = Products;
@@ -747,6 +750,8 @@
 				B07958E81AF451C000422182 /* EanNightlyRate.m */,
 				B07958EA1AF4751100422182 /* EanSurcharge.h */,
 				B07958EB1AF4751100422182 /* EanSurcharge.m */,
+				B01E25841AFDD33E001D02B1 /* EanHotelFee.h */,
+				B01E25851AFDD33E001D02B1 /* EanHotelFee.m */,
 				B09E417E1AEA8C11000A718D /* EanBedType.h */,
 				B09E417F1AEA8C11000A718D /* EanBedType.m */,
 				B03C2BAB1AED8FAD00C13AC5 /* EanRoomImage.h */,
@@ -848,7 +853,7 @@
 			);
 			name = "ota-ios";
 			productName = "ota-ios";
-			productReference = B032F6241AC18F6700809395 /* ota-ios.app */;
+			productReference = B032F6241AC18F6700809395 /* Trotter.app */;
 			productType = "com.apple.product-type.application";
 		};
 		B032F63C1AC18F6700809395 /* ota-iosTests */ = {
@@ -1013,6 +1018,7 @@
 				B0FE0F471AC6EB9500DAF635 /* BookViewController.m in Sources */,
 				B0DF52371ADC77BA00136661 /* PostalResultsTableViewCell.m in Sources */,
 				B0D02FE51AE6123000B1E75F /* PTKCardExpiry.m in Sources */,
+				B01E25861AFDD33E001D02B1 /* EanHotelFee.m in Sources */,
 				B00872D61AED4A9100CB2B9D /* EanAbstractResponse.m in Sources */,
 				B0BD381F1AF9812100EF5E4F /* NightlyRateTableViewDelegateImplementation.m in Sources */,
 				B0A87D681AD4B2B3001505A6 /* EanHotelRoomReservationResponse.m in Sources */,
@@ -1168,7 +1174,7 @@
 				);
 				INFOPLIST_FILE = "ota-ios/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Trotter;
 				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
@@ -1187,7 +1193,7 @@
 				);
 				INFOPLIST_FILE = "ota-ios/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Trotter;
 				PROVISIONING_PROFILE = "";
 			};
 			name = Release;

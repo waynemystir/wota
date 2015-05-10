@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>42352AC5-9E84-4CC1-969B-A967134328C3</string>
+	<key>IDESourceControlProjectName</key>
+	<string>project</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>38CF75A6C2BD0DAE0B17A7F3E55250F15C6BA567</key>
+		<string>github.com:waynemystir/wota.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>ota-ios/Trotter/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>38CF75A6C2BD0DAE0B17A7F3E55250F15C6BA567</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>github.com:waynemystir/wota.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>38CF75A6C2BD0DAE0B17A7F3E55250F15C6BA567</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>38CF75A6C2BD0DAE0B17A7F3E55250F15C6BA567</string>
+			<key>IDESourceControlWCCName</key>
+			<string>wota</string>
+		</dict>
+	</array>
+</dict>
+</plist>

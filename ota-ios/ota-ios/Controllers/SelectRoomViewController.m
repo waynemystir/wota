@@ -368,7 +368,7 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     
     UILabel *totalLabel = (UILabel *) [totalContainer viewWithTag:kRoomTotalAmountTag];
     NSNumberFormatter *twoDigit = kPriceTwoDigitFormatter(room.rateInfo.chargeableRateInfo.currencyCode);
-    NSString *totalAmt = [twoDigit stringFromNumber:room.rateInfo.chargeableRateInfo.total];
+    NSString *totalAmt = [twoDigit stringFromNumber:room.rateInfo.totalPlusHotelFees];
     totalLabel.text = totalAmt;
     
     UILabel *perNightLabel = (UILabel *) [_tableViewPopOut viewWithTag:kRoomPerNightTag];
@@ -440,7 +440,7 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     rtd.font = [UIFont boldSystemFontOfSize:19.0f];
     [borderView addSubview:rtd];
     
-    UILabel *rateLabel = [[UILabel alloc] initWithFrame:CGRectMake(219, 69, 93, 22)];
+    UILabel *rateLabel = [[UILabel alloc] initWithFrame:CGRectMake(200, 69, 112, 22)];
     rateLabel.tag = kRoomRateViewTag;
     rateLabel.textColor = UIColorFromRGB(0x0D9C03);
     rateLabel.textAlignment = NSTextAlignmentRight;
@@ -1062,7 +1062,7 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
         gic.frame = CGRectMake(0, 210, 316, 30);
         cgc.frame = CGRectMake(0, 126, 316, 84);
         rtd.frame = CGRectMake(3, 188, 190, 53);
-        rtl.frame = CGRectMake(219, 230, 93, 22);
+        rtl.frame = CGRectMake(200, 230, 112, 22);
         rtl.alpha = 0.0f;
         tal.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 0), 1.0f, 1.0f);
         tal.alpha = 1.0f;
@@ -1119,7 +1119,7 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
 //        cgc.alpha = 0.0f;
         cgc.frame = CGRectMake(0, 0, 316, 84);
         rtd.frame = CGRectMake(3, 71, 190, 53);
-        rtl.frame = CGRectMake(219, 69, 93, 22);
+        rtl.frame = CGRectMake(200, 69, 112, 22);
         rtl.alpha = 1.0f;
         pnt.frame = CGRectMake(262, 87, 50, 15);
         pnt.alpha = 1.0f;
@@ -1333,6 +1333,7 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
 }
 
 - (void)loadInfoDetailsPopup:(UITapGestureRecognizer *)sender {
+    AudioServicesPlaySystemSound(0x450);
     __block UIView *wayne = [[UIView alloc] initWithFrame:CGRectMake(10, 100, 300, 356)];
     wayne.tag = sender.view.tag == kRoomTypeDescrLongTag ? kInfoDetailPopupRoomDetailsTag : sender.view.tag == kRoomNonRefundLongTag ? kInfoDetailPopupCancelPolicTag : -1;
     wayne.backgroundColor = [UIColor whiteColor];
@@ -1350,7 +1351,7 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     
     WotaButton *b = [WotaButton wbWithFrame:CGRectMake(244, 6, 50, 30)];
     [b setTitle:@"Done" forState:UIControlStateNormal];
-    [b addTarget:self action:@selector(dropRoomDescriptioPopup) forControlEvents:UIControlEventTouchUpInside];
+    [b addTarget:self action:@selector(dropInfoDetailsPopup) forControlEvents:UIControlEventTouchUpInside];
     [wayne addSubview:b];
     
     UITextView *wv = [[UITextView alloc] initWithFrame:CGRectMake(10, 45, 280, 100)];
@@ -1409,7 +1410,7 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     }];
 }
 
-- (void)dropRoomDescriptioPopup {
+- (void)dropInfoDetailsPopup {
     __weak typeof(self) weakSelf = self;
     __weak UIView *w = [self.view viewWithTag:kInfoDetailPopupRoomDetailsTag] ? : [self.view viewWithTag:kInfoDetailPopupCancelPolicTag];
     
@@ -1446,6 +1447,9 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     pdp.layer.borderColor = [UIColor blackColor].CGColor;
     pdp.layer.borderWidth = 3.0f;
     
+    WotaButton *wc = (WotaButton *)[pdp viewWithTag:9823754];
+    [wc addTarget:self action:@selector(dropPriceDetailsPopup) forControlEvents:UIControlEventTouchUpInside];
+    
     EanAvailabilityHotelRoomResponse *room = [self.tableData objectAtIndex:self.expandedIndexPath.row];
     self.nrtvd = [[NightlyRateTableViewDelegateImplementation alloc] init];
     self.nrtvd.room = room;
@@ -1458,10 +1462,9 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     nrtv.layer.cornerRadius = 8.0f;
     [nrtv reloadData];
     
-    WotaButton *wc = (WotaButton *)[pdp viewWithTag:9823754];
-    [wc addTarget:self action:@selector(dropPriceDetailsPopup) forControlEvents:UIControlEventTouchUpInside];
-    //    nrtv.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
-    CGFloat nrtvHeight = MIN(nrtv.contentSize.height, 343);
+    CGFloat maxTvHeight = [room.rateInfo.sumOfHotelFees doubleValue] == 0 ? 343.0f : 303.0f;
+    
+    CGFloat nrtvHeight = MIN(nrtv.contentSize.height, maxTvHeight);
     nrtv.frame = CGRectMake(nrtv.frame.origin.x, nrtv.frame.origin.y, nrtv.frame.size.width, nrtvHeight);
     
     NSNumberFormatter *tdf = kPriceTwoDigitFormatter(room.rateInfo.chargeableRateInfo.currencyCode);
@@ -1472,7 +1475,48 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     tfcf = taxesFeesContainer.frame;
     
     UILabel *taxFeeTotal = (UILabel *) [pdp viewWithTag:61094356];
-    taxFeeTotal.text = [tdf stringFromNumber:room.rateInfo.chargeableRateInfo.surchargeTotal];
+    NSNumber *sc = room.rateInfo.chargeableRateInfo.surchargeTotal;
+    taxFeeTotal.text = [sc doubleValue] == 0 ? @"Included" : [tdf stringFromNumber:sc];
+    
+    if (0 != [room.rateInfo.sumOfHotelFees doubleValue]) {
+        UILabel *tfLabel = (UILabel *) [pdp viewWithTag:10854935];
+        tfLabel.text = @"Taxes";
+        
+        UIView *ev = [[UIView alloc] initWithFrame:CGRectMake(tfcf.origin.x, tfcf.origin.y + tfcf.size.height, tfcf.size.width, tfcf.size.height)];
+        
+        UILabel *evla = [[UILabel alloc] initWithFrame:CGRectMake(136, 0, 153, 19)];
+        evla.textAlignment = NSTextAlignmentRight;
+        evla.font = [UIFont systemFontOfSize:16.0f];
+        evla.text = [tdf stringFromNumber:room.rateInfo.chargeableRateInfo.total];
+        [ev addSubview:evla];
+        
+        UILabel *evl = [[UILabel alloc] initWithFrame:CGRectMake(11, 0, 124, 19)];
+        evl.textAlignment = NSTextAlignmentLeft;
+        evl.font = [UIFont systemFontOfSize:16.0f];
+        NSString *ft = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString*)kCFBundleNameKey];
+        evl.text = [NSString stringWithFormat:@"Due %@ Now", ft];
+        [ev addSubview:evl];
+        
+        [pdp addSubview:ev];
+        tfcf = ev.frame;
+        
+        UIView *sv = [[UIView alloc] initWithFrame:CGRectMake(tfcf.origin.x, tfcf.origin.y + tfcf.size.height-5, tfcf.size.width, tfcf.size.height)];
+        
+        UILabel *svla = [[UILabel alloc] initWithFrame:CGRectMake(149, 0, 140, 19)];
+        svla.textAlignment = NSTextAlignmentRight;
+        svla.font = [UIFont systemFontOfSize:16.0f];
+        svla.text = [tdf stringFromNumber:room.rateInfo.sumOfHotelFees];
+        [sv addSubview:svla];
+        
+        UILabel *svl = [[UILabel alloc] initWithFrame:CGRectMake(11, 0, 137, 19)];
+        svl.textAlignment = NSTextAlignmentLeft;
+        svl.font = [UIFont systemFontOfSize:16.0f];
+        svl.text = @"Fees Due at Hotel";
+        [sv addSubview:svl];
+        
+        [pdp addSubview:sv];
+        tfcf = sv.frame;
+    }
     
     UIView *totalContainer = [pdp viewWithTag:396458172];
     CGRect tcf = totalContainer.frame;
@@ -1480,7 +1524,7 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     tcf = totalContainer.frame;
     
     UILabel *tripTotal = (UILabel *) [pdp viewWithTag:1947284];
-    tripTotal.text = [tdf stringFromNumber:room.rateInfo.chargeableRateInfo.total];
+    tripTotal.text = [tdf stringFromNumber:room.rateInfo.totalPlusHotelFees];
     
     pdp.frame = CGRectMake(10, ((64 + 568 - tcf.origin.y - tcf.size.height)/2), 300, tcf.origin.y + tcf.size.height);
     pdp.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(75, 15), 0.001f, 0.001f);

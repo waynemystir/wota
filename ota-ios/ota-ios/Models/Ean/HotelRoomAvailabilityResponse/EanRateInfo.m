@@ -8,6 +8,7 @@
 
 #import "EanRateInfo.h"
 #import "EanCancelPolicyInfo.h"
+#import "EanHotelFee.h"
 
 @implementation EanRateInfo
 
@@ -42,12 +43,35 @@
     ri.nonRefundable = [[dict objectForKey:@"nonRefundable"] boolValue];
     ri.nonRefundableString = ri.nonRefundable ? @"Non-refundable" : @"Free Cancellation";
     
+    ri.hotelFees = [dict objectForKey:@"HotelFees"];
+    
+    id idHotelFee = [ri.hotelFees objectForKey:@"HotelFee"];
+    NSMutableArray *ma = [NSMutableArray array];
+    if (nil == idHotelFee) {
+        ri.sumOfHotelFees = @(0);
+    } else if ([idHotelFee isKindOfClass:[NSDictionary class]]) {
+        EanHotelFee *hf = [EanHotelFee hotelFeeFromDict:idHotelFee];
+        [ma addObject:hf];
+        ri.sumOfHotelFees = @([hf.amount doubleValue]);
+    } else if ([idHotelFee isKindOfClass:[NSArray class]]) {
+        for (int j = 0; j < [idHotelFee count]; j++) {
+            EanHotelFee *hf = [EanHotelFee hotelFeeFromDict:idHotelFee[j]];
+            [ma addObject:hf];
+            ri.sumOfHotelFees = @([ri.sumOfHotelFees doubleValue] + [hf.amount doubleValue]);
+        }
+    }
+    ri.hotelFeesArray = [NSArray arrayWithArray:ma];
+    
     ri.currentAllotment = [[dict objectForKey:@"currentAllotment"] integerValue];
     ri.guaranteeRequired = [[dict objectForKey:@"guaranteeRequired"] boolValue];
     ri.depositRequired = [[dict objectForKey:@"depositRequired"] boolValue];
     ri.taxRate = [dict objectForKey:@"taxRate"];
     
     return ri;
+}
+
+- (NSNumber *)totalPlusHotelFees {
+    return @([self.chargeableRateInfo.total doubleValue] + [self.sumOfHotelFees doubleValue]);
 }
 
 @end
