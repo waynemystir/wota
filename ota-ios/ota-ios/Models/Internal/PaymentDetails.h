@@ -12,6 +12,7 @@
 @interface PaymentDetails : NSObject <NSCoding>
 
 @property (nonatomic, strong) NSString *cardNumber;
+@property (nonatomic, strong, readonly) NSString *lastFour;
 @property (nonatomic, strong) NSString *eanCardType;
 @property (nonatomic, strong) EanPlace *billingAddress;
 @property (nonatomic, strong) NSString *expirationMonth;

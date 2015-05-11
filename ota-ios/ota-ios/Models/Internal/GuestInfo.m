@@ -10,6 +10,8 @@
 #import "JNKeychain.h"
 #import "AppEnvironment.h"
 
+static GuestInfo *_guestInfo = nil;
+
 NSString * const kKeyFirstName = @"first_name";
 NSString * const kKeyLastName = @"last_name";
 NSString * const kKeyEmail = @"email_address";
@@ -18,7 +20,6 @@ NSString * const kKeyPhoneNumber = @"phone_number";
 @implementation GuestInfo
 
 + (GuestInfo *)singleton {
-    static GuestInfo *_guestInfo = nil;
     static dispatch_once_t onceToken;
     
     dispatch_once(&onceToken, ^{
@@ -35,6 +36,15 @@ NSString * const kKeyPhoneNumber = @"phone_number";
 - (void)save {
     if (![JNKeychain saveValue:self forKey:kKeyGuestInfo]) {
         NSLog(@"ERROR: There was a problem saving GuestInfo");
+    }
+}
+
++ (void)deleteGuest:(GuestInfo *)guest {
+    if (guest == _guestInfo) {
+        _guestInfo = nil;
+        if (![JNKeychain deleteValueForKey:kKeyGuestInfo]) {
+            NSLog(@"ERROR: There was a problem deleting guest info");
+        }
     }
 }
 

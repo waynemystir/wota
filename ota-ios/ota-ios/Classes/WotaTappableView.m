@@ -12,11 +12,25 @@
 
 @implementation WotaTappableView
 
-- (id)initWithFrame:(CGRect)frame {
-    if (self = [super initWithFrame:frame]) {
-        _tapColor = kWotaColorOne();
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    if (self = [super initWithCoder:aDecoder]) {
+        [self setupThisView];
     }
     return self;
+}
+
+- (id)initWithFrame:(CGRect)frame {
+    if (self = [super initWithFrame:frame]) {
+        [self setupThisView];
+    }
+    return self;
+}
+
+- (void)setupThisView {
+    _tapColor = _borderColor = kWotaColorOne();
+    self.layer.borderColor = kWotaColorOne().CGColor;
+    self.layer.borderWidth = 1.0f;
+    self.layer.cornerRadius = WOTA_CORNER_RADIUS;
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -31,6 +45,11 @@
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
     self.backgroundColor = _tapColor;
+}
+
+- (void)setBorderColor:(UIColor *)borderColor {
+    self.layer.borderColor = borderColor.CGColor;
+    _borderColor = borderColor;
 }
 
 @end

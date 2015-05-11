@@ -114,4 +114,10 @@ NSString * const kKeyCardHolderLastName = @"cardHolderLastName";
     [self save];
 }
 
+#pragma mark Getter for readonly
+
+- (NSString *)lastFour {
+    return [_cardNumber substringFromIndex:MAX((int)[_cardNumber length]-4, 0)];
+}
+
 @end

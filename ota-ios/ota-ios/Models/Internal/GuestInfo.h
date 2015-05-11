@@ -17,5 +17,6 @@
 @property (nonatomic, strong) NSString *phoneNumber;
 
 + (GuestInfo *)singleton;
++ (void)deleteGuest:(GuestInfo *)guest;
 
 @end

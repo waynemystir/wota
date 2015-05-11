@@ -70,13 +70,17 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
 @property (weak, nonatomic) IBOutlet UITableView *roomsTableViewOutlet;
 @property (weak, nonatomic) IBOutlet UIView *inputBookOutlet;
 @property (weak, nonatomic) IBOutlet UIButton *bookButtonOutlet;
-@property (weak, nonatomic) IBOutlet UIButton *guestButtonOutlet;
-@property (weak, nonatomic) IBOutlet UIButton *paymentButtonOutlet;
+@property (weak, nonatomic) IBOutlet WotaTappableView *guestButtonOutlet;
+@property (weak, nonatomic) IBOutlet WotaTappableView *paymentButtonOutlet;
 
 @property (weak, nonatomic) IBOutlet UITextField *firstNameOutlet;
 @property (weak, nonatomic) IBOutlet UITextField *lastNameOutlet;
 @property (weak, nonatomic) IBOutlet UITextField *emailOutlet;
+@property (weak, nonatomic) IBOutlet UITextField *confirmEmailOutlet;
 @property (weak, nonatomic) IBOutlet UITextField *phoneOutlet;
+@property (weak, nonatomic) IBOutlet UIView *belowEmailContainerOutlet;
+@property (weak, nonatomic) IBOutlet WotaButton *deleteUserOutlet;
+@property (weak, nonatomic) IBOutlet WotaButton *cancelUserDeletionOutlet;
 
 @property (weak, nonatomic) IBOutlet WotaCardNumberField *ccNumberOutlet;
 @property (weak, nonatomic) IBOutlet UITextField *addressTextFieldOutlet;
@@ -111,6 +115,12 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
 @property (nonatomic, strong) GooglePlaceTableViewDelegateImplementation *googlePlacesTableViewDelegate;
 @property (nonatomic) BOOL showingGooglePlacesTableView;
 @property (nonatomic, strong) EanPlace *selectedBillingAddress;
+
+@property (nonatomic) BOOL isValidFirstName;
+@property (nonatomic) BOOL isValidLastName;
+@property (nonatomic) BOOL isValidEmail;
+@property (nonatomic) BOOL isValidConfirmEmail;
+@property (nonatomic) BOOL isValidPhone;
 
 @property (nonatomic) BOOL isValidCreditCard;
 @property (nonatomic) BOOL isValidBillingAddress;
@@ -187,6 +197,60 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
 //    self.inputBookOutlet.layer.borderColor = [UIColor blackColor].CGColor;
     
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    
+//    self.guestButtonOutlet.titleLabel.adjustsFontSizeToFitWidth = YES;
+//    self.guestButtonOutlet.titleLabel.numberOfLines = 1;
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(loadGuestDetailsView)];
+    tap.numberOfTapsRequired = 1;
+    tap.numberOfTouchesRequired = 1;
+    tap.cancelsTouchesInView = NO;
+    [self.guestButtonOutlet addGestureRecognizer:tap];
+    [self updateGuestDetailsButtonTitle];
+    
+    UITapGestureRecognizer *tapPay = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(loadPaymentDetailsView)];
+    tapPay.numberOfTapsRequired = 1;
+    tapPay.numberOfTouchesRequired = 1;
+    tapPay.cancelsTouchesInView = NO;
+    [self.paymentButtonOutlet addGestureRecognizer:tapPay];
+    [self updatePaymentDetailsButtonTitle];
+}
+
+- (void)updatePaymentDetailsButtonTitle {
+    PaymentDetails *pd = [PaymentDetails card1];
+    UILabel *pdLabel = (UILabel *) [self.paymentButtonOutlet viewWithTag:271493618];
+    UILabel *cdLabel = (UILabel *) [self.paymentButtonOutlet viewWithTag:582948375];
+    if ([pd.cardNumber length] > 0) {
+        cdLabel.hidden = NO;
+        cdLabel.text = [@"Card\n" stringByAppendingString:pd.lastFour];
+        pdLabel.hidden = YES;
+    } else {
+        cdLabel.hidden = YES;
+        cdLabel.text = @"";
+        pdLabel.hidden = NO;
+        pdLabel.text = @"Payment Details";
+    }
+}
+
+- (void)updateGuestDetailsButtonTitle {
+    GuestInfo *gi = [GuestInfo singleton];
+    UILabel *gdLabel = (UILabel *) [self.guestButtonOutlet viewWithTag:9191731483];
+    UILabel *fnLabel = (UILabel *) [self.guestButtonOutlet viewWithTag:90157295745];
+    UILabel *lnLabel = (UILabel *) [self.guestButtonOutlet viewWithTag:4206971046];
+    if (([gi.firstName length] > 0) && ([gi.lastName length] > 0)) {
+        fnLabel.hidden = NO;
+        fnLabel.text = gi.firstName;
+        lnLabel.hidden = NO;
+        lnLabel.text = gi.lastName;
+        gdLabel.hidden = YES;
+    } else {
+        fnLabel.hidden = YES;
+        lnLabel.hidden = YES;
+        fnLabel.text = @"";
+        lnLabel.text = @"";
+        gdLabel.hidden = NO;
+        gdLabel.text = @"Guest Details";
+    }
 }
 
 //- (void)keyboardWillShow:(id)sender {
@@ -460,9 +524,10 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     totalView.tag = kRoomTotalViewTag;
     totalView.userInteractionEnabled = YES;
     totalView.backgroundColor = [UIColor clearColor];
-    totalView.layer.cornerRadius = WOTA_CORNER_RADIUS;
-    totalView.layer.borderColor = UIColorFromRGB(0x0D9C03).CGColor;
-    totalView.layer.borderWidth = 0.5f;
+//    totalView.layer.cornerRadius = WOTA_CORNER_RADIUS;
+//    totalView.layer.borderColor = UIColorFromRGB(0x0D9C03).CGColor;
+    totalView.borderColor = UIColorFromRGB(0x0D9C03);
+//    totalView.layer.borderWidth = 0.5f;
     [borderView addSubview:totalView];
     
     UITapGestureRecognizer *tapper = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(loadPriceDetailsPopup:)];
@@ -613,10 +678,6 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
 - (IBAction)justPushIt:(id)sender {
     if (sender == self.bookButtonOutlet) {
         [self bookIt];
-    } else if (sender == self.guestButtonOutlet) {
-        [self loadGuestDetailsView];
-    } else if (sender == self.paymentButtonOutlet) {
-        [self loadPaymentDetailsView];
     }
 }
 
@@ -714,6 +775,10 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
+    textField.layer.cornerRadius = 6.0f;
+    textField.layer.borderWidth = 1.0f;
+    textField.layer.borderColor = kWotaColorOne().CGColor;
+    
     if (textField != self.addressTextFieldOutlet) {
         [self dropGooglePlacesTableView];
     }
@@ -727,6 +792,12 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     } else if (textField == self.cardholderOutlet) {
         
     }
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    textField.layer.cornerRadius = 0.0f;
+    textField.layer.borderWidth = 0.0f;
+    textField.layer.borderColor = [UIColor clearColor].CGColor;
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
@@ -751,6 +822,23 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
         [self validateCardholder:ch];
     }
     
+    else if (textField == self.firstNameOutlet) {
+        NSString *fn = [textField.text stringByReplacingCharactersInRange:range withString:string];
+        [self validateFirstName:fn];
+    } else if (textField == self.lastNameOutlet) {
+        NSString *ln = [textField.text stringByReplacingCharactersInRange:range withString:string];
+        [self validateLastName:ln];
+    } else if (textField == self.emailOutlet) {
+        NSString *em = [textField.text stringByReplacingCharactersInRange:range withString:string];
+        [self validateEmailAddress:em];
+    } else if (textField == self.confirmEmailOutlet) {
+        NSString *em = [textField.text stringByReplacingCharactersInRange:range withString:string];
+        [self validateConfirmEmailAddress:em];
+    } else if (textField == self.phoneOutlet) {
+        NSString *ph = [textField.text stringByReplacingCharactersInRange:range withString:string];
+        [self validatePhone:ph];
+    }
+    
     return YES;
 }
 
@@ -767,11 +855,19 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
         [self.ccNumberOutlet becomeFirstResponder];
     }
     
-    if (textField == self.firstNameOutlet) {
+    else if (textField == self.firstNameOutlet) {
         [self.lastNameOutlet becomeFirstResponder];
     } else if (textField == self.lastNameOutlet) {
         [self.emailOutlet becomeFirstResponder];
     } else if (textField == self.emailOutlet) {
+        
+        if (nil == self.confirmEmailOutlet.delegate) {
+            [self.phoneOutlet becomeFirstResponder];
+        } else {
+            [self.confirmEmailOutlet becomeFirstResponder];
+        }
+        
+    } else if (textField == self.confirmEmailOutlet) {
         [self.phoneOutlet becomeFirstResponder];
     } else if (textField == self.phoneOutlet) {
         [self.firstNameOutlet becomeFirstResponder];
@@ -783,19 +879,36 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
 - (BOOL)textFieldShouldClear:(UITextField *)textField {
     if (textField == self.ccNumberOutlet) {
         self.isValidCreditCard = NO;
-        [self enableOrDisableRightBarButtonItem];
+        [self enableOrDisableRightBarButtonItemForPayment];
         self.ccNumberOutlet.backgroundColor = [UIColor whiteColor];
     } else if (textField == self.addressTextFieldOutlet) {
         self.googlePlacesTableViewDelegate.tableData = nil;
         [self.googlePlacesTableView reloadData];
         [self loadGooglePlacesTableView];
         self.isValidBillingAddress = NO;
-        [self isWeGood];
+        [self enableOrDisableRightBarButtonItemForPayment];
         self.addressTextFieldOutlet.backgroundColor = [UIColor whiteColor];
     } else if (textField == self.cardholderOutlet) {
         self.isValidCardHolder = NO;
-        [self isWeGood];
+        [self enableOrDisableRightBarButtonItemForPayment];
         self.cardholderOutlet.backgroundColor = [UIColor whiteColor];
+    }
+    
+    else if (textField == self.firstNameOutlet) {
+        self.isValidFirstName = NO;
+        [self enableOrDisableRightBarButtonItemForGuest];
+    } else if (textField == self.lastNameOutlet) {
+        self.isValidLastName = NO;
+        [self enableOrDisableRightBarButtonItemForGuest];
+    } else if (textField == self.emailOutlet) {
+        self.isValidEmail = NO;
+        [self enableOrDisableRightBarButtonItemForGuest];
+    } else if (textField == self.confirmEmailOutlet) {
+        self.isValidConfirmEmail = NO;
+        [self enableOrDisableRightBarButtonItemForGuest];
+    } else if (textField == self.phoneOutlet) {
+        self.isValidPhone = NO;
+        [self enableOrDisableRightBarButtonItemForGuest];
     }
     
     return YES;
@@ -1149,6 +1262,8 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     __weak UIView *guestDetailsView = views[0];
     guestDetailsView.tag = kGuestDetailsViewTag;
     guestDetailsView.frame = CGRectMake(0, 64, 320, 568);
+    guestDetailsView.backgroundColor = kWotaColorOne();
+    [[guestDetailsView subviews] makeObjectsPerformSelector:@selector(setBackgroundColor:) withObject:(id)kWotaColorOne()];
     
     CGPoint gboCenter = [self.view convertPoint:self.guestButtonOutlet.center fromView:self.inputBookOutlet];
     CGFloat fromX = gboCenter.x - guestDetailsView.center.x;
@@ -1157,26 +1272,57 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     guestDetailsView.transform = CGAffineTransformScale(fromTransform, 0.01f, 0.01f);
     
     [self.view addSubview:guestDetailsView];
-    [self.firstNameOutlet becomeFirstResponder];
     GuestInfo *gi = [GuestInfo singleton];
     self.firstNameOutlet.text = gi.firstName;
     self.lastNameOutlet.text = gi.lastName;
     self.emailOutlet.text = gi.email;
     self.phoneOutlet.text = gi.phoneNumber;
+    
+    [self validateFirstName:self.firstNameOutlet.text];
+    [self validateLastName:self.lastNameOutlet.text];
+    [self validateEmailAddress:self.emailOutlet.text];
+    if (self.isValidEmail) {
+        CGRect f = self.belowEmailContainerOutlet.frame;
+        self.belowEmailContainerOutlet.frame = CGRectMake(f.origin.x, f.origin.y - 35, f.size.width, f.size.height);
+        [guestDetailsView sendSubviewToBack:self.belowEmailContainerOutlet];
+        self.isValidConfirmEmail = YES;
+        [self enableOrDisableRightBarButtonItemForGuest];
+        self.confirmEmailOutlet.delegate = nil;
+    } else {
+        self.confirmEmailOutlet.delegate = self;
+    }
+    
+    if ([self isWeGoodForGuest]) {
+        self.deleteUserOutlet.hidden = NO;
+        [self.deleteUserOutlet addTarget:self action:@selector(initiateDeleteUser:) forControlEvents:UIControlEventTouchUpInside ];
+    }
+    
     [UIView animateWithDuration:kSrAnimationDuration animations:^{
         guestDetailsView.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+        guestDetailsView.backgroundColor = [UIColor whiteColor];
+        [[guestDetailsView subviews] makeObjectsPerformSelector:@selector(setBackgroundColor:) withObject:(id)[UIColor whiteColor]];
     } completion:^(BOOL finished) {
-        ;
+        [self.firstNameOutlet becomeFirstResponder];
     }];
 }
 
 - (void)dropGuestDetailsView:(id)sender {
+    GuestInfo *gi = [GuestInfo singleton];
     if (sender == self.navigationItem.rightBarButtonItem) {
-        GuestInfo *gi = [GuestInfo singleton];
         gi.firstName = self.firstNameOutlet.text;
         gi.lastName = self.lastNameOutlet.text;
         gi.email = self.emailOutlet.text;
         gi.phoneNumber = self.phoneOutlet.text;
+        [self updateGuestDetailsButtonTitle];
+    }
+    
+    if (sender == self.deleteUserOutlet) {
+        self.firstNameOutlet.text = nil;
+        self.lastNameOutlet.text = nil;
+        self.emailOutlet.text = nil;
+        self.phoneOutlet.text = nil;
+        [GuestInfo deleteGuest:gi];
+        [self updateGuestDetailsButtonTitle];
     }
     
     __weak UIView *guestDetailsView = [self.view viewWithTag:kGuestDetailsViewTag];
@@ -1192,6 +1338,8 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     self.navigationItem.rightBarButtonItem = nil;
     [UIView animateWithDuration:kSrAnimationDuration animations:^{
         guestDetailsView.transform = CGAffineTransformScale(toTransform, 0.01f, 0.01f);
+        guestDetailsView.backgroundColor = kWotaColorOne();
+        [[guestDetailsView subviews] makeObjectsPerformSelector:@selector(setBackgroundColor:) withObject:(id)kWotaColorOne()];
     } completion:^(BOOL finished) {
         [guestDetailsView removeFromSuperview];;
     }];
@@ -1210,6 +1358,8 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     __weak UIView *paymentDetailsView = views[0];
     paymentDetailsView.tag = kPaymentDetailsViewTag;
     paymentDetailsView.frame = CGRectMake(0, 64, 320, 568);
+    paymentDetailsView.backgroundColor = kWotaColorOne();
+    [[paymentDetailsView subviews] makeObjectsPerformSelector:@selector(setBackgroundColor:) withObject:(id)kWotaColorOne()];
     
     CGPoint pboCenter = [self.view convertPoint:self.paymentButtonOutlet.center fromView:self.inputBookOutlet];
     CGFloat fromX = pboCenter.x - paymentDetailsView.center.x;
@@ -1242,7 +1392,7 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     [self validateBillingAddressWithNoGoColor:NO];
     [self validateCardholder:self.cardholderOutlet.text];
     
-    if ([self isWeGood]) {
+    if ([self isWeGoodForCredit]) {
         self.deleteCardOutlet.hidden = NO;
         [self.deleteCardOutlet addTarget:self action:@selector(initiateDeleteCard:) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -1250,9 +1400,10 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     __weak typeof(self) wes = self;
     [UIView animateWithDuration:kSrAnimationDuration animations:^{
         paymentDetailsView.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
-        [wes.ccNumberOutlet becomeFirstResponder];
+        paymentDetailsView.backgroundColor = [UIColor whiteColor];
+        [[paymentDetailsView subviews] makeObjectsPerformSelector:@selector(setBackgroundColor:) withObject:(id)[UIColor whiteColor]];
     } completion:^(BOOL finished) {
-        ;
+        [wes.ccNumberOutlet becomeFirstResponder];
     }];
 }
 
@@ -1262,6 +1413,7 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     
     if (sender == self.navigationItem.rightBarButtonItem) {
         pd.cardNumber = self.ccNumberOutlet.cardNumber;
+        [self updatePaymentDetailsButtonTitle];
         pd.eanCardType = self.ccNumberOutlet.eanType;
         pd.billingAddress = self.selectedBillingAddress;
         [self saveDaExpiration];
@@ -1281,6 +1433,7 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
         self.expirationOutlet.text = nil;
         self.cardholderOutlet.text = nil;
         [PaymentDetails deleteCard:pd];
+        [self updatePaymentDetailsButtonTitle];
     }
     
     [self dropGooglePlacesTableView];
@@ -1295,6 +1448,8 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Different Room" style:UIBarButtonItemStyleDone target:self action:@selector(dropRoomDetailsView:)];
     self.navigationItem.rightBarButtonItem = nil;
     [UIView animateWithDuration:kSrAnimationDuration animations:^{
+        paymentDetailsView.backgroundColor = kWotaColorOne();
+        [[paymentDetailsView subviews] makeObjectsPerformSelector:@selector(setBackgroundColor:) withObject:(id)kWotaColorOne()];
         paymentDetailsView.transform = CGAffineTransformScale(toTransform, 0.01f, 0.01f);
     } completion:^(BOOL finished) {
         [paymentDetailsView removeFromSuperview];;
@@ -1567,15 +1722,79 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
 
 #pragma mark Validation methods
 
-- (void)enableOrDisableRightBarButtonItem {
-    if ([self isWeGood]) {
+- (void)enableOrDisableRightBarButtonItemForGuest {
+    if ([self isWeGoodForGuest]) {
         self.navigationItem.rightBarButtonItem.enabled = YES;
     } else {
         self.navigationItem.rightBarButtonItem.enabled = NO;
     }
 }
 
-- (BOOL)isWeGood {
+- (BOOL)isWeGoodForGuest {
+    return self.isValidFirstName && self.isValidLastName && self.isValidEmail && self.isValidConfirmEmail && self.isValidPhone;
+}
+
+- (void)validateFirstName:(NSString *)firstName {
+    if ([firstName length] > 0) {
+        self.isValidFirstName = YES;
+    } else {
+        self.isValidFirstName = NO;
+    }
+    [self enableOrDisableRightBarButtonItemForGuest];
+}
+
+- (void)validateLastName:(NSString *)lastName {
+    if ([lastName length] > 0) {
+        self.isValidLastName = YES;
+    } else {
+        self.isValidLastName = NO;
+    }
+    [self enableOrDisableRightBarButtonItemForGuest];
+}
+
+- (void)validateEmailAddress:(NSString *)emailString {
+    // Discussion http://blog.logichigh.com/2010/09/02/validating-an-e-mail-address/
+    // SOF: http://stackoverflow.com/questions/3139619/check-that-an-email-address-is-valid-on-ios
+    BOOL stricterFilter = NO;
+    NSString *stricterFilterString = @"[A-Z0-9a-z\\._%+-]+@([A-Za-z0-9-]+\\.)+[A-Za-z]{2,4}";
+    NSString *laxString = @".+@([A-Za-z0-9-]+\\.)+[A-Za-z]{2}[A-Za-z]*";
+    NSString *emailRegex = stricterFilter ? stricterFilterString : laxString;
+    NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex];
+    self.isValidEmail = [emailTest evaluateWithObject:emailString];
+    [self enableOrDisableRightBarButtonItemForGuest];
+}
+
+- (void)validateConfirmEmailAddress:(NSString *)ces {
+    self.isValidConfirmEmail = [ces isEqualToString:self.emailOutlet.text];
+    if (self.isValidConfirmEmail) {
+        self.confirmEmailOutlet.backgroundColor = [UIColor whiteColor];
+    } else if ([ces isEqualToString:[self.emailOutlet.text substringToIndex:MIN([ces length], [self.emailOutlet.text length])]]) {
+        self.confirmEmailOutlet.backgroundColor = [UIColor whiteColor];
+    } else {
+        self.confirmEmailOutlet.backgroundColor = kColorNoGo();
+    }
+    [self enableOrDisableRightBarButtonItemForGuest];
+}
+
+- (void)validatePhone:(NSString *)phoneNumber {
+    //Numbers must be at least 5 digits long. Restrict characters to 0-9, +, -, and ( ).
+    if ([phoneNumber length] >= 5) {
+        self.isValidPhone = YES;
+    } else {
+        self.isValidPhone = NO;
+    }
+    [self enableOrDisableRightBarButtonItemForGuest];
+}
+
+- (void)enableOrDisableRightBarButtonItemForPayment {
+    if ([self isWeGoodForCredit]) {
+        self.navigationItem.rightBarButtonItem.enabled = YES;
+    } else {
+        self.navigationItem.rightBarButtonItem.enabled = NO;
+    }
+}
+
+- (BOOL)isWeGoodForCredit {
     return self.isValidCreditCard && self.isValidBillingAddress && self.isValidExpiration && self.isValidCardHolder;
 }
 
@@ -1588,7 +1807,7 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
         self.isValidCreditCard = NO;
     }
     
-    [self enableOrDisableRightBarButtonItem];
+    [self enableOrDisableRightBarButtonItemForPayment];
 }
 
 - (void)validateBillingAddressWithNoGoColor:(BOOL)withNoGoColor {
@@ -1611,7 +1830,7 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
         }
     }
     
-    [self enableOrDisableRightBarButtonItem];
+    [self enableOrDisableRightBarButtonItemForPayment];
 }
 
 - (void)validateExpiration {
@@ -1619,7 +1838,7 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
             || [self.expirationOutlet.text isEqualToString:@""]) {
         self.expirationOutlet.backgroundColor = [UIColor whiteColor];
         self.isValidExpiration = NO;
-        [self enableOrDisableRightBarButtonItem];
+        [self enableOrDisableRightBarButtonItemForPayment];
         return;
     }
     
@@ -1628,7 +1847,7 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     if (nil == expArr || [expArr count] != 2) {
         self.expirationOutlet.backgroundColor = kColorNoGo();
         self.isValidExpiration = NO;
-        [self enableOrDisableRightBarButtonItem];
+        [self enableOrDisableRightBarButtonItemForPayment];
         return;
     }
     
@@ -1659,7 +1878,7 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
         self.isValidExpiration = NO;
     }
     
-    [self enableOrDisableRightBarButtonItem];
+    [self enableOrDisableRightBarButtonItemForPayment];
 }
 
 - (void)validateCardholder:(NSString *)cardHolder {
@@ -1672,7 +1891,7 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
         self.isValidCardHolder = YES;
     }
     
-    [self enableOrDisableRightBarButtonItem];
+    [self enableOrDisableRightBarButtonItemForPayment];
 }
 
 #pragma mark Card Deletion Selectors
@@ -1743,6 +1962,75 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     [self.deleteCardOutlet setTitle:@"Delete This Card" forState:UIControlStateNormal];
     [self.deleteCardOutlet removeTarget:self action:@selector(dropPaymentDetailsView:) forControlEvents:UIControlEventTouchUpInside];
     [self.deleteCardOutlet addTarget:self action:@selector(initiateDeleteCard:) forControlEvents:UIControlEventTouchUpInside];
+}
+
+- (void)initiateDeleteUser:(id)sender {
+    self.firstNameOutlet.userInteractionEnabled = NO;
+    self.lastNameOutlet.userInteractionEnabled = NO;
+    self.emailOutlet.userInteractionEnabled = NO;
+    self.phoneOutlet.userInteractionEnabled = NO;
+    
+    self.cancelUserDeletionOutlet.transform = CGAffineTransformMakeTranslation(300, 0);
+    self.cancelUserDeletionOutlet.hidden = NO;
+    [self.cancelUserDeletionOutlet addTarget:self action:@selector(cancelDeleteUser:) forControlEvents:UIControlEventTouchUpInside];
+    
+    [UIView animateWithDuration:0.4f animations:^{
+        self.cancelUserDeletionOutlet.transform = CGAffineTransformMakeTranslation(0, 0);
+    } completion:^(BOOL finished) {
+        ;
+    }];
+    
+    self.navigationItem.leftBarButtonItem.enabled = NO;
+    self.navigationItem.rightBarButtonItem.enabled = NO;
+    
+    self.firstNameOutlet.backgroundColor = [UIColor grayColor];
+    self.lastNameOutlet.backgroundColor = [UIColor grayColor];
+    self.emailOutlet.backgroundColor = [UIColor grayColor];
+    self.phoneOutlet.backgroundColor = [UIColor grayColor];
+    
+    self.firstNameOutlet.textColor = [UIColor lightGrayColor];
+    self.lastNameOutlet.textColor = [UIColor lightGrayColor];
+    self.emailOutlet.textColor = [UIColor lightGrayColor];
+    self.phoneOutlet.textColor = [UIColor lightGrayColor];
+    
+    [self.deleteUserOutlet setTitle:@"Confirm Deletion" forState:UIControlStateNormal];
+    [self.deleteUserOutlet removeTarget:self action:@selector(initiateDeleteUser:) forControlEvents:UIControlEventTouchUpInside];
+    [self.deleteUserOutlet addTarget:self action:@selector(dropGuestDetailsView:) forControlEvents:UIControlEventTouchUpInside];
+}
+
+- (void)cancelDeleteUser:(id)sender {
+    self.firstNameOutlet.userInteractionEnabled = YES;
+    self.lastNameOutlet.userInteractionEnabled = YES;
+    self.emailOutlet.userInteractionEnabled = YES;
+    self.phoneOutlet.userInteractionEnabled = YES;
+    
+    [UIView animateWithDuration:0.4f animations:^{
+        self.cancelUserDeletionOutlet.transform = CGAffineTransformMakeTranslation(300, 0);
+    } completion:^(BOOL finished) {
+        self.cancelUserDeletionOutlet.hidden = YES;
+    }];
+    
+    self.navigationItem.leftBarButtonItem.enabled = YES;
+    
+    [self validateFirstName:self.firstNameOutlet.text];
+    [self validateLastName:self.lastNameOutlet.text];
+    [self validateEmailAddress:self.emailOutlet.text];
+    [self validatePhone:self.phoneOutlet.text];
+    
+    self.firstNameOutlet.backgroundColor = [UIColor whiteColor];
+    self.lastNameOutlet.backgroundColor = [UIColor whiteColor];
+    self.emailOutlet.backgroundColor = [UIColor whiteColor];
+    self.phoneOutlet.backgroundColor = [UIColor whiteColor];
+    
+    self.firstNameOutlet.textColor = [UIColor blackColor];
+    self.lastNameOutlet.textColor = [UIColor blackColor];
+    self.emailOutlet.textColor = [UIColor blackColor];
+    self.phoneOutlet.textColor = [UIColor blackColor];
+    
+    self.deleteUserOutlet.hidden = NO;
+    [self.deleteUserOutlet setTitle:@"Delete This Guest" forState:UIControlStateNormal];
+    [self.deleteUserOutlet removeTarget:self action:@selector(dropGuestDetailsView:) forControlEvents:UIControlEventTouchUpInside];
+    [self.deleteUserOutlet addTarget:self action:@selector(initiateDeleteUser:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 #pragma mark Add gradient methods
