@@ -61,6 +61,8 @@ NSUInteger const kRoomNonRefundLongTag = 171729;
 NSUInteger const kPriceDetailsPopupTag = 171730;
 NSUInteger const kInfoDetailPopupRoomDetailsTag = 171731;
 NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
+NSUInteger const kInfoDetailPopupGuestDetailTag = 171733;
+NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
 
 @interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, SelectGooglePlaceDelegate, SelectBedTypeDelegate, SelectSmokingPrefDelegate>
 
@@ -132,6 +134,10 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
 @property (nonatomic, strong) NSArray *priceGradientColors;
 @property (nonatomic, strong) UIView *tableViewPopOut;
 
+@property (nonatomic, strong) NSDictionary *infoPopupTagDict;
+@property (nonatomic, strong) NSDictionary *infoPopupHeadingDict;
+@property (nonatomic, strong) UIView *currentFirstResponder;
+
 @property (nonatomic, strong) NightlyRateTableViewDelegateImplementation *nrtvd;
 
 - (IBAction)justPushIt:(id)sender;
@@ -145,6 +151,20 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
         _bottomGradientColors = [NSArray arrayWithObjects:(id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:1].CGColor, nil];
         _bottomsUpGradientColors = [NSArray arrayWithObjects:(id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.1f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.2].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.3f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.4f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.5f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.6f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.7f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.8f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.9f].CGColor, (id)[UIColor colorWithWhite:1 alpha:1.0f].CGColor, nil];
         _priceGradientColors = [NSArray arrayWithObjects:(id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.1f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.2].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.3f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.4f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.5f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.6f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.7f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.8f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.9f].CGColor, (id)[UIColor colorWithWhite:1 alpha:1.0f].CGColor, nil];
+        
+        NSMutableDictionary *mutInfoPopupDict = [NSMutableDictionary dictionary];
+        [mutInfoPopupDict setObject:[NSNumber numberWithInteger:kInfoDetailPopupRoomDetailsTag] forKey:[NSNumber numberWithInteger:kRoomTypeDescrLongTag]];
+        [mutInfoPopupDict setObject:[NSNumber numberWithInteger:kInfoDetailPopupCancelPolicTag] forKey:[NSNumber numberWithInteger:kRoomNonRefundLongTag]];
+        [mutInfoPopupDict setObject:[NSNumber numberWithInteger:kInfoDetailPopupGuestDetailTag] forKey:[NSNumber numberWithInteger:kGuestDetailsViewTag]];
+        [mutInfoPopupDict setObject:[NSNumber numberWithInteger:kInfoDetailPopupPaymeDetailTag] forKey:[NSNumber numberWithInteger:kPaymentDetailsViewTag]];
+        _infoPopupTagDict = [NSDictionary dictionaryWithDictionary:mutInfoPopupDict];
+        
+        NSMutableDictionary *mutInfoPopupHeadingDict = [NSMutableDictionary dictionary];
+        [mutInfoPopupHeadingDict setObject:@"Room Details" forKey:[NSNumber numberWithInteger:kRoomTypeDescrLongTag]];
+        [mutInfoPopupHeadingDict setObject:@"Cancellation Policy" forKey:[NSNumber numberWithInteger:kRoomNonRefundLongTag]];
+        [mutInfoPopupHeadingDict setObject:@"Guest Information" forKey:[NSNumber numberWithInteger:kGuestDetailsViewTag]];
+        [mutInfoPopupHeadingDict setObject:@"Payment Information" forKey:[NSNumber numberWithInteger:kPaymentDetailsViewTag]];
+        _infoPopupHeadingDict = [NSDictionary dictionaryWithDictionary:mutInfoPopupHeadingDict];
     }
     return self;
 }
@@ -771,10 +791,18 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     if (textField == self.ccNumberOutlet) {
         [self addInputAccessoryViewToCardNumber];
     }
+    
+    else if (textField == self.emailOutlet && !self.isValidEmail && nil != self.confirmEmailOutlet.delegate) {
+        self.confirmEmailOutlet.text = @"";
+        self.confirmEmailOutlet.backgroundColor = [UIColor whiteColor];
+        self.isValidConfirmEmail = NO;
+    }
+    
     return YES;
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
+    self.currentFirstResponder = textField;
     textField.layer.cornerRadius = 6.0f;
     textField.layer.borderWidth = 1.0f;
     textField.layer.borderColor = kWotaColorOne().CGColor;
@@ -830,10 +858,17 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
         [self validateLastName:ln];
     } else if (textField == self.emailOutlet) {
         NSString *em = [textField.text stringByReplacingCharactersInRange:range withString:string];
-        [self validateEmailAddress:em];
+        [self validateEmailAddress:em withNoGoColor:NO];
     } else if (textField == self.confirmEmailOutlet) {
-        NSString *em = [textField.text stringByReplacingCharactersInRange:range withString:string];
-        [self validateConfirmEmailAddress:em];
+        
+        if (self.isValidEmail) {
+            NSString *em = [textField.text stringByReplacingCharactersInRange:range withString:string];
+            [self validateConfirmEmailAddress:em whileLeaving:NO];
+        } else {
+            self.confirmEmailOutlet.placeholder = @"Please enter a valid email above";
+            return NO;
+        }
+        
     } else if (textField == self.phoneOutlet) {
         NSString *ph = [textField.text stringByReplacingCharactersInRange:range withString:string];
         [self validatePhone:ph];
@@ -861,6 +896,8 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
         [self.emailOutlet becomeFirstResponder];
     } else if (textField == self.emailOutlet) {
         
+        [self validateEmailAddress:self.emailOutlet.text withNoGoColor:YES];
+        
         if (nil == self.confirmEmailOutlet.delegate) {
             [self.phoneOutlet becomeFirstResponder];
         } else {
@@ -868,6 +905,7 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
         }
         
     } else if (textField == self.confirmEmailOutlet) {
+        [self validateConfirmEmailAddress:self.confirmEmailOutlet.text whileLeaving:YES];
         [self.phoneOutlet becomeFirstResponder];
     } else if (textField == self.phoneOutlet) {
         [self.firstNameOutlet becomeFirstResponder];
@@ -902,9 +940,11 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
         [self enableOrDisableRightBarButtonItemForGuest];
     } else if (textField == self.emailOutlet) {
         self.isValidEmail = NO;
+        self.emailOutlet.backgroundColor = [UIColor whiteColor];
         [self enableOrDisableRightBarButtonItemForGuest];
     } else if (textField == self.confirmEmailOutlet) {
         self.isValidConfirmEmail = NO;
+        self.confirmEmailOutlet.backgroundColor = [UIColor whiteColor];
         [self enableOrDisableRightBarButtonItemForGuest];
     } else if (textField == self.phoneOutlet) {
         self.isValidPhone = NO;
@@ -1254,6 +1294,16 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dropGuestDetailsView:)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dropGuestDetailsView:)];
     
+    UIView *vCont = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 44)];
+    UIButton *b = [UIButton buttonWithType:UIButtonTypeSystem];
+    b.frame = CGRectMake(40, 0, 120, 44);
+    b.tag = kGuestDetailsViewTag;
+    [b addTarget:self action:@selector(loadInfoDetailsPopup:) forControlEvents:UIControlEventTouchUpInside];
+    [b setShowsTouchWhenHighlighted:YES];
+    [b setTitle:@"Why this info?ℹ️" forState:UIControlStateNormal];
+    [vCont addSubview:b];
+    self.navigationItem.titleView = vCont;
+    
     self.firstNameOutlet.delegate = self;
     self.lastNameOutlet.delegate = self;
     self.emailOutlet.delegate = self;
@@ -1280,7 +1330,7 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     
     [self validateFirstName:self.firstNameOutlet.text];
     [self validateLastName:self.lastNameOutlet.text];
-    [self validateEmailAddress:self.emailOutlet.text];
+    [self validateEmailAddress:self.emailOutlet.text withNoGoColor:NO];
     if (self.isValidEmail) {
         CGRect f = self.belowEmailContainerOutlet.frame;
         self.belowEmailContainerOutlet.frame = CGRectMake(f.origin.x, f.origin.y - 35, f.size.width, f.size.height);
@@ -1291,6 +1341,7 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     } else {
         self.confirmEmailOutlet.delegate = self;
     }
+    [self validatePhone:self.phoneOutlet.text];
     
     if ([self isWeGoodForGuest]) {
         self.deleteUserOutlet.hidden = NO;
@@ -1332,10 +1383,10 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     CGFloat toY = gboCenter.y - guestDetailsView.center.y;
     __block CGAffineTransform toTransform = CGAffineTransformMakeTranslation(toX, toY);
     
-    //    [self.firstNameOutlet resignFirstResponder];
     [self.view endEditing:YES];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Different Room" style:UIBarButtonItemStyleDone target:self action:@selector(dropRoomDetailsView:)];
     self.navigationItem.rightBarButtonItem = nil;
+    self.navigationItem.titleView = nil;
     [UIView animateWithDuration:kSrAnimationDuration animations:^{
         guestDetailsView.transform = CGAffineTransformScale(toTransform, 0.01f, 0.01f);
         guestDetailsView.backgroundColor = kWotaColorOne();
@@ -1354,6 +1405,16 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dropPaymentDetailsView:)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dropPaymentDetailsView:)];
     self.navigationItem.rightBarButtonItem.enabled = NO;
+    
+    UIView *vCont = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 44)];
+    UIButton *b = [UIButton buttonWithType:UIButtonTypeSystem];
+    b.frame = CGRectMake(40, 0, 120, 44);
+    b.tag = kPaymentDetailsViewTag;
+    [b addTarget:self action:@selector(loadInfoDetailsPopup:) forControlEvents:UIControlEventTouchUpInside];
+    [b setShowsTouchWhenHighlighted:YES];
+    [b setTitle:@"Card Security ℹ️" forState:UIControlStateNormal];
+    [vCont addSubview:b];
+    self.navigationItem.titleView = vCont;
     
     __weak UIView *paymentDetailsView = views[0];
     paymentDetailsView.tag = kPaymentDetailsViewTag;
@@ -1487,17 +1548,29 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     }];
 }
 
-- (void)loadInfoDetailsPopup:(UITapGestureRecognizer *)sender {
+- (void)loadInfoDetailsPopup:(id)sender {
     AudioServicesPlaySystemSound(0x450);
     __block UIView *wayne = [[UIView alloc] initWithFrame:CGRectMake(10, 100, 300, 356)];
-    wayne.tag = sender.view.tag == kRoomTypeDescrLongTag ? kInfoDetailPopupRoomDetailsTag : sender.view.tag == kRoomNonRefundLongTag ? kInfoDetailPopupCancelPolicTag : -1;
+    
+    NSNumber *daTag = nil;
+    UIView *ov = nil;
+    if ([sender isKindOfClass:[UITapGestureRecognizer class]]) {
+        daTag = [NSNumber numberWithInteger:((UITapGestureRecognizer *)sender).view.tag];
+        ov = ((UITapGestureRecognizer *)sender).view;
+    } else if ([sender isKindOfClass:[UIButton class]]) {
+        daTag = [NSNumber numberWithInteger:((UIButton *)sender).tag];
+        ov = sender;
+    }
+    
+    wayne.tag = [[self.infoPopupTagDict objectForKey:daTag] integerValue];
+    
     wayne.backgroundColor = [UIColor whiteColor];
     wayne.layer.cornerRadius = 8.0f;
     wayne.layer.borderColor = [UIColor blackColor].CGColor;
     wayne.layer.borderWidth = 3.0f;
     
     UILabel *l = [[UILabel alloc] initWithFrame:CGRectMake(13, 12, 200, 30)];
-    l.text = sender.view.tag == kRoomTypeDescrLongTag ? @"Room Details" : sender.view.tag == kRoomNonRefundLongTag ? @"Cancellation Policy" : @"";
+    l.text = [self.infoPopupHeadingDict objectForKey:daTag];
     l.textColor = [UIColor blackColor];
     l.textAlignment = NSTextAlignmentLeft;
     l.backgroundColor = [UIColor clearColor];
@@ -1517,11 +1590,27 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     wv.layer.cornerRadius = 8.0f;
     wv.font = [UIFont systemFontOfSize:17.0f];
     
-    if (sender.view.tag == kRoomTypeDescrLongTag) {
-        wv.text = ((UILabel *)sender.view).text;
-    } else if (sender.view.tag == kRoomNonRefundLongTag) {
-        EanAvailabilityHotelRoomResponse *room = [self.tableData objectAtIndex:self.expandedIndexPath.row];
-        wv.text = room.rateInfo.cancellationPolicy;
+    switch ([daTag integerValue]) {
+        case kRoomTypeDescrLongTag: {
+            wv.text = ((UILabel *)ov).text;
+            break;
+        }
+        case kRoomNonRefundLongTag: {
+            EanAvailabilityHotelRoomResponse *room = [self.tableData objectAtIndex:self.expandedIndexPath.row];
+            wv.text = room.rateInfo.cancellationPolicy;
+            break;
+        }
+        case kGuestDetailsViewTag: {
+            wv.text = @"The first and last names must match the guest's photo ID when checking in at the property.\n\nA confirmation email will be sent to the given address upon booking.\n\nYour phone number will only be used by a customer service agent in the event that there is a problem with your reservation.\n\nThis information will be securely stored in your iPhone's Keychain for your future hotel bookings, so that you don't have to retype it. No other apps will have access to this information. And you can change or delete this information at any time.";
+            break;
+        }
+        case kPaymentDetailsViewTag: {
+            wv.text = @"Your credit card information will be securely stored in your iPhone's Keychain for your future hotel bookings, so that you don't have to retype it. No other apps will have access to this information. And you can change or delete this information at any time.";
+            break;
+        }
+            
+        default:
+            break;
     }
     
     wv.textColor = [UIColor blackColor];
@@ -1538,8 +1627,8 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     
     [wayne addSubview:wv];
     
-    CGFloat fromX = sender.view.center.x - wayne.center.x;
-    CGFloat fromY = sender.view.center.y - wayne.center.y + 64;
+    CGFloat fromX = ov.center.x - wayne.center.x;
+    CGFloat fromY = ov.center.y - wayne.center.y + 64;
     wayne.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(fromX, fromY), 0.001f, 0.001f);
     
 //    wayne.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 65), 0.001f, 0.001f);
@@ -1554,6 +1643,7 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     [self.view addSubview:wayne];
     [self.view bringSubviewToFront:wayne];
     
+    [self.view endEditing:YES];
     __weak typeof(self) weakSelf = self;
     [UIView animateWithDuration:kSrAnimationDuration animations:^{
         weakSelf.overlayDisable.alpha = 0.8f;
@@ -1567,14 +1657,20 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
 
 - (void)dropInfoDetailsPopup {
     __weak typeof(self) weakSelf = self;
-    __weak UIView *w = [self.view viewWithTag:kInfoDetailPopupRoomDetailsTag] ? : [self.view viewWithTag:kInfoDetailPopupCancelPolicTag];
+    __weak UIView *w = [self.view viewWithTag:kInfoDetailPopupRoomDetailsTag] ? : [self.view viewWithTag:kInfoDetailPopupCancelPolicTag] ? : [self.view viewWithTag:kInfoDetailPopupGuestDetailTag] ? : [self.view viewWithTag:kInfoDetailPopupPaymeDetailTag];
     
-    __weak UIView *originatingView = [self.view viewWithTag:kInfoDetailPopupRoomDetailsTag] ? [self.view viewWithTag:kRoomTypeDescrLongTag] : [self.view viewWithTag:kInfoDetailPopupCancelPolicTag] ? [self.view viewWithTag:kRoomNonRefundLongTag] : nil;
+    __weak UIView *originatingView = nil;/*[self.view viewWithTag:kInfoDetailPopupRoomDetailsTag] ? [self.view viewWithTag:kRoomTypeDescrLongTag] : [self.view viewWithTag:kInfoDetailPopupCancelPolicTag] ? [self.view viewWithTag:kRoomNonRefundLongTag] : nil;*/
+    
+    NSArray *k = [self.infoPopupTagDict allKeysForObject:[NSNumber numberWithInteger:w.tag]];
+    if ([k count] == 1) {
+        originatingView = [self.view viewWithTag:[k[0] integerValue]];
+    }
     
     CGFloat toX = originatingView.center.x - w.center.x;
     CGFloat toY = originatingView.center.y - w.center.y + 64;
     __block CGAffineTransform toTransform = CGAffineTransformScale(CGAffineTransformMakeTranslation(toX, toY), 0.001f, 0.001f);
     
+    [self.currentFirstResponder becomeFirstResponder];
     [UIView animateWithDuration:kSrAnimationDuration animations:^{
         weakSelf.overlayDisable.alpha = 0.0f;
         weakSelf.overlayDisableNav.alpha = 0.0f;
@@ -1752,7 +1848,7 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     [self enableOrDisableRightBarButtonItemForGuest];
 }
 
-- (void)validateEmailAddress:(NSString *)emailString {
+- (void)validateEmailAddress:(NSString *)emailString withNoGoColor:(BOOL)wngc {
     // Discussion http://blog.logichigh.com/2010/09/02/validating-an-e-mail-address/
     // SOF: http://stackoverflow.com/questions/3139619/check-that-an-email-address-is-valid-on-ios
     BOOL stricterFilter = NO;
@@ -1761,13 +1857,21 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     NSString *emailRegex = stricterFilter ? stricterFilterString : laxString;
     NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex];
     self.isValidEmail = [emailTest evaluateWithObject:emailString];
+    if (wngc && !self.isValidEmail) {
+        self.emailOutlet.backgroundColor = kColorNoGo();
+    } else {
+        self.emailOutlet.backgroundColor = [UIColor whiteColor];
+        self.confirmEmailOutlet.placeholder = @"Confirm Email";
+    }
     [self enableOrDisableRightBarButtonItemForGuest];
 }
 
-- (void)validateConfirmEmailAddress:(NSString *)ces {
+- (void)validateConfirmEmailAddress:(NSString *)ces whileLeaving:(BOOL)leaving {
     self.isValidConfirmEmail = [ces isEqualToString:self.emailOutlet.text];
     if (self.isValidConfirmEmail) {
         self.confirmEmailOutlet.backgroundColor = [UIColor whiteColor];
+    } else if (leaving) {
+        self.confirmEmailOutlet.backgroundColor = kColorNoGo();
     } else if ([ces isEqualToString:[self.emailOutlet.text substringToIndex:MIN([ces length], [self.emailOutlet.text length])]]) {
         self.confirmEmailOutlet.backgroundColor = [UIColor whiteColor];
     } else {
@@ -1968,6 +2072,7 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     self.firstNameOutlet.userInteractionEnabled = NO;
     self.lastNameOutlet.userInteractionEnabled = NO;
     self.emailOutlet.userInteractionEnabled = NO;
+    self.confirmEmailOutlet.userInteractionEnabled = NO;
     self.phoneOutlet.userInteractionEnabled = NO;
     
     self.cancelUserDeletionOutlet.transform = CGAffineTransformMakeTranslation(300, 0);
@@ -1986,11 +2091,13 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     self.firstNameOutlet.backgroundColor = [UIColor grayColor];
     self.lastNameOutlet.backgroundColor = [UIColor grayColor];
     self.emailOutlet.backgroundColor = [UIColor grayColor];
+    self.confirmEmailOutlet.backgroundColor = [UIColor grayColor];
     self.phoneOutlet.backgroundColor = [UIColor grayColor];
     
     self.firstNameOutlet.textColor = [UIColor lightGrayColor];
     self.lastNameOutlet.textColor = [UIColor lightGrayColor];
     self.emailOutlet.textColor = [UIColor lightGrayColor];
+    self.confirmEmailOutlet.textColor = [UIColor lightGrayColor];
     self.phoneOutlet.textColor = [UIColor lightGrayColor];
     
     [self.deleteUserOutlet setTitle:@"Confirm Deletion" forState:UIControlStateNormal];
@@ -2014,7 +2121,7 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
     
     [self validateFirstName:self.firstNameOutlet.text];
     [self validateLastName:self.lastNameOutlet.text];
-    [self validateEmailAddress:self.emailOutlet.text];
+    [self validateEmailAddress:self.emailOutlet.text withNoGoColor:NO];
     [self validatePhone:self.phoneOutlet.text];
     
     self.firstNameOutlet.backgroundColor = [UIColor whiteColor];
