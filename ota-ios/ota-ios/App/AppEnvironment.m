@@ -83,6 +83,18 @@ NSDateFormatter * kShortDateFormatter() {
     return f;
 }
 
+NSDateFormatter * kShortShortDateFormatter() {
+    static NSDateFormatter *f = nil;
+    static dispatch_once_t shortDateOnceToken;
+    dispatch_once(&shortDateOnceToken, ^{
+        f = [[NSDateFormatter alloc] init];
+        NSString *fStr = [NSDateFormatter dateFormatFromTemplate:@"MMd" options:0 locale:[NSLocale currentLocale]];
+        [f setLocale:[NSLocale currentLocale]];
+        [f setDateFormat:fStr];
+    });
+    return f;
+}
+
 NSNumberFormatter * kPriceRoundOffFormatter(NSString * currencyCode) {
     static NSNumberFormatter *_currencyStyle = nil;
     
@@ -129,6 +141,14 @@ UIColor * kColorGoodToGo() {
 
 UIColor * kColorNoGo() {
     return [UIColor colorWithRed:255 green:0 blue:0 alpha:0.75f];
+}
+
+UIColor * kNavigationColor() {
+    return [UIColor colorWithRed:0.93f green:0.93f blue:0.93f alpha:1.0f];
+}
+
+UIColor * kNavBorderColor() {
+    return [UIColor colorWithRed:0.7f green:0.7f blue:0.7f alpha:1.0f];
 }
 
 CGFloat const WOTA_CORNER_RADIUS = 6.0f;

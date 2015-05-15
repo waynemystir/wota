@@ -9,7 +9,8 @@
 #import "AppDelegate.h"
 #import "AppEnvironment.h"
 #import "JNKeychain.h"
-#import "MainViewController.h"
+//#import "MainViewController.h"
+#import "CriteriaViewController.h"
 #import <GoogleMaps/GoogleMaps.h>
 
 @interface AppDelegate ()
@@ -21,7 +22,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [GMSServices provideAPIKey:GOOGLE_API_KEY];
-    MainViewController *mvc = [MainViewController new];
+    CriteriaViewController *mvc = [CriteriaViewController new];
     UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:mvc];
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = nc;

@@ -32,6 +32,7 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "WotaTappableView.h"
 #import "NightlyRateTableViewDelegateImplementation.h"
+#import "NavigationView.h"
 
 typedef NS_ENUM(NSUInteger, LOAD_DATA) {
     LOAD_ROOM = 0,
@@ -64,7 +65,7 @@ NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
 NSUInteger const kInfoDetailPopupGuestDetailTag = 171733;
 NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
 
-@interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, SelectGooglePlaceDelegate, SelectBedTypeDelegate, SelectSmokingPrefDelegate>
+@interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, SelectGooglePlaceDelegate, SelectBedTypeDelegate, SelectSmokingPrefDelegate, NavigationDelegate>
 
 @property (nonatomic) LOAD_DATA load_data_type;
 
@@ -177,6 +178,13 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
     return self;
 }
 
+- (void)loadView {
+    [super loadView];
+    NavigationView *nv = [[NavigationView alloc] initWithDelegate:self];
+    [self.view addSubview:nv];
+    [self.view bringSubviewToFront:nv];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -234,6 +242,11 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
     tapPay.cancelsTouchesInView = NO;
     [self.paymentButtonOutlet addGestureRecognizer:tapPay];
     [self updatePaymentDetailsButtonTitle];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    self.navigationController.navigationBar.hidden = YES;
 }
 
 - (void)updatePaymentDetailsButtonTitle {
@@ -300,6 +313,16 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
 - (void)autoCompleteCcBillAddress {
     self.load_data_type = LOAD_AUTOOMPLETE;
     [[LoadGooglePlacesData sharedInstance:self] autoCompleteSomePlaces:self.addressTextFieldOutlet.text];
+}
+
+#pragma mark NavigationDelegate methods
+
+- (void)clickBack {
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)clickCancel {
+    [self dropRoomDetailsView:nil];
 }
 
 #pragma mark LoadDataProtocol methods
@@ -1197,8 +1220,13 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
     tvp.hidden = NO;
     ibo.hidden = NO;
     
-    UIBarButtonItem *lbbi = [[UIBarButtonItem alloc] initWithTitle:@"Different Room" style:UIBarButtonItemStyleDone target:self action:@selector(dropRoomDetailsView:)];
-    [self.navigationItem setLeftBarButtonItem:lbbi animated:YES];
+    NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
+    [self.view bringSubviewToFront:nv];
+//    [nv removeDefaultBackButton];
+//    UIButton *bb = [nv blankBackButton];
+//    [bb addTarget:self action:@selector(dropRoomDetailsView:) forControlEvents:UIControlEventTouchUpInside];
+//    [nv.leftView addSubview:bb];
+    [nv animateToCancel];
     
     self.bedTypeButton.alpha = self.smokingButton.alpha = rtdl.alpha = 0.0f;
     tal.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(60.0f, -(tvp.frame.size.height/0.80f)), 0.001f, 0.001f);
@@ -1255,7 +1283,11 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
     
     rtv.hidden = NO;
     [self tuiBedTypeDone:nil];
-    [self.navigationItem setLeftBarButtonItem:self.navigationItem.backBarButtonItem animated:YES];
+    NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
+    [self.view bringSubviewToFront:nv];
+//    [nv clearLeftView];
+//    [nv addDefaultBackButton];
+    [nv animateToBack];
     
     [UIView animateWithDuration:kSrAnimationDuration animations:^{
         weakSelf.bedTypeButton.alpha = weakSelf.smokingButton.alpha = rtdl.alpha = 0.0f;
@@ -1291,18 +1323,19 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
         return;
     }
     
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dropGuestDetailsView:)];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dropGuestDetailsView:)];
-    
-    UIView *vCont = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 44)];
+    NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
     UIButton *b = [UIButton buttonWithType:UIButtonTypeSystem];
-    b.frame = CGRectMake(40, 0, 120, 44);
+    b.frame = nv.titleView.bounds;
     b.tag = kGuestDetailsViewTag;
     [b addTarget:self action:@selector(loadInfoDetailsPopup:) forControlEvents:UIControlEventTouchUpInside];
     [b setShowsTouchWhenHighlighted:YES];
     [b setTitle:@"Why this info?ℹ️" forState:UIControlStateNormal];
-    [vCont addSubview:b];
-    self.navigationItem.titleView = vCont;
+    [nv replaceTitleViewContainer:b];
+    
+//    UIButton *bb = [nv blankBackButton];
+//    [bb addTarget:self action:@selector(dropGuestDetailsView:) forControlEvents:UIControlEventTouchUpInside];
+//    [nv.leftView addSubview:bb];
+    [nv animateToCancel];
     
     self.firstNameOutlet.delegate = self;
     self.lastNameOutlet.delegate = self;
@@ -1406,15 +1439,19 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dropPaymentDetailsView:)];
     self.navigationItem.rightBarButtonItem.enabled = NO;
     
-    UIView *vCont = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 44)];
+    NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
     UIButton *b = [UIButton buttonWithType:UIButtonTypeSystem];
-    b.frame = CGRectMake(40, 0, 120, 44);
+    b.frame = nv.titleView.bounds;
     b.tag = kPaymentDetailsViewTag;
     [b addTarget:self action:@selector(loadInfoDetailsPopup:) forControlEvents:UIControlEventTouchUpInside];
     [b setShowsTouchWhenHighlighted:YES];
     [b setTitle:@"Card Security ℹ️" forState:UIControlStateNormal];
-    [vCont addSubview:b];
-    self.navigationItem.titleView = vCont;
+    [nv replaceTitleViewContainer:b];
+    
+//    UIButton *bb = [nv blankBackButton];
+//    [bb addTarget:self action:@selector(dropPaymentDetailsView:) forControlEvents:UIControlEventTouchUpInside];
+//    [nv.leftView addSubview:bb];
+    [nv animateToCancel];
     
     __weak UIView *paymentDetailsView = views[0];
     paymentDetailsView.tag = kPaymentDetailsViewTag;
@@ -1508,6 +1545,7 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Different Room" style:UIBarButtonItemStyleDone target:self action:@selector(dropRoomDetailsView:)];
     self.navigationItem.rightBarButtonItem = nil;
+    self.navigationItem.titleView = nil;
     [UIView animateWithDuration:kSrAnimationDuration animations:^{
         paymentDetailsView.backgroundColor = kWotaColorOne();
         [[paymentDetailsView subviews] makeObjectsPerformSelector:@selector(setBackgroundColor:) withObject:(id)kWotaColorOne()];
@@ -2018,6 +2056,9 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
     
     self.navigationItem.leftBarButtonItem.enabled = NO;
     self.navigationItem.rightBarButtonItem.enabled = NO;
+//    self.navigationItem.titleView.userInteractionEnabled = NO;
+//    self.navigationItem.titleView.alpha = 0.2f;
+    ((UIButton*)self.navigationItem.titleView).enabled = NO;
     
     self.ccNumberOutlet.cardLogoImageView.alpha = 0.2f;
     
@@ -2049,6 +2090,8 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
     }];
     
     self.navigationItem.leftBarButtonItem.enabled = YES;
+    self.navigationItem.titleView.userInteractionEnabled = YES;
+    self.navigationItem.titleView.alpha = 1.0f;
     
     [self validateCreditCardNumber:self.ccNumberOutlet.cardNumber];
     [self validateBillingAddressWithNoGoColor:NO];
@@ -2087,6 +2130,9 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
     
     self.navigationItem.leftBarButtonItem.enabled = NO;
     self.navigationItem.rightBarButtonItem.enabled = NO;
+    self.navigationItem.titleView.userInteractionEnabled = NO;
+    self.navigationItem.titleView.alpha = 0.2f;
+    ((UIButton*)self.navigationItem.titleView).enabled = NO;
     
     self.firstNameOutlet.backgroundColor = [UIColor grayColor];
     self.lastNameOutlet.backgroundColor = [UIColor grayColor];
@@ -2118,6 +2164,9 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
     }];
     
     self.navigationItem.leftBarButtonItem.enabled = YES;
+    self.navigationItem.titleView.userInteractionEnabled = YES;
+    self.navigationItem.titleView.alpha = 1.0f;
+    ((UIButton*)self.navigationItem.titleView).enabled = YES;
     
     [self validateFirstName:self.firstNameOutlet.text];
     [self validateLastName:self.lastNameOutlet.text];

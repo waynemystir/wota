@@ -14,8 +14,11 @@
 #import "HotelInfoViewController.h"
 #import "LoadEanData.h"
 #import "AppEnvironment.h"
+#import "SelectionCriteria.h"
+#import "ChildTraveler.h"
+#import "NavigationView.h"
 
-@interface HotelListingViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface HotelListingViewController () <UITableViewDataSource, UITableViewDelegate, NavigationDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableViewHotelList;
 @property (nonatomic, strong) NSArray *hotelData;
@@ -28,6 +31,17 @@
 - (id)init {
     self = [super initWithNibName:@"HotelListingView" bundle:nil];
     return self;
+}
+
+- (void)loadView {
+    [super loadView];
+    
+    NavigationView *nv = [[NavigationView alloc] initWithDelegate:self];
+    [self.view addSubview:nv];
+}
+
+- (void)clickBack {
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)viewDidLoad {
@@ -43,6 +57,11 @@
     
     self.tableViewHotelList.dataSource = self;
     self.tableViewHotelList.delegate = self;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    self.navigationController.navigationBar.hidden = YES;
 }
 
 #pragma mark LoadDataProtocol methods

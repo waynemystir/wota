@@ -16,8 +16,9 @@
 #import "EanHotelInformationResponse.h"
 #import "EanHotelInfoImage.h"
 #import <SDWebImage/UIImageView+WebCache.h>
+#import "NavigationView.h"
 
-@interface HotelInfoViewController () <CLLocationManagerDelegate>
+@interface HotelInfoViewController () <CLLocationManagerDelegate, NavigationDelegate>
 
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollViewOutlet;
 @property (weak, nonatomic) IBOutlet UIScrollView *imageScrollerOutlet;
@@ -51,8 +52,22 @@
     return self;
 }
 
+- (void)loadView {
+    [super loadView];
+    NavigationView *nv = [[NavigationView alloc] initWithDelegate:self];
+    [self.view addSubview:nv];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    //**********************************************************************
+    // This is needed so that this view controller (or it's nav controller?)
+    // doesn't make room at the top of the table view's scroll view (I guess
+    // to account for the nav bar).
+    //***********************************************************************
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    //***********************************************************************
     
     self.scrollViewOutlet.contentSize = CGSizeMake(320.0f, 900.0f);
     self.imageScrollerOutlet.contentSize = CGSizeMake(1900.0f, 195.0f);
@@ -89,10 +104,19 @@
     self.shortDescLabelOutlet.text = _eanHotel.shortDescription;
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    self.navigationController.navigationBar.hidden = YES;
+}
+
 -(void)appWillResignActive:(NSNotification*)note
 {
     //Curtesy of http://stackoverflow.com/questions/26796466/ios-how-to-get-rid-of-app-is-using-your-location-notification
     mapView_.myLocationEnabled = NO;
+}
+
+- (void)clickBack {
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)requestStarted:(NSURL *)url {

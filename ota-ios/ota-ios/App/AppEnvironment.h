@@ -42,6 +42,7 @@ extern NSString * kWotaCacheGooglePlaceDetailDirectory();
  */
 extern NSDateFormatter * kEanApiDateFormatter();
 extern NSDateFormatter * kShortDateFormatter();
+extern NSDateFormatter * kShortShortDateFormatter();
 extern NSNumberFormatter * kPriceRoundOffFormatter(NSString * currencyCode);
 extern NSNumberFormatter * kPriceTwoDigitFormatter(NSString * currencyCode);
 
@@ -51,6 +52,8 @@ extern NSNumberFormatter * kPriceTwoDigitFormatter(NSString * currencyCode);
 extern UIColor * kWotaColorOne();
 extern UIColor * kColorGoodToGo();
 extern UIColor * kColorNoGo();
+extern UIColor * kNavigationColor();
+extern UIColor * kNavBorderColor();
 
 /**
  * What not
