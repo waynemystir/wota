@@ -11,12 +11,16 @@
 #import "SelectionCriteria.h"
 #import "ChildTraveler.h"
 #import "BackCancelView.h"
+#import "CheckMarkView.h"
 
+NSTimeInterval const kNvAnimationDuration = 0.7;
 NSUInteger const kNavigationViewTag = 4141414141;
 NSUInteger const kDefaultBackButtonTag = 94234598217;
-NSUInteger const kWhereToContainerTag = 3495873928;
+NSUInteger const kWhereToContainerTag = 34958739;
 NSUInteger const kWhereToLabelTag = 378209359451;
 NSUInteger const kBackCancelTag = 4729431;
+NSUInteger const kRightCheckMarkButton = 39618732;
+NSUInteger const kRightCheckMarkView = 4921743;
 
 static NSArray *kTitleViews = nil;
 
@@ -29,14 +33,44 @@ static NSArray *kTitleViews = nil;
 
 @implementation NavigationView
 
+- (void)animateToSecondCancel {
+    UIButton *b = (UIButton *) [_leftView viewWithTag:kDefaultBackButtonTag];
+    
+    [b removeTarget:_navDelegate action:@selector(clickCancel) forControlEvents:UIControlEventTouchUpInside];
+    if ([_navDelegate respondsToSelector:@selector(clickSecondCancel)]) {
+        [b addTarget:_navDelegate action:@selector(clickSecondCancel) forControlEvents:UIControlEventTouchUpInside];
+    }
+    
+    [UIView transitionWithView:b duration:kNvAnimationDuration options:(UIViewAnimationOptionTransitionFlipFromTop) animations:^{
+    } completion:^(BOOL finished) {
+        
+    }];
+}
+
+- (void)animateRevertToFirstCancel {
+    UIButton *b = (UIButton *) [_leftView viewWithTag:kDefaultBackButtonTag];
+    
+    [b removeTarget:_navDelegate action:@selector(clickSecondCancel) forControlEvents:UIControlEventTouchUpInside];
+    if ([_navDelegate respondsToSelector:@selector(clickCancel)]) {
+        [b addTarget:_navDelegate action:@selector(clickCancel) forControlEvents:UIControlEventTouchUpInside];
+    }
+    
+    [UIView transitionWithView:b duration:kNvAnimationDuration options:(UIViewAnimationOptionTransitionFlipFromTop) animations:^{
+        [self blueAndEnableLeftView];
+    } completion:^(BOOL finished) {
+        
+    }];
+}
+
 - (void)animateToCancel {
     BackCancelView *bcv = (BackCancelView *) [_leftView viewWithTag:kBackCancelTag];
     UIButton *b = (UIButton *) bcv.superview;
-    NSLog(@"B allTargets %@", [b allTargets]);
+    
     [b removeTarget:_navDelegate action:@selector(clickBack) forControlEvents:UIControlEventTouchUpInside];
     if ([_navDelegate respondsToSelector:@selector(clickCancel)]) {
         [b addTarget:_navDelegate action:@selector(clickCancel) forControlEvents:UIControlEventTouchUpInside];
     }
+    
     [bcv animateToCancel];
 }
 
@@ -71,17 +105,27 @@ static NSArray *kTitleViews = nil;
         [self addSubview:_titleView];
         [self setupWhereToContainer];
         [_titleView addSubview:_whereToContainer];
-        
-        
+                
         _leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 20, 44, 44)];
         [_leftView addSubview:[self defaultBackButton]];
         [self addSubview:_leftView];
+        
+        _rightView = [[UIView alloc] initWithFrame:CGRectMake(276, 20, 44, 44)];
+        [self addSubview:_rightView];
     }
     return self;
 }
 
 - (UIButton *)defaultBackButton {
     UIButton *lb = [[UIButton alloc] initWithFrame:CGRectMake(3, 7, 32, 36)];
+//    lb.layer.borderWidth = 1.0f;
+//    lb.layer.borderColor = [UIColor orangeColor].CGColor;
+//    UIView *cv = [[UIView alloc] initWithFrame:CGRectMake(14, 0, 1, lb.frame.size.height)];
+//    cv.backgroundColor = [UIColor orangeColor];
+//    [lb addSubview:cv];
+//    UIView *cv2 = [[UIView alloc] initWithFrame:CGRectMake(18, 0, 1, lb.frame.size.height)];
+//    cv2.backgroundColor = [UIColor orangeColor];
+//    [lb addSubview:cv2];
     lb.tag = kDefaultBackButtonTag;
     [lb addTarget:_navDelegate action:@selector(clickBack) forControlEvents:UIControlEventTouchUpInside];
     BackCancelView *bcv = [[BackCancelView alloc] initWithFrame:lb.bounds];
@@ -91,12 +135,17 @@ static NSArray *kTitleViews = nil;
 }
 
 - (void)replaceTitleViewContainer:(UIView *)replacementView {
-    for (NSNumber *tag in kTitleViews) {
-        UIView *vw = [self viewWithTag:[tag integerValue]];
-        vw.hidden = YES;
-    }
+    [UIView transitionFromView:_whereToContainer toView:replacementView duration:kNvAnimationDuration options:UIViewAnimationOptionTransitionFlipFromTop completion:^(BOOL finished) {
+        ;
+    }];
+}
+
+- (void)animateRevertToWhereToContainer:(NSUInteger)removeTag {
+    UIView *vtr = [_titleView viewWithTag:removeTag];
     
-    [_titleView addSubview:replacementView];
+    [UIView transitionFromView:vtr toView:_whereToContainer duration:kNvAnimationDuration options:UIViewAnimationOptionTransitionFlipFromTop completion:^(BOOL finished) {
+        ;
+    }];
 }
 
 - (void)setupWhereToContainer {
@@ -128,6 +177,70 @@ static NSArray *kTitleViews = nil;
     _whereToUnderLabel.textAlignment = NSTextAlignmentCenter;
     NSDateFormatter *df = kShortShortDateFormatter();
     _whereToUnderLabel.text = [NSString stringWithFormat:@"🛄 %@ - %@  👤 %lu", [df stringFromDate:sc.arrivalDate], [df stringFromDate:sc.returnDate], (sc.numberOfAdults + [ChildTraveler numberOfKids])];
+}
+
+- (void)rightViewAddCheckMark {
+    UIButton *lb = [[UIButton alloc] initWithFrame:CGRectMake(3, 7, 32, 36)];
+    lb.tag = kRightCheckMarkButton;
+    
+    if ([_navDelegate respondsToSelector:@selector(clickRight)]) {
+        [lb addTarget:_navDelegate action:@selector(clickRight) forControlEvents:UIControlEventTouchUpInside];
+    }
+    
+    CheckMarkView *cm = [[CheckMarkView alloc] initWithFrame:lb.bounds];
+    cm.tag = kRightCheckMarkView;
+    [lb addSubview:cm];
+//    [_rightView addSubview:lb];
+    
+    [UIView transitionWithView:_rightView duration:kNvAnimationDuration options:UIViewAnimationOptionTransitionFlipFromBottom animations:^{
+        [_rightView addSubview:lb];
+    } completion:^(BOOL finished) {
+        ;
+    }];
+}
+
+- (void)rightViewRemoveCheckMark {
+//    [[_rightView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    UIView *sv = [_rightView viewWithTag:kRightCheckMarkButton];
+    [UIView transitionFromView:sv toView:nil duration:kNvAnimationDuration options:UIViewAnimationOptionTransitionFlipFromBottom completion:^(BOOL finished) {
+        ;
+    }];
+}
+
+- (void)rightViewEnableCheckMark {
+    UIButton *lb = (UIButton *) [_rightView viewWithTag:kRightCheckMarkButton];
+    lb.enabled = YES;
+    CheckMarkView *cmv = (CheckMarkView *) [lb viewWithTag:kRightCheckMarkView];
+    [cmv blueIt];
+    cmv.alpha = 1.0f;
+}
+
+- (void)rightViewDisableCheckMark {
+    UIButton *lb = (UIButton *) [_rightView viewWithTag:kRightCheckMarkButton];
+    lb.enabled = NO;
+    CheckMarkView *cmv = (CheckMarkView *) [lb viewWithTag:kRightCheckMarkView];
+    cmv.alpha = 0.2f;
+}
+
+- (void)grayAndDisableLeftView {
+    BackCancelView *bcv = (BackCancelView *) [_leftView viewWithTag:kBackCancelTag];
+    [bcv grayIt];
+    UIButton *b = (UIButton *) [_leftView viewWithTag:kDefaultBackButtonTag];
+    b.enabled = NO;
+}
+
+- (void)grayAndDisableRiteView {
+    UIButton *lb = (UIButton *) [_rightView viewWithTag:kRightCheckMarkButton];
+    lb.enabled = NO;
+    CheckMarkView *cmv = (CheckMarkView *) [lb viewWithTag:kRightCheckMarkView];
+    [cmv grayIt];
+}
+
+- (void)blueAndEnableLeftView {
+    BackCancelView *bcv = (BackCancelView *) [_leftView viewWithTag:kBackCancelTag];
+    [bcv blueIt];
+    UIButton *b = (UIButton *) [_leftView viewWithTag:kDefaultBackButtonTag];
+    b.enabled = YES;
 }
 
 @end

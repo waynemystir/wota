@@ -40,7 +40,7 @@
                     <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress" returnKeyType="next"/>
                 </textField>
                 <view contentMode="scaleToFill" id="skl-FS-wKJ" userLabel="belowEmailContainer">
-                    <rect key="frame" x="0.0" y="109" width="314" height="124"/>
+                    <rect key="frame" x="0.0" y="109" width="314" height="138"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <subviews>
                         <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Confirm Email" minimumFontSize="17" clearButtonMode="always" id="VNU-Ee-m4C" userLabel="confirmEmailTextField">
@@ -56,14 +56,14 @@
                             <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="phonePad" returnKeyType="next"/>
                         </textField>
                         <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="MWa-7s-vvW" userLabel="deleteUserButton" customClass="WotaButton">
-                            <rect key="frame" x="5" y="77" width="134" height="30"/>
+                            <rect key="frame" x="5" y="87" width="134" height="30"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <state key="normal" title="Delete This Guest">
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
                         </button>
                         <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="noz-94-tYE" userLabel="cancelDeletionButton" customClass="WotaButton">
-                            <rect key="frame" x="144" y="77" width="126" height="30"/>
+                            <rect key="frame" x="144" y="87" width="126" height="30"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <state key="normal" title="Cancel Deletion">
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>

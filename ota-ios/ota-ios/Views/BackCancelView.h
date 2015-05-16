@@ -12,5 +12,7 @@
 
 - (void)animateToCancel;
 - (void)animateToBack;
+- (void)grayIt;
+- (void)blueIt;
 
 @end

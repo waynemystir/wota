@@ -40,6 +40,11 @@ typedef NS_ENUM(NSUInteger, LOAD_DATA) {
     LOAD_PLACE = 2
 };
 
+typedef NS_ENUM(NSUInteger, VIEW_DETAILS_TYPE) {
+    GUEST_DETAILS,
+    PAYMENT_DETAILS
+};
+
 NSTimeInterval const kSrAnimationDuration = 0.7f;
 NSUInteger const kGuestDetailsViewTag = 51;
 NSUInteger const kPaymentDetailsViewTag = 52;
@@ -64,10 +69,13 @@ NSUInteger const kInfoDetailPopupRoomDetailsTag = 171731;
 NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
 NSUInteger const kInfoDetailPopupGuestDetailTag = 171733;
 NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
+NSUInteger const kWhyThisInfoTag = 171735;
+NSUInteger const kCardSecurityTag = 171736;
 
 @interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, SelectGooglePlaceDelegate, SelectBedTypeDelegate, SelectSmokingPrefDelegate, NavigationDelegate>
 
 @property (nonatomic) LOAD_DATA load_data_type;
+@property (nonatomic) VIEW_DETAILS_TYPE view_details_type;
 
 @property (nonatomic, strong) UIImage *placeholderImage;
 @property (weak, nonatomic) IBOutlet UITableView *roomsTableViewOutlet;
@@ -156,15 +164,15 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
         NSMutableDictionary *mutInfoPopupDict = [NSMutableDictionary dictionary];
         [mutInfoPopupDict setObject:[NSNumber numberWithInteger:kInfoDetailPopupRoomDetailsTag] forKey:[NSNumber numberWithInteger:kRoomTypeDescrLongTag]];
         [mutInfoPopupDict setObject:[NSNumber numberWithInteger:kInfoDetailPopupCancelPolicTag] forKey:[NSNumber numberWithInteger:kRoomNonRefundLongTag]];
-        [mutInfoPopupDict setObject:[NSNumber numberWithInteger:kInfoDetailPopupGuestDetailTag] forKey:[NSNumber numberWithInteger:kGuestDetailsViewTag]];
-        [mutInfoPopupDict setObject:[NSNumber numberWithInteger:kInfoDetailPopupPaymeDetailTag] forKey:[NSNumber numberWithInteger:kPaymentDetailsViewTag]];
+        [mutInfoPopupDict setObject:[NSNumber numberWithInteger:kInfoDetailPopupGuestDetailTag] forKey:[NSNumber numberWithInteger:kWhyThisInfoTag]];
+        [mutInfoPopupDict setObject:[NSNumber numberWithInteger:kInfoDetailPopupPaymeDetailTag] forKey:[NSNumber numberWithInteger:kCardSecurityTag]];
         _infoPopupTagDict = [NSDictionary dictionaryWithDictionary:mutInfoPopupDict];
         
         NSMutableDictionary *mutInfoPopupHeadingDict = [NSMutableDictionary dictionary];
         [mutInfoPopupHeadingDict setObject:@"Room Details" forKey:[NSNumber numberWithInteger:kRoomTypeDescrLongTag]];
         [mutInfoPopupHeadingDict setObject:@"Cancellation Policy" forKey:[NSNumber numberWithInteger:kRoomNonRefundLongTag]];
-        [mutInfoPopupHeadingDict setObject:@"Guest Information" forKey:[NSNumber numberWithInteger:kGuestDetailsViewTag]];
-        [mutInfoPopupHeadingDict setObject:@"Payment Information" forKey:[NSNumber numberWithInteger:kPaymentDetailsViewTag]];
+        [mutInfoPopupHeadingDict setObject:@"Guest Information" forKey:[NSNumber numberWithInteger:kWhyThisInfoTag]];
+        [mutInfoPopupHeadingDict setObject:@"Payment Information" forKey:[NSNumber numberWithInteger:kCardSecurityTag]];
         _infoPopupHeadingDict = [NSDictionary dictionaryWithDictionary:mutInfoPopupHeadingDict];
     }
     return self;
@@ -323,6 +331,36 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
 
 - (void)clickCancel {
     [self dropRoomDetailsView:nil];
+}
+
+- (void)clickSecondCancel {
+    switch (_view_details_type) {
+        case GUEST_DETAILS: {
+            [self dropGuestDetailsView:nil];
+            break;
+        }
+        case PAYMENT_DETAILS: {
+            [self dropPaymentDetailsView:nil];
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+- (void)clickRight {
+    switch (_view_details_type) {
+        case GUEST_DETAILS: {
+            [self dropGuestDetailsView:@"FromRightNav"];
+            break;
+        }
+        case PAYMENT_DETAILS: {
+            [self dropPaymentDetailsView:@"FromRightNav"];
+            break;
+        }
+        default:
+            break;
+    }
 }
 
 #pragma mark LoadDataProtocol methods
@@ -1222,10 +1260,6 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
     
     NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
     [self.view bringSubviewToFront:nv];
-//    [nv removeDefaultBackButton];
-//    UIButton *bb = [nv blankBackButton];
-//    [bb addTarget:self action:@selector(dropRoomDetailsView:) forControlEvents:UIControlEventTouchUpInside];
-//    [nv.leftView addSubview:bb];
     [nv animateToCancel];
     
     self.bedTypeButton.alpha = self.smokingButton.alpha = rtdl.alpha = 0.0f;
@@ -1285,8 +1319,6 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
     [self tuiBedTypeDone:nil];
     NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
     [self.view bringSubviewToFront:nv];
-//    [nv clearLeftView];
-//    [nv addDefaultBackButton];
     [nv animateToBack];
     
     [UIView animateWithDuration:kSrAnimationDuration animations:^{
@@ -1326,16 +1358,13 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
     NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
     UIButton *b = [UIButton buttonWithType:UIButtonTypeSystem];
     b.frame = nv.titleView.bounds;
-    b.tag = kGuestDetailsViewTag;
+    b.tag = kWhyThisInfoTag;
     [b addTarget:self action:@selector(loadInfoDetailsPopup:) forControlEvents:UIControlEventTouchUpInside];
     [b setShowsTouchWhenHighlighted:YES];
-    [b setTitle:@"Why this info?ℹ️" forState:UIControlStateNormal];
+    [b setTitle:@"Why this infoℹ️" forState:UIControlStateNormal];
     [nv replaceTitleViewContainer:b];
-    
-//    UIButton *bb = [nv blankBackButton];
-//    [bb addTarget:self action:@selector(dropGuestDetailsView:) forControlEvents:UIControlEventTouchUpInside];
-//    [nv.leftView addSubview:bb];
-    [nv animateToCancel];
+    [nv animateToSecondCancel];
+    [nv rightViewAddCheckMark];
     
     self.firstNameOutlet.delegate = self;
     self.lastNameOutlet.delegate = self;
@@ -1381,6 +1410,7 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
         [self.deleteUserOutlet addTarget:self action:@selector(initiateDeleteUser:) forControlEvents:UIControlEventTouchUpInside ];
     }
     
+    _view_details_type = GUEST_DETAILS;
     [UIView animateWithDuration:kSrAnimationDuration animations:^{
         guestDetailsView.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
         guestDetailsView.backgroundColor = [UIColor whiteColor];
@@ -1392,7 +1422,7 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
 
 - (void)dropGuestDetailsView:(id)sender {
     GuestInfo *gi = [GuestInfo singleton];
-    if (sender == self.navigationItem.rightBarButtonItem) {
+    if ([sender isKindOfClass:[NSString class]] && [sender isEqualToString:@"FromRightNav"]) {
         gi.firstName = self.firstNameOutlet.text;
         gi.lastName = self.lastNameOutlet.text;
         gi.email = self.emailOutlet.text;
@@ -1417,9 +1447,12 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
     __block CGAffineTransform toTransform = CGAffineTransformMakeTranslation(toX, toY);
     
     [self.view endEditing:YES];
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Different Room" style:UIBarButtonItemStyleDone target:self action:@selector(dropRoomDetailsView:)];
-    self.navigationItem.rightBarButtonItem = nil;
-    self.navigationItem.titleView = nil;
+    
+    NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
+    [nv animateRevertToFirstCancel];
+    [nv animateRevertToWhereToContainer:kWhyThisInfoTag];
+    [nv rightViewRemoveCheckMark];
+    
     [UIView animateWithDuration:kSrAnimationDuration animations:^{
         guestDetailsView.transform = CGAffineTransformScale(toTransform, 0.01f, 0.01f);
         guestDetailsView.backgroundColor = kWotaColorOne();
@@ -1435,23 +1468,16 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
         return;
     }
     
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dropPaymentDetailsView:)];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dropPaymentDetailsView:)];
-    self.navigationItem.rightBarButtonItem.enabled = NO;
-    
     NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
     UIButton *b = [UIButton buttonWithType:UIButtonTypeSystem];
     b.frame = nv.titleView.bounds;
-    b.tag = kPaymentDetailsViewTag;
+    b.tag = kCardSecurityTag;
     [b addTarget:self action:@selector(loadInfoDetailsPopup:) forControlEvents:UIControlEventTouchUpInside];
     [b setShowsTouchWhenHighlighted:YES];
     [b setTitle:@"Card Security ℹ️" forState:UIControlStateNormal];
     [nv replaceTitleViewContainer:b];
-    
-//    UIButton *bb = [nv blankBackButton];
-//    [bb addTarget:self action:@selector(dropPaymentDetailsView:) forControlEvents:UIControlEventTouchUpInside];
-//    [nv.leftView addSubview:bb];
-    [nv animateToCancel];
+    [nv animateToSecondCancel];
+    [nv rightViewAddCheckMark];
     
     __weak UIView *paymentDetailsView = views[0];
     paymentDetailsView.tag = kPaymentDetailsViewTag;
@@ -1495,6 +1521,7 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
         [self.deleteCardOutlet addTarget:self action:@selector(initiateDeleteCard:) forControlEvents:UIControlEventTouchUpInside];
     }
     
+    _view_details_type = PAYMENT_DETAILS;
     __weak typeof(self) wes = self;
     [UIView animateWithDuration:kSrAnimationDuration animations:^{
         paymentDetailsView.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
@@ -1509,7 +1536,7 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
     [self.view endEditing:YES];
     PaymentDetails *pd = [PaymentDetails card1];
     
-    if (sender == self.navigationItem.rightBarButtonItem) {
+    if ([sender isKindOfClass:[NSString class]] && [sender isEqualToString:@"FromRightNav"]) {
         pd.cardNumber = self.ccNumberOutlet.cardNumber;
         [self updatePaymentDetailsButtonTitle];
         pd.eanCardType = self.ccNumberOutlet.eanType;
@@ -1543,9 +1570,11 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
     CGFloat toY = pboCenter.y - paymentDetailsView.center.y;
     __block CGAffineTransform toTransform = CGAffineTransformMakeTranslation(toX, toY);
     
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Different Room" style:UIBarButtonItemStyleDone target:self action:@selector(dropRoomDetailsView:)];
-    self.navigationItem.rightBarButtonItem = nil;
-    self.navigationItem.titleView = nil;
+    NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
+    [nv animateRevertToFirstCancel];
+    [nv animateRevertToWhereToContainer:kCardSecurityTag];
+    [nv rightViewRemoveCheckMark];
+    
     [UIView animateWithDuration:kSrAnimationDuration animations:^{
         paymentDetailsView.backgroundColor = kWotaColorOne();
         [[paymentDetailsView subviews] makeObjectsPerformSelector:@selector(setBackgroundColor:) withObject:(id)kWotaColorOne()];
@@ -1638,11 +1667,11 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
             wv.text = room.rateInfo.cancellationPolicy;
             break;
         }
-        case kGuestDetailsViewTag: {
+        case kWhyThisInfoTag: {
             wv.text = @"The first and last names must match the guest's photo ID when checking in at the property.\n\nA confirmation email will be sent to the given address upon booking.\n\nYour phone number will only be used by a customer service agent in the event that there is a problem with your reservation.\n\nThis information will be securely stored in your iPhone's Keychain for your future hotel bookings, so that you don't have to retype it. No other apps will have access to this information. And you can change or delete this information at any time.";
             break;
         }
-        case kPaymentDetailsViewTag: {
+        case kCardSecurityTag: {
             wv.text = @"Your credit card information will be securely stored in your iPhone's Keychain for your future hotel bookings, so that you don't have to retype it. No other apps will have access to this information. And you can change or delete this information at any time.";
             break;
         }
@@ -1857,10 +1886,12 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
 #pragma mark Validation methods
 
 - (void)enableOrDisableRightBarButtonItemForGuest {
+    NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
+    
     if ([self isWeGoodForGuest]) {
-        self.navigationItem.rightBarButtonItem.enabled = YES;
+        [nv rightViewEnableCheckMark];
     } else {
-        self.navigationItem.rightBarButtonItem.enabled = NO;
+        [nv rightViewDisableCheckMark];
     }
 }
 
@@ -1929,10 +1960,12 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
 }
 
 - (void)enableOrDisableRightBarButtonItemForPayment {
+    NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
+    
     if ([self isWeGoodForCredit]) {
-        self.navigationItem.rightBarButtonItem.enabled = YES;
+        [nv rightViewEnableCheckMark];
     } else {
-        self.navigationItem.rightBarButtonItem.enabled = NO;
+        [nv rightViewDisableCheckMark];
     }
 }
 
@@ -2054,11 +2087,9 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
         ;
     }];
     
-    self.navigationItem.leftBarButtonItem.enabled = NO;
-    self.navigationItem.rightBarButtonItem.enabled = NO;
-//    self.navigationItem.titleView.userInteractionEnabled = NO;
-//    self.navigationItem.titleView.alpha = 0.2f;
-    ((UIButton*)self.navigationItem.titleView).enabled = NO;
+    NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
+    [nv grayAndDisableLeftView];
+    [nv grayAndDisableRiteView];
     
     self.ccNumberOutlet.cardLogoImageView.alpha = 0.2f;
     
@@ -2089,9 +2120,8 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
         self.cancelDeletionOutlet.hidden = YES;
     }];
     
-    self.navigationItem.leftBarButtonItem.enabled = YES;
-    self.navigationItem.titleView.userInteractionEnabled = YES;
-    self.navigationItem.titleView.alpha = 1.0f;
+    NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
+    [nv blueAndEnableLeftView];
     
     [self validateCreditCardNumber:self.ccNumberOutlet.cardNumber];
     [self validateBillingAddressWithNoGoColor:NO];
@@ -2128,11 +2158,9 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
         ;
     }];
     
-    self.navigationItem.leftBarButtonItem.enabled = NO;
-    self.navigationItem.rightBarButtonItem.enabled = NO;
-    self.navigationItem.titleView.userInteractionEnabled = NO;
-    self.navigationItem.titleView.alpha = 0.2f;
-    ((UIButton*)self.navigationItem.titleView).enabled = NO;
+    NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
+    [nv grayAndDisableLeftView];
+    [nv grayAndDisableRiteView];
     
     self.firstNameOutlet.backgroundColor = [UIColor grayColor];
     self.lastNameOutlet.backgroundColor = [UIColor grayColor];
@@ -2163,10 +2191,8 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
         self.cancelUserDeletionOutlet.hidden = YES;
     }];
     
-    self.navigationItem.leftBarButtonItem.enabled = YES;
-    self.navigationItem.titleView.userInteractionEnabled = YES;
-    self.navigationItem.titleView.alpha = 1.0f;
-    ((UIButton*)self.navigationItem.titleView).enabled = YES;
+    NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
+    [nv blueAndEnableLeftView];
     
     [self validateFirstName:self.firstNameOutlet.text];
     [self validateLastName:self.lastNameOutlet.text];

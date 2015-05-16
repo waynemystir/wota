@@ -10,11 +10,11 @@
 
 #define degreesToRadians(x) (M_PI * x / 180.0)
 
-NSTimeInterval const kBcvAnimationDuration = 0.6;
+NSTimeInterval const kBcvAnimationDuration = 0.7;
 CGFloat const startAngle = -26.8f;
-CGFloat const endAngle = -44.9f;
+CGFloat const endAngle = -46.4f;
 CGFloat const startScale = 1.13f;
-CGFloat const endScale = 1.42f;
+CGFloat const endScale = 1.426f;
 
 @interface BackCancelView () {
     UIView *upBar;
@@ -129,6 +129,16 @@ CGFloat const endScale = 1.42f;
     shrink.timingFunction = [CAMediaTimingFunction functionWithName:[[self class] mediaTimingFunction]];
     [[upBar layer] addAnimation:shrink forKey:@"shrink"];
     [[downBar layer] addAnimation:shrink forKey:@"shrink"];
+}
+
+- (void)grayIt {
+    upBar.backgroundColor = [UIColor grayColor];
+    downBar.backgroundColor = [UIColor grayColor];
+}
+
+- (void)blueIt {
+    upBar.backgroundColor = self.tintColor;
+    downBar.backgroundColor = self.tintColor;
 }
 
 @end

@@ -19,6 +19,7 @@ extern NSUInteger const kNavigationViewTag;
 @optional
 
 - (void)clickCancel;
+- (void)clickSecondCancel;
 - (void)clickRight;
 
 @end
@@ -33,13 +34,20 @@ extern NSUInteger const kNavigationViewTag;
 @property (nonatomic, strong) UIView *theView;
 @property (nonatomic, weak) id<NavigationDelegate> navDelegate;
 
-//- (UIButton *)blankBackButton;
-//- (void)addDefaultBackButton;
-//- (void)removeDefaultBackButton;
+- (void)blueAndEnableLeftView;
+- (void)grayAndDisableLeftView;
+- (void)grayAndDisableRiteView;
 
+- (void)animateRevertToWhereToContainer:(NSUInteger)removeTag;
+- (void)animateRevertToFirstCancel;
+- (void)animateToSecondCancel;
 - (void)animateToCancel;
 - (void)animateToBack;
 //- (void)clearLeftView;
 - (void)replaceTitleViewContainer:(UIView *)replacementView;
+- (void)rightViewAddCheckMark;
+- (void)rightViewRemoveCheckMark;
+- (void)rightViewEnableCheckMark;
+- (void)rightViewDisableCheckMark;
 
 @end

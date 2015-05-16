@@ -21,7 +21,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="piI-CE-UQa" userLabel="containerView">
-                    <rect key="frame" x="0.0" y="0.0" width="320" height="200"/>
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="210"/>
                     <subviews>
                         <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Credit Card Number" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="eE4-SP-jIY" userLabel="ccNumberTextField" customClass="WotaCardNumberField">
                             <rect key="frame" x="5" y="5" width="282" height="30"/>
@@ -44,13 +44,13 @@
                             <textInputTraits key="textInputTraits" autocapitalizationType="words" autocorrectionType="no" spellCheckingType="no" returnKeyType="next"/>
                         </textField>
                         <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cO3-Vr-5aU" userLabel="deleteCardButton" customClass="WotaButton">
-                            <rect key="frame" x="5" y="151" width="131" height="30"/>
+                            <rect key="frame" x="5" y="161" width="131" height="30"/>
                             <state key="normal" title="Delete This Card">
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
                         </button>
                         <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2Wi-kH-Jpp" userLabel="cancelDeletionButton" customClass="WotaButton">
-                            <rect key="frame" x="141" y="151" width="126" height="30"/>
+                            <rect key="frame" x="141" y="161" width="126" height="30"/>
                             <state key="normal" title="Cancel Deletion">
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                             </state>

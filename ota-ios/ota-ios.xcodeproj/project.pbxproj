@@ -104,6 +104,7 @@
 		B0BD38241AF9914600EF5E4F /* NightRateTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0BD38231AF9914600EF5E4F /* NightRateTableCellView.m */; };
 		B0D01DE51B02D4880001C558 /* NavigationView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D01DE41B02D4880001C558 /* NavigationView.m */; };
 		B0D01EB81B0590260001C558 /* BackCancelView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D01EB71B0590260001C558 /* BackCancelView.m */; };
+		B0D01EBB1B0657010001C558 /* CheckMarkView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D01EBA1B0657010001C558 /* CheckMarkView.m */; };
 		B0D02FB61AE5F92500B1E75F /* Luhn.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D02FB51AE5F92500B1E75F /* Luhn.m */; };
 		B0D02FE21AE6123000B1E75F /* PTKAddressZip.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D02FB91AE6123000B1E75F /* PTKAddressZip.m */; };
 		B0D02FE31AE6123000B1E75F /* PTKCard.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D02FBB1AE6123000B1E75F /* PTKCard.m */; };
@@ -321,6 +322,8 @@
 		B0D01DE41B02D4880001C558 /* NavigationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavigationView.m; sourceTree = "<group>"; };
 		B0D01EB61B0590260001C558 /* BackCancelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackCancelView.h; sourceTree = "<group>"; };
 		B0D01EB71B0590260001C558 /* BackCancelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BackCancelView.m; sourceTree = "<group>"; };
+		B0D01EB91B0657000001C558 /* CheckMarkView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CheckMarkView.h; sourceTree = "<group>"; };
+		B0D01EBA1B0657010001C558 /* CheckMarkView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CheckMarkView.m; sourceTree = "<group>"; };
 		B0D02FB41AE5F92500B1E75F /* Luhn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Luhn.h; sourceTree = "<group>"; };
 		B0D02FB51AE5F92500B1E75F /* Luhn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Luhn.m; sourceTree = "<group>"; };
 		B0D02FB81AE6123000B1E75F /* PTKAddressZip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTKAddressZip.h; sourceTree = "<group>"; };
@@ -570,6 +573,8 @@
 				B0D01DE41B02D4880001C558 /* NavigationView.m */,
 				B0D01EB61B0590260001C558 /* BackCancelView.h */,
 				B0D01EB71B0590260001C558 /* BackCancelView.m */,
+				B0D01EB91B0657000001C558 /* CheckMarkView.h */,
+				B0D01EBA1B0657010001C558 /* CheckMarkView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1011,6 +1016,7 @@
 				B09E41831AEB2D9B000A718D /* SelectBedTypeDelegateImplementation.m in Sources */,
 				B03B42FD1ADDFE1B0083A6EA /* EanPlace.m in Sources */,
 				B09C5EA61AD1A16E00A3D7E8 /* EanHotelListHotelSummary.m in Sources */,
+				B0D01EBB1B0657010001C558 /* CheckMarkView.m in Sources */,
 				B018C04B1ADA08CF00DDCE2E /* JNKeychain.m in Sources */,
 				B032F6301AC18F6700809395 /* MainViewController.m in Sources */,
 				B09797D11AC321F90014FC7C /* GooglePlaceDetail.m in Sources */,
