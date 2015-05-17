@@ -11,10 +11,10 @@
 #define degreesToRadians(x) (M_PI * x / 180.0)
 
 NSTimeInterval const kBcvAnimationDuration = 0.7;
-CGFloat const startAngle = -26.8f;
-CGFloat const endAngle = -46.4f;
+CGFloat const startAngle = -24.8f;
+CGFloat const endAngle = -48.4f;
 CGFloat const startScale = 1.13f;
-CGFloat const endScale = 1.426f;
+CGFloat const endScale = 1.626f;
 
 @interface BackCancelView () {
     UIView *upBar;
@@ -32,18 +32,18 @@ CGFloat const endScale = 1.426f;
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         self.userInteractionEnabled = NO;
-        upBar = [[UIView alloc] initWithFrame:CGRectMake(1, 1, frame.size.width - 2, 5)];
+        upBar = [[UIView alloc] initWithFrame:CGRectMake(1, 7, frame.size.width - 2, 5)];
         upBar.backgroundColor = self.tintColor;
         [self addSubview:upBar];
         
-        downBar = [[UIView alloc] initWithFrame:CGRectMake(1, frame.size.height - 6, frame.size.width - 2, 5)];
+        downBar = [[UIView alloc] initWithFrame:CGRectMake(1, frame.size.height - 12, frame.size.width - 2, 5)];
         downBar.backgroundColor = self.tintColor;
         [self addSubview:downBar];
         
         upBar.layer.cornerRadius = 3.0f;
         downBar.layer.cornerRadius = 3.0f;
         
-        CGPoint rotationPoint = CGPointMake(upBar.frame.size.width, upBar.frame.origin.y + upBar.frame.size.height/2);
+        CGPoint rotationPoint = CGPointMake(upBar.frame.size.width *.8, upBar.frame.origin.y + upBar.frame.size.height/2);
         
         CGFloat minX   = CGRectGetMinX(upBar.frame);
         CGFloat minY   = CGRectGetMinY(upBar.frame);
@@ -60,7 +60,7 @@ CGFloat const endScale = 1.426f;
         transform = CGAffineTransformScale(transform, startScale, 1.0f);
         upBar.transform = transform;
         
-        CGPoint dRotationPoint = CGPointMake(downBar.frame.size.width, downBar.frame.origin.y +downBar.frame.size.height/2);
+        CGPoint dRotationPoint = CGPointMake(downBar.frame.size.width * .8, downBar.frame.origin.y +downBar.frame.size.height/2);
         CGFloat dMinX = CGRectGetMinX(downBar.frame);
         CGFloat dMinY = CGRectGetMinY(downBar.frame);
         CGFloat dWidth = CGRectGetWidth(downBar.frame);

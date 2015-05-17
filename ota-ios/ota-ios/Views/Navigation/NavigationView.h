@@ -15,6 +15,7 @@ extern NSUInteger const kNavigationViewTag;
 @required
 
 - (void)clickBack;
+- (void)clickTitle;
 
 @optional
 

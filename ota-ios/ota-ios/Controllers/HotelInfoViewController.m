@@ -119,6 +119,10 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+- (void)clickTitle {
+    
+}
+
 - (void)requestStarted:(NSURL *)url {
     NSLog(@"%@.%@ URL:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), [url absoluteString]);
 }

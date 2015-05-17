@@ -40,10 +40,6 @@
     [self.view addSubview:nv];
 }
 
-- (void)clickBack {
-    [self.navigationController popViewControllerAnimated:YES];
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -62,6 +58,16 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.navigationController.navigationBar.hidden = YES;
+}
+
+#pragma mark NavigationDelegate methods
+
+- (void)clickBack {
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)clickTitle {
+    
 }
 
 #pragma mark LoadDataProtocol methods

@@ -105,6 +105,7 @@
 		B0D01DE51B02D4880001C558 /* NavigationView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D01DE41B02D4880001C558 /* NavigationView.m */; };
 		B0D01EB81B0590260001C558 /* BackCancelView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D01EB71B0590260001C558 /* BackCancelView.m */; };
 		B0D01EBB1B0657010001C558 /* CheckMarkView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D01EBA1B0657010001C558 /* CheckMarkView.m */; };
+		B0D01EC21B07EFE30001C558 /* NavTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D01EC11B07EFE30001C558 /* NavTitleView.m */; };
 		B0D02FB61AE5F92500B1E75F /* Luhn.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D02FB51AE5F92500B1E75F /* Luhn.m */; };
 		B0D02FE21AE6123000B1E75F /* PTKAddressZip.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D02FB91AE6123000B1E75F /* PTKAddressZip.m */; };
 		B0D02FE31AE6123000B1E75F /* PTKCard.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D02FBB1AE6123000B1E75F /* PTKCard.m */; };
@@ -318,12 +319,14 @@
 		B0BD38201AF990F600EF5E4F /* NightRateTableCellView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NightRateTableCellView.xib; sourceTree = "<group>"; };
 		B0BD38221AF9914600EF5E4F /* NightRateTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NightRateTableCellView.h; sourceTree = "<group>"; };
 		B0BD38231AF9914600EF5E4F /* NightRateTableCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NightRateTableCellView.m; sourceTree = "<group>"; };
-		B0D01DE31B02D4880001C558 /* NavigationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavigationView.h; sourceTree = "<group>"; };
-		B0D01DE41B02D4880001C558 /* NavigationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavigationView.m; sourceTree = "<group>"; };
+		B0D01DE31B02D4880001C558 /* NavigationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavigationView.h; path = "ota-ios/Views/Navigation/NavigationView.h"; sourceTree = SOURCE_ROOT; };
+		B0D01DE41B02D4880001C558 /* NavigationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavigationView.m; path = "ota-ios/Views/Navigation/NavigationView.m"; sourceTree = SOURCE_ROOT; };
 		B0D01EB61B0590260001C558 /* BackCancelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackCancelView.h; sourceTree = "<group>"; };
 		B0D01EB71B0590260001C558 /* BackCancelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BackCancelView.m; sourceTree = "<group>"; };
 		B0D01EB91B0657000001C558 /* CheckMarkView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CheckMarkView.h; sourceTree = "<group>"; };
 		B0D01EBA1B0657010001C558 /* CheckMarkView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CheckMarkView.m; sourceTree = "<group>"; };
+		B0D01EC01B07EFE30001C558 /* NavTitleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavTitleView.h; sourceTree = "<group>"; };
+		B0D01EC11B07EFE30001C558 /* NavTitleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavTitleView.m; sourceTree = "<group>"; };
 		B0D02FB41AE5F92500B1E75F /* Luhn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Luhn.h; sourceTree = "<group>"; };
 		B0D02FB51AE5F92500B1E75F /* Luhn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Luhn.m; sourceTree = "<group>"; };
 		B0D02FB81AE6123000B1E75F /* PTKAddressZip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTKAddressZip.h; sourceTree = "<group>"; };
@@ -549,6 +552,7 @@
 		B032F64D1AC191FB00809395 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				B0D01EBF1B07ED830001C558 /* Navigation */,
 				B032F64F1AC1935000809395 /* MainView.xib */,
 				B032F6541AC193DB00809395 /* CriteriaView.xib */,
 				B05BD6311AC1FF54002C2882 /* PlaceAutoCompleteTableViewCell.xib */,
@@ -569,12 +573,6 @@
 				B09E41841AEB43DA000A718D /* WotaButton.xib */,
 				B0BD38201AF990F600EF5E4F /* NightRateTableCellView.xib */,
 				B03B527D1AF99425007E2EA7 /* PriceDetailsPopupView.xib */,
-				B0D01DE31B02D4880001C558 /* NavigationView.h */,
-				B0D01DE41B02D4880001C558 /* NavigationView.m */,
-				B0D01EB61B0590260001C558 /* BackCancelView.h */,
-				B0D01EB71B0590260001C558 /* BackCancelView.m */,
-				B0D01EB91B0657000001C558 /* CheckMarkView.h */,
-				B0D01EBA1B0657010001C558 /* CheckMarkView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -787,6 +785,21 @@
 			name = HotelRoomReservationResponse;
 			path = "ota-ios/Models/Ean/HotelRoomReservationResponse";
 			sourceTree = SOURCE_ROOT;
+		};
+		B0D01EBF1B07ED830001C558 /* Navigation */ = {
+			isa = PBXGroup;
+			children = (
+				B0D01DE31B02D4880001C558 /* NavigationView.h */,
+				B0D01DE41B02D4880001C558 /* NavigationView.m */,
+				B0D01EB61B0590260001C558 /* BackCancelView.h */,
+				B0D01EB71B0590260001C558 /* BackCancelView.m */,
+				B0D01EB91B0657000001C558 /* CheckMarkView.h */,
+				B0D01EBA1B0657010001C558 /* CheckMarkView.m */,
+				B0D01EC01B07EFE30001C558 /* NavTitleView.h */,
+				B0D01EC11B07EFE30001C558 /* NavTitleView.m */,
+			);
+			path = Navigation;
+			sourceTree = "<group>";
 		};
 		B0D02FB71AE6123000B1E75F /* PaymentKit */ = {
 			isa = PBXGroup;
@@ -1039,6 +1052,7 @@
 				B01E25861AFDD33E001D02B1 /* EanHotelFee.m in Sources */,
 				B00872D61AED4A9100CB2B9D /* EanAbstractResponse.m in Sources */,
 				B0BD381F1AF9812100EF5E4F /* NightlyRateTableViewDelegateImplementation.m in Sources */,
+				B0D01EC21B07EFE30001C558 /* NavTitleView.m in Sources */,
 				B0A87D681AD4B2B3001505A6 /* EanHotelRoomReservationResponse.m in Sources */,
 				B091B8951AD22EFC00BB6CB0 /* AvailableRoomTableViewCell.m in Sources */,
 				B07958EC1AF4751100422182 /* EanSurcharge.m in Sources */,

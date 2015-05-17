@@ -363,6 +363,11 @@ NSUInteger const kCardSecurityTag = 171736;
     }
 }
 
+- (void)clickTitle {
+    NSLog(@"Snoogans");
+    [self.navigationController popToRootViewControllerAnimated:YES];
+}
+
 #pragma mark LoadDataProtocol methods
 
 - (void)requestFinished:(NSData *)responseData {

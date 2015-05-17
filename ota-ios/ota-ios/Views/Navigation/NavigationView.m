@@ -18,6 +18,7 @@ NSUInteger const kNavigationViewTag = 4141414141;
 NSUInteger const kDefaultBackButtonTag = 94234598217;
 NSUInteger const kWhereToContainerTag = 34958739;
 NSUInteger const kWhereToLabelTag = 378209359451;
+NSUInteger const kTitleUnderViewTag = 9127539;
 NSUInteger const kBackCancelTag = 4729431;
 NSUInteger const kRightCheckMarkButton = 39618732;
 NSUInteger const kRightCheckMarkView = 4921743;
@@ -27,7 +28,7 @@ static NSArray *kTitleViews = nil;
 @interface NavigationView ()
 
 @property (nonatomic, strong) UIView *whereToContainer;
-@property (nonatomic, strong) UILabel *whereToUnderLabel;
+//@property (nonatomic, strong) UILabel *whereToUnderLabel;
 
 @end
 
@@ -117,7 +118,7 @@ static NSArray *kTitleViews = nil;
 }
 
 - (UIButton *)defaultBackButton {
-    UIButton *lb = [[UIButton alloc] initWithFrame:CGRectMake(3, 7, 32, 36)];
+    UIButton *lb = [[UIButton alloc] initWithFrame:CGRectMake(3, 7, 28, 36)];
 //    lb.layer.borderWidth = 1.0f;
 //    lb.layer.borderColor = [UIColor orangeColor].CGColor;
 //    UIView *cv = [[UIView alloc] initWithFrame:CGRectMake(14, 0, 1, lb.frame.size.height)];
@@ -152,8 +153,14 @@ static NSArray *kTitleViews = nil;
     _whereToContainer = [[UIView alloc] initWithFrame:_titleView.bounds];
     _whereToContainer.tag = kWhereToContainerTag;
     [_whereToContainer addSubview:[self whereToLabel]];
-    [self setupWhereToUnderLabel];
-    [_whereToContainer addSubview:_whereToUnderLabel];
+//    [self setupWhereToUnderLabel];
+//    [_whereToContainer addSubview:_whereToUnderLabel];
+    [_whereToContainer addSubview:[self titleUnderView]];
+    
+    UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:_navDelegate action:@selector(clickTitle)];
+    tgr.numberOfTapsRequired = 1;
+    tgr.numberOfTouchesRequired = 1;
+    [_whereToContainer addGestureRecognizer:tgr];
 }
 
 - (UILabel *)whereToLabel {
@@ -161,6 +168,7 @@ static NSArray *kTitleViews = nil;
     if (nil == wtl) {
         wtl = [[UILabel alloc] initWithFrame:CGRectMake(0, 3, 228, 21)];
         wtl.tag = kWhereToLabelTag;
+        wtl.lineBreakMode = NSLineBreakByClipping;
         wtl.text = [SelectionCriteria singleton].whereTo;
         wtl.textColor = self.tintColor;
         wtl.textAlignment = NSTextAlignmentCenter;
@@ -169,14 +177,51 @@ static NSArray *kTitleViews = nil;
     return wtl;
 }
 
-- (void)setupWhereToUnderLabel {
-    SelectionCriteria *sc = [SelectionCriteria singleton];
-    _whereToUnderLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 22, 228, 22)];
-    _whereToUnderLabel.font = [UIFont boldSystemFontOfSize:15.0f];
-    _whereToUnderLabel.textColor = self.tintColor;
-    _whereToUnderLabel.textAlignment = NSTextAlignmentCenter;
-    NSDateFormatter *df = kShortShortDateFormatter();
-    _whereToUnderLabel.text = [NSString stringWithFormat:@"🛄 %@ - %@  👤 %lu", [df stringFromDate:sc.arrivalDate], [df stringFromDate:sc.returnDate], (sc.numberOfAdults + [ChildTraveler numberOfKids])];
+//- (void)setupWhereToUnderLabel {
+//    SelectionCriteria *sc = [SelectionCriteria singleton];
+//    _whereToUnderLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 22, 228, 22)];
+//    _whereToUnderLabel.font = [UIFont boldSystemFontOfSize:15.0f];
+//    _whereToUnderLabel.textColor = self.tintColor;
+//    _whereToUnderLabel.textAlignment = NSTextAlignmentCenter;
+//    NSDateFormatter *df = kShortShortDateFormatter();
+//    _whereToUnderLabel.text = [NSString stringWithFormat:@"🛄 %@ - %@  👤 %lu", [df stringFromDate:sc.arrivalDate], [df stringFromDate:sc.returnDate], (sc.numberOfAdults + [ChildTraveler numberOfKids])];
+//}
+
+- (UIView *)titleUnderView {
+    UIView *tuv = [_whereToContainer viewWithTag:kTitleUnderViewTag];
+    if (nil == tuv) {
+        tuv = [[UIView alloc] initWithFrame:CGRectMake(0, 22, 228, 22)];
+        tuv.tag = kTitleUnderViewTag;
+        SelectionCriteria *sc = [SelectionCriteria singleton];
+        
+        UIImage *calendarImage = [[UIImage imageNamed:@"calendar.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        UIImage *userSilhouetteImage = [[UIImage imageNamed:@"user_silhouette"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        UIImageView *cv = [[UIImageView alloc ]initWithFrame:CGRectMake(27, 3, 16, 16)];
+        cv.image = calendarImage;
+        cv.tintColor = self.tintColor;
+        UIImageView *sv = [[UIImageView alloc] initWithFrame:CGRectMake(159, 3, 16, 16)];
+        sv.image = userSilhouetteImage;
+        sv.tintColor = self.tintColor;
+        
+        UILabel *datesLabel = [[UILabel alloc] initWithFrame:CGRectMake(46, 0, 107, 22)];
+        datesLabel.font = [UIFont boldSystemFontOfSize:15.0f];;
+        datesLabel.textColor = self.tintColor;
+        datesLabel.textAlignment = NSTextAlignmentLeft;
+        NSDateFormatter *df = kShortShortDateFormatter();
+        datesLabel.text = [NSString stringWithFormat:@"%@ - %@", [df stringFromDate:sc.arrivalDate], [df stringFromDate:sc.returnDate]];
+        
+        UILabel *numbLabel = [[UILabel alloc] initWithFrame:CGRectMake(177, 0, 25, 22)];
+        numbLabel.font = [UIFont boldSystemFontOfSize:15.0f];;
+        numbLabel.textColor = self.tintColor;
+        numbLabel.textAlignment = NSTextAlignmentLeft;
+        numbLabel.text = [NSString stringWithFormat:@"%lu", (sc.numberOfAdults + [ChildTraveler numberOfKids])];
+        
+        [tuv addSubview:cv];
+        [tuv addSubview:datesLabel];
+        [tuv addSubview:sv];
+        [tuv addSubview:numbLabel];
+    }
+    return tuv;
 }
 
 - (void)rightViewAddCheckMark {
