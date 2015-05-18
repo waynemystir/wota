@@ -10,8 +10,8 @@
 
 #define degreesToRadians(x) (M_PI * x / 180.0)
 
-CGFloat const startAngle = -63.0f;
-CGFloat const startScale = 1.16f;
+CGFloat const barAngle = -63.0f;
+CGFloat const barScale = 1.16f;
 
 @interface CheckMarkView () {
     UIView *upBar;
@@ -49,8 +49,8 @@ CGFloat const startScale = 1.16f;
         upBar.layer.anchorPoint = anchorPoint;
         upBar.layer.position = rotationPoint;
         
-        CGAffineTransform transform = CGAffineTransformMakeRotation(degreesToRadians(startAngle));
-        transform = CGAffineTransformScale(transform, startScale, 1.0f);
+        CGAffineTransform transform = CGAffineTransformMakeRotation(degreesToRadians(barAngle));
+        transform = CGAffineTransformScale(transform, barScale, 1.0f);
         upBar.transform = transform;
         
         CGPoint dRotationPoint = CGPointMake(downBar.frame.size.width, downBar.frame.origin.y +downBar.frame.size.height/2);
@@ -65,8 +65,8 @@ CGFloat const startScale = 1.16f;
         downBar.layer.anchorPoint = dAnchorPoint;
         downBar.layer.position = dRotationPoint;
         
-        CGAffineTransform dTransform = CGAffineTransformMakeRotation(degreesToRadians(-startAngle));
-        dTransform = CGAffineTransformScale(dTransform, startScale, 1.0f);
+        CGAffineTransform dTransform = CGAffineTransformMakeRotation(degreesToRadians(-barAngle));
+        dTransform = CGAffineTransformScale(dTransform, barScale, 1.0f);
         downBar.transform = dTransform;
     }
     return self;

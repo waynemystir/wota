@@ -23,12 +23,9 @@ NSUInteger const kBackCancelTag = 4729431;
 NSUInteger const kRightCheckMarkButton = 39618732;
 NSUInteger const kRightCheckMarkView = 4921743;
 
-static NSArray *kTitleViews = nil;
-
 @interface NavigationView ()
 
 @property (nonatomic, strong) UIView *whereToContainer;
-//@property (nonatomic, strong) UILabel *whereToUnderLabel;
 
 @end
 
@@ -100,8 +97,6 @@ static NSArray *kTitleViews = nil;
         border.backgroundColor = kNavBorderColor();
         [self addSubview:border];
         
-        kTitleViews = [NSArray arrayWithObjects:[NSNumber numberWithInteger:kWhereToContainerTag], nil];
-        
         _titleView = [[UIView alloc ]initWithFrame:CGRectMake(46, 20, 228, 44)];
         [self addSubview:_titleView];
         [self setupWhereToContainer];
@@ -153,8 +148,6 @@ static NSArray *kTitleViews = nil;
     _whereToContainer = [[UIView alloc] initWithFrame:_titleView.bounds];
     _whereToContainer.tag = kWhereToContainerTag;
     [_whereToContainer addSubview:[self whereToLabel]];
-//    [self setupWhereToUnderLabel];
-//    [_whereToContainer addSubview:_whereToUnderLabel];
     [_whereToContainer addSubview:[self titleUnderView]];
     
     UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:_navDelegate action:@selector(clickTitle)];
@@ -177,49 +170,53 @@ static NSArray *kTitleViews = nil;
     return wtl;
 }
 
-//- (void)setupWhereToUnderLabel {
-//    SelectionCriteria *sc = [SelectionCriteria singleton];
-//    _whereToUnderLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 22, 228, 22)];
-//    _whereToUnderLabel.font = [UIFont boldSystemFontOfSize:15.0f];
-//    _whereToUnderLabel.textColor = self.tintColor;
-//    _whereToUnderLabel.textAlignment = NSTextAlignmentCenter;
-//    NSDateFormatter *df = kShortShortDateFormatter();
-//    _whereToUnderLabel.text = [NSString stringWithFormat:@"🛄 %@ - %@  👤 %lu", [df stringFromDate:sc.arrivalDate], [df stringFromDate:sc.returnDate], (sc.numberOfAdults + [ChildTraveler numberOfKids])];
-//}
-
 - (UIView *)titleUnderView {
     UIView *tuv = [_whereToContainer viewWithTag:kTitleUnderViewTag];
     if (nil == tuv) {
-        tuv = [[UIView alloc] initWithFrame:CGRectMake(0, 22, 228, 22)];
-        tuv.tag = kTitleUnderViewTag;
         SelectionCriteria *sc = [SelectionCriteria singleton];
         
         UIImage *calendarImage = [[UIImage imageNamed:@"calendar.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        UIImage *userSilhouetteImage = [[UIImage imageNamed:@"user_silhouette"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        UIImageView *cv = [[UIImageView alloc ]initWithFrame:CGRectMake(27, 3, 16, 16)];
+        UIImageView *cv = [[UIImageView alloc ]initWithFrame:CGRectMake(0, 3, 16, 16)];
         cv.image = calendarImage;
         cv.tintColor = self.tintColor;
-        UIImageView *sv = [[UIImageView alloc] initWithFrame:CGRectMake(159, 3, 16, 16)];
-        sv.image = userSilhouetteImage;
-        sv.tintColor = self.tintColor;
         
-        UILabel *datesLabel = [[UILabel alloc] initWithFrame:CGRectMake(46, 0, 107, 22)];
+        UILabel *datesLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, 107, 22)];
         datesLabel.font = [UIFont boldSystemFontOfSize:15.0f];;
         datesLabel.textColor = self.tintColor;
         datesLabel.textAlignment = NSTextAlignmentLeft;
         NSDateFormatter *df = kShortShortDateFormatter();
         datesLabel.text = [NSString stringWithFormat:@"%@ - %@", [df stringFromDate:sc.arrivalDate], [df stringFromDate:sc.returnDate]];
+        [datesLabel sizeToFit];
+        CGRect dd = datesLabel.frame;
+        datesLabel.frame = CGRectMake(dd.origin.x, dd.origin.y, dd.size.width, 22);
+        CGFloat maxDatesPoint = CGRectGetMaxX(datesLabel.frame);
         
-        UILabel *numbLabel = [[UILabel alloc] initWithFrame:CGRectMake(177, 0, 25, 22)];
+        UIImage *userSilhouetteImage = [[UIImage imageNamed:@"user_silhouette"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        UIImageView *sv = [[UIImageView alloc] initWithFrame:CGRectMake(maxDatesPoint + 9, 3, 16, 16)];
+        sv.image = userSilhouetteImage;
+        sv.tintColor = self.tintColor;
+        CGFloat maxSilhPoint = CGRectGetMaxX(sv.frame);
+        
+        UILabel *numbLabel = [[UILabel alloc] initWithFrame:CGRectMake(maxSilhPoint + 2, 0, 25, 22)];
         numbLabel.font = [UIFont boldSystemFontOfSize:15.0f];;
         numbLabel.textColor = self.tintColor;
         numbLabel.textAlignment = NSTextAlignmentLeft;
         numbLabel.text = [NSString stringWithFormat:@"%lu", (sc.numberOfAdults + [ChildTraveler numberOfKids])];
+        [numbLabel sizeToFit];
+        CGRect nn = numbLabel.frame;
+        numbLabel.frame = CGRectMake(nn.origin.x, nn.origin.y, nn.size.width, 22);
         
-        [tuv addSubview:cv];
-        [tuv addSubview:datesLabel];
-        [tuv addSubview:sv];
-        [tuv addSubview:numbLabel];
+        tuv = [[UIView alloc] initWithFrame:CGRectMake(0, 22, 228, 22)];
+        tuv.tag = kTitleUnderViewTag;
+        UIView *stuffContainer = [[UIView alloc] initWithFrame:tuv.bounds];
+        [tuv addSubview:stuffContainer];
+        
+        [stuffContainer addSubview:cv];
+        [stuffContainer addSubview:datesLabel];
+        [stuffContainer addSubview:sv];
+        [stuffContainer addSubview:numbLabel];
+        CGFloat maxNumbPoint = CGRectGetMaxX(numbLabel.frame);
+        stuffContainer.frame = CGRectMake((228 - maxNumbPoint)/2, 0, maxNumbPoint, 22);
     }
     return tuv;
 }

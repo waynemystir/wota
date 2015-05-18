@@ -13,6 +13,7 @@
                 <outlet property="emailOutlet" destination="bGZ-Au-IFZ" id="O5e-gz-vOC"/>
                 <outlet property="firstNameOutlet" destination="e22-0d-px3" id="8Rx-gK-gRu"/>
                 <outlet property="lastNameOutlet" destination="pYE-VB-kdV" id="che-aV-ogW"/>
+                <outlet property="phoneCountryContainer" destination="WZB-aA-vkL" id="4Nt-7S-7ix"/>
                 <outlet property="phoneOutlet" destination="urS-Ng-DbE" id="6P3-7Y-3fE"/>
             </connections>
         </placeholder>
@@ -34,23 +35,23 @@
                     <textInputTraits key="textInputTraits" autocapitalizationType="words" autocorrectionType="no" spellCheckingType="no" returnKeyType="next"/>
                 </textField>
                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Email" minimumFontSize="17" clearButtonMode="always" id="bGZ-Au-IFZ" userLabel="emailTextField">
-                    <rect key="frame" x="5" y="75" width="307" height="30"/>
+                    <rect key="frame" x="5" y="75" width="310" height="30"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress" returnKeyType="next"/>
                 </textField>
                 <view contentMode="scaleToFill" id="skl-FS-wKJ" userLabel="belowEmailContainer">
-                    <rect key="frame" x="0.0" y="109" width="314" height="138"/>
+                    <rect key="frame" x="0.0" y="109" width="316" height="138"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <subviews>
                         <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Confirm Email" minimumFontSize="17" clearButtonMode="always" id="VNU-Ee-m4C" userLabel="confirmEmailTextField">
-                            <rect key="frame" x="5" y="1" width="307" height="30"/>
+                            <rect key="frame" x="5" y="1" width="310" height="30"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress" returnKeyType="next"/>
                         </textField>
                         <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Phone Number" minimumFontSize="17" clearButtonMode="always" id="urS-Ng-DbE" userLabel="phoneTextField">
-                            <rect key="frame" x="5" y="36" width="172" height="30"/>
+                            <rect key="frame" x="94" y="36" width="204" height="30"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="phonePad" returnKeyType="next"/>
@@ -69,6 +70,24 @@
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
                         </button>
+                        <view contentMode="scaleToFill" id="WZB-aA-vkL" userLabel="phoneCountryContainer">
+                            <rect key="frame" x="5" y="36" width="84" height="30"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <subviews>
+                                <imageView userInteractionEnabled="NO" tag="51974123" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="jqq-ev-2S4" userLabel="flagView">
+                                    <rect key="frame" x="5" y="2" width="26" height="26"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                </imageView>
+                                <label opaque="NO" userInteractionEnabled="NO" tag="97145721" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="+797" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="T9e-kZ-cRX" userLabel="callingCode">
+                                    <rect key="frame" x="36" y="3" width="45" height="24"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </view>
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                 </view>

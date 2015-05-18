@@ -14,6 +14,8 @@
 @property (nonatomic, strong) NSString *firstName;
 @property (nonatomic, strong) NSString *lastName;
 @property (nonatomic, strong) NSString *email;
+@property (nonatomic, strong) NSString *internationalCallingCode;
+@property (nonatomic, strong) NSString *countryCode;
 @property (nonatomic, strong) NSString *phoneNumber;
 
 + (GuestInfo *)singleton;

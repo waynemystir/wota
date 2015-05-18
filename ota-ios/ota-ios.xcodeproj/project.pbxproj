@@ -59,6 +59,9 @@
 		B05BD6301AC1FEE3002C2882 /* GooglePlace.m in Sources */ = {isa = PBXBuildFile; fileRef = B05BD62F1AC1FEE3002C2882 /* GooglePlace.m */; };
 		B05BD6321AC1FF54002C2882 /* PlaceAutoCompleteTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B05BD6311AC1FF54002C2882 /* PlaceAutoCompleteTableViewCell.xib */; };
 		B0617ACF1AF5BE5500AEA216 /* EanCancelPolicyInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B0617ACE1AF5BE5500AEA216 /* EanCancelPolicyInfo.m */; };
+		B06C98BA1B0951E500DBE09D /* InternationalCallingCodes.plist in Resources */ = {isa = PBXBuildFile; fileRef = B06C98B91B0951E500DBE09D /* InternationalCallingCodes.plist */; };
+		B06C98BC1B09585300DBE09D /* CountryPicker.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B06C98BB1B09585300DBE09D /* CountryPicker.bundle */; };
+		B06C98BF1B09586B00DBE09D /* CountryPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = B06C98BE1B09586B00DBE09D /* CountryPicker.m */; };
 		B075AB091ADB687B0028C613 /* GoogleAddressComponent.m in Sources */ = {isa = PBXBuildFile; fileRef = B075AB081ADB687B0028C613 /* GoogleAddressComponent.m */; };
 		B075AB0C1ADB73560028C613 /* GooglePlaces.m in Sources */ = {isa = PBXBuildFile; fileRef = B075AB0B1ADB73560028C613 /* GooglePlaces.m */; };
 		B07958E61AF44A5800422182 /* EanChargeableRateInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B07958E51AF44A5800422182 /* EanChargeableRateInfo.m */; };
@@ -244,6 +247,10 @@
 		B05BD6311AC1FF54002C2882 /* PlaceAutoCompleteTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlaceAutoCompleteTableViewCell.xib; sourceTree = "<group>"; };
 		B0617ACD1AF5BE5500AEA216 /* EanCancelPolicyInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanCancelPolicyInfo.h; sourceTree = "<group>"; };
 		B0617ACE1AF5BE5500AEA216 /* EanCancelPolicyInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanCancelPolicyInfo.m; sourceTree = "<group>"; };
+		B06C98B91B0951E500DBE09D /* InternationalCallingCodes.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = InternationalCallingCodes.plist; sourceTree = "<group>"; };
+		B06C98BB1B09585300DBE09D /* CountryPicker.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = CountryPicker.bundle; sourceTree = "<group>"; };
+		B06C98BD1B09586B00DBE09D /* CountryPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CountryPicker.h; sourceTree = "<group>"; };
+		B06C98BE1B09586B00DBE09D /* CountryPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CountryPicker.m; sourceTree = "<group>"; };
 		B075AB071ADB687B0028C613 /* GoogleAddressComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleAddressComponent.h; sourceTree = "<group>"; };
 		B075AB081ADB687B0028C613 /* GoogleAddressComponent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleAddressComponent.m; sourceTree = "<group>"; };
 		B075AB0A1ADB73560028C613 /* GooglePlaces.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GooglePlaces.h; sourceTree = "<group>"; };
@@ -528,6 +535,8 @@
 				B049D2151AC19D1400E2E18C /* GoogleMaps.bundle */,
 				B032F6281AC18F6700809395 /* Info.plist */,
 				B032F6291AC18F6700809395 /* main.m */,
+				B06C98BB1B09585300DBE09D /* CountryPicker.bundle */,
+				B06C98B91B0951E500DBE09D /* InternationalCallingCodes.plist */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
@@ -677,6 +686,8 @@
 				B01F0ECD1AF8669600C68BA8 /* WotaTappableView.m */,
 				B0BD38221AF9914600EF5E4F /* NightRateTableCellView.h */,
 				B0BD38231AF9914600EF5E4F /* NightRateTableCellView.m */,
+				B06C98BD1B09586B00DBE09D /* CountryPicker.h */,
+				B06C98BE1B09586B00DBE09D /* CountryPicker.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -970,6 +981,7 @@
 				B0D02FED1AE6123000B1E75F /* cvc-amex.png in Resources */,
 				B0D02FEE1AE6123000B1E75F /* cvc-amex@2x.png in Resources */,
 				B0D02FF11AE6123000B1E75F /* diners.png in Resources */,
+				B06C98BA1B0951E500DBE09D /* InternationalCallingCodes.plist in Resources */,
 				B0DF52391ADC77F100136661 /* PostResultsTableViewCell.xib in Resources */,
 				B0D02FF91AE6123000B1E75F /* placeholder.png in Resources */,
 				B0D02FFF1AE6123000B1E75F /* textfield@2x.png in Resources */,
@@ -991,6 +1003,7 @@
 				B0963CBE1AC89459002FD859 /* ChildView.xib in Resources */,
 				B049D2161AC19D1400E2E18C /* GoogleMaps.bundle in Resources */,
 				B09797E71AC34DB70014FC7C /* HotelListingView.xib in Resources */,
+				B06C98BC1B09585300DBE09D /* CountryPicker.bundle in Resources */,
 				B09797DF1AC33E760014FC7C /* HotelTableViewCell.xib in Resources */,
 				B0D02FFB1AE6123000B1E75F /* visa.png in Resources */,
 				B0FE0F4E1AC70A2500DAF635 /* SelectRoomView.xib in Resources */,
@@ -1071,6 +1084,7 @@
 				B0344C4A1AE5A696000BBFCE /* WotaCardNumberField.m in Sources */,
 				B0963CC11AC8BDC6002FD859 /* ChildTraveler.m in Sources */,
 				B018C0451AD9BEC800DDCE2E /* GuestInfo.m in Sources */,
+				B06C98BF1B09586B00DBE09D /* CountryPicker.m in Sources */,
 				B09797CC1AC24BE20014FC7C /* MapViewController.m in Sources */,
 				B0D02FE41AE6123000B1E75F /* PTKCardCVC.m in Sources */,
 				B09797E21AC343DD0014FC7C /* HotelListingViewController.m in Sources */,

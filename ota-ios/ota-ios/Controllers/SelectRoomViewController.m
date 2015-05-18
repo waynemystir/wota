@@ -33,6 +33,7 @@
 #import "WotaTappableView.h"
 #import "NightlyRateTableViewDelegateImplementation.h"
 #import "NavigationView.h"
+#import "CountryPicker.h"
 
 typedef NS_ENUM(NSUInteger, LOAD_DATA) {
     LOAD_ROOM = 0,
@@ -72,7 +73,7 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
 NSUInteger const kWhyThisInfoTag = 171735;
 NSUInteger const kCardSecurityTag = 171736;
 
-@interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, SelectGooglePlaceDelegate, SelectBedTypeDelegate, SelectSmokingPrefDelegate, NavigationDelegate>
+@interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, SelectGooglePlaceDelegate, SelectBedTypeDelegate, SelectSmokingPrefDelegate, NavigationDelegate, CountryPickerDelegate>
 
 @property (nonatomic) LOAD_DATA load_data_type;
 @property (nonatomic) VIEW_DETAILS_TYPE view_details_type;
@@ -88,6 +89,7 @@ NSUInteger const kCardSecurityTag = 171736;
 @property (weak, nonatomic) IBOutlet UITextField *lastNameOutlet;
 @property (weak, nonatomic) IBOutlet UITextField *emailOutlet;
 @property (weak, nonatomic) IBOutlet UITextField *confirmEmailOutlet;
+@property (weak, nonatomic) IBOutlet UIView *phoneCountryContainer;
 @property (weak, nonatomic) IBOutlet UITextField *phoneOutlet;
 @property (weak, nonatomic) IBOutlet UIView *belowEmailContainerOutlet;
 @property (weak, nonatomic) IBOutlet WotaButton *deleteUserOutlet;
@@ -116,11 +118,13 @@ NSUInteger const kCardSecurityTag = 171736;
 @property (nonatomic, strong) UIButton *pickerViewDoneButton;
 @property (nonatomic, strong) UIPickerView *bedTypePickerView;
 @property (nonatomic, strong) SelectBedTypeDelegateImplementation *bedTypePickerDelegate;
-@property (nonatomic) BOOL isBedTypePickerShowing;
+@property (nonatomic) BOOL isPickerContainerShowing;
 @property (nonatomic, strong) UIPickerView *smokingPrefPickerView;
 @property (nonatomic, strong) SelectSmokingPreferenceDelegateImplementation *smokePrefDelegImplem;
 @property (nonatomic, strong) UIView *overlayDisable;
 @property (nonatomic, strong) UIView *overlayDisableNav;
+@property (nonatomic, strong) CountryPicker *countryPicker;
+@property (nonatomic, strong) NSString *selectedInternationalCallingCountryCode;
 
 @property (nonatomic, strong) UITableView *googlePlacesTableView;
 @property (nonatomic, strong) GooglePlaceTableViewDelegateImplementation *googlePlacesTableViewDelegate;
@@ -726,7 +730,7 @@ NSUInteger const kCardSecurityTag = 171736;
     [self.view bringSubviewToFront:self.overlayDisable];
     [self.pickerViewContainer addSubview:self.bedTypePickerView];
     [self.view bringSubviewToFront:self.pickerViewContainer];
-    self.isBedTypePickerShowing = YES;
+    self.isPickerContainerShowing = YES;
     [UIView animateWithDuration:kSrAnimationDuration animations:^{
         self.overlayDisable.alpha = 0.8f;
         self.pickerViewContainer.frame = CGRectMake(0, 364, 320, 204);
@@ -752,13 +756,81 @@ NSUInteger const kCardSecurityTag = 171736;
     [self.view bringSubviewToFront:self.overlayDisable];
     [self.pickerViewContainer addSubview:self.smokingPrefPickerView];
     [self.view bringSubviewToFront:self.pickerViewContainer];
-    self.isBedTypePickerShowing = YES;
+    self.isPickerContainerShowing = YES;
     [UIView animateWithDuration:kSrAnimationDuration animations:^{
         self.overlayDisable.alpha = 0.8f;
         self.pickerViewContainer.frame = CGRectMake(0, 364, 320, 204);
     } completion:^(BOOL finished) {
         ;
     }];
+}
+
+- (void)clickPhoneCountry {
+    self.countryPicker = [[CountryPicker alloc] initWithFrame:CGRectMake(0, 0, 320, 162)];
+    self.countryPicker.backgroundColor = UIColorFromRGB(0xe3e3e3);;
+    self.countryPicker.delegate = self;
+    
+    NSString *callingCodesPath = [[NSBundle mainBundle] pathForResource:@"InternationalCallingCodes" ofType:@"plist"];
+    NSDictionary *callingCodesDict = [NSDictionary dictionaryWithContentsOfFile:callingCodesPath];
+//    UIView *guestDetailsView = [self.view viewWithTag:kGuestDetailsViewTag];
+//    UILabel *iccLabel = (UILabel *) [guestDetailsView viewWithTag:97145721];
+//    NSString *icc = [iccLabel.text stringByReplacingOccurrencesOfString:@"+" withString:@""];
+    id iccCountryCode = [callingCodesDict objectForKey:[self.selectedInternationalCallingCountryCode lowercaseString]];
+    NSString *countryCode = nil;
+    
+    if (nil == iccCountryCode || [iccCountryCode isEqualToString:@""]) {
+        countryCode = [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode];
+    } else {
+        countryCode = [self.selectedInternationalCallingCountryCode uppercaseString];
+    }
+    
+    [self.countryPicker setSelectedCountryCode:countryCode];
+    
+    [self.pickerViewDoneButton setTitle:@"Next" forState:UIControlStateNormal];
+    [self.pickerViewContainer addSubview:self.countryPicker];
+    [self.view bringSubviewToFront:self.pickerViewContainer];
+    self.isPickerContainerShowing = YES;
+    [self.view endEditing:YES];
+    [UIView animateWithDuration:kSrAnimationDuration animations:^{
+        self.pickerViewContainer.frame = CGRectMake(0, 364, 320, 204);
+    } completion:^(BOOL finished) {
+        ;
+    }];
+}
+
+- (void)setupInternationalCallingCodes {
+    UIView *guestDetailsView = [self.view viewWithTag:kGuestDetailsViewTag];
+    self.selectedInternationalCallingCountryCode = [GuestInfo singleton].countryCode;
+    NSString *callingCodesPath = [[NSBundle mainBundle] pathForResource:@"InternationalCallingCodes" ofType:@"plist"];
+    NSDictionary *callingCodesDict = [NSDictionary dictionaryWithContentsOfFile:callingCodesPath];
+    id iccCountryCode = [callingCodesDict objectForKey:[self.selectedInternationalCallingCountryCode lowercaseString]];
+    NSString *countryCode = nil;
+    
+    if (nil == iccCountryCode || [iccCountryCode isEqualToString:@""]) {
+        countryCode = [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode];
+    } else {
+        countryCode = [self.selectedInternationalCallingCountryCode uppercaseString];
+    }
+    
+    UIImageView *flagView = (UIImageView *) [guestDetailsView viewWithTag:51974123];
+//    flagView.contentMode = UIViewContentModeScaleAspectFit;
+    
+    NSString *pathForImageResource = [NSString stringWithFormat:@"CountryPicker.bundle/%@", countryCode];
+    NSString *imagePath = [[NSBundle mainBundle] pathForResource:pathForImageResource ofType:@"png"];
+    if (nil != imagePath && ![imagePath isEqualToString:@""]) {
+        UIImage *image = [UIImage imageNamed:imagePath];
+        if (nil != image) {
+            flagView.image = image;
+        }
+    }
+    
+//    UILabel *cc = [[UILabel alloc] initWithFrame:CGRectMake(36, 3, 45, 24)];
+    UILabel *iccLabel = (UILabel *) [guestDetailsView viewWithTag:97145721];
+    
+    id callingCode = [callingCodesDict objectForKey:[countryCode lowercaseString]];
+    if (nil != callingCode && [callingCode isKindOfClass:[NSString class]]) {
+        iccLabel.text = [@"+" stringByAppendingString:callingCode];
+    }
 }
 
 - (IBAction)justPushIt:(id)sender {
@@ -1028,18 +1100,26 @@ NSUInteger const kCardSecurityTag = 171736;
 }
 
 - (void)tuiBedTypeDone:(id)sender {
-    if (!self.isBedTypePickerShowing) {
+    if (!self.isPickerContainerShowing) {
         return;
     }
     
     ((UIButton *) sender).backgroundColor = UIColorFromRGB(0xc4c4c4);
     
-    self.isBedTypePickerShowing = NO;
+    if ([self.pickerViewDoneButton.titleLabel.text isEqualToString:@"Next"]) {
+        [self.phoneOutlet becomeFirstResponder];
+    }
+    
+    self.isPickerContainerShowing = NO;
+    __weak typeof(self) weakSelf = self;
     [UIView animateWithDuration:kSrAnimationDuration animations:^{
-        self.overlayDisable.alpha = 0.0f;
-        self.pickerViewContainer.frame = CGRectMake(0, 600, 320, 204);
+        weakSelf.overlayDisable.alpha = 0.0f;
+        weakSelf.pickerViewContainer.frame = CGRectMake(0, 600, 320, 204);
     } completion:^(BOOL finished) {
-        [self.overlayDisable removeFromSuperview];
+        [weakSelf.overlayDisable removeFromSuperview];
+        if ([weakSelf.pickerViewDoneButton.titleLabel.text isEqualToString:@"Next"]) {
+            [weakSelf.pickerViewDoneButton setTitle:@"Done" forState:UIControlStateNormal];
+        }
     }];
 }
 
@@ -1237,6 +1317,34 @@ NSUInteger const kCardSecurityTag = 171736;
     [self.smokingButton setTitle:[SelectSmokingPreferenceDelegateImplementation smokingPrefStringForEanSmokeCode:eanSmokeCode] forState:UIControlStateNormal];
 }
 
+#pragma mark CountryPickerDelegate method
+
+- (void)countryPicker:(CountryPicker *)picker didSelectCountryWithName:(NSString *)name code:(NSString *)code {
+    UIView *guestDetailsView = [self.view viewWithTag:kGuestDetailsViewTag];
+    NSString *callingCodesPath = [[NSBundle mainBundle] pathForResource:@"InternationalCallingCodes" ofType:@"plist"];
+    NSDictionary *callingCodesDict = [NSDictionary dictionaryWithContentsOfFile:callingCodesPath];
+    
+    UIImageView *flagView = (UIImageView *) [guestDetailsView viewWithTag:51974123];
+    
+    NSString *pathForImageResource = [NSString stringWithFormat:@"CountryPicker.bundle/%@", code];
+    NSString *imagePath = [[NSBundle mainBundle] pathForResource:pathForImageResource ofType:@"png"];
+    if (nil != imagePath && ![imagePath isEqualToString:@""]) {
+        UIImage *image = [UIImage imageNamed:imagePath];
+        if (nil != image) {
+            flagView.image = image;
+        }
+    }
+    
+    UILabel *iccLabel = (UILabel *) [guestDetailsView viewWithTag:97145721];
+    
+    id callingCode = [callingCodesDict objectForKey:[code lowercaseString]];
+    if (nil != callingCode && [callingCode isKindOfClass:[NSString class]]) {
+        iccLabel.text = [@"+" stringByAppendingString:callingCode];
+    }
+    
+    self.selectedInternationalCallingCountryCode = code;
+}
+
 #pragma mark Animation methods
 
 - (void)loadRoomDetailsView {
@@ -1366,7 +1474,7 @@ NSUInteger const kCardSecurityTag = 171736;
     b.tag = kWhyThisInfoTag;
     [b addTarget:self action:@selector(loadInfoDetailsPopup:) forControlEvents:UIControlEventTouchUpInside];
     [b setShowsTouchWhenHighlighted:YES];
-    [b setTitle:@"Why this infoℹ️" forState:UIControlStateNormal];
+    [b setTitle:@"Why this info ℹ️" forState:UIControlStateNormal];
     [nv replaceTitleViewContainer:b];
     [nv animateToSecondCancel];
     [nv rightViewAddCheckMark];
@@ -1410,6 +1518,17 @@ NSUInteger const kCardSecurityTag = 171736;
     }
     [self validatePhone:self.phoneOutlet.text];
     
+    [self setupInternationalCallingCodes];
+    
+    self.phoneCountryContainer.layer.cornerRadius = 4.5f;
+    self.phoneCountryContainer.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    self.phoneCountryContainer.layer.borderWidth = 0.3f;
+    
+    UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickPhoneCountry)];
+    tgr.numberOfTapsRequired = 1;
+    tgr.numberOfTouchesRequired = 1;
+    [self.phoneCountryContainer addGestureRecognizer:tgr];
+    
     if ([self isWeGoodForGuest]) {
         self.deleteUserOutlet.hidden = NO;
         [self.deleteUserOutlet addTarget:self action:@selector(initiateDeleteUser:) forControlEvents:UIControlEventTouchUpInside ];
@@ -1426,12 +1545,17 @@ NSUInteger const kCardSecurityTag = 171736;
 }
 
 - (void)dropGuestDetailsView:(id)sender {
+    __weak UIView *guestDetailsView = [self.view viewWithTag:kGuestDetailsViewTag];
     GuestInfo *gi = [GuestInfo singleton];
     if ([sender isKindOfClass:[NSString class]] && [sender isEqualToString:@"FromRightNav"]) {
         gi.firstName = self.firstNameOutlet.text;
         gi.lastName = self.lastNameOutlet.text;
         gi.email = self.emailOutlet.text;
         gi.phoneNumber = self.phoneOutlet.text;
+        UILabel *iccLabel = (UILabel *) [guestDetailsView viewWithTag:97145721];
+        NSString *icc = [iccLabel.text stringByReplacingOccurrencesOfString:@"+" withString:@""];
+        gi.internationalCallingCode = icc;
+        gi.countryCode = self.selectedInternationalCallingCountryCode;
         [self updateGuestDetailsButtonTitle];
     }
     
@@ -1443,8 +1567,6 @@ NSUInteger const kCardSecurityTag = 171736;
         [GuestInfo deleteGuest:gi];
         [self updateGuestDetailsButtonTitle];
     }
-    
-    __weak UIView *guestDetailsView = [self.view viewWithTag:kGuestDetailsViewTag];
     
     CGPoint gboCenter = [self.view convertPoint:self.guestButtonOutlet.center fromView:self.inputBookOutlet];
     CGFloat toX = gboCenter.x - guestDetailsView.center.x;
@@ -2152,6 +2274,7 @@ NSUInteger const kCardSecurityTag = 171736;
     self.emailOutlet.userInteractionEnabled = NO;
     self.confirmEmailOutlet.userInteractionEnabled = NO;
     self.phoneOutlet.userInteractionEnabled = NO;
+    self.phoneCountryContainer.userInteractionEnabled = NO;
     
     self.cancelUserDeletionOutlet.transform = CGAffineTransformMakeTranslation(300, 0);
     self.cancelUserDeletionOutlet.hidden = NO;
@@ -2172,12 +2295,20 @@ NSUInteger const kCardSecurityTag = 171736;
     self.emailOutlet.backgroundColor = [UIColor grayColor];
     self.confirmEmailOutlet.backgroundColor = [UIColor grayColor];
     self.phoneOutlet.backgroundColor = [UIColor grayColor];
+    self.phoneCountryContainer.backgroundColor = [UIColor grayColor];
+    UIView *guestDetailsView = [self.view viewWithTag:kGuestDetailsViewTag];
+    UIImageView *flagView = (UIImageView *) [guestDetailsView viewWithTag:51974123];
+    flagView.backgroundColor = [UIColor grayColor];
+    flagView.alpha = 0.2f;
+    UILabel *iccLabel = (UILabel *) [guestDetailsView viewWithTag:97145721];
+    iccLabel.backgroundColor = [UIColor grayColor];
     
     self.firstNameOutlet.textColor = [UIColor lightGrayColor];
     self.lastNameOutlet.textColor = [UIColor lightGrayColor];
     self.emailOutlet.textColor = [UIColor lightGrayColor];
     self.confirmEmailOutlet.textColor = [UIColor lightGrayColor];
     self.phoneOutlet.textColor = [UIColor lightGrayColor];
+    iccLabel.textColor = [UIColor lightGrayColor];
     
     [self.deleteUserOutlet setTitle:@"Confirm Deletion" forState:UIControlStateNormal];
     [self.deleteUserOutlet removeTarget:self action:@selector(initiateDeleteUser:) forControlEvents:UIControlEventTouchUpInside];
@@ -2189,6 +2320,7 @@ NSUInteger const kCardSecurityTag = 171736;
     self.lastNameOutlet.userInteractionEnabled = YES;
     self.emailOutlet.userInteractionEnabled = YES;
     self.phoneOutlet.userInteractionEnabled = YES;
+    self.phoneCountryContainer.userInteractionEnabled = YES;
     
     [UIView animateWithDuration:0.4f animations:^{
         self.cancelUserDeletionOutlet.transform = CGAffineTransformMakeTranslation(300, 0);
@@ -2208,11 +2340,19 @@ NSUInteger const kCardSecurityTag = 171736;
     self.lastNameOutlet.backgroundColor = [UIColor whiteColor];
     self.emailOutlet.backgroundColor = [UIColor whiteColor];
     self.phoneOutlet.backgroundColor = [UIColor whiteColor];
+    self.phoneCountryContainer.backgroundColor = [UIColor whiteColor];
+    UIView *guestDetailsView = [self.view viewWithTag:kGuestDetailsViewTag];
+    UIImageView *flagView = (UIImageView *) [guestDetailsView viewWithTag:51974123];
+    flagView.backgroundColor = [UIColor clearColor];
+    flagView.alpha = 1.0f;
+    UILabel *iccLabel = (UILabel *) [guestDetailsView viewWithTag:97145721];
+    iccLabel.backgroundColor = [UIColor whiteColor];
     
     self.firstNameOutlet.textColor = [UIColor blackColor];
     self.lastNameOutlet.textColor = [UIColor blackColor];
     self.emailOutlet.textColor = [UIColor blackColor];
     self.phoneOutlet.textColor = [UIColor blackColor];
+    iccLabel.textColor = [UIColor blackColor];
     
     self.deleteUserOutlet.hidden = NO;
     [self.deleteUserOutlet setTitle:@"Delete This Guest" forState:UIControlStateNormal];

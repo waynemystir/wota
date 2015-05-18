@@ -15,6 +15,8 @@ static GuestInfo *_guestInfo = nil;
 NSString * const kKeyFirstName = @"first_name";
 NSString * const kKeyLastName = @"last_name";
 NSString * const kKeyEmail = @"email_address";
+NSString * const kKeyInternationalCallingCode = @"international_calling_code";
+NSString * const kKeyIntCountryCode = @"countryCode";
 NSString * const kKeyPhoneNumber = @"phone_number";
 
 @implementation GuestInfo
@@ -55,6 +57,8 @@ NSString * const kKeyPhoneNumber = @"phone_number";
         _firstName = [aDecoder decodeObjectForKey:kKeyFirstName];
         _lastName = [aDecoder decodeObjectForKey:kKeyLastName];
         _email = [aDecoder decodeObjectForKey:kKeyEmail];
+        _internationalCallingCode = [aDecoder decodeObjectForKey:kKeyInternationalCallingCode];
+        _countryCode = [aDecoder decodeObjectForKey:kKeyIntCountryCode];
         _phoneNumber = [aDecoder decodeObjectForKey:kKeyPhoneNumber];
     }
     
@@ -65,6 +69,8 @@ NSString * const kKeyPhoneNumber = @"phone_number";
     [aCoder encodeObject:_firstName forKey:kKeyFirstName];
     [aCoder encodeObject:_lastName forKey:kKeyLastName];
     [aCoder encodeObject:_email forKey:kKeyEmail];
+    [aCoder encodeObject:_internationalCallingCode forKey:kKeyInternationalCallingCode];
+    [aCoder encodeObject:_countryCode forKey:kKeyIntCountryCode];
     [aCoder encodeObject:_phoneNumber forKey:kKeyPhoneNumber];
 }
 
@@ -82,6 +88,16 @@ NSString * const kKeyPhoneNumber = @"phone_number";
 
 - (void)setEmail:(NSString *)email {
     _email = [email stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    [self save];
+}
+
+- (void)setInternationalCallingCode:(NSString *)internationalCallingCode {
+    _internationalCallingCode = internationalCallingCode;
+    [self save];
+}
+
+- (void)setCountryCode:(NSString *)countryCode {
+    _countryCode = countryCode;
     [self save];
 }
 
