@@ -13,7 +13,7 @@
                 <outlet property="emailOutlet" destination="bGZ-Au-IFZ" id="O5e-gz-vOC"/>
                 <outlet property="firstNameOutlet" destination="e22-0d-px3" id="8Rx-gK-gRu"/>
                 <outlet property="lastNameOutlet" destination="pYE-VB-kdV" id="che-aV-ogW"/>
-                <outlet property="phoneCountryContainer" destination="WZB-aA-vkL" id="4Nt-7S-7ix"/>
+                <outlet property="phoneCountryContainer" destination="GRY-aW-NsC" id="Yl3-hY-VDK"/>
                 <outlet property="phoneOutlet" destination="urS-Ng-DbE" id="6P3-7Y-3fE"/>
             </connections>
         </placeholder>
@@ -51,10 +51,10 @@
                             <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress" returnKeyType="next"/>
                         </textField>
                         <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Phone Number" minimumFontSize="17" clearButtonMode="always" id="urS-Ng-DbE" userLabel="phoneTextField">
-                            <rect key="frame" x="94" y="36" width="204" height="30"/>
+                            <rect key="frame" x="96" y="36" width="204" height="30"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                            <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="phonePad" returnKeyType="next"/>
+                            <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="numberPad" returnKeyType="next"/>
                         </textField>
                         <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="MWa-7s-vvW" userLabel="deleteUserButton" customClass="WotaButton">
                             <rect key="frame" x="5" y="87" width="134" height="30"/>
@@ -70,24 +70,23 @@
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
                         </button>
-                        <view contentMode="scaleToFill" id="WZB-aA-vkL" userLabel="phoneCountryContainer">
-                            <rect key="frame" x="5" y="36" width="84" height="30"/>
+                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="GRY-aW-NsC" userLabel="phoneCountryContainer">
+                            <rect key="frame" x="5" y="36" width="86" height="30"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <subviews>
-                                <imageView userInteractionEnabled="NO" tag="51974123" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="jqq-ev-2S4" userLabel="flagView">
-                                    <rect key="frame" x="5" y="2" width="26" height="26"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                </imageView>
-                                <label opaque="NO" userInteractionEnabled="NO" tag="97145721" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="+797" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="T9e-kZ-cRX" userLabel="callingCode">
-                                    <rect key="frame" x="36" y="3" width="45" height="24"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                    <nil key="highlightedColor"/>
-                                </label>
-                            </subviews>
-                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        </view>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no"/>
+                        </textField>
+                        <imageView userInteractionEnabled="NO" tag="51974123" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="jqq-ev-2S4" userLabel="flagView">
+                            <rect key="frame" x="10" y="38" width="32" height="26"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        </imageView>
+                        <label opaque="NO" userInteractionEnabled="NO" tag="97145721" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="+797" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="T9e-kZ-cRX" userLabel="callingCode">
+                            <rect key="frame" x="44" y="39" width="44" height="24"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                 </view>

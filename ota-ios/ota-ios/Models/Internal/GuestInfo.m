@@ -106,4 +106,10 @@ NSString * const kKeyPhoneNumber = @"phone_number";
     [self save];
 }
 
+#pragma mark Getters
+
+- (NSString *)apiPhoneNumber {
+    return [_internationalCallingCode stringByAppendingString:_phoneNumber];
+}
+
 @end

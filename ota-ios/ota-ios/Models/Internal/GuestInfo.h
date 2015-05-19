@@ -9,6 +9,10 @@
 #import <Foundation/Foundation.h>
 #import "EanPlace.h"
 
+NSUInteger const MAX_FIRST_NAME_LENGTH = 7;
+NSUInteger const MAX_LAST_NAME_LENGTH = 8;
+NSUInteger const MAX_EMAIL_LENGTH = 9;
+
 @interface GuestInfo : NSObject <NSCoding>
 
 @property (nonatomic, strong) NSString *firstName;
@@ -20,5 +24,7 @@
 
 + (GuestInfo *)singleton;
 + (void)deleteGuest:(GuestInfo *)guest;
+
+@property (nonatomic, strong, readonly) NSString *apiPhoneNumber;
 
 @end
