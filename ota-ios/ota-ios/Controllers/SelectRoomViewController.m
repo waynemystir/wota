@@ -35,6 +35,9 @@
 #import "NavigationView.h"
 #import "CountryPicker.h"
 
+NSUInteger const kLoadDropRoomDetailsAnimationCurve = UIViewAnimationOptionCurveEaseInOut;
+NSTimeInterval const kSrAnimationDuration = 0.7f;
+
 typedef NS_ENUM(NSUInteger, LOAD_DATA) {
     LOAD_ROOM = 0,
     LOAD_AUTOOMPLETE = 1,
@@ -46,7 +49,6 @@ typedef NS_ENUM(NSUInteger, VIEW_DETAILS_TYPE) {
     PAYMENT_DETAILS
 };
 
-NSTimeInterval const kSrAnimationDuration = 0.7f;
 NSUInteger const kGuestDetailsViewTag = 51;
 NSUInteger const kPaymentDetailsViewTag = 52;
 NSUInteger const kAvailRoomCellContViewTag = 19191;
@@ -371,7 +373,6 @@ NSUInteger const kCardSecurityTag = 171736;
 }
 
 - (void)clickTitle {
-    NSLog(@"Snoogans");
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
@@ -1510,7 +1511,7 @@ NSUInteger const kCardSecurityTag = 171736;
     self.bedTypeButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/0.55)), 0.001f, 0.001f);
     self.smokingButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/0.55f)), 0.001f, 0.001f);
     
-    [UIView animateWithDuration:kSrAnimationDuration animations:^{
+    [UIView animateWithDuration:kSrAnimationDuration delay:0.0 options:kLoadDropRoomDetailsAnimationCurve animations:^{
         tvp.frame = CGRectMake(0.0f, 64.0f, 320.0f, 400.0f);
         cv.frame = CGRectMake(0, 0, tvp.bounds.size.width, tvp.bounds.size.height);
         borderView.frame = CGRectMake(2.0f, 2.0f, cv.frame.size.width - 4.0f, cv.frame.size.height - 4.0f);
@@ -1562,7 +1563,7 @@ NSUInteger const kCardSecurityTag = 171736;
     [self.view bringSubviewToFront:nv];
     [nv animateToBack];
     
-    [UIView animateWithDuration:kSrAnimationDuration animations:^{
+    [UIView animateWithDuration:kSrAnimationDuration delay:0.0 options:kLoadDropRoomDetailsAnimationCurve animations:^{
         weakSelf.bedTypeButton.alpha = weakSelf.smokingButton.alpha = rtdl.alpha = 0.0f;
         tal.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(80.0f, -(tvp.frame.size.height/2.3f)), 0.001f, 0.001f);
         nrr.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/2.9f)), 0.001f, 0.001f);

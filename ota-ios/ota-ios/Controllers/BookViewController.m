@@ -8,8 +8,9 @@
 
 #import "BookViewController.h"
 #import "EanHotelRoomReservationResponse.h"
+#import "NavigationView.h"
 
-@interface BookViewController ()
+@interface BookViewController () <NavigationDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *itineraryOutlet;
 
@@ -22,10 +23,24 @@
     return  self;
 }
 
+- (void)loadView {
+    [super loadView];
+    NavigationView *nv = [[NavigationView alloc] initWithDelegate:self];
+    [self.view addSubview:nv];
+    [self.view bringSubviewToFront:nv];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 }
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    self.navigationController.navigationBar.hidden = YES;
+}
+
+#pragma mark LoadDataProtocol methods
 
 - (void)requestStarted:(NSURL *)url {
     NSLog(@"%@.%@.:::%@", self.class, NSStringFromSelector(_cmd), url);
@@ -36,6 +51,16 @@
     EanHotelRoomReservationResponse *hrrr = [EanHotelRoomReservationResponse eanObjectFromApiResponseData:responseData];
     self.itineraryOutlet.text = [NSString stringWithFormat:@"Itin:%ld", (long)hrrr.itineraryId];
     NSLog(@"%@.%@:::%@", self.class, NSStringFromSelector(_cmd), respString);
+}
+
+#pragma mark NavigationDelegate methods
+
+- (void)clickBack {
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)clickTitle {
+    [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 @end

@@ -9,9 +9,9 @@
 #import <Foundation/Foundation.h>
 #import "EanPlace.h"
 
-NSUInteger const MAX_FIRST_NAME_LENGTH = 7;
-NSUInteger const MAX_LAST_NAME_LENGTH = 8;
-NSUInteger const MAX_EMAIL_LENGTH = 9;
+extern NSUInteger const MAX_FIRST_NAME_LENGTH;
+extern NSUInteger const MAX_LAST_NAME_LENGTH;
+extern NSUInteger const MAX_EMAIL_LENGTH;
 
 @interface GuestInfo : NSObject <NSCoding>
 

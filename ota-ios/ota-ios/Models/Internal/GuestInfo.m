@@ -10,6 +10,10 @@
 #import "JNKeychain.h"
 #import "AppEnvironment.h"
 
+NSUInteger const MAX_FIRST_NAME_LENGTH = 25;
+NSUInteger const MAX_LAST_NAME_LENGTH = 40;
+NSUInteger const MAX_EMAIL_LENGTH = 50;
+
 static GuestInfo *_guestInfo = nil;
 
 NSString * const kKeyFirstName = @"first_name";

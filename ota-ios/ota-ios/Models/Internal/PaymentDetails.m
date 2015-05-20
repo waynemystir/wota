@@ -10,6 +10,8 @@
 #import "JNKeychain.h"
 #import "AppEnvironment.h"
 
+NSUInteger const MAX_CARDHOLDER_FIRST_NAME_LENGTH = 25;
+
 static PaymentDetails *_card1 = nil;
 
 NSString * const kKeyDaNumber = @"AcBrCeDdEiFtGcHaIrJdKnLuMmNbOePr";

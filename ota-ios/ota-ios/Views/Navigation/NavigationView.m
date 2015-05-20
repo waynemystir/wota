@@ -102,7 +102,7 @@ NSUInteger const kRightCheckMarkView = 4921743;
         [self setupWhereToContainer];
         [_titleView addSubview:_whereToContainer];
                 
-        _leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 20, 44, 44)];
+        _leftView = [[UIView alloc] initWithFrame:CGRectMake(-4, 16, 48, 48)];
         [_leftView addSubview:[self defaultBackButton]];
         [self addSubview:_leftView];
         
@@ -113,7 +113,7 @@ NSUInteger const kRightCheckMarkView = 4921743;
 }
 
 - (UIButton *)defaultBackButton {
-    UIButton *lb = [[UIButton alloc] initWithFrame:CGRectMake(3, 7, 28, 36)];
+    UIButton *lb = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 48, 48)];
 //    lb.layer.borderWidth = 1.0f;
 //    lb.layer.borderColor = [UIColor orangeColor].CGColor;
 //    UIView *cv = [[UIView alloc] initWithFrame:CGRectMake(14, 0, 1, lb.frame.size.height)];
@@ -124,7 +124,7 @@ NSUInteger const kRightCheckMarkView = 4921743;
 //    [lb addSubview:cv2];
     lb.tag = kDefaultBackButtonTag;
     [lb addTarget:_navDelegate action:@selector(clickBack) forControlEvents:UIControlEventTouchUpInside];
-    BackCancelView *bcv = [[BackCancelView alloc] initWithFrame:lb.bounds];
+    BackCancelView *bcv = [[BackCancelView alloc] initWithFrame:CGRectMake(10, 11, 28, 36)];
     bcv.tag = kBackCancelTag;
     [lb addSubview:bcv];
     return lb;
