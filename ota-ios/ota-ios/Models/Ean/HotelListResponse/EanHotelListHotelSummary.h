@@ -14,6 +14,7 @@
 @property (nonatomic, strong) NSString *hotelId;
 @property (nonatomic, strong) NSString *hotelName;
 @property (nonatomic, strong) NSString *address1;
+@property (nonatomic, strong) NSString *address2;
 @property (nonatomic, strong) NSString *city;
 @property (nonatomic, strong) NSString *stateProvinceCode;
 @property (nonatomic, strong) NSString *postalCode;

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B00038661B10286E0000319A /* EanPropertyAmenity.m in Sources */ = {isa = PBXBuildFile; fileRef = B00038651B10286E0000319A /* EanPropertyAmenity.m */; };
 		B00872CD1AEC1D4900CB2B9D /* SelectSmokingPreferenceDelegateImplementation.m in Sources */ = {isa = PBXBuildFile; fileRef = B00872CC1AEC1D4900CB2B9D /* SelectSmokingPreferenceDelegateImplementation.m */; };
 		B00872D01AEC99CB00CB2B9D /* EanAvailabilityRoomType.m in Sources */ = {isa = PBXBuildFile; fileRef = B00872CF1AEC99CB00CB2B9D /* EanAvailabilityRoomType.m */; };
 		B00872D31AECE5FB00CB2B9D /* EanRoomGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = B00872D21AECE5FB00CB2B9D /* EanRoomGroup.m */; };
@@ -161,6 +162,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B00038641B10286E0000319A /* EanPropertyAmenity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanPropertyAmenity.h; sourceTree = "<group>"; };
+		B00038651B10286E0000319A /* EanPropertyAmenity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanPropertyAmenity.m; sourceTree = "<group>"; };
 		B00872CB1AEC1D4900CB2B9D /* SelectSmokingPreferenceDelegateImplementation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectSmokingPreferenceDelegateImplementation.h; sourceTree = "<group>"; };
 		B00872CC1AEC1D4900CB2B9D /* SelectSmokingPreferenceDelegateImplementation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectSmokingPreferenceDelegateImplementation.m; sourceTree = "<group>"; };
 		B00872CE1AEC99CB00CB2B9D /* EanAvailabilityRoomType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanAvailabilityRoomType.h; sourceTree = "<group>"; };
@@ -481,6 +484,8 @@
 				B0122E4C1AD0A88500E44319 /* EanHotelDetails.m */,
 				B09C5E9D1AD1735500A3D7E8 /* EanHotelInfoImage.h */,
 				B09C5E9E1AD1735500A3D7E8 /* EanHotelInfoImage.m */,
+				B00038641B10286E0000319A /* EanPropertyAmenity.h */,
+				B00038651B10286E0000319A /* EanPropertyAmenity.m */,
 			);
 			path = HotelInfoResponse;
 			sourceTree = "<group>";
@@ -1083,6 +1088,7 @@
 				B00872D01AEC99CB00CB2B9D /* EanAvailabilityRoomType.m in Sources */,
 				B0344C4A1AE5A696000BBFCE /* WotaCardNumberField.m in Sources */,
 				B0963CC11AC8BDC6002FD859 /* ChildTraveler.m in Sources */,
+				B00038661B10286E0000319A /* EanPropertyAmenity.m in Sources */,
 				B018C0451AD9BEC800DDCE2E /* GuestInfo.m in Sources */,
 				B06C98BF1B09586B00DBE09D /* CountryPicker.m in Sources */,
 				B09797CC1AC24BE20014FC7C /* MapViewController.m in Sources */,

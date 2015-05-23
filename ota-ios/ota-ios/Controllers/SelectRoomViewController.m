@@ -269,14 +269,16 @@ NSUInteger const kCardSecurityTag = 171736;
 - (void)updatePaymentDetailsButtonTitle {
     PaymentDetails *pd = [PaymentDetails card1];
     UILabel *pdLabel = (UILabel *) [self.paymentButtonOutlet viewWithTag:271493618];
-    UILabel *cdLabel = (UILabel *) [self.paymentButtonOutlet viewWithTag:582948375];
+    UIImageView *cdLabel = (UIImageView *) [self.paymentButtonOutlet viewWithTag:582948375];
     if ([pd.cardNumber length] > 0) {
         cdLabel.hidden = NO;
-        cdLabel.text = [@"Card\n" stringByAppendingString:pd.lastFour];
+//        cdLabel.text = [@"Card\n" stringByAppendingString:pd.lastFour];
+        cdLabel.image = pd.cardImage;
         pdLabel.hidden = YES;
     } else {
         cdLabel.hidden = YES;
-        cdLabel.text = @"";
+//        cdLabel.text = @"";
+        cdLabel.image = nil;
         pdLabel.hidden = NO;
         pdLabel.text = @"Payment Details";
     }
@@ -1786,6 +1788,7 @@ NSUInteger const kCardSecurityTag = 171736;
     
     if ([sender isKindOfClass:[NSString class]] && [sender isEqualToString:@"FromRightNav"]) {
         pd.cardNumber = self.ccNumberOutlet.cardNumber;
+        pd.cardImage = self.ccNumberOutlet.cardLogoImageView.image;
         [self updatePaymentDetailsButtonTitle];
         pd.eanCardType = self.ccNumberOutlet.eanType;
         pd.billingAddress = self.selectedBillingAddress;
@@ -2306,7 +2309,7 @@ NSUInteger const kCardSecurityTag = 171736;
 
 - (void)validateCardholder:(NSString *)cardHolder {
     NSArray *ch = [cardHolder componentsSeparatedByString:@" "];
-    if ([ch count] != 2 || [ch[1] length] < 2) {
+    if ([ch count] != 2 || [ch[0] length] < 1 || [ch[1] length] < 1) {
         self.cardholderOutlet.backgroundColor = [UIColor whiteColor];
         self.isValidCardHolder = NO;
     } else {

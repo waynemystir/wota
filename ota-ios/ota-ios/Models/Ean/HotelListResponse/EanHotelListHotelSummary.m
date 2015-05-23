@@ -24,6 +24,7 @@
     hotel.hotelId = [object objectForKey:@"hotelId"];
     hotel.hotelName = [object objectForKey:@"name"];
     hotel.address1 = [object objectForKey:@"address1"];
+    hotel.address2 = [object objectForKey:@"address2"];
     hotel.city = [object objectForKey:@"city"];
     hotel.stateProvinceCode = [object objectForKey:@"stateProvinceCode"];
     hotel.postalCode = [object objectForKey:@"postalCode"];

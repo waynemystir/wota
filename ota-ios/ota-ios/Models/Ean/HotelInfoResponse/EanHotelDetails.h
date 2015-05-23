@@ -21,6 +21,13 @@
 @property (nonatomic, strong) NSString *roomInformation;
 @property (nonatomic, strong) NSString *drivingDirections;
 @property (nonatomic, strong) NSString *checkInInstructions;
+@property (nonatomic, strong) NSString *knowBeforeYouGoDescription;
+@property (nonatomic, strong) NSString *roomFeesDescription;
+@property (nonatomic, strong) NSString *locationDescription;
+@property (nonatomic, strong) NSString *diningDescription;
+@property (nonatomic, strong) NSString *amenitiesDescription;
+@property (nonatomic, strong) NSString *businessAmenitiesDescription;
+@property (nonatomic, strong) NSString *roomDetailDescription;
 
 + (EanHotelDetails *)hotelDetailsFromDictionary:(NSDictionary *)dict;
 

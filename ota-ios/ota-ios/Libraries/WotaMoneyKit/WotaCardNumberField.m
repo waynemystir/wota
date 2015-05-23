@@ -162,4 +162,8 @@
     return self.cardNumberFormatter.cardPatternInfo.eanType;
 }
 
+- (NSString *)presentName {
+    return self.cardNumberFormatter.cardPatternInfo.presentName;
+}
+
 @end

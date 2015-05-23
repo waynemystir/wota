@@ -6,16 +6,17 @@
 //  Copyright (c) 2015 Irwin. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #import "EanPlace.h"
 
 extern NSUInteger const MAX_CARDHOLDER_FIRST_NAME_LENGTH;
 
-@interface PaymentDetails : NSObject <NSCoding>
+@interface PaymentDetails : NSObject// <NSCoding>
 
 @property (nonatomic, strong) NSString *cardNumber;
 @property (nonatomic, strong, readonly) NSString *lastFour;
 @property (nonatomic, strong) NSString *eanCardType;
+@property (nonatomic, strong) UIImage *cardImage;
 @property (nonatomic, strong) EanPlace *billingAddress;
 @property (nonatomic, strong) NSString *expirationMonth;
 @property (nonatomic, strong) NSString *expirationYear;

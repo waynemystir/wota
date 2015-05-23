@@ -32,6 +32,13 @@
     hd.roomInformation = [dict objectForKey:@"roomInformation"];
     hd.drivingDirections = [dict objectForKey:@"drivingDirections"];
     hd.checkInInstructions = [dict objectForKey:@"checkInInstructions"];
+    hd.knowBeforeYouGoDescription = [dict objectForKey:@"knowBeforeYouGoDescription"];
+    hd.roomFeesDescription = [dict objectForKey:@"roomFeesDescription"];
+    hd.locationDescription = [dict objectForKey:@"locationDescription"];
+    hd.diningDescription = [dict objectForKey:@"diningDescription"];
+    hd.amenitiesDescription = [dict objectForKey:@"amenitiesDescription"];
+    hd.businessAmenitiesDescription = [dict objectForKey:@"businessAmenitiesDescription"];
+    hd.roomDetailDescription = [dict objectForKey:@"roomDetailDescription"];
     
     return hd;
 }

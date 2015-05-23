@@ -27,6 +27,11 @@
 @property (nonatomic, strong, readonly) NSString      *eanType;
 
 /**
+ * Shorter version of card company name to present
+ */
+@property (nonatomic, strong, readonly) NSString      *presentName;
+
+/**
  *
  */
 @property (nonatomic, readonly) NSInteger numberOfGroups;
