@@ -15,12 +15,14 @@
 @property (nonatomic, strong) id checkInTime;
 @property (nonatomic, strong) id checkOutTime;
 @property (nonatomic, strong) NSString *propertyInformation;
+@property (nonatomic, strong, readonly) NSString *propertyInformationFormatted;
 @property (nonatomic, strong) NSString *areaInformation;
 @property (nonatomic, strong) NSString *propertyDescription;
 @property (nonatomic, strong) NSString *hotelPolicy;
 @property (nonatomic, strong) NSString *roomInformation;
 @property (nonatomic, strong) NSString *drivingDirections;
 @property (nonatomic, strong) NSString *checkInInstructions;
+@property (nonatomic, strong, readonly) NSString *checkInInstructionsFormatted;
 @property (nonatomic, strong) NSString *knowBeforeYouGoDescription;
 @property (nonatomic, strong) NSString *roomFeesDescription;
 @property (nonatomic, strong) NSString *locationDescription;

@@ -7,6 +7,7 @@
 //
 
 #import "EanHotelDetails.h"
+#import "AppEnvironment.h"
 
 @implementation EanHotelDetails
 
@@ -41,6 +42,30 @@
     hd.roomDetailDescription = [dict objectForKey:@"roomDetailDescription"];
     
     return hd;
+}
+
+- (NSString *)propertyInformationFormatted {
+    if (stringIsEmpty(_propertyInformation)) {
+        return @"";
+    }
+    
+    if (![_propertyInformation containsString:@"  "]) {
+        return [@"\n● " stringByAppendingString:_propertyInformation];
+    }
+    
+    NSRange r;
+    NSString *returnString = [_propertyInformation stringByReplacingOccurrencesOfString:@"    " withString:@"  "];
+    while ((r = [returnString rangeOfString:@"  "]).location != NSNotFound) {
+        returnString = [returnString stringByReplacingCharactersInRange:r withString:@"\n● "];
+    }
+    
+    return [@"\n● " stringByAppendingString:returnString];
+}
+
+- (NSString *)checkInInstructionsFormatted {
+    NSString *cii = [_checkInInstructions stringByReplacingOccurrencesOfString:@"<ul><li>" withString:@"<br/>"];
+    cii = [cii stringByReplacingOccurrencesOfString:@"<li>" withString:@"<br/>"];
+    return [@"● " stringByAppendingString:stringByStrippingHTMLReplaceBreak(cii, @"\n● ")];
 }
 
 @end

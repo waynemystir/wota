@@ -59,7 +59,6 @@
     NSUInteger c = [self.tableData count];
     numberNights.text = [NSString stringWithFormat:@"%lu Night%@", (unsigned long) c, c > 1 ? @"s" : @""];
     [hv addSubview:numberNights];
-    NSLog(@"TVFFF:%@", numberNights.font);
     
     NSNumberFormatter *tdf = kPriceTwoDigitFormatter(self.room.rateInfo.chargeableRateInfo.currencyCode);
     
@@ -67,7 +66,6 @@
     nightsTotal.textAlignment = NSTextAlignmentRight;
     nightsTotal.text = [tdf stringFromNumber:self.room.rateInfo.chargeableRateInfo.nightlyRateTotal];
     [hv addSubview:nightsTotal];
-    NSLog(@"NTGGG:%@", nightsTotal.font);
     return hv;
 }
 

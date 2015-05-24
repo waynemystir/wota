@@ -28,7 +28,10 @@ extern int const URL_REQUEST_TIMEOUT;
 /**
  * Various utilities
  */
+extern BOOL stringIsEmpty(NSString * aString);
 extern NSString * stringByStrippingHTML(NSString * s);
+extern NSString * stringByStrippingHTMLReplaceBreak(NSString * s, NSString *brReplace);
+extern NSString * stringByStrippingHTMLReplaceBreakRemoveTail(NSString * s, NSString *brReplace, BOOL removeLast);
 
 /**
  * Various directories to persist the cache

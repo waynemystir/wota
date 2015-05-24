@@ -32,6 +32,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *shortDescLabelOutlet;
 @property (weak, nonatomic) IBOutlet UILabel *propAmenTities;
 @property (weak, nonatomic) IBOutlet UILabel *policiesTitle;
+@property (weak, nonatomic) IBOutlet UILabel *policiesLabel;
 @property (weak, nonatomic) IBOutlet UIButton *bookButtonOutlet;
 @property (weak, nonatomic) IBOutlet UILabel *amenitiesContainer;
 @property (nonatomic, strong) EanHotelInformationResponse *eanHotelInformationResponse;
@@ -144,7 +145,7 @@
     NSArray *ims = self.eanHotelInformationResponse.hotelImagesArray;
     for (int j = 0; j < [ims count]; j++) {
         EanHotelInfoImage *eanInfoImage = [EanHotelInfoImage imageFromDict:ims[j]];
-        NSLog(@"WWW %@", eanInfoImage.url);
+//        NSLog(@"WES %@", eanInfoImage.url);
         UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(j * 320, 0, 320.0f, 225.0f)];
         __weak typeof(UIImageView) *wiv = iv;
         [iv setImageWithURL:[NSURL URLWithString:eanInfoImage.url] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
@@ -182,7 +183,7 @@
     NSArray *ams = self.eanHotelInformationResponse.propertyAmenitiesArray;
     for (int j = 0; j < [ams count]; j++) {
         EanPropertyAmenity *pa = [EanPropertyAmenity amenityFromDict:ams[j]];
-        at = [at stringByAppendingFormat:@"\n  ● %@", pa.amenity];
+        at = [at stringByAppendingFormat:@"\n● %@", pa.amenity];
     }
     
     _amenitiesContainer.text = at;
@@ -215,7 +216,15 @@
     _policiesTitle.frame = CGRectMake(pf.origin.x, alf.origin.y + alf.size.height + 9.0f, pf.size.width, pf.size.height);
     pf = _policiesTitle.frame;
     
-    _scrollViewOutlet.contentSize = CGSizeMake(_scrollViewOutlet.frame.size.width, pf.origin.y + pf.size.height + 64.0f + 10);
+    NSString *pt = [NSString stringWithFormat:@"%@%@", hd.checkInInstructionsFormatted, hd.propertyInformationFormatted];
+    _policiesLabel.text = pt;
+    [_policiesLabel sizeToFit];
+    
+    CGRect plf = _policiesLabel.frame;
+    _policiesLabel.frame = CGRectMake(plf.origin.x, pf.origin.y + pf.size.height + 9.0f, plf.size.width, plf.size.height);
+    plf = _policiesLabel.frame;
+    
+    _scrollViewOutlet.contentSize = CGSizeMake(_scrollViewOutlet.frame.size.width, plf.origin.y + plf.size.height + 64.0f + 10);
 }
 
 - (void)prepareTheSelectRoomViewControllerWithPlaceholderImage:(UIImage *)phi {

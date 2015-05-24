@@ -16,14 +16,52 @@ NSString * const GOOGLE_API_KEY = @"AIzaSyDXmlmSp43YsY1QfPMaBP5Ww5UIXWNXXho";
 
 int const URL_REQUEST_TIMEOUT = 30;
 
+BOOL stringIsEmpty(NSString * aString) {
+    
+    if ((NSNull *) aString == [NSNull null]) {
+        return YES;
+    }
+    
+    if (aString == nil) {
+        return YES;
+    } else if ([aString length] == 0) {
+        return YES;
+    } else {
+        aString = [aString stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        if ([aString length] == 0) {
+            return YES;
+        }
+    }
+    
+    return NO;
+}
+
 NSString * stringByStrippingHTML(NSString * s) {
-    s = [s stringByReplacingOccurrencesOfString:@"<br />" withString:@" "];
-    s = [s stringByReplacingOccurrencesOfString:@"<br/>" withString:@" "];
+    return stringByStrippingHTMLReplaceBreak(s, @" ");
+}
+
+NSString * stringByStrippingHTMLReplaceBreak(NSString * s, NSString *brReplace) {
+    return stringByStrippingHTMLReplaceBreakRemoveTail(s, brReplace, YES);
+}
+
+NSString * stringByStrippingHTMLReplaceBreakRemoveTail(NSString * s, NSString *brReplace, BOOL removeTail) {
+    s = [s stringByReplacingOccurrencesOfString:@"<br />" withString:brReplace];
+    s = [s stringByReplacingOccurrencesOfString:@"<br/>" withString:brReplace];
+    
+    if (removeTail) {
+        NSRange lastOccurence = [s rangeOfString:brReplace options:NSBackwardsSearch];
+        NSUInteger loc = lastOccurence.location;
+        NSUInteger len = lastOccurence.length;
+        NSUInteger sl = s.length;
+        if (loc + len == sl) {
+            s = [s stringByReplacingCharactersInRange:lastOccurence withString:@""];
+        }
+    }
     
     NSRange r;
     while ((r = [s rangeOfString:@"<[^>]+>" options:NSRegularExpressionSearch]).location != NSNotFound)
         s = [s stringByReplacingCharactersInRange:r withString:@""];
-        return s;
+    return s;
 }
 
 NSString * const WOTA_CACHE_DIRECTORY = @"wota_cache_directory";

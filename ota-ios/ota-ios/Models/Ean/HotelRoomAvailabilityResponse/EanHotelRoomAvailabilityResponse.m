@@ -112,7 +112,7 @@ NSString * const kFreeCancelString = @"Free Cancellation by";
         int j = 0;
         for (EanNightlyRate *nr in ri.chargeableRateInfo.nightlyRatesArray) {
             nr.daDate = kAddDays(j++, hrar.arrivalDate);
-            NSLog(@"WES %@ %@ %@ %@", nr.rate, nr.baseRate, [kShortDateFormatter() stringFromDate:nr.daDate], room.rateDescription);
+//            NSLog(@"WES %@ %@ %@ %@", nr.rate, nr.baseRate, [kShortDateFormatter() stringFromDate:nr.daDate], room.rateDescription);
         }
     }
     

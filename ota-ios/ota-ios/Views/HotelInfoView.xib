@@ -12,6 +12,7 @@
                 <outlet property="bookButtonOutlet" destination="jib-qY-9Z1" id="dFr-2B-rjt"/>
                 <outlet property="imageScrollerOutlet" destination="vZH-Bf-tX6" id="bRX-Ah-4Ju"/>
                 <outlet property="mapContainerOutlet" destination="MAY-ls-PPp" id="Crl-Ua-LzV"/>
+                <outlet property="policiesLabel" destination="QRn-sA-Raf" id="1tT-e5-ikw"/>
                 <outlet property="policiesTitle" destination="ZSb-Nk-93d" id="cdZ-0Q-u8Q"/>
                 <outlet property="propAmenTities" destination="5zo-om-eoI" id="1q1-K4-l4J"/>
                 <outlet property="scrollViewOutlet" destination="dQe-Ib-X3Y" id="QyJ-gv-Ot8"/>
@@ -102,6 +103,13 @@
                             <rect key="frame" x="10" y="779" width="100" height="21"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="boldSystem" pointSize="16"/>
+                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="QRn-sA-Raf" userLabel="policiesLabel">
+                            <rect key="frame" x="10" y="805" width="300" height="21"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                             <nil key="highlightedColor"/>
                         </label>
