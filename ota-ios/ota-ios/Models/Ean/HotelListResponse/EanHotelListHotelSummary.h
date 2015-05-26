@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "EanRoomRateDetails.h"
 
 @interface EanHotelListHotelSummary : NSObject
 
@@ -39,6 +40,8 @@
 @property (nonatomic, strong) NSString *thumbNailUrl;
 @property (nonatomic, strong) NSString *deepLink;
 @property (nonatomic, strong) NSDictionary *roomRateDetailsList;
+@property (nonatomic, strong) NSArray *roomRateDetailsArray;
+@property (nonatomic, strong) EanRoomRateDetails *roomRateDetails;
 
 + (EanHotelListHotelSummary *)hotelFromObject:(id)object;
 

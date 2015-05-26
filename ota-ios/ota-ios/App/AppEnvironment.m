@@ -45,6 +45,10 @@ NSString * stringByStrippingHTMLReplaceBreak(NSString * s, NSString *brReplace) 
 }
 
 NSString * stringByStrippingHTMLReplaceBreakRemoveTail(NSString * s, NSString *brReplace, BOOL removeTail) {
+    if (stringIsEmpty(s)) {
+        return @"";
+    }
+    
     s = [s stringByReplacingOccurrencesOfString:@"<br />" withString:brReplace];
     s = [s stringByReplacingOccurrencesOfString:@"<br/>" withString:brReplace];
     

@@ -68,4 +68,17 @@
     return [@"● " stringByAppendingString:stringByStrippingHTMLReplaceBreak(cii, @"\n● ")];
 }
 
+- (NSString *)roomFeesDescriptionFormmatted {
+    if (stringIsEmpty(_roomFeesDescription)) {
+        return @"";
+    }
+    
+    NSString *rff = [_roomFeesDescription stringByReplacingOccurrencesOfString:@"<ul><li>" withString:@"<br/>"];
+    rff = [rff stringByReplacingOccurrencesOfString:@"<li>" withString:@"<br/>"];
+    rff = [rff stringByReplacingCharactersInRange:[rff rangeOfString:@"<p>"] withString:@""];
+    rff = [rff stringByReplacingCharactersInRange:[rff rangeOfString:@"</p>"] withString:@"\n"];
+    rff = [rff stringByReplacingOccurrencesOfString:@"<p>" withString:@"\n\n"];
+    return [@"" stringByAppendingString:stringByStrippingHTMLReplaceBreak(rff, @"\n● ")];
+}
+
 @end

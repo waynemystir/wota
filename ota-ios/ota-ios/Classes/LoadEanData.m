@@ -19,7 +19,7 @@ typedef NS_ENUM(NSUInteger, HTTP_METHOD) {
  * Ean stuff
  */
 NSString * const EAN_API_EXPERIENCE = @"PARTNER_MOBILE_APP";
-NSString * const EAN_MINOR_REV = @"28";
+NSString * const EAN_MINOR_REV = @"29";
 //http://developer.ean.com/docs/getting-started/api-access/
 NSString * const EAN_CID = @"55505";
 //NSString * const EAN_CID = @"482231";
@@ -30,6 +30,7 @@ NSString * const EAN_BOK_REQ_BASE_URL = @"https://book.api.ean.com";
 NSString * const EAN_URL_EXT = @"ean-services/rs";
 NSString * const EAN_H0TEL_LIST = @"hotel/v3/list";
 NSString * const EAN_HOTEL_INFO = @"hotel/v3/info";
+NSString * const EAN_PAYMENT_TYPES = @"hotel/v3/paymentInfo";
 NSString * const EAN_ROOMS_AVAILABLE = @"hotel/v3/avail";
 NSString * const EAN_BOOK_RESERVATION = @"hotel/v3/res";
 NSString * const EAN_GEO_SEARCH = @"hotel/v3/geoSearch";
@@ -65,6 +66,7 @@ NSString * const EAN_PK_INCLUDE_DETAILS = @"includeDetails";
 NSString * const EAN_PK_INCLUDE_ROOM_IMAGES = @"includeRoomImages";
 NSString * const EAN_PK_OPTIONS = @"options";
 NSString * const EAN_PK_SUPPLIER_TYPE = @"supplierType";
+NSString * const EAN_PK_RATE_TYPE = @"rateType";
 NSString * const EAN_PK_RATE_KEY = @"rateKey";
 NSString * const EAN_PK_ROOM_TYPE_CODE = @"roomTypeCode";
 NSString * const EAN_PK_RATE_CODE = @"rateCode";
@@ -121,6 +123,10 @@ NSString * kURLeanHotelList() {
 
 NSString * kURLeanHotelInfo() {
     return kEanRequest(EAN_HOTEL_INFO);
+}
+
+NSString *kURLeanPaymentTypes() {
+    return kEanRequest(EAN_PAYMENT_TYPES);
 }
 
 NSString * kURLeanAvailRooms() {
@@ -225,7 +231,7 @@ NSString * kURLeanBookReservation() {
             kURLeanHotelList(),
             EAN_PK_LATITUDE, latitude,
             EAN_PK_LONGITUDE, longitude,
-            EAN_PK_SEARCH_RADIUS, @10,
+            EAN_PK_SEARCH_RADIUS, @40,
             EAN_PK_SEARCH_RADIUS_UNIT, @"MI",
             EAN_PK_GEO_SORT, @"PROXIMITY"];
 }
@@ -237,6 +243,31 @@ NSString * kURLeanBookReservation() {
 
 - (NSString *)URLhotelInfoWithId:(NSString *)hotelId {
     return [[NSString stringWithFormat:@"%@&%@=%@", kURLeanHotelInfo(), EAN_PK_HOTEL_ID, hotelId] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+}
+
+- (void)loadPaymentTypesWithHotelId:(NSString *)hotelId
+                       supplierType:(NSString *)supplierType
+                           rateType:(NSString *)rateType
+                    completionBlock:(void (^)(NSURLResponse *response, NSData *data, NSError *connectionError))completionBlock {
+    NSURL *url = [NSURL URLWithString:[self URLpaymentTypesWithHotelId:hotelId supplierType:supplierType rateType:rateType]];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setTimeoutInterval:URL_REQUEST_TIMEOUT];
+    [request setHTTPMethod:@"GET"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+        completionBlock(response, data, connectionError);
+    }];
+}
+
+- (NSString *)URLpaymentTypesWithHotelId:(NSString *)hotelId
+                            supplierType:(NSString *)supplierType
+                                rateType:(NSString *)rateType {
+    return [[NSString stringWithFormat:@"%@&%@=%@&%@=%@&%@=%@",
+             kURLeanPaymentTypes(),
+             EAN_PK_HOTEL_ID, hotelId,
+             EAN_PK_SUPPLIER_TYPE, supplierType,
+             EAN_PK_RATE_TYPE, rateType] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 }
 
 - (void)loadAvailableRoomsWithHotelId:(NSString *)hotelId

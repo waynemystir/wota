@@ -27,6 +27,7 @@
 @property (nonatomic, strong) NSArray *hotelFeesArray;
 @property (nonatomic, strong) NSNumber *sumOfHotelFees;
 @property (nonatomic, strong, readonly) NSNumber *totalPlusHotelFees;
+@property (nonatomic, strong) NSString *rateType;
 @property (nonatomic) NSUInteger currentAllotment;
 @property (nonatomic) BOOL guaranteeRequired;
 @property (nonatomic) BOOL depositRequired;

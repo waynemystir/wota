@@ -62,6 +62,7 @@
     }
     ri.hotelFeesArray = [NSArray arrayWithArray:ma];
     
+    ri.rateType = [dict objectForKey:@"rateType"];
     ri.currentAllotment = [[dict objectForKey:@"currentAllotment"] integerValue];
     ri.guaranteeRequired = [[dict objectForKey:@"guaranteeRequired"] boolValue];
     ri.depositRequired = [[dict objectForKey:@"depositRequired"] boolValue];

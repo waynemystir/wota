@@ -26,6 +26,11 @@
 
 - (void)loadHotelDetailsWithId:(NSString *)hotelId;
 
+- (void)loadPaymentTypesWithHotelId:(NSString *)hotelId
+                       supplierType:(NSString *)supplierType
+                           rateType:(NSString *)rateType
+                    completionBlock:(void(^)(NSURLResponse *response, NSData *data, NSError *connectionError))completionBlock;
+
 - (void)loadAvailableRoomsWithHotelId:(NSString *)hotelId
                           arrivalDate:(NSString *)arrivalDate
                         departureDate:(NSString *)departureDate

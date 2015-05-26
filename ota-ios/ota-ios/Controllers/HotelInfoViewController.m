@@ -19,6 +19,8 @@
 #import "NavigationView.h"
 #import "EanPropertyAmenity.h"
 #import "EanHotelDetails.h"
+#import "EanPaymentTypeResponse.h"
+#import "AppEnvironment.h"
 
 @interface HotelInfoViewController () <CLLocationManagerDelegate, NavigationDelegate>
 
@@ -35,8 +37,13 @@
 @property (weak, nonatomic) IBOutlet UILabel *policiesLabel;
 @property (weak, nonatomic) IBOutlet UIButton *bookButtonOutlet;
 @property (weak, nonatomic) IBOutlet UILabel *amenitiesContainer;
+@property (weak, nonatomic) IBOutlet UILabel *feesTitle;
+@property (weak, nonatomic) IBOutlet UILabel *feesLabel;
 @property (nonatomic, strong) EanHotelInformationResponse *eanHotelInformationResponse;
 @property (nonatomic, strong) SelectRoomViewController *selectRoomViewController;
+@property (nonatomic) BOOL paymentTypesReturned;
+@property (nonatomic) BOOL policiesLabelIsSet;
+@property (nonatomic, strong) NSString *paymentTypesBulletted;
 
 - (IBAction)justPushIt:(id)sender;
 
@@ -55,6 +62,11 @@
     self = [self init];
     if (self != nil) {
         _eanHotel = eanHotel;
+        [[LoadEanData sharedInstance] loadPaymentTypesWithHotelId:_eanHotel.hotelId supplierType:_eanHotel.supplierType rateType:_eanHotel.roomRateDetails.rateInfo.rateType completionBlock:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+            _paymentTypesBulletted = [EanPaymentTypeResponse eanObjectFromApiResponseData:data].paymentTypesBulletted;
+            _paymentTypesReturned = YES;
+            [self appendPaymentTypesToPoliciesLabel];
+        }];
     }
     return self;
 }
@@ -173,22 +185,37 @@
     mf = _mapContainerOutlet.frame;
     
     CGRect tf = _propAmenTities.frame;
-    _propAmenTities.frame = CGRectMake(tf.origin.x, mf.origin.y + mf.size.height + 9.0f, tf.size.width, tf.size.height);
-    tf = _propAmenTities.frame;
-    
     CGRect acf = _amenitiesContainer.frame;
-    _amenitiesContainer.frame = CGRectMake(acf.origin.x, tf.origin.y + tf.size.height + 9.0f, acf.size.width, acf.size.height);
-    
-    NSString *at = hd.amenitiesDescription;
-    NSArray *ams = self.eanHotelInformationResponse.propertyAmenitiesArray;
-    for (int j = 0; j < [ams count]; j++) {
-        EanPropertyAmenity *pa = [EanPropertyAmenity amenityFromDict:ams[j]];
-        at = [at stringByAppendingFormat:@"\n● %@", pa.amenity];
+    if (stringIsEmpty(hd.amenitiesDescription) && [self.eanHotelInformationResponse.propertyAmenitiesArray count] == 0) {
+        _propAmenTities.text = @"";
+        _propAmenTities.frame = CGRectMake(tf.origin.x, mf.origin.y + mf.size.height + 0.0f, tf.size.width, 0.0f);
+        tf = _propAmenTities.frame;
+        
+        _amenitiesContainer.text = @"";
+        _amenitiesContainer.frame = CGRectMake(acf.origin.x, tf.origin.y + tf.size.height + 0.0f, acf.size.width, 0.0f);
+        acf = _amenitiesContainer.frame;
+    } else {
+        _propAmenTities.frame = CGRectMake(tf.origin.x, mf.origin.y + mf.size.height + 15.0f, tf.size.width, tf.size.height);
+        tf = _propAmenTities.frame;
+        
+        NSString *at = !stringIsEmpty(hd.amenitiesDescription) ? [hd.amenitiesDescription stringByAppendingString:@"\n"] : @"";
+        NSArray *ams = self.eanHotelInformationResponse.propertyAmenitiesArray;
+        for (int j = 0; j < [ams count]; j++) {
+            EanPropertyAmenity *pa = [EanPropertyAmenity amenityFromDict:ams[j]];
+            NSString *wes = (stringIsEmpty(hd.amenitiesDescription) && j == 0) ? @"● %@" : @"\n● %@";
+            at = [at stringByAppendingFormat:wes, pa.amenity];
+        }
+        
+        _amenitiesContainer.text = at;
+//        [_amenitiesContainer sizeToFit];
+        CGSize size = [_amenitiesContainer sizeThatFits:CGSizeMake(acf.size.width, CGFLOAT_MAX)];
+        acf.size.height = size.height;
+        _amenitiesContainer.frame = acf;
+        acf = _amenitiesContainer.frame;
+        
+        _amenitiesContainer.frame = CGRectMake(acf.origin.x, tf.origin.y + tf.size.height + 4.0f, acf.size.width, acf.size.height);
+        acf = _amenitiesContainer.frame;
     }
-    
-    _amenitiesContainer.text = at;
-    [_amenitiesContainer sizeToFit];
-    acf = _amenitiesContainer.frame;
     
     NSString *sl = _eanHotel.stateProvinceCode ? [NSString stringWithFormat:@", %@", _eanHotel.stateProvinceCode] : @"";
     NSString *pcl = _eanHotel.postalCode ? [NSString stringWithFormat:@" %@", _eanHotel.postalCode] : @"";
@@ -200,31 +227,87 @@
         cl = [NSString stringWithFormat:@"\n%@", countryName];
     }
     
-    CGRect atf = _addressTitle.frame;
-    _addressTitle.frame = CGRectMake(atf.origin.x, acf.origin.y + acf.size.height + 9.0f, atf.size.width, atf.size.height);
-    atf = _addressTitle.frame;
-    
     NSString *alt = [NSString stringWithFormat:@"%@\n%@\n%@%@%@%@", _eanHotel.hotelName, _eanHotel.address1, _eanHotel.city, sl, pcl, cl];
-    _addressLabelOutlet.text = alt;
-    [_addressLabelOutlet sizeToFit];
     
+    CGRect atf = _addressTitle.frame;
     CGRect alf = _addressLabelOutlet.frame;
-    _addressLabelOutlet.frame = CGRectMake(alf.origin.x, atf.origin.y + atf.size.height + 9.0f, alf.size.width, alf.size.height);
-    alf = _addressLabelOutlet.frame;
+    if (stringIsEmpty(alt)) {
+        _addressTitle.text = @"";
+        _addressTitle.frame = CGRectMake(atf.origin.x, acf.origin.y + acf.size.height + 0.0f, atf.size.width, 0.0f);
+        atf = _addressTitle.frame;
+        
+        _addressLabelOutlet.text = @"";
+        _addressLabelOutlet.frame = CGRectMake(alf.origin.x, atf.origin.y + atf.size.height + 0.0f, alf.size.width, 0.0f);
+        alf = _addressLabelOutlet.frame;
+    } else {
+        _addressTitle.frame = CGRectMake(atf.origin.x, acf.origin.y + acf.size.height + 15.0f, atf.size.width, atf.size.height);
+        atf = _addressTitle.frame;
+        
+        _addressLabelOutlet.text = alt;
+//        [_addressLabelOutlet sizeToFit];
+        CGSize size = [_addressLabelOutlet sizeThatFits:CGSizeMake(alf.size.width, CGFLOAT_MAX)];
+        alf.size.height = size.height;
+        _addressLabelOutlet.frame = alf;
+        alf = _addressLabelOutlet.frame;
+        
+        _addressLabelOutlet.frame = CGRectMake(alf.origin.x, atf.origin.y + atf.size.height + 4.0f, alf.size.width, alf.size.height);
+        alf = _addressLabelOutlet.frame;
+    }
     
     CGRect pf = _policiesTitle.frame;
-    _policiesTitle.frame = CGRectMake(pf.origin.x, alf.origin.y + alf.size.height + 9.0f, pf.size.width, pf.size.height);
+    _policiesTitle.frame = CGRectMake(pf.origin.x, alf.origin.y + alf.size.height + 15.0f, pf.size.width, pf.size.height);
     pf = _policiesTitle.frame;
     
     NSString *pt = [NSString stringWithFormat:@"%@%@", hd.checkInInstructionsFormatted, hd.propertyInformationFormatted];
     _policiesLabel.text = pt;
     [_policiesLabel sizeToFit];
+    _policiesLabelIsSet = YES;
     
     CGRect plf = _policiesLabel.frame;
-    _policiesLabel.frame = CGRectMake(plf.origin.x, pf.origin.y + pf.size.height + 9.0f, plf.size.width, plf.size.height);
-    plf = _policiesLabel.frame;
+    _policiesLabel.frame = CGRectMake(plf.origin.x, pf.origin.y + pf.size.height + 4.0f, plf.size.width, plf.size.height);
     
-    _scrollViewOutlet.contentSize = CGSizeMake(_scrollViewOutlet.frame.size.width, plf.origin.y + plf.size.height + 64.0f + 10);
+    [self appendPaymentTypesToPoliciesLabel];
+}
+
+- (void)appendPaymentTypesToPoliciesLabel {
+    if (_paymentTypesReturned && _policiesLabelIsSet) {
+        NSString *pta = [_policiesLabel.text stringByAppendingString:_paymentTypesBulletted];
+        _policiesLabel.text = pta;
+        [_policiesLabel sizeToFit];
+    }
+    
+    [self finishOffTheLabels];
+}
+
+- (void)finishOffTheLabels {
+    CGRect plf = _policiesLabel.frame;
+    
+    CGRect ftf = _feesTitle.frame;
+    CGRect flf = _feesLabel.frame;
+    if (stringIsEmpty(_eanHotelInformationResponse.hotelDetails.roomFeesDescriptionFormmatted)) {
+        _feesTitle.text = @"";
+        _feesTitle.frame = CGRectMake(ftf.origin.x, plf.origin.y + plf.size.height + 0.0f, ftf.size.width, 0.0f);
+        ftf = _feesTitle.frame;
+        
+        _feesLabel.text = @"";
+        _feesLabel.frame = CGRectMake(flf.origin.x, ftf.origin.y + ftf.size.height + 0.0f, flf.size.width, 0.0f);
+        flf = _feesLabel.frame;
+    } else {
+        _feesTitle.frame = CGRectMake(ftf.origin.x, plf.origin.y + plf.size.height + 15.0f, ftf.size.width, ftf.size.height);
+        ftf = _feesTitle.frame;
+        
+        _feesLabel.text = self.eanHotelInformationResponse.hotelDetails.roomFeesDescriptionFormmatted;
+//        [_feesLabel sizeToFit];
+        CGSize size = [_feesLabel sizeThatFits:CGSizeMake(flf.size.width, CGFLOAT_MAX)];
+        flf.size.height = size.height;
+        _feesLabel.frame = flf;
+        flf = _feesLabel.frame;
+        
+        _feesLabel.frame = CGRectMake(flf.origin.x, ftf.origin.y + ftf.size.height + 4.0f, flf.size.width, flf.size.height);
+        flf = _feesLabel.frame;
+    }
+    
+    _scrollViewOutlet.contentSize = CGSizeMake(_scrollViewOutlet.frame.size.width, flf.origin.y + flf.size.height + 57.0f);
 }
 
 - (void)prepareTheSelectRoomViewControllerWithPlaceholderImage:(UIImage *)phi {

@@ -25,6 +25,7 @@
 @property (nonatomic, strong, readonly) NSString *checkInInstructionsFormatted;
 @property (nonatomic, strong) NSString *knowBeforeYouGoDescription;
 @property (nonatomic, strong) NSString *roomFeesDescription;
+@property (nonatomic, strong, readonly) NSString *roomFeesDescriptionFormmatted;
 @property (nonatomic, strong) NSString *locationDescription;
 @property (nonatomic, strong) NSString *diningDescription;
 @property (nonatomic, strong) NSString *amenitiesDescription;
