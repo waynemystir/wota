@@ -14,12 +14,14 @@
 #import "HotelInfoViewController.h"
 #import "LoadEanData.h"
 #import "AppEnvironment.h"
+#import "AppDelegate.h"
 #import "SelectionCriteria.h"
 #import "ChildTraveler.h"
 #import "NavigationView.h"
 
 @interface HotelListingViewController () <UITableViewDataSource, UITableViewDelegate, NavigationDelegate>
 
+@property (nonatomic) BOOL alreadyDroppedSpinner;
 @property (weak, nonatomic) IBOutlet UITableView *tableViewHotelList;
 @property (nonatomic, strong) NSArray *hotelData;
 @property (nonatomic, strong) EanHotelListHotelSummary *selectedHotel;
@@ -38,6 +40,9 @@
     
     NavigationView *nv = [[NavigationView alloc] initWithDelegate:self];
     [self.view addSubview:nv];
+    
+    AppDelegate *ad = [[UIApplication sharedApplication] delegate];
+    [ad loadDaSpinner];
 }
 
 - (void)viewDidLoad {
@@ -60,9 +65,20 @@
     self.navigationController.navigationBar.hidden = YES;
 }
 
+- (void)dropDaSpinnerAlready {
+    if (_alreadyDroppedSpinner) {
+        return;
+    }
+    _alreadyDroppedSpinner = YES;
+    
+    AppDelegate *ad = [[UIApplication sharedApplication] delegate];
+    [ad dropDaSpinnerAlready];
+}
+
 #pragma mark NavigationDelegate methods
 
 - (void)clickBack {
+    [self dropDaSpinnerAlready];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -83,6 +99,8 @@
         self.hotelData = hotelList;
         [self.tableViewHotelList reloadData];
     }
+    
+    [self dropDaSpinnerAlready];
 }
 
 #pragma mark UITableViewDataSource methods

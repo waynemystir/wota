@@ -12,6 +12,8 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
+- (void)loadDaSpinner;
+- (void)dropDaSpinnerAlready;
 
 @end
 

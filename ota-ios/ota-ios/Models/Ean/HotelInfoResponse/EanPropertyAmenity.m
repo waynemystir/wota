@@ -8,6 +8,12 @@
 
 #import "EanPropertyAmenity.h"
 
+@interface EanPropertyAmenity ()
+
+@property (nonatomic, strong) NSString *amenity;
+
+@end
+
 @implementation EanPropertyAmenity
 
 + (EanPropertyAmenity *)amenityFromDict:(NSDictionary *)dict {
@@ -23,6 +29,10 @@
     pa.amenityId = [[dict objectForKey:@"amenityId"] integerValue];
     pa.amenity = [dict objectForKey:@"amenity"];
     return pa;
+}
+
+- (NSString *)amenityName {
+    return [[_amenity stringByReplacingOccurrencesOfString:@"Year Built1" withString:@"Year Built 1"] stringByReplacingOccurrencesOfString:@"Year Built2" withString:@"Year Built 2"];
 }
 
 @end

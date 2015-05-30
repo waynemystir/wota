@@ -17,6 +17,7 @@
 #import "GuestInfo.h"
 #import "PaymentDetails.h"
 #import "AppEnvironment.h"
+#import "AppDelegate.h"
 #import "GoogleParser.h"
 #import "GooglePlaces.h"
 #import "GooglePlaceDetail.h"
@@ -80,6 +81,8 @@ NSUInteger const kCardSecurityTag = 171736;
 @property (nonatomic) LOAD_DATA load_data_type;
 @property (nonatomic) VIEW_DETAILS_TYPE view_details_type;
 
+@property (nonatomic) BOOL preparedToDropSpinner;
+@property (nonatomic) BOOL alreadyDroppedSpinner;
 @property (nonatomic, strong) UIImage *placeholderImage;
 @property (weak, nonatomic) IBOutlet UITableView *roomsTableViewOutlet;
 @property (weak, nonatomic) IBOutlet UIView *inputBookOutlet;
@@ -199,6 +202,8 @@ NSUInteger const kCardSecurityTag = 171736;
     NavigationView *nv = [[NavigationView alloc] initWithDelegate:self];
     [self.view addSubview:nv];
     [self.view bringSubviewToFront:nv];
+    
+    [self loadDaSpinner];
 }
 
 - (void)viewDidLoad {
@@ -337,6 +342,8 @@ NSUInteger const kCardSecurityTag = 171736;
 #pragma mark NavigationDelegate methods
 
 - (void)clickBack {
+    _preparedToDropSpinner = YES;
+    [self dropDaSpinner];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -383,9 +390,11 @@ NSUInteger const kCardSecurityTag = 171736;
 - (void)requestFinished:(NSData *)responseData {
     switch (self.load_data_type) {
         case LOAD_ROOM: {
+            _preparedToDropSpinner = YES;
             self.eanHrar = [EanHotelRoomAvailabilityResponse eanObjectFromApiResponseData:responseData];
             self.tableData = self.eanHrar.hotelRoomArray;
             [self.roomsTableViewOutlet reloadData];
+            [self dropDaSpinner];
             break;
         }
             
@@ -1477,6 +1486,24 @@ NSUInteger const kCardSecurityTag = 171736;
 }
 
 #pragma mark Animation methods
+
+- (void)loadDaSpinner {
+    if (_preparedToDropSpinner) {
+        return;
+    }
+    
+    AppDelegate *ad = [[UIApplication sharedApplication] delegate];
+    [ad loadDaSpinner];
+    [self performSelector:@selector(dropDaSpinner) withObject:nil afterDelay:0.7f];
+}
+
+- (void)dropDaSpinner {
+    if (!_preparedToDropSpinner) {
+        return;
+    }
+    AppDelegate *ad = [[UIApplication sharedApplication] delegate];
+    [ad dropDaSpinnerAlready];
+}
 
 - (void)loadRoomDetailsView {
     __weak typeof(self) weakSelf = self;

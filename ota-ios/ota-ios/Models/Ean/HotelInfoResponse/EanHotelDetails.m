@@ -54,9 +54,14 @@
     }
     
     NSRange r;
-    NSString *returnString = [_propertyInformation stringByReplacingOccurrencesOfString:@"    " withString:@"  "];
+    NSString *returnString = [_propertyInformation stringByReplacingOccurrencesOfString:@"      " withString:@"  "];
+    returnString = [returnString stringByReplacingOccurrencesOfString:@"    " withString:@"  "];
     while ((r = [returnString rangeOfString:@"  "]).location != NSNotFound) {
-        returnString = [returnString stringByReplacingCharactersInRange:r withString:@"\n● "];
+        if (r.location + r.length == [returnString length]) {
+            returnString = [returnString stringByReplacingCharactersInRange:r withString:@""];
+        } else {
+            returnString = [returnString stringByReplacingCharactersInRange:r withString:@"\n● "];
+        }
     }
     
     return [@"\n● " stringByAppendingString:returnString];
@@ -75,8 +80,17 @@
     
     NSString *rff = [_roomFeesDescription stringByReplacingOccurrencesOfString:@"<ul><li>" withString:@"<br/>"];
     rff = [rff stringByReplacingOccurrencesOfString:@"<li>" withString:@"<br/>"];
-    rff = [rff stringByReplacingCharactersInRange:[rff rangeOfString:@"<p>"] withString:@""];
-    rff = [rff stringByReplacingCharactersInRange:[rff rangeOfString:@"</p>"] withString:@"\n"];
+    
+    NSRange r = [rff rangeOfString:@"<p>"];
+    if (r.location != NSNotFound) {
+        rff = [rff stringByReplacingCharactersInRange:r withString:@""];
+    }
+    
+    r = [rff rangeOfString:@"</p>"];
+    if (r.location != NSNotFound) {
+        rff = [rff stringByReplacingCharactersInRange:r withString:@"\n"];
+    }
+    
     rff = [rff stringByReplacingOccurrencesOfString:@"<p>" withString:@"\n\n"];
     return [@"" stringByAppendingString:stringByStrippingHTMLReplaceBreak(rff, @"\n● ")];
 }

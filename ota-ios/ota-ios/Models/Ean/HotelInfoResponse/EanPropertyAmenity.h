@@ -11,7 +11,7 @@
 @interface EanPropertyAmenity : NSObject
 
 @property (nonatomic) NSUInteger amenityId;
-@property (nonatomic, strong) NSString *amenity;
+@property (nonatomic, strong, readonly) NSString *amenityName;
 
 + (EanPropertyAmenity *)amenityFromDict:(NSDictionary *) dict;
 

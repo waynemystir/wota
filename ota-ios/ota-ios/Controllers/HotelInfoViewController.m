@@ -21,8 +21,14 @@
 #import "EanHotelDetails.h"
 #import "EanPaymentTypeResponse.h"
 #import "AppEnvironment.h"
+#import "AppDelegate.h"
+
+NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 
 @interface HotelInfoViewController () <CLLocationManagerDelegate, NavigationDelegate>
+
+@property (nonatomic) BOOL firstImageArrived;
+@property (nonatomic) BOOL alreadyDroppedSpinner;
 
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollViewOutlet;
 @property (weak, nonatomic) IBOutlet UIScrollView *imageScrollerOutlet;
@@ -39,6 +45,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *amenitiesContainer;
 @property (weak, nonatomic) IBOutlet UILabel *feesTitle;
 @property (weak, nonatomic) IBOutlet UILabel *feesLabel;
+@property (weak, nonatomic) IBOutlet UILabel *diningTitle;
+@property (weak, nonatomic) IBOutlet UILabel *diningLabel;
 @property (nonatomic, strong) EanHotelInformationResponse *eanHotelInformationResponse;
 @property (nonatomic, strong) SelectRoomViewController *selectRoomViewController;
 @property (nonatomic) BOOL paymentTypesReturned;
@@ -75,6 +83,9 @@
     [super loadView];
     NavigationView *nv = [[NavigationView alloc] initWithDelegate:self];
     [self.view addSubview:nv];
+    
+    AppDelegate *ad = [[UIApplication sharedApplication] delegate];
+    [ad loadDaSpinner];
 }
 
 - (void)viewDidLoad {
@@ -133,6 +144,7 @@
 }
 
 - (void)clickBack {
+    [self dropTheSpinnerAlready:YES];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -159,6 +171,7 @@
         EanHotelInfoImage *eanInfoImage = [EanHotelInfoImage imageFromDict:ims[j]];
 //        NSLog(@"WES %@", eanInfoImage.url);
         UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(j * 320, 0, 320.0f, 225.0f)];
+        iv.tag = kRoomImageViewsStartingTag + j;
         __weak typeof(UIImageView) *wiv = iv;
         [iv setImageWithURL:[NSURL URLWithString:eanInfoImage.url] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
             if (image.size.width > (1.3 * image.size.height)) {
@@ -167,7 +180,9 @@
                 wiv.contentMode = UIViewContentModeScaleAspectFill;
             }
             if (j == 0) {
+                _firstImageArrived = YES;
                 [self prepareTheSelectRoomViewControllerWithPlaceholderImage:image];
+                [self dropTheSpinnerAlready:NO];
             }
         }];
         self.imageScrollerOutlet.contentSize = CGSizeMake(320 + j * 320, 195.0f);
@@ -203,7 +218,7 @@
         for (int j = 0; j < [ams count]; j++) {
             EanPropertyAmenity *pa = [EanPropertyAmenity amenityFromDict:ams[j]];
             NSString *wes = (stringIsEmpty(hd.amenitiesDescription) && j == 0) ? @"● %@" : @"\n● %@";
-            at = [at stringByAppendingFormat:wes, pa.amenity];
+            at = [at stringByAppendingFormat:wes, pa.amenityName];
         }
         
         _amenitiesContainer.text = at;
@@ -215,6 +230,29 @@
         
         _amenitiesContainer.frame = CGRectMake(acf.origin.x, tf.origin.y + tf.size.height + 4.0f, acf.size.width, acf.size.height);
         acf = _amenitiesContainer.frame;
+    }
+    
+    CGRect dtf = _diningTitle.frame;
+    CGRect dlf = _diningLabel.frame;
+    if (stringIsEmpty(hd.diningDescription)) {
+        _diningTitle.text = @"";
+        _diningTitle.frame = CGRectMake(dtf.origin.x, acf.origin.y + acf.size.height + 0.0f, dtf.size.width, 0.0f);
+        dtf = _diningTitle.frame;
+        
+        _diningLabel.text = @"";
+        _diningLabel.frame = CGRectMake(dlf.origin.x, dtf.origin.y + dtf.size.height + 0.0f, dlf.size.width, 0.0);
+        dlf = _diningLabel.frame;
+    } else {
+        _diningTitle.frame = CGRectMake(dtf.origin.x, acf.origin.y + acf.size.height + 15.0f, dtf.size.width, dtf.size.height);
+        dtf = _diningTitle.frame;
+        
+        _diningLabel.text = hd.diningDescription;
+        CGSize size = [_diningLabel sizeThatFits:CGSizeMake(dlf.size.width, CGFLOAT_MAX)];
+        dlf.size.height = size.height;
+        _diningLabel.frame = dlf;
+        
+        _diningLabel.frame = CGRectMake(dlf.origin.x, dtf.origin.y + dtf.size.height + 4.0f, dlf.size.width, dlf.size.height);
+        dlf = _diningLabel.frame;
     }
     
     NSString *sl = _eanHotel.stateProvinceCode ? [NSString stringWithFormat:@", %@", _eanHotel.stateProvinceCode] : @"";
@@ -233,14 +271,14 @@
     CGRect alf = _addressLabelOutlet.frame;
     if (stringIsEmpty(alt)) {
         _addressTitle.text = @"";
-        _addressTitle.frame = CGRectMake(atf.origin.x, acf.origin.y + acf.size.height + 0.0f, atf.size.width, 0.0f);
+        _addressTitle.frame = CGRectMake(atf.origin.x, dlf.origin.y + dlf.size.height + 0.0f, atf.size.width, 0.0f);
         atf = _addressTitle.frame;
         
         _addressLabelOutlet.text = @"";
         _addressLabelOutlet.frame = CGRectMake(alf.origin.x, atf.origin.y + atf.size.height + 0.0f, alf.size.width, 0.0f);
         alf = _addressLabelOutlet.frame;
     } else {
-        _addressTitle.frame = CGRectMake(atf.origin.x, acf.origin.y + acf.size.height + 15.0f, atf.size.width, atf.size.height);
+        _addressTitle.frame = CGRectMake(atf.origin.x, dlf.origin.y + dlf.size.height + 15.0f, atf.size.width, atf.size.height);
         atf = _addressTitle.frame;
         
         _addressLabelOutlet.text = alt;
@@ -260,11 +298,13 @@
     
     NSString *pt = [NSString stringWithFormat:@"%@%@", hd.checkInInstructionsFormatted, hd.propertyInformationFormatted];
     _policiesLabel.text = pt;
-    [_policiesLabel sizeToFit];
-    _policiesLabelIsSet = YES;
-    
+//    [_policiesLabel sizeToFit];
     CGRect plf = _policiesLabel.frame;
+    CGSize size = [_policiesLabel sizeThatFits:CGSizeMake(plf.size.width, CGFLOAT_MAX)];
+    plf.size.height = size.height;
+    _policiesLabel.frame = plf;
     _policiesLabel.frame = CGRectMake(plf.origin.x, pf.origin.y + pf.size.height + 4.0f, plf.size.width, plf.size.height);
+    _policiesLabelIsSet = YES;
     
     [self appendPaymentTypesToPoliciesLabel];
 }
@@ -273,7 +313,11 @@
     if (_paymentTypesReturned && _policiesLabelIsSet) {
         NSString *pta = [_policiesLabel.text stringByAppendingString:_paymentTypesBulletted];
         _policiesLabel.text = pta;
-        [_policiesLabel sizeToFit];
+//        [_policiesLabel sizeToFit];
+        CGRect plf = _policiesLabel.frame;
+        CGSize size = [_policiesLabel sizeThatFits:CGSizeMake(plf.size.width, CGFLOAT_MAX)];
+        plf.size.height = size.height;
+        _policiesLabel.frame = plf;
     }
     
     [self finishOffTheLabels];
@@ -293,7 +337,8 @@
         _feesLabel.frame = CGRectMake(flf.origin.x, ftf.origin.y + ftf.size.height + 0.0f, flf.size.width, 0.0f);
         flf = _feesLabel.frame;
     } else {
-        _feesTitle.frame = CGRectMake(ftf.origin.x, plf.origin.y + plf.size.height + 15.0f, ftf.size.width, ftf.size.height);
+        _feesTitle.text = @"Fees";
+        _feesTitle.frame = CGRectMake(ftf.origin.x, plf.origin.y + plf.size.height + 15.0f, ftf.size.width, 21.0f);
         ftf = _feesTitle.frame;
         
         _feesLabel.text = self.eanHotelInformationResponse.hotelDetails.roomFeesDescriptionFormmatted;
@@ -308,6 +353,21 @@
     }
     
     _scrollViewOutlet.contentSize = CGSizeMake(_scrollViewOutlet.frame.size.width, flf.origin.y + flf.size.height + 57.0f);
+    [self dropTheSpinnerAlready:NO];
+}
+
+- (void)dropTheSpinnerAlready:(BOOL)justDoIt {
+    if (!justDoIt && (!_paymentTypesReturned || !_policiesLabelIsSet || !_firstImageArrived)) {
+        return;
+    }
+    
+    if (_alreadyDroppedSpinner) {
+        return;
+    }
+    _alreadyDroppedSpinner = YES;
+    
+    AppDelegate *ad = [[UIApplication sharedApplication] delegate];
+    [ad dropDaSpinnerAlready];
 }
 
 - (void)prepareTheSelectRoomViewControllerWithPlaceholderImage:(UIImage *)phi {
@@ -322,6 +382,18 @@
 
 - (IBAction)justPushIt:(id)sender {
     if (sender == self.bookButtonOutlet) {
+        if (nil == _selectRoomViewController) {
+            UIImage *image = nil;
+            for (int j = 0; j < [[_imageScrollerOutlet subviews] count]; j++) {
+                UIImageView *iv = (UIImageView *) [_imageScrollerOutlet viewWithTag:kRoomImageViewsStartingTag + j];
+                if (nil != iv || nil != iv.image) {
+                    image = iv.image;
+                    break;
+                }
+            }
+            
+            [self prepareTheSelectRoomViewControllerWithPlaceholderImage:image];
+        }
         [self.navigationController pushViewController:self.selectRoomViewController animated:YES];
     }
 }
