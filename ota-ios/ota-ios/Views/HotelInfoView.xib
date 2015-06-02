@@ -16,6 +16,7 @@
                 <outlet property="feesTitle" destination="SQC-8z-L2b" id="69t-P2-L8g"/>
                 <outlet property="imageScrollerOutlet" destination="vZH-Bf-tX6" id="bRX-Ah-4Ju"/>
                 <outlet property="mapContainerOutlet" destination="MAY-ls-PPp" id="Crl-Ua-LzV"/>
+                <outlet property="pageNumberLabel" destination="CrF-PJ-4qK" id="PUg-22-nO1"/>
                 <outlet property="policiesLabel" destination="QRn-sA-Raf" id="1tT-e5-ikw"/>
                 <outlet property="policiesTitle" destination="ZSb-Nk-93d" id="cdZ-0Q-u8Q"/>
                 <outlet property="propAmenTities" destination="5zo-om-eoI" id="1q1-K4-l4J"/>
@@ -34,19 +35,27 @@
                     <rect key="frame" x="0.0" y="64" width="320" height="549"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <subviews>
-                        <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" pagingEnabled="YES" id="vZH-Bf-tX6" userLabel="imageScroller">
-                            <rect key="frame" x="0.0" y="0.0" width="320" height="225"/>
+                        <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceHorizontal="YES" pagingEnabled="YES" showsVerticalScrollIndicator="NO" id="vZH-Bf-tX6" userLabel="imageScroller">
+                            <rect key="frame" x="-40" y="-100" width="400" height="325"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         </scrollView>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="jzE-fg-chw" userLabel="someLabel">
-                            <rect key="frame" x="13" y="233" width="240" height="23"/>
+                            <rect key="frame" x="13" y="248" width="240" height="23"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="22/89" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="CrF-PJ-4qK" userLabel="pageNumberLabel">
+                            <rect key="frame" x="260" y="203" width="58" height="21"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <nil key="highlightedColor"/>
+                        </label>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="jib-qY-9Z1" userLabel="bookButton">
-                            <rect key="frame" x="257" y="233" width="46" height="30"/>
+                            <rect key="frame" x="260" y="243" width="46" height="30"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <state key="normal" title="Book">
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -145,6 +154,10 @@
                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
+                        <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" id="fPZ-w6-2us">
+                            <rect key="frame" x="144" y="216" width="39" height="37"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        </pageControl>
                     </subviews>
                 </scrollView>
             </subviews>
