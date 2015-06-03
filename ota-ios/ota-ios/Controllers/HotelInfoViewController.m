@@ -33,14 +33,17 @@ typedef NS_ENUM(NSUInteger, HI_ORIENTATION) {
 
 CGFloat const kImageScrollerStartY = -100.0f;
 CGFloat const kImageScrollerStartHeight = 325.0f;
-CGFloat const kImageScrollerPortraitY = 30.0f;
-CGFloat const kImageScrollerPortraitHeight = 508.0f;
+CGFloat const kImageScrollerPortraitY = 34.0f;
+CGFloat const kImageScrollerPortraitHeight = 500.0f;
 NSUInteger const kRoomImageViewContainersStartingTag = 1113151719;
 NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 
 @interface HotelInfoViewController () <CLLocationManagerDelegate, NavigationDelegate, UIScrollViewDelegate>
 
+@property (nonatomic) NSInteger currentPageNumber;
+@property (nonatomic) NSInteger totalNumberOfPages;
 @property (nonatomic) HI_ORIENTATION currentOrientation;
+@property (nonatomic) BOOL hideEffinStatusBar;
 
 @property (nonatomic) BOOL firstImageArrived;
 @property (nonatomic) BOOL alreadyDroppedSpinner;
@@ -195,14 +198,8 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 //    [self prepareTheSelectRoomViewController];
 }
 
-- (NSInteger)currentImagePageNumber {
-    CGFloat width = _imageScrollerOutlet.frame.size.width;
-    NSInteger page = (_imageScrollerOutlet.contentOffset.x + (0.5f * width)) / width;
-    return page;
-}
-
 - (UIImageView *)currentImageView {
-    NSInteger cp = [self currentImagePageNumber];
+    NSInteger cp = _currentPageNumber - 1;
     UIView *civc = [_imageScrollerOutlet viewWithTag:kRoomImageViewContainersStartingTag + cp];
     UIImageView *civ = (UIImageView *) [civc viewWithTag:kRoomImageViewsStartingTag + cp];
     return civ;
@@ -213,25 +210,25 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     for (int j = 0; j < [ims count]; j++) {
         EanHotelInfoImage *eanInfoImage = [EanHotelInfoImage imageFromDict:ims[j]];
 //        NSLog(@"WES %@", eanInfoImage.url);
-        UIView *ivc = [[UIView alloc] initWithFrame:CGRectMake(j * 400, 0, 400.0f, 325.0f)];
+        UIView *ivc = [[UIView alloc] initWithFrame:CGRectMake(j * 500, 0, 500.0f, 325.0f)];
         ivc.backgroundColor = [UIColor blackColor];
         ivc.tag = kRoomImageViewContainersStartingTag + j;
+        
+        UIView *ivs = [[UIView alloc] initWithFrame:ivc.bounds];
+        ivs.backgroundColor = [UIColor blackColor];
+        [ivc addSubview:ivs];
+        
         UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(20, 0, 360.0f, 325.0f)];
-        iv.backgroundColor = [UIColor clearColor];
+        iv.backgroundColor = [UIColor blackColor];
         iv.clipsToBounds = YES;
         iv.tag = kRoomImageViewsStartingTag + j;
-        [ivc addSubview:iv];
+        [ivs addSubview:iv];
         __weak typeof(UIImageView) *wiv = iv;
+        CGRect wivFrame = [self rectForOrient:HI_PORTRAIT];
         [iv setImageWithURL:[NSURL URLWithString:eanInfoImage.url] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-//            if (image.size.width > (1.3 * image.size.height)) {
-//                wiv.contentMode = UIViewContentModeScaleAspectFit;
-//            } else {
-//                wiv.contentMode = UIViewContentModeScaleAspectFill;
-//            }
             wiv.contentMode = UIViewContentModeScaleAspectFit;
-            [wiv sizeToFit];
-//            wiv.center = wiv.superview.center;
-            wiv.center = CGPointMake(200, 205);
+            wiv.frame = wivFrame;
+            wiv.center = CGPointMake(250, 212);
             if (j == 0) {
                 _firstImageArrived = YES;
                 [self prepareTheSelectRoomViewControllerWithPlaceholderImage:image];
@@ -244,11 +241,12 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
         tgr.numberOfTouchesRequired = 1;
         [_imageScrollerOutlet addGestureRecognizer:tgr];
         _imageScrollerOutlet.userInteractionEnabled = YES;
-        
-        self.imageScrollerOutlet.contentSize = CGSizeMake(400 + j * 400, 325.0f);
-        [self.imageScrollerOutlet addSubview:ivc];
+        [_imageScrollerOutlet addSubview:ivc];
     }
     
+    _imageScrollerOutlet.contentSize = CGSizeMake(500 * [ims count], 325);
+    _currentPageNumber = 1;
+    _totalNumberOfPages = [ims count];
     _pageNumberLabel.text = [NSString stringWithFormat:@"1/%lu", (unsigned long)[ims count]];
 }
 
@@ -523,52 +521,86 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     }
 }
 
+- (CGPoint)pnpo:(HI_ORIENTATION)ho {
+    switch (ho) {
+        case HI_PORTRAIT:
+            return CGPointMake(-131, -150);
+            break;
+        case HI_LANDSCAPE_LEFT:
+            return CGPointMake(-131, -150);
+            break;
+        case HI_LANDSCAPE_RIGHT:
+            return CGPointMake(-251, -274);
+            break;
+            
+        default:
+            return CGPointMake(-124, -150);
+            break;
+    }
+}
+
 CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
     const CGFloat fx = pt.x, fy = pt.y, fcos = cos(angle), fsin = sin(angle);
     return CGAffineTransformMake(fcos, fsin, -fsin, fcos, fx - fx * fcos + fy * fsin, fy - fx * fsin - fy * fcos);
 }
 
 - (void)letsFlip {
+    __weak UIScrollView *iso = _imageScrollerOutlet;
+    __weak UIImageView *civ = [self currentImageView];
+    __weak UIView *pnl = _pageNumberLabel;
+    
+    iso.contentMode = UIViewContentModeCenter;
+    
     CGFloat targetAngle = [self angleFromOrientation:_currentOrientation];
     CGAffineTransform t = CGAffineTransformMakeRotation(degreesToRadians(targetAngle));
-    __weak UIScrollView *iso = _imageScrollerOutlet;
-    CGAffineTransform tp = CGAffineTransformMakeRotationAt(degreesToRadians(targetAngle), CGPointMake(-124, -150));
-    __weak UIView *pnl = _pageNumberLabel;
+    CGAffineTransform tp = CGAffineTransformMakeRotationAt(degreesToRadians(targetAngle), [self pnpo:_currentOrientation]);
+    
+    CGRect civRect = [self rectForOrient:_currentOrientation];
+    
+    NSLog(@"FLIPPPPP %f %f %f %f", iso.frame.origin.x, iso.frame.origin.y, iso.frame.size.width, iso.frame.size.height);
     [UIView animateWithDuration:0.5 animations:^{
         iso.transform = t;
+//        iso.frame = CGRectMake(iso.frame.origin.x, kImageScrollerPortraitY, iso.frame.size.width, kImageScrollerPortraitHeight);
+        civ.frame = civRect;
         pnl.transform = tp;
     } completion:^(BOOL finished) {
-        ;
+        NSLog(@"FLIPPPPP %f %f %f %f", iso.frame.origin.x, iso.frame.origin.y, iso.frame.size.width, iso.frame.size.height);
+        for (int j = 0; j < [[iso subviews] count]; j++) {
+            UIView *wivc = [iso viewWithTag:kRoomImageViewContainersStartingTag + j];
+            UIImageView *wiv = (UIImageView *) [wivc viewWithTag:kRoomImageViewsStartingTag + j];
+            wiv.frame = civRect;
+        }
     }];
 }
 
-//- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
-//    
-//    NSLog(@"flipping over:%f, %f", size.width, size.height);
-//    
-//    __weak UIImageView *civ = [self currentImageView];
-//    __weak UIView *civc = civ.superview;
-//    
-//    _scrollViewOutlet.frame = CGRectMake(0, 0, size.width, size.height);
-////    __weak UIView *iso = _imageScrollerOutlet;
-//    _imageScrollerOutlet.frame = CGRectMake(_imageScrollerOutlet.frame.origin.x, 0, size.width + 40, size.height);
-//    __weak UIView *overlay = [self.view viewWithTag:10920983];
-//    overlay.frame = CGRectMake(0, 0, size.width, size.height);
-//    
-//    for (int j = 0; j < [[_imageScrollerOutlet subviews] count]; j++) {
-//        __weak UIView *wivc = [_imageScrollerOutlet viewWithTag:kRoomImageViewContainersStartingTag + j];
-//        __weak UIImageView *wiv = (UIImageView *) [wivc viewWithTag:kRoomImageViewsStartingTag + j];
-//        wivc.frame = CGRectMake(j * (size.width + 40), wivc.frame.origin.y, size.width + 40, size.height);
-//        wiv.frame = CGRectMake(0, 0, wivc.frame.size.width - 40, size.height);
-//        wiv.center = CGPointMake((size.width + 40)/2, size.height/2);//wivc.center;
-//        
-//        _imageScrollerOutlet.contentSize = CGSizeMake(j * (size.width + 40), size.height);
-//    }
-//    
-//    [_imageScrollerOutlet scrollRectToVisible:civc.frame animated:NO];
-//}
+- (CGRect)rectForOrient:(HI_ORIENTATION)ho {
+    switch (ho) {
+        case HI_PORTRAIT:
+            return CGRectMake(70, 0, 360.0f, kImageScrollerPortraitHeight);
+            break;
+        case HI_LANDSCAPE_LEFT:
+            return CGRectMake(10, 90, 480.0f, 320);
+            break;
+        case HI_LANDSCAPE_RIGHT:
+            return CGRectMake(10, 90, 480.0f, 320);
+            break;
+            
+        default:
+            return CGRectMake(70, 0, 360.0f, kImageScrollerPortraitHeight);
+            break;
+    }
+}
+
+- (BOOL)prefersStatusBarHidden {
+    return _hideEffinStatusBar;
+}
 
 - (void)loadDaPrettyPictures {
+    _currentOrientation = HI_PORTRAIT;
+    
+    _hideEffinStatusBar = YES;
+    [self setNeedsStatusBarAppearanceUpdate];
+    
     __weak UIScrollView *sv = _scrollViewOutlet;
     sv.scrollEnabled = NO;
     [self.view bringSubviewToFront:sv];
@@ -587,26 +619,31 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
     [sv bringSubviewToFront:pnl];
     
     __weak UIImageView *civ = [self currentImageView];
-    __weak UIView *civc = civ.superview;
+    CGRect civFrame = [self rectForOrient:_currentOrientation];
+    
+    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+    }
     
     [UIView animateWithDuration:0.5 animations:^{
         overlay.alpha = 1.0f;
         sv.frame = CGRectMake(0, 0, 320, 549+64);
         iso.frame = CGRectMake(iso.frame.origin.x, kImageScrollerPortraitY, iso.frame.size.width, kImageScrollerPortraitHeight);
-        civc.frame = CGRectMake(civc.frame.origin.x, civc.frame.origin.y, civc.frame.size.width, kImageScrollerPortraitHeight);
-        civ.frame = civc.bounds;
+        civ.frame = civFrame;
         pnl.frame = CGRectMake(260, 545, 58, 21);
     } completion:^(BOOL finished) {
         for (int j = 0; j < [[iso subviews] count]; j++) {
             UIView *wivc = [iso viewWithTag:kRoomImageViewContainersStartingTag + j];
             UIImageView *wiv = (UIImageView *) [wivc viewWithTag:kRoomImageViewsStartingTag + j];
-            wivc.frame = CGRectMake(wivc.frame.origin.x, wivc.frame.origin.y, wivc.frame.size.width, kImageScrollerPortraitHeight);
-            wiv.frame = wivc.bounds;
+            wiv.frame = civFrame;
         }
     }];
 }
 
 - (void)dropDaPrettyPictures {
+    _hideEffinStatusBar = NO;
+    [self setNeedsStatusBarAppearanceUpdate];
+    
     if (_currentOrientation != HI_PORTRAIT) {
         _currentOrientation = HI_PORTRAIT;
         [self letsFlip];
@@ -622,6 +659,10 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
     
     __weak UIView *pnl = _pageNumberLabel;
     
+    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        self.navigationController.interactivePopGestureRecognizer.enabled = YES;
+    }
+    
     [UIView animateWithDuration:0.5 animations:^{
         sv.frame = CGRectMake(0, 64, 320, 549);
         overlay.alpha = 0.0f;
@@ -629,10 +670,9 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
         civc.frame = CGRectMake(civc.frame.origin.x, civc.frame.origin.y, civc.frame.size.width, kImageScrollerStartHeight);
 //        civ.frame = civc.bounds;
         [civ sizeToFit];
-        civ.center = CGPointMake(200, 205);
+        civ.center = CGPointMake(250, 212);
         pnl.frame = CGRectMake(260, 203, 58, 21);
     } completion:^(BOOL finished) {
-        iso.contentSize = CGSizeMake(([[iso subviews] count] - 1) * 400, 325.0f);
         sv.scrollEnabled = YES;
         [overlay removeFromSuperview];
         for (int j = 0; j < [[iso subviews] count]; j++) {
@@ -640,18 +680,26 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
             UIImageView *wiv = (UIImageView *) [wivc viewWithTag:kRoomImageViewsStartingTag + j];
             wivc.frame = CGRectMake(wivc.frame.origin.x, wivc.frame.origin.y, wivc.frame.size.width, kImageScrollerStartHeight);
             [wiv sizeToFit];
-            wiv.center = CGPointMake(200, 205);
+            wiv.center = CGPointMake(250, 212);
         }
     }];
 }
 
 #pragma mark UIScrollViewDelegate methods
 
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    CGFloat width = scrollView.frame.size.width;
-    NSInteger page = 1 + ((scrollView.contentOffset.x + (0.5f * width)) / width);
-    NSInteger numPages = scrollView.contentSize.width / width;
-    _pageNumberLabel.text = [NSString stringWithFormat:@"%ld/%ld", (long)page, (long)numPages];
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    static NSInteger previousPage = 0;
+    CGFloat pageWidth = scrollView.frame.size.width;
+    float fractionalPage = scrollView.contentOffset.x / pageWidth;
+    _currentPageNumber = 1 + lround(fractionalPage);
+    if (previousPage != _currentPageNumber) {
+        // Page has changed, do your thing!
+        // ...
+        _pageNumberLabel.text = [NSString stringWithFormat:@"%ld/%ld", (long)_currentPageNumber, (long)_totalNumberOfPages];
+        
+        // Finally, update previous page
+        previousPage = _currentPageNumber;
+    }
 }
 
 @end
