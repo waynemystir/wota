@@ -534,7 +534,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
             break;
             
         default:
-            return CGPointMake(-124, -150);
+            return CGPointMake(-131, -150);
             break;
     }
 }
@@ -557,14 +557,11 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
     
     CGRect civRect = [self rectForOrient:_currentOrientation];
     
-    NSLog(@"FLIPPPPP %f %f %f %f", iso.frame.origin.x, iso.frame.origin.y, iso.frame.size.width, iso.frame.size.height);
     [UIView animateWithDuration:0.5 animations:^{
         iso.transform = t;
-//        iso.frame = CGRectMake(iso.frame.origin.x, kImageScrollerPortraitY, iso.frame.size.width, kImageScrollerPortraitHeight);
         civ.frame = civRect;
         pnl.transform = tp;
     } completion:^(BOOL finished) {
-        NSLog(@"FLIPPPPP %f %f %f %f", iso.frame.origin.x, iso.frame.origin.y, iso.frame.size.width, iso.frame.size.height);
         for (int j = 0; j < [[iso subviews] count]; j++) {
             UIView *wivc = [iso viewWithTag:kRoomImageViewContainersStartingTag + j];
             UIImageView *wiv = (UIImageView *) [wivc viewWithTag:kRoomImageViewsStartingTag + j];
@@ -599,12 +596,11 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
     _currentOrientation = HI_PORTRAIT;
     
     _hideEffinStatusBar = YES;
-    [self setNeedsStatusBarAppearanceUpdate];
     
     __weak UIScrollView *sv = _scrollViewOutlet;
     sv.scrollEnabled = NO;
     [self.view bringSubviewToFront:sv];
-    UIView *overlay = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 568)];
+    UIView *overlay = [[UIView alloc] initWithFrame:CGRectMake(0, -200, 320, 1168)];
     overlay.tag = 10920983;
     overlay.userInteractionEnabled = YES;
     overlay.backgroundColor = [UIColor blackColor];
@@ -626,11 +622,12 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
     }
     
     [UIView animateWithDuration:0.5 animations:^{
-        overlay.alpha = 1.0f;
         sv.frame = CGRectMake(0, 0, 320, 549+64);
-        iso.frame = CGRectMake(iso.frame.origin.x, kImageScrollerPortraitY, iso.frame.size.width, kImageScrollerPortraitHeight);
+        overlay.alpha = 1.0;
+        iso.frame = CGRectMake(iso.frame.origin.x, kImageScrollerPortraitY + sv.contentOffset.y, iso.frame.size.width, kImageScrollerPortraitHeight);
         civ.frame = civFrame;
-        pnl.frame = CGRectMake(260, 545, 58, 21);
+        pnl.frame = CGRectMake(260, 545 + sv.contentOffset.y, 58, 21);
+        [self setNeedsStatusBarAppearanceUpdate];
     } completion:^(BOOL finished) {
         for (int j = 0; j < [[iso subviews] count]; j++) {
             UIView *wivc = [iso viewWithTag:kRoomImageViewContainersStartingTag + j];
@@ -642,7 +639,6 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
 
 - (void)dropDaPrettyPictures {
     _hideEffinStatusBar = NO;
-    [self setNeedsStatusBarAppearanceUpdate];
     
     if (_currentOrientation != HI_PORTRAIT) {
         _currentOrientation = HI_PORTRAIT;
@@ -652,6 +648,7 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
     __weak UIView *overlay = [self.view viewWithTag:10920983];
     __weak UIScrollView *iso = _imageScrollerOutlet;
     __weak UIScrollView *sv = _scrollViewOutlet;
+    sv.clipsToBounds = YES;
     [self.view bringSubviewToFront:sv];
     
     __weak UIImageView *civ = [self currentImageView];
@@ -672,6 +669,7 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
         [civ sizeToFit];
         civ.center = CGPointMake(250, 212);
         pnl.frame = CGRectMake(260, 203, 58, 21);
+        [self setNeedsStatusBarAppearanceUpdate];
     } completion:^(BOOL finished) {
         sv.scrollEnabled = YES;
         [overlay removeFromSuperview];
@@ -688,6 +686,7 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
 #pragma mark UIScrollViewDelegate methods
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    // Curtesy of http://stackoverflow.com/questions/5272228/detecting-uiscrollview-page-change
     static NSInteger previousPage = 0;
     CGFloat pageWidth = scrollView.frame.size.width;
     float fractionalPage = scrollView.contentOffset.x / pageWidth;
