@@ -214,15 +214,11 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
         ivc.backgroundColor = [UIColor blackColor];
         ivc.tag = kRoomImageViewContainersStartingTag + j;
         
-        UIView *ivs = [[UIView alloc] initWithFrame:ivc.bounds];
-        ivs.backgroundColor = [UIColor blackColor];
-        [ivc addSubview:ivs];
-        
         UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(20, 0, 360.0f, 325.0f)];
         iv.backgroundColor = [UIColor blackColor];
         iv.clipsToBounds = YES;
         iv.tag = kRoomImageViewsStartingTag + j;
-        [ivs addSubview:iv];
+        [ivc addSubview:iv];
         __weak typeof(UIImageView) *wiv = iv;
         CGRect wivFrame = [self rectForOrient:HI_PORTRAIT];
         [iv setImageWithURL:[NSURL URLWithString:eanInfoImage.url] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
@@ -621,13 +617,14 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
         self.navigationController.interactivePopGestureRecognizer.enabled = NO;
     }
     
+    __weak typeof(self) weakSelf = self;
     [UIView animateWithDuration:0.5 animations:^{
         sv.frame = CGRectMake(0, 0, 320, 549+64);
         overlay.alpha = 1.0;
         iso.frame = CGRectMake(iso.frame.origin.x, kImageScrollerPortraitY + sv.contentOffset.y, iso.frame.size.width, kImageScrollerPortraitHeight);
         civ.frame = civFrame;
         pnl.frame = CGRectMake(260, 545 + sv.contentOffset.y, 58, 21);
-        [self setNeedsStatusBarAppearanceUpdate];
+        [weakSelf setNeedsStatusBarAppearanceUpdate];
     } completion:^(BOOL finished) {
         for (int j = 0; j < [[iso subviews] count]; j++) {
             UIView *wivc = [iso viewWithTag:kRoomImageViewContainersStartingTag + j];
@@ -652,7 +649,6 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
     [self.view bringSubviewToFront:sv];
     
     __weak UIImageView *civ = [self currentImageView];
-    __weak UIView *civc = civ.superview;
     
     __weak UIView *pnl = _pageNumberLabel;
     
@@ -660,24 +656,22 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
         self.navigationController.interactivePopGestureRecognizer.enabled = YES;
     }
     
+    __weak typeof(self) weakSelf = self;
     [UIView animateWithDuration:0.5 animations:^{
         sv.frame = CGRectMake(0, 64, 320, 549);
         overlay.alpha = 0.0f;
         iso.frame = CGRectMake(iso.frame.origin.x, kImageScrollerStartY, iso.frame.size.width, kImageScrollerStartHeight);
-        civc.frame = CGRectMake(civc.frame.origin.x, civc.frame.origin.y, civc.frame.size.width, kImageScrollerStartHeight);
-//        civ.frame = civc.bounds;
-        [civ sizeToFit];
+        civ.frame = [weakSelf rectForOrient:HI_PORTRAIT];
         civ.center = CGPointMake(250, 212);
         pnl.frame = CGRectMake(260, 203, 58, 21);
-        [self setNeedsStatusBarAppearanceUpdate];
+        [weakSelf setNeedsStatusBarAppearanceUpdate];
     } completion:^(BOOL finished) {
         sv.scrollEnabled = YES;
         [overlay removeFromSuperview];
         for (int j = 0; j < [[iso subviews] count]; j++) {
             UIView *wivc = [iso viewWithTag:kRoomImageViewContainersStartingTag + j];
             UIImageView *wiv = (UIImageView *) [wivc viewWithTag:kRoomImageViewsStartingTag + j];
-            wivc.frame = CGRectMake(wivc.frame.origin.x, wivc.frame.origin.y, wivc.frame.size.width, kImageScrollerStartHeight);
-            [wiv sizeToFit];
+            wiv.frame = [weakSelf rectForOrient:HI_PORTRAIT];
             wiv.center = CGPointMake(250, 212);
         }
     }];
