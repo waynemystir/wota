@@ -22,6 +22,7 @@
 #import "EanPaymentTypeResponse.h"
 #import "AppEnvironment.h"
 #import "AppDelegate.h"
+#import "WotaTappableView.h"
 
 #define degreesToRadians(x) (M_PI * x / 180.0)
 
@@ -31,6 +32,7 @@ typedef NS_ENUM(NSUInteger, HI_ORIENTATION) {
     HI_LANDSCAPE_RIGHT = UIDeviceOrientationLandscapeRight
 };
 
+NSTimeInterval const kHiAnimationDuration = 0.5;
 CGFloat const kImageScrollerStartY = -100.0f;
 CGFloat const kImageScrollerStartHeight = 325.0f;
 CGFloat const kImageScrollerPortraitY = 34.0f;
@@ -49,9 +51,19 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 @property (nonatomic) BOOL alreadyDroppedSpinner;
 
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollViewOutlet;
+@property (weak, nonatomic) IBOutlet WotaTappableView *selectRoomContainer;
 @property (weak, nonatomic) IBOutlet UIScrollView *imageScrollerOutlet;
+@property (weak, nonatomic) IBOutlet WotaTappableView *fromRateContainer;
+@property (weak, nonatomic) IBOutlet UILabel *tripAdvisorBasedOnLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *tripAdvisorImageView;
+@property (weak, nonatomic) IBOutlet UIImageView *star1;
+@property (weak, nonatomic) IBOutlet UIImageView *star2;
+@property (weak, nonatomic) IBOutlet UIImageView *star3;
+@property (weak, nonatomic) IBOutlet UIImageView *star4;
+@property (weak, nonatomic) IBOutlet UIImageView *star5;
 @property (weak, nonatomic) IBOutlet UILabel *someLabelOutlet;
 @property (weak, nonatomic) IBOutlet UIView *mapContainerOutlet;
+@property (weak, nonatomic) IBOutlet UIView *mapOverlay;
 @property (nonatomic, strong) CLLocationManager *locationManager;
 @property (weak, nonatomic) IBOutlet UILabel *addressTitle;
 @property (weak, nonatomic) IBOutlet UILabel *addressLabelOutlet;
@@ -59,7 +71,6 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 @property (weak, nonatomic) IBOutlet UILabel *propAmenTities;
 @property (weak, nonatomic) IBOutlet UILabel *policiesTitle;
 @property (weak, nonatomic) IBOutlet UILabel *policiesLabel;
-@property (weak, nonatomic) IBOutlet UIButton *bookButtonOutlet;
 @property (weak, nonatomic) IBOutlet UILabel *amenitiesContainer;
 @property (weak, nonatomic) IBOutlet UILabel *feesTitle;
 @property (weak, nonatomic) IBOutlet UILabel *feesLabel;
@@ -72,12 +83,11 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 @property (nonatomic, strong) NSString *paymentTypesBulletted;
 @property (weak, nonatomic) IBOutlet UILabel *pageNumberLabel;
 
-- (IBAction)justPushIt:(id)sender;
-
 @end
 
 @implementation HotelInfoViewController {
     GMSMapView *mapView_;
+    CGRect mapRectInScroller;
 }
 
 - (id)init {
@@ -101,6 +111,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 - (void)loadView {
     [super loadView];
     NavigationView *nv = [[NavigationView alloc] initWithDelegate:self];
+    nv.animationDuration = kHiAnimationDuration;
     [self.view addSubview:nv];
     
     AppDelegate *ad = [[UIApplication sharedApplication] delegate];
@@ -122,8 +133,51 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     
     self.scrollViewOutlet.contentSize = CGSizeMake(320.0f, 900.0f);
     self.scrollViewOutlet.scrollsToTop = YES;
+    self.scrollViewOutlet.delaysContentTouches = NO;
     self.imageScrollerOutlet.delegate = self;
     self.imageScrollerOutlet.contentSize = CGSizeMake(1900.0f, 195.0f);
+    
+    _fromRateContainer.tapColor = kTheColorOfMoney();
+    _fromRateContainer.untapColor = [UIColor clearColor];
+    _fromRateContainer.backgroundColor = [UIColor clearColor];
+    _fromRateContainer.borderColor = kTheColorOfMoney();
+    _fromRateContainer.userInteractionEnabled = YES;
+    
+    NSNumberFormatter *cf = kPriceRoundOffFormatter(_eanHotel.rateCurrencyCode);
+    NSString *price = [NSString stringWithFormat:@"From %@/night", [cf stringFromNumber:_eanHotel.lowRate]];
+    _someLabelOutlet.text = price;
+    
+    UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gotoSelectRoomVC)];
+    tgr.numberOfTapsRequired = 1;
+    tgr.numberOfTouchesRequired = 1;
+    tgr.cancelsTouchesInView = YES;
+    [_fromRateContainer addGestureRecognizer:tgr];
+    
+    UITapGestureRecognizer *tgr2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gotoSelectRoomVC)];
+    tgr2.numberOfTapsRequired = 1;
+    tgr2.numberOfTouchesRequired = 1;
+    tgr2.cancelsTouchesInView = YES;
+    [_selectRoomContainer addGestureRecognizer:tgr2];
+    
+    NSURL *iu = [NSURL URLWithString:[_eanHotel tripAdvisorRatingUrl]];
+    _tripAdvisorImageView.contentMode = UIViewContentModeScaleAspectFit;
+    [_tripAdvisorImageView setImageWithURL:iu placeholderImage:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+        ;
+    }];
+    
+    NSString *numReviews = [kNumberFormatterWithThousandsSeparatorNoDecimals() stringFromNumber:_eanHotel.tripAdvisorReviewCount];
+    NSString *basedOn = numReviews ? [NSString stringWithFormat:@"Based on %@ reviews", numReviews] : @"No Reviews";
+    _tripAdvisorBasedOnLabel.text = basedOn;
+    
+    [self colorTheHotelRatingStars];
+    
+    _mapContainerOutlet.clipsToBounds = YES;
+    
+    UITapGestureRecognizer *tgr3 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(loadDaMap)];
+    tgr3.numberOfTapsRequired = 1;
+    tgr3.numberOfTouchesRequired = 1;
+    tgr3.cancelsTouchesInView = YES;
+    [_mapOverlay addGestureRecognizer:tgr3];
     
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.distanceFilter = kCLDistanceFilterNone;
@@ -139,12 +193,11 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:_eanHotel.latitude
                                                             longitude:_eanHotel.longitude
                                                                  zoom:6];
-    mapView_ = [GMSMapView mapWithFrame:CGRectMake(10, 10, 280, 180) camera:camera];
+    mapView_ = [GMSMapView mapWithFrame:CGRectMake(0, 0, 320, 200) camera:camera];
     mapView_.myLocationEnabled = YES;
     //Curtesy of http://stackoverflow.com/questions/26796466/ios-how-to-get-rid-of-app-is-using-your-location-notification
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
-    //    self.view = mapView_;
-    [self.mapContainerOutlet addSubview:mapView_];
+    [_mapContainerOutlet addSubview:mapView_];
     [_mapContainerOutlet sendSubviewToBack:mapView_];
     
     // Creates a marker in the center of the map.
@@ -153,6 +206,43 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     marker.title = @"Sydney";
     marker.snippet = @"Australia";
     marker.map = mapView_;
+}
+
+- (void)colorTheHotelRatingStars {
+    NSNumber *hr = _eanHotel.hotelRating;
+    double hrd = [hr doubleValue];
+    NSInteger floorHr = floor(hrd);
+    hrd = hrd - floorHr;
+    
+    _star1.image = [_star1.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    _star2.image = [_star2.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    _star3.image = [_star3.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    _star4.image = [_star4.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    _star5.image = [_star5.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    NSArray *stars = [NSArray arrayWithObjects:_star1, _star2, _star3, _star4, _star5, nil];
+    
+    [_star1 setTintColor:kWotaColorOne()];
+    
+    for (int j = 1; j <= 5; j++) {
+        if (j <= [hr integerValue]) {
+            [((UIImageView *)stars[j-1]) setTintColor:kWotaColorOne()];
+        } else {
+            [((UIImageView *)stars[j-1]) setTintColor:[UIColor lightGrayColor]];
+        }
+    }
+    
+    if (hrd != 0 && floorHr >= 0 && floorHr < [stars count]) {
+        UIImageView *partialStar = stars[floorHr];
+        
+        UIImage *ls = [UIImage imageNamed:@"star.png"];
+        UIImageView *onaTop = [[UIImageView alloc] initWithImage:ls];
+        onaTop.contentMode = UIViewContentModeLeft;
+        onaTop.clipsToBounds = YES;
+        onaTop.layer.masksToBounds = YES;
+        [onaTop setTintColor:kWotaColorOne()];
+        onaTop.frame = CGRectMake(0, 0, partialStar.frame.size.width/2, partialStar.frame.size.height);
+        [partialStar addSubview:onaTop];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -181,6 +271,10 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+- (void)clickCancel {
+    [self dropDaMap];
+}
+
 - (void)clickTitle {
     
 }
@@ -193,7 +287,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     self.eanHotelInformationResponse = [EanHotelInformationResponse eanObjectFromApiResponseData:responseData];
     [self loadupTheImageScroller];
     [self loadupTheAmenities];
-    self.someLabelOutlet.text = [NSString stringWithFormat:@"lat:%f long:%f", _eanHotel.latitude, _eanHotel.longitude];
+//    self.someLabelOutlet.text = [NSString stringWithFormat:@"lat:%f long:%f", _eanHotel.latitude, _eanHotel.longitude];
     
 //    [self prepareTheSelectRoomViewController];
 }
@@ -252,7 +346,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     so.text = hd.locationDescription;
     [so sizeToFit];
     CGRect mf = _mapContainerOutlet.frame;
-    _mapContainerOutlet.frame = CGRectMake(mf.origin.x, so.frame.origin.y + so.frame.size.height + 8.0f, mf.size.width, mf.size.height);
+    _mapContainerOutlet.frame = CGRectMake(mf.origin.x, so.frame.origin.y + so.frame.size.height + 10.0f, mf.size.width, mf.size.height);
     mf = _mapContainerOutlet.frame;
     
     CGRect tf = _propAmenTities.frame;
@@ -436,23 +530,69 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
                                                       childTravelers:[ChildTraveler childTravelers]];
 }
 
-- (IBAction)justPushIt:(id)sender {
-    if (sender == self.bookButtonOutlet) {
-        if (nil == _selectRoomViewController) {
-            UIImage *image = nil;
-            for (int j = 0; j < [[_imageScrollerOutlet subviews] count]; j++) {
-                UIView *ivc = [_imageScrollerOutlet viewWithTag:kRoomImageViewContainersStartingTag + j];
-                UIImageView *iv = (UIImageView *) [ivc viewWithTag:kRoomImageViewsStartingTag + j];
-                if (nil != iv || nil != iv.image) {
-                    image = iv.image;
-                    break;
-                }
+- (void)gotoSelectRoomVC {
+    if (nil == _selectRoomViewController) {
+        UIImage *image = nil;
+        for (int j = 0; j < [[_imageScrollerOutlet subviews] count]; j++) {
+            UIView *ivc = [_imageScrollerOutlet viewWithTag:kRoomImageViewContainersStartingTag + j];
+            UIImageView *iv = (UIImageView *) [ivc viewWithTag:kRoomImageViewsStartingTag + j];
+            if (nil != iv || nil != iv.image) {
+                image = iv.image;
+                break;
             }
-            
-            [self prepareTheSelectRoomViewControllerWithPlaceholderImage:image];
         }
-        [self.navigationController pushViewController:self.selectRoomViewController animated:YES];
+        
+        [self prepareTheSelectRoomViewControllerWithPlaceholderImage:image];
     }
+    [self.navigationController pushViewController:self.selectRoomViewController animated:YES];
+}
+
+- (void)loadDaMap {
+    __weak UIScrollView *sv = _scrollViewOutlet;
+    __weak UIView *mc = _mapContainerOutlet;
+    __weak UIView *mv = mapView_;
+    [mc sendSubviewToBack:_mapOverlay];
+    [mc bringSubviewToFront:mv];
+    [sv bringSubviewToFront:mc];
+    mapRectInScroller = mc.frame;
+    _mapOverlay.frame = CGRectZero;
+    
+    NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
+    [self.view bringSubviewToFront:nv];
+    [nv animateToCancel];
+    
+    sv.scrollEnabled = NO;
+    
+    [UIView animateWithDuration:kHiAnimationDuration animations:^{
+        mc.frame = CGRectMake(0, sv.contentOffset.y, 320, 504);
+        mv.frame = mc.bounds;
+    } completion:^(BOOL finished) {
+        ;
+    }];
+}
+
+- (void)dropDaMap {
+    __weak UIScrollView *sv = _scrollViewOutlet;
+    __weak UIView *mc = _mapContainerOutlet;
+    __weak UIView *mo = _mapOverlay;
+    __weak UIView *mv = mapView_;
+    __block CGRect mcf = mapRectInScroller;
+    
+    NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
+    [self.view bringSubviewToFront:nv];
+    [nv animateToBack];
+    
+    sv.scrollEnabled = YES;
+    
+    [UIView animateWithDuration:kHiAnimationDuration animations:^{
+        mc.frame = mcf;
+        mo.frame = mc.bounds;
+        mv.center = CGPointMake(160, 100);
+    } completion:^(BOOL finished) {
+        [sv sendSubviewToBack:mc];
+        [mc sendSubviewToBack:mv];
+        [mc bringSubviewToFront:mo];
+    }];
 }
 
 - (void)clickTheImage:(UITapGestureRecognizer *)gesture {
@@ -553,7 +693,7 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
     
     CGRect civRect = [self rectForOrient:_currentOrientation];
     
-    [UIView animateWithDuration:0.5 animations:^{
+    [UIView animateWithDuration:kHiAnimationDuration animations:^{
         iso.transform = t;
         civ.frame = civRect;
         pnl.transform = tp;
@@ -618,7 +758,7 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
     }
     
     __weak typeof(self) weakSelf = self;
-    [UIView animateWithDuration:0.5 animations:^{
+    [UIView animateWithDuration:kHiAnimationDuration animations:^{
         sv.frame = CGRectMake(0, 0, 320, 549+64);
         overlay.alpha = 1.0;
         iso.frame = CGRectMake(iso.frame.origin.x, kImageScrollerPortraitY + sv.contentOffset.y, iso.frame.size.width, kImageScrollerPortraitHeight);
@@ -657,7 +797,7 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
     }
     
     __weak typeof(self) weakSelf = self;
-    [UIView animateWithDuration:0.5 animations:^{
+    [UIView animateWithDuration:kHiAnimationDuration animations:^{
         sv.frame = CGRectMake(0, 64, 320, 549);
         overlay.alpha = 0.0f;
         iso.frame = CGRectMake(iso.frame.origin.x, kImageScrollerStartY, iso.frame.size.width, kImageScrollerStartHeight);

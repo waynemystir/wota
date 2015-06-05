@@ -10,8 +10,8 @@
 
 @interface BackCancelView : UIView
 
-- (void)animateToCancel;
-- (void)animateToBack;
+- (void)animateToCancel:(NSTimeInterval)animationDuration;
+- (void)animateToBack:(NSTimeInterval)animationDuration;
 - (void)grayIt;
 - (void)blueIt;
 

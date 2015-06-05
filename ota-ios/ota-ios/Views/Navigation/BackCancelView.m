@@ -10,7 +10,6 @@
 
 #define degreesToRadians(x) (M_PI * x / 180.0)
 
-NSTimeInterval const kBcvAnimationDuration = 0.7;
 CGFloat const startAngle = -24.8f;
 CGFloat const endAngle = -48.4f;
 CGFloat const startScale = 1.13f;
@@ -79,11 +78,11 @@ CGFloat const endScale = 1.626f;
     return self;
 }
 
-- (void)animateToCancel {
+- (void)animateToCancel:(NSTimeInterval)animationDuration {
     CABasicAnimation *rotate = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
     rotate.fromValue = @(degreesToRadians(startAngle));
     rotate.toValue = @(degreesToRadians(endAngle));
-    rotate.duration = kBcvAnimationDuration;
+    rotate.duration = animationDuration;
     [rotate setFillMode:kCAFillModeForwards];
     [rotate setRemovedOnCompletion:NO];
     rotate.timingFunction = [CAMediaTimingFunction functionWithName:[[self class] mediaTimingFunction]];
@@ -96,7 +95,7 @@ CGFloat const endScale = 1.626f;
     CABasicAnimation* expand = [CABasicAnimation animationWithKeyPath:@"transform.scale.x"];
     expand.fromValue = [NSNumber numberWithFloat:startScale];
     expand.toValue = [NSNumber numberWithFloat:endScale];
-    expand.duration = kBcvAnimationDuration;
+    expand.duration = animationDuration;
     expand.delegate = self;
     [expand setFillMode:kCAFillModeForwards];
     [expand setRemovedOnCompletion:NO];
@@ -105,11 +104,11 @@ CGFloat const endScale = 1.626f;
     [[downBar layer] addAnimation:expand forKey:@"shrink"];
 }
 
-- (void)animateToBack {
+- (void)animateToBack:(NSTimeInterval)animationDuration {
     CABasicAnimation *rotate = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
     rotate.fromValue = @(degreesToRadians(endAngle));
     rotate.toValue = @(degreesToRadians(startAngle));
-    rotate.duration = kBcvAnimationDuration;
+    rotate.duration = animationDuration;
     [rotate setFillMode:kCAFillModeForwards];
     [rotate setRemovedOnCompletion:NO];
     rotate.timingFunction = [CAMediaTimingFunction functionWithName:[[self class] mediaTimingFunction]];
@@ -122,7 +121,7 @@ CGFloat const endScale = 1.626f;
     CABasicAnimation* shrink = [CABasicAnimation animationWithKeyPath:@"transform.scale.x"];
     shrink.fromValue = [NSNumber numberWithFloat:endScale];
     shrink.toValue = [NSNumber numberWithFloat:startScale];
-    shrink.duration = kBcvAnimationDuration;
+    shrink.duration = animationDuration;
     shrink.delegate = self;
     [shrink setFillMode:kCAFillModeForwards];
     [shrink setRemovedOnCompletion:NO];

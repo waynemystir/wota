@@ -27,6 +27,8 @@
 @property (nonatomic, strong) NSNumber *confidenceRating;
 @property (nonatomic) id amenityMask;
 @property (nonatomic, strong) NSNumber *tripAdvisorRating;
+@property (nonatomic, strong) NSNumber *tripAdvisorReviewCount;
+@property (nonatomic, strong) NSString *tripAdvisorRatingUrl;
 @property (nonatomic, strong) NSString *locationDescription;
 @property (nonatomic, strong) NSString *shortDescription;
 @property (nonatomic, strong) NSNumber *highRate;

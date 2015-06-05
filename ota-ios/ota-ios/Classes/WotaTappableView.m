@@ -44,7 +44,7 @@
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
-    self.backgroundColor = _tapColor;
+    self.backgroundColor = _untapColor;
 }
 
 - (void)setBorderColor:(UIColor *)borderColor {

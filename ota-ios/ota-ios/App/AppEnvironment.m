@@ -173,6 +173,14 @@ NSNumberFormatter * kPriceTwoDigitFormatter(NSString * currencyCode) {
     return _currencyStyle;
 }
 
+NSNumberFormatter * kNumberFormatterWithThousandsSeparatorNoDecimals() {
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    [numberFormatter setLocale:[NSLocale currentLocale]];
+    [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+    [numberFormatter setMaximumFractionDigits:0];
+    return numberFormatter;
+}
+
 UIColor * kWotaColorOne() {
     return [UIColor colorWithRed:0.77f green:0.43f blue:0.00f alpha:1.00f];
 }
@@ -191,6 +199,10 @@ UIColor * kNavigationColor() {
 
 UIColor * kNavBorderColor() {
     return [UIColor colorWithRed:0.7f green:0.7f blue:0.7f alpha:1.0f];
+}
+
+UIColor * kTheColorOfMoney() {
+    return UIColorFromRGB(0x0D9C03);
 }
 
 CGFloat const WOTA_CORNER_RADIUS = 6.0f;

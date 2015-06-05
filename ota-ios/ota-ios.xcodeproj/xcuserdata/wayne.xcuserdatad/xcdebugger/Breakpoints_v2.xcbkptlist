@@ -122,12 +122,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ota-ios/Controllers/HotelInfoViewController.m"
-            timestampString = "454978313.838255"
+            timestampString = "455221163.50406"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "205"
-            endingLineNumber = "205"
-            landmarkName = "-currentImageView"
+            startingLineNumber = "301"
+            endingLineNumber = "301"
+            landmarkName = "-loadupTheImageScroller"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

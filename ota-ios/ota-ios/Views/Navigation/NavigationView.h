@@ -34,6 +34,7 @@ extern NSUInteger const kNavigationViewTag;
 @property (nonatomic, strong) UIView *titleView;
 @property (nonatomic, strong) UIView *theView;
 @property (nonatomic, weak) id<NavigationDelegate> navDelegate;
+@property (nonatomic) NSTimeInterval animationDuration;
 
 - (void)blueAndEnableLeftView;
 - (void)grayAndDisableLeftView;

@@ -39,7 +39,7 @@ NSUInteger const kRightCheckMarkView = 4921743;
         [b addTarget:_navDelegate action:@selector(clickSecondCancel) forControlEvents:UIControlEventTouchUpInside];
     }
     
-    [UIView transitionWithView:b duration:kNvAnimationDuration options:(UIViewAnimationOptionTransitionFlipFromTop) animations:^{
+    [UIView transitionWithView:b duration:[self navigationAnimationDuration] options:(UIViewAnimationOptionTransitionFlipFromTop) animations:^{
     } completion:^(BOOL finished) {
         
     }];
@@ -53,7 +53,7 @@ NSUInteger const kRightCheckMarkView = 4921743;
         [b addTarget:_navDelegate action:@selector(clickCancel) forControlEvents:UIControlEventTouchUpInside];
     }
     
-    [UIView transitionWithView:b duration:kNvAnimationDuration options:(UIViewAnimationOptionTransitionFlipFromTop) animations:^{
+    [UIView transitionWithView:b duration:[self navigationAnimationDuration] options:(UIViewAnimationOptionTransitionFlipFromTop) animations:^{
         [self blueAndEnableLeftView];
     } completion:^(BOOL finished) {
         
@@ -69,7 +69,7 @@ NSUInteger const kRightCheckMarkView = 4921743;
         [b addTarget:_navDelegate action:@selector(clickCancel) forControlEvents:UIControlEventTouchUpInside];
     }
     
-    [bcv animateToCancel];
+    [bcv animateToCancel:[self navigationAnimationDuration]];
 }
 
 - (void)animateToBack {
@@ -77,7 +77,7 @@ NSUInteger const kRightCheckMarkView = 4921743;
     UIButton *b = (UIButton *) bcv.superview;
     [b removeTarget:_navDelegate action:@selector(clickCancel) forControlEvents:UIControlEventTouchUpInside];
     [b addTarget:_navDelegate action:@selector(clickBack) forControlEvents:UIControlEventTouchUpInside];
-    [bcv animateToBack];
+    [bcv animateToBack:[self navigationAnimationDuration]];
 }
 
 - (id)initWithDelegate:(id<NavigationDelegate>)navDelegate {
@@ -131,7 +131,7 @@ NSUInteger const kRightCheckMarkView = 4921743;
 }
 
 - (void)replaceTitleViewContainer:(UIView *)replacementView {
-    [UIView transitionFromView:_whereToContainer toView:replacementView duration:kNvAnimationDuration options:UIViewAnimationOptionTransitionFlipFromTop completion:^(BOOL finished) {
+    [UIView transitionFromView:_whereToContainer toView:replacementView duration:[self navigationAnimationDuration] options:UIViewAnimationOptionTransitionFlipFromTop completion:^(BOOL finished) {
         ;
     }];
 }
@@ -139,7 +139,7 @@ NSUInteger const kRightCheckMarkView = 4921743;
 - (void)animateRevertToWhereToContainer:(NSUInteger)removeTag {
     UIView *vtr = [_titleView viewWithTag:removeTag];
     
-    [UIView transitionFromView:vtr toView:_whereToContainer duration:kNvAnimationDuration options:UIViewAnimationOptionTransitionFlipFromTop completion:^(BOOL finished) {
+    [UIView transitionFromView:vtr toView:_whereToContainer duration:[self navigationAnimationDuration] options:UIViewAnimationOptionTransitionFlipFromTop completion:^(BOOL finished) {
         ;
     }];
 }
@@ -234,7 +234,7 @@ NSUInteger const kRightCheckMarkView = 4921743;
     [lb addSubview:cm];
 //    [_rightView addSubview:lb];
     
-    [UIView transitionWithView:_rightView duration:kNvAnimationDuration options:UIViewAnimationOptionTransitionFlipFromBottom animations:^{
+    [UIView transitionWithView:_rightView duration:[self navigationAnimationDuration] options:UIViewAnimationOptionTransitionFlipFromBottom animations:^{
         [_rightView addSubview:lb];
     } completion:^(BOOL finished) {
         ;
@@ -244,7 +244,7 @@ NSUInteger const kRightCheckMarkView = 4921743;
 - (void)rightViewRemoveCheckMark {
 //    [[_rightView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     UIView *sv = [_rightView viewWithTag:kRightCheckMarkButton];
-    [UIView transitionFromView:sv toView:nil duration:kNvAnimationDuration options:UIViewAnimationOptionTransitionFlipFromBottom completion:^(BOOL finished) {
+    [UIView transitionFromView:sv toView:nil duration:[self navigationAnimationDuration] options:UIViewAnimationOptionTransitionFlipFromBottom completion:^(BOOL finished) {
         ;
     }];
 }
@@ -283,6 +283,13 @@ NSUInteger const kRightCheckMarkView = 4921743;
     [bcv blueIt];
     UIButton *b = (UIButton *) [_leftView viewWithTag:kDefaultBackButtonTag];
     b.enabled = YES;
+}
+
+- (NSTimeInterval)navigationAnimationDuration {
+    if (_animationDuration > 0.0) {
+        return _animationDuration;
+    }
+    return kNvAnimationDuration;
 }
 
 @end

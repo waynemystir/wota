@@ -36,6 +36,8 @@
     hotel.confidenceRating = [object objectForKey:@"confidenceRating"];
     hotel.amenityMask = [object objectForKey:@"amenityMask"];
     hotel.tripAdvisorRating = [object objectForKey:@"tripAdvisorRating"];
+    hotel.tripAdvisorReviewCount = [object objectForKey:@"tripAdvisorReviewCount"];
+    hotel.tripAdvisorRatingUrl = [object objectForKey:@"tripAdvisorRatingUrl"];
     hotel.locationDescription = [object objectForKey:@"locationDescription"];
     hotel.shortDescription = [object objectForKey:@"shortDescription"];
     hotel.highRate = [object objectForKey:@"highRate"];

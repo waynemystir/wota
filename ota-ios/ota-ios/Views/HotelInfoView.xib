@@ -9,20 +9,29 @@
                 <outlet property="addressLabelOutlet" destination="zvp-BM-nsr" id="r6V-Uf-fZT"/>
                 <outlet property="addressTitle" destination="sAq-SR-Dcn" id="b5j-rh-5Mb"/>
                 <outlet property="amenitiesContainer" destination="HYU-9a-ZeH" id="3ue-hI-oaH"/>
-                <outlet property="bookButtonOutlet" destination="jib-qY-9Z1" id="dFr-2B-rjt"/>
                 <outlet property="diningLabel" destination="t2K-N5-uMD" id="Dz8-dY-7DH"/>
                 <outlet property="diningTitle" destination="gOW-cS-muw" id="Mkx-NR-wNl"/>
                 <outlet property="feesLabel" destination="IrE-Ms-XIO" id="NGG-e9-I1Y"/>
                 <outlet property="feesTitle" destination="SQC-8z-L2b" id="69t-P2-L8g"/>
+                <outlet property="fromRateContainer" destination="vya-sM-6l1" id="BD3-di-wkZ"/>
                 <outlet property="imageScrollerOutlet" destination="vZH-Bf-tX6" id="bRX-Ah-4Ju"/>
                 <outlet property="mapContainerOutlet" destination="MAY-ls-PPp" id="Crl-Ua-LzV"/>
+                <outlet property="mapOverlay" destination="O5k-aK-YpL" id="Vtb-eM-Bmz"/>
                 <outlet property="pageNumberLabel" destination="CrF-PJ-4qK" id="PUg-22-nO1"/>
                 <outlet property="policiesLabel" destination="QRn-sA-Raf" id="1tT-e5-ikw"/>
                 <outlet property="policiesTitle" destination="ZSb-Nk-93d" id="cdZ-0Q-u8Q"/>
                 <outlet property="propAmenTities" destination="5zo-om-eoI" id="1q1-K4-l4J"/>
                 <outlet property="scrollViewOutlet" destination="dQe-Ib-X3Y" id="QyJ-gv-Ot8"/>
+                <outlet property="selectRoomContainer" destination="mJp-eu-lKm" id="m5o-dk-e9C"/>
                 <outlet property="shortDescLabelOutlet" destination="cOL-pv-fVF" id="llE-Mm-hO7"/>
                 <outlet property="someLabelOutlet" destination="jzE-fg-chw" id="Vlq-ao-a8u"/>
+                <outlet property="star1" destination="R02-iO-7sj" id="GJO-vh-ujW"/>
+                <outlet property="star2" destination="iKO-UW-a97" id="HTT-dw-fN5"/>
+                <outlet property="star3" destination="egs-6n-Tsv" id="Rc6-Gu-kxW"/>
+                <outlet property="star4" destination="L1m-e8-AfY" id="sKh-2H-12W"/>
+                <outlet property="star5" destination="kCY-2C-Tor" id="tqJ-Oc-IEt"/>
+                <outlet property="tripAdvisorBasedOnLabel" destination="3x3-Cg-FFZ" id="0Jh-l4-qGc"/>
+                <outlet property="tripAdvisorImageView" destination="EFf-Sl-7IT" id="cFn-yE-EqV"/>
                 <outlet property="view" destination="iN0-l3-epB" id="Y7i-eG-vh2"/>
             </connections>
         </placeholder>
@@ -39,13 +48,6 @@
                             <rect key="frame" x="-90" y="-100" width="500" height="325"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         </scrollView>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="jzE-fg-chw" userLabel="someLabel">
-                            <rect key="frame" x="13" y="248" width="240" height="23"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                            <nil key="highlightedColor"/>
-                        </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="22/89" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="CrF-PJ-4qK" userLabel="pageNumberLabel">
                             <rect key="frame" x="260" y="203" width="58" height="21"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -54,34 +56,24 @@
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="jib-qY-9Z1" userLabel="bookButton">
-                            <rect key="frame" x="260" y="243" width="46" height="30"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="cOL-pv-fVF" userLabel="shortDescriptionLabel">
+                            <rect key="frame" x="10" y="325" width="300" height="69"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <state key="normal" title="Book">
-                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                            </state>
-                            <connections>
-                                <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="LfP-Sk-Zpk"/>
-                            </connections>
-                        </button>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt." lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="cOL-pv-fVF" userLabel="shortDescriptionLabel">
-                            <rect key="frame" x="13" y="282" width="300" height="69"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <view contentMode="scaleToFill" id="MAY-ls-PPp" userLabel="mapContainer">
-                            <rect key="frame" x="10" y="379" width="300" height="200"/>
+                        <view clipsSubviews="YES" contentMode="scaleToFill" id="MAY-ls-PPp" userLabel="mapContainer">
+                            <rect key="frame" x="0.0" y="408" width="320" height="200"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <view contentMode="scaleToFill" id="O5k-aK-YpL" userLabel="mapOverlay">
-                                    <rect key="frame" x="0.0" y="0.0" width="300" height="200"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="200"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
                             </subviews>
-                            <color key="backgroundColor" red="1" green="0.38302606039999998" blue="0.03490661422" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         </view>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Property Amenities" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="5zo-om-eoI" userLabel="propAmenTitle">
                             <rect key="frame" x="10" y="600" width="300" height="21"/>
@@ -154,6 +146,91 @@
                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
+                        <view contentMode="scaleToFill" id="vya-sM-6l1" userLabel="fromFromContainer" customClass="WotaTappableView">
+                            <rect key="frame" x="5" y="282" width="189" height="30"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="jzE-fg-chw" userLabel="someLabel">
+                                    <rect key="frame" x="5" y="3" width="179" height="23"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="19"/>
+                                    <color key="textColor" red="0.050980392156862744" green="0.61176470588235299" blue="0.011764705882352941" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </view>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="EFf-Sl-7IT" userLabel="tripAdvisorImageView">
+                            <rect key="frame" x="19" y="239" width="118" height="20"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        </imageView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="TripAdvisor Traveler Rating" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="PK5-1P-u41" userLabel="tripAdvisorLabel">
+                            <rect key="frame" x="18" y="222" width="120" height="21"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="9"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Based on number of reviews" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="3x3-Cg-FFZ" userLabel="tripAdvisorBasedOnLabel">
+                            <rect key="frame" x="14" y="254" width="128" height="21"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="9"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <view contentMode="scaleToFill" id="7hm-dB-gRe" userLabel="starContainer">
+                            <rect key="frame" x="179" y="235" width="129" height="26"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <subviews>
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="star" id="R02-iO-7sj" userLabel="star1">
+                                    <rect key="frame" x="1" y="1" width="24" height="24"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                </imageView>
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="star" id="iKO-UW-a97" userLabel="star2">
+                                    <rect key="frame" x="26" y="1" width="24" height="24"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                </imageView>
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="star" id="egs-6n-Tsv" userLabel="star3">
+                                    <rect key="frame" x="52" y="1" width="24" height="24"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                </imageView>
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="star" id="L1m-e8-AfY" userLabel="star4">
+                                    <rect key="frame" x="78" y="1" width="24" height="24"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                </imageView>
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="star" id="kCY-2C-Tor" userLabel="star5">
+                                    <rect key="frame" x="103" y="1" width="24" height="24"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </imageView>
+                            </subviews>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        </view>
+                        <view contentMode="scaleToFill" id="mJp-eu-lKm" userLabel="selectRoomContainer" customClass="WotaTappableView">
+                            <rect key="frame" x="199" y="282" width="116" height="30"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select A Room" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="IfJ-pG-F3k" userLabel="selectRoomLabel">
+                                    <rect key="frame" x="6" y="3" width="106" height="23"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                    <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </view>
                     </subviews>
                 </scrollView>
             </subviews>
@@ -161,6 +238,9 @@
             <point key="canvasLocation" x="150" y="188"/>
         </view>
     </objects>
+    <resources>
+        <image name="star" width="24" height="24"/>
+    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
