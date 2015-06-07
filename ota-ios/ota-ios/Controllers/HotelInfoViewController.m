@@ -99,7 +99,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     self = [self init];
     if (self != nil) {
         _eanHotel = eanHotel;
-        [[LoadEanData sharedInstance] loadPaymentTypesWithHotelId:_eanHotel.hotelId supplierType:_eanHotel.supplierType rateType:_eanHotel.roomRateDetails.rateInfo.rateType completionBlock:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+        [[LoadEanData sharedInstance] loadPaymentTypesWithHotelId:[_eanHotel.hotelId stringValue] supplierType:_eanHotel.supplierType rateType:_eanHotel.roomRateDetails.rateInfo.rateType completionBlock:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
             _paymentTypesBulletted = [EanPaymentTypeResponse eanObjectFromApiResponseData:data].paymentTypesBulletted;
             _paymentTypesReturned = YES;
             [self appendPaymentTypesToPoliciesLabel];
@@ -220,8 +220,6 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     _star4.image = [_star4.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     _star5.image = [_star5.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     NSArray *stars = [NSArray arrayWithObjects:_star1, _star2, _star3, _star4, _star5, nil];
-    
-    [_star1 setTintColor:kWotaColorOne()];
     
     for (int j = 1; j <= 5; j++) {
         if (j <= [hr integerValue]) {
@@ -415,7 +413,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
         cl = [NSString stringWithFormat:@"\n%@", countryName];
     }
     
-    NSString *alt = [NSString stringWithFormat:@"%@\n%@\n%@%@%@%@", _eanHotel.hotelName, _eanHotel.address1, _eanHotel.city, sl, pcl, cl];
+    NSString *alt = [NSString stringWithFormat:@"%@\n%@\n%@%@%@%@", _eanHotel.hotelNameFormatted, _eanHotel.address1Formatted, _eanHotel.city, sl, pcl, cl];
     
     CGRect atf = _addressTitle.frame;
     CGRect alf = _addressLabelOutlet.frame;
@@ -523,7 +521,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 - (void)prepareTheSelectRoomViewControllerWithPlaceholderImage:(UIImage *)phi {
     self.selectRoomViewController = [[SelectRoomViewController alloc] initWithPlaceholderImage:phi];
     SelectionCriteria *sc = [SelectionCriteria singleton];
-    [[LoadEanData sharedInstance:self.selectRoomViewController] loadAvailableRoomsWithHotelId:_eanHotel.hotelId
+    [[LoadEanData sharedInstance:self.selectRoomViewController] loadAvailableRoomsWithHotelId:[_eanHotel.hotelId stringValue]
                                                          arrivalDate:sc.arrivalDateEanString
                                                        departureDate:sc.returnDateEanString
                                                       numberOfAdults:sc.numberOfAdults

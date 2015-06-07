@@ -12,9 +12,11 @@
 @interface EanHotelListHotelSummary : NSObject
 
 @property (nonatomic) NSUInteger order;
-@property (nonatomic, strong) NSString *hotelId;
+@property (nonatomic, strong) NSNumber *hotelId;
 @property (nonatomic, strong) NSString *hotelName;
+@property (nonatomic, strong, readonly) NSString *hotelNameFormatted;
 @property (nonatomic, strong) NSString *address1;
+@property (nonatomic, strong, readonly) NSString *address1Formatted;
 @property (nonatomic, strong) NSString *address2;
 @property (nonatomic, strong) NSString *city;
 @property (nonatomic, strong) NSString *stateProvinceCode;
@@ -40,6 +42,7 @@
 @property (nonatomic, strong) NSString *proximityUnit;
 @property (nonatomic) BOOL hotelInDestination;
 @property (nonatomic, strong) NSString *thumbNailUrl;
+@property (nonatomic, strong, readonly) NSString *thumbNailUrlEnhanced;
 @property (nonatomic, strong) NSString *deepLink;
 @property (nonatomic, strong) NSDictionary *roomRateDetailsList;
 @property (nonatomic, strong) NSArray *roomRateDetailsArray;

@@ -31,7 +31,7 @@
                 </textField>
                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="siT-74-Zl3" userLabel="mapButton">
                     <rect key="frame" x="275" y="86" width="22" height="39"/>
-                    <state key="normal" image="mm">
+                    <state key="normal" image="wmap">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
@@ -115,6 +115,6 @@
         </view>
     </objects>
     <resources>
-        <image name="mm" width="22" height="39"/>
+        <image name="wmap" width="22" height="39"/>
     </resources>
 </document>

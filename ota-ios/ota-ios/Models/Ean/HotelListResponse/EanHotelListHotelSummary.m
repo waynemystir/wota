@@ -7,6 +7,7 @@
 //
 
 #import "EanHotelListHotelSummary.h"
+#import "NSString+HTML.h"
 
 @implementation EanHotelListHotelSummary
 
@@ -53,6 +54,18 @@
     hotel.roomRateDetailsList = [object objectForKey:@"RoomRateDetailsList"];
     
     return hotel;
+}
+
+- (NSString *)thumbNailUrlEnhanced {
+    return [_thumbNailUrl stringByReplacingOccurrencesOfString:@"_t" withString:@"_b"];
+}
+
+- (NSString *)hotelNameFormatted {
+    return [_hotelName stringByConvertingHTMLToPlainText];
+}
+
+- (NSString *)address1Formatted {
+    return [_address1 stringByConvertingHTMLToPlainText];
 }
 
 @end

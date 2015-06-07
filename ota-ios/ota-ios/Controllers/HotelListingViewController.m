@@ -9,7 +9,6 @@
 #import "HotelListingViewController.h"
 #import "EanHotelListResponse.h"
 #import "EanHotelListHotelSummary.h"
-#import "HotelTableViewCell.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "HotelInfoViewController.h"
 #import "LoadEanData.h"
@@ -18,6 +17,7 @@
 #import "SelectionCriteria.h"
 #import "ChildTraveler.h"
 #import "NavigationView.h"
+#import "HLTableViewCell.h"
 
 @interface HotelListingViewController () <UITableViewDataSource, UITableViewDelegate, NavigationDelegate>
 
@@ -58,6 +58,8 @@
     
     self.tableViewHotelList.dataSource = self;
     self.tableViewHotelList.delegate = self;
+//    [self.tableViewHotelList registerNib:[UINib nibWithNibName:@"HotelListingTableViewCell" bundle:nil] forCellReuseIdentifier:@"hlTblViewCell"];
+//    [self.tableViewHotelList registerClass:[HotelTableViewCell class] forCellReuseIdentifier:@"hotelListCell"];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -114,44 +116,22 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *CellIdentifier = @"hotelListCell";
-    HotelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        [tableView registerNib:[UINib nibWithNibName:@"HotelTableViewCell" bundle:nil] forCellReuseIdentifier:CellIdentifier];
-        cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    }
-    
+    NSString *CellIdentifier = @"CellIdentifier";
     EanHotelListHotelSummary *hotel = [EanHotelListHotelSummary hotelFromObject:[self.hotelData objectAtIndex:indexPath.row]];
-    NSString *imageUrlString = [@"http://images.travelnow.com" stringByAppendingString:hotel.thumbNailUrl];    
-//    dispatch_queue_t concurrentQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-//    //this will start the image loading in bg
-//    dispatch_async(concurrentQueue, ^{
-//        NSData * imageData = [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString: imageUrlString]];
-//        
-//        //this will set the image when loading is finished
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            cell.thumbImageViewOutlet.image = [UIImage imageWithData:imageData];
-//        });
-//    });
+    HLTableViewCell *cell = [[HLTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier hotelRating:hotel.hotelRating];
     
-    [cell.thumbImageViewOutlet setImageWithURL:[NSURL URLWithString:imageUrlString]];
+    NSString *imageUrlString = [@"http://images.travelnow.com" stringByAppendingString:hotel.thumbNailUrlEnhanced];
+    [cell.thumbImageView setImageWithURL:[NSURL URLWithString:imageUrlString] placeholderImage:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+        // TODO: placeholder image
+        // TODO: if nothing comes back, replace hotel.thumbNailUrlEnhanced with hotel.thumbNailUrl and try again
+        ;
+    }];
     
-    cell.hotelId = hotel.hotelId;
-    cell.latitude = hotel.latitude;
-    cell.longitude = hotel.longitude;
-    cell.hotelNameLabelOutlet.text = hotel.hotelName;
+    cell.hotelNameLabel.text = hotel.hotelNameFormatted;
+    cell.waynester.text = [hotel.hotelRating stringValue];
     NSNumberFormatter *pf = kPriceRoundOffFormatter(hotel.rateCurrencyCode);
-    cell.roomRateLabelOutlet.text = [pf stringFromNumber:hotel.lowRate];
-    cell.highRateOutlet.text = [pf stringFromNumber:hotel.highRate];
-    cell.tripAdvisorRatingLabelOutlet.text = [hotel.tripAdvisorRating stringValue];
-    
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        UILabel *sd = [[UILabel alloc] initWithFrame:CGRectMake(340, 10, 180, 75)];
-        sd.lineBreakMode = NSLineBreakByWordWrapping;
-        sd.numberOfLines = 3;
-        sd.text = hotel.shortDescription;
-        [cell addSubview:sd];
-    }
+    cell.roomRateLabel.text = [pf stringFromNumber:hotel.lowRate];//[NSNumber numberWithLong:3339993339]
+    cell.cityLabel.text = hotel.city;
     
     return cell;
 }
@@ -163,10 +143,9 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    HotelTableViewCell *cell = (HotelTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
     EanHotelListHotelSummary *hotel = [EanHotelListHotelSummary hotelFromObject:[self.hotelData objectAtIndex:indexPath.row]];
     HotelInfoViewController *hvc = [[HotelInfoViewController alloc] initWithHotel:hotel];
-    [[LoadEanData sharedInstance:hvc] loadHotelDetailsWithId:cell.hotelId];
+    [[LoadEanData sharedInstance:hvc] loadHotelDetailsWithId:[hotel.hotelId stringValue]];
     [self.navigationController pushViewController:hvc animated:YES];
 }
 
