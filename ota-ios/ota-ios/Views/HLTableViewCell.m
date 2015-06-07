@@ -19,7 +19,8 @@
         _thumbImageView.clipsToBounds = YES;
         [self.contentView addSubview:_thumbImageView];
         
-        _hotelNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(99, 3, 220, 26)];
+        _hotelNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(99, 5, 220, 26)];
+        _hotelNameLabel.backgroundColor = [UIColor clearColor];
         _hotelNameLabel.textColor = [UIColor blackColor];
         _hotelNameLabel.font = [UIFont boldSystemFontOfSize:15.5f];
         [self.contentView addSubview:_hotelNameLabel];
@@ -41,20 +42,11 @@
         _roomRateLabel.font = [UIFont boldSystemFontOfSize:19.0f];
         [self.contentView addSubview:_roomRateLabel];
         
-        _cityLabel = [[UILabel alloc] initWithFrame:CGRectMake(99, 66, 150, 26)];
+        _cityLabel = [[UILabel alloc] initWithFrame:CGRectMake(99, 65, 216, 26)];
         _cityLabel.textColor = [UIColor grayColor];
         _cityLabel.textAlignment = NSTextAlignmentLeft;
         _cityLabel.font = [UIFont boldSystemFontOfSize:15.0f];
         [self.contentView addSubview:_cityLabel];
-        
-        _waynester = [[UILabel alloc] initWithFrame:CGRectMake(260, 66, 30, 26)];
-        _waynester.backgroundColor = [UIColor greenColor];
-//        [self.contentView addSubview:_waynester];
-        
-        _hotelRatingLabel = [[UILabel alloc] initWithFrame:CGRectMake(290, 66, 30, 26)];
-        _hotelRatingLabel.backgroundColor = [UIColor lightGrayColor];
-        _hotelRatingLabel.text = [hotelRating stringValue];
-//        [self.contentView addSubview:_hotelRatingLabel];
         
         UIView *separator = [[UILabel alloc] initWithFrame:CGRectMake(0, 95.5f, 320, 0.5f)];
         separator.backgroundColor = [UIColor blackColor];

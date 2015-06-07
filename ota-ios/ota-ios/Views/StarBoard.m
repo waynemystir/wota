@@ -11,6 +11,7 @@
 
 @interface StarBoard ()
 
+@property (nonatomic, strong) UILabel *negatoryLabel;
 @property (nonatomic, strong) UIImageView *star1;
 @property (nonatomic, strong) UIImageView *star2;
 @property (nonatomic, strong) UIImageView *star3;
@@ -58,10 +59,29 @@
     _stars = [NSArray arrayWithObjects:_star1, _star2, _star3, _star4, _star5, nil];
 }
 
+- (void)initNegatory {
+    _negatoryLabel = [[UILabel alloc] initWithFrame:self.bounds];
+    _negatoryLabel.backgroundColor = [UIColor whiteColor];
+    _negatoryLabel.text = @"Not Rated";
+    _negatoryLabel.textColor = [UIColor blackColor];
+    _negatoryLabel.textAlignment = NSTextAlignmentLeft;
+    _negatoryLabel.font = [UIFont systemFontOfSize:18.0f];
+}
+
 - (void)setNumberOfStars:(NSNumber *)numberOfStars {
     _numberOfStars = numberOfStars;
-    
     double hrd = [numberOfStars doubleValue];
+    
+    if (hrd == 0) {
+        [self initNegatory];
+        [self addSubview:_negatoryLabel];
+        [self bringSubviewToFront:_negatoryLabel];
+        for (UIView *star in _stars) {
+            [star removeFromSuperview];
+        }
+        return;
+    }
+    
     NSInteger floorHr = floor(hrd);
     hrd = hrd - floorHr;
     

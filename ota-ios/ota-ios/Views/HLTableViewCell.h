@@ -19,8 +19,4 @@
 @property (nonatomic, strong) UILabel *roomRateLabel;
 @property (nonatomic, strong) UILabel *cityLabel;
 
-@property (nonatomic, strong) NSNumber *hotelId;
-@property (nonatomic, strong) UILabel *hotelRatingLabel;
-@property (nonatomic, strong) UILabel *waynester;
-
 @end

@@ -58,6 +58,7 @@ NSString * const EAN_PK_DESTINATION_STRING = @"destinationString";
 NSString * const EAN_PK_TYPE = @"type";
 NSString * const EAN_PK_LATITUDE = @"latitude";
 NSString * const EAN_PK_LONGITUDE = @"longitude";
+NSString * const EAN_PK_NUMBER_OF_RESULTS = @"numberOfResults";
 NSString * const EAN_PK_SEARCH_RADIUS = @"searchRadius";
 NSString * const EAN_PK_SEARCH_RADIUS_UNIT = @"searchRadiusUnit";
 NSString * const EAN_PK_GEO_SORT = @"sort";
@@ -227,10 +228,11 @@ NSString * kURLeanBookReservation() {
 
 - (NSString *)URLhotelListWithLatitude:(double)latitude
                              longitude:(double)longitude {
-    return [NSString stringWithFormat:@"%@&%@=%f&%@=%f&%@=%@&%@=%@&%@=%@",
+    return [NSString stringWithFormat:@"%@&%@=%f&%@=%f&%@=%@&%@=%@&%@=%@&%@=%@",
             kURLeanHotelList(),
             EAN_PK_LATITUDE, latitude,
             EAN_PK_LONGITUDE, longitude,
+            EAN_PK_NUMBER_OF_RESULTS, @100,
             EAN_PK_SEARCH_RADIUS, @40,
             EAN_PK_SEARCH_RADIUS_UNIT, @"MI",
             EAN_PK_GEO_SORT, @"PROXIMITY"];

@@ -9,6 +9,7 @@
                 <outlet property="addressLabelOutlet" destination="zvp-BM-nsr" id="r6V-Uf-fZT"/>
                 <outlet property="addressTitle" destination="sAq-SR-Dcn" id="b5j-rh-5Mb"/>
                 <outlet property="amenitiesContainer" destination="HYU-9a-ZeH" id="3ue-hI-oaH"/>
+                <outlet property="bookRoomContainer" destination="Jkz-pZ-lK0" id="mWG-e5-DqE"/>
                 <outlet property="diningLabel" destination="t2K-N5-uMD" id="Dz8-dY-7DH"/>
                 <outlet property="diningTitle" destination="gOW-cS-muw" id="Mkx-NR-wNl"/>
                 <outlet property="feesLabel" destination="IrE-Ms-XIO" id="NGG-e9-I1Y"/>
@@ -225,6 +226,20 @@
                                     <rect key="frame" x="6" y="3" width="106" height="23"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                    <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </view>
+                        <view contentMode="scaleToFill" id="Jkz-pZ-lK0" userLabel="bookARoomNowContainer" customClass="WotaTappableView">
+                            <rect key="frame" x="10" y="880" width="300" height="30"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Book A Room Now" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="kgs-l7-NAQ" userLabel="bookARoomLabel">
+                                    <rect key="frame" x="0.0" y="0.0" width="300" height="30"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>

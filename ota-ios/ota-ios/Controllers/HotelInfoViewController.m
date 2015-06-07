@@ -82,6 +82,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 @property (nonatomic) BOOL policiesLabelIsSet;
 @property (nonatomic, strong) NSString *paymentTypesBulletted;
 @property (weak, nonatomic) IBOutlet UILabel *pageNumberLabel;
+@property (weak, nonatomic) IBOutlet WotaTappableView *bookRoomContainer;
 
 @end
 
@@ -159,6 +160,12 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     tgr2.cancelsTouchesInView = YES;
     [_selectRoomContainer addGestureRecognizer:tgr2];
     
+    UITapGestureRecognizer *tgr2b = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gotoSelectRoomVC)];
+    tgr2b.numberOfTapsRequired = 1;
+    tgr2b.numberOfTouchesRequired = 1;
+    tgr2b.cancelsTouchesInView = YES;
+    [_bookRoomContainer addGestureRecognizer:tgr2b];
+    
     NSURL *iu = [NSURL URLWithString:[_eanHotel tripAdvisorRatingUrl]];
     _tripAdvisorImageView.contentMode = UIViewContentModeScaleAspectFit;
     [_tripAdvisorImageView setImageWithURL:iu placeholderImage:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
@@ -166,7 +173,9 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     }];
     
     NSString *numReviews = [kNumberFormatterWithThousandsSeparatorNoDecimals() stringFromNumber:_eanHotel.tripAdvisorReviewCount];
-    NSString *basedOn = numReviews ? [NSString stringWithFormat:@"Based on %@ reviews", numReviews] : @"No Reviews";
+    BOOL zr = [_eanHotel.tripAdvisorReviewCount integerValue] == 0;
+    NSString *plural = [_eanHotel.tripAdvisorReviewCount integerValue] == 1 ? @"" : @"s";
+    NSString *basedOn = numReviews && !zr ? [NSString stringWithFormat:@"Based on %@ review%@", numReviews, plural] : @"No Reviews";
     _tripAdvisorBasedOnLabel.text = basedOn;
     
     [self colorTheHotelRatingStars];
@@ -192,7 +201,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     // coordinate -33.86,151.20 at zoom level 6.
     GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:_eanHotel.latitude
                                                             longitude:_eanHotel.longitude
-                                                                 zoom:6];
+                                                                 zoom:14.5f];
     mapView_ = [GMSMapView mapWithFrame:CGRectMake(0, 0, 320, 200) camera:camera];
     mapView_.myLocationEnabled = YES;
     //Curtesy of http://stackoverflow.com/questions/26796466/ios-how-to-get-rid-of-app-is-using-your-location-notification
@@ -203,14 +212,29 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     // Creates a marker in the center of the map.
     GMSMarker *marker = [[GMSMarker alloc] init];
     marker.position = CLLocationCoordinate2DMake(_eanHotel.latitude, _eanHotel.longitude);
-    marker.title = @"Sydney";
-    marker.snippet = @"Australia";
     marker.map = mapView_;
 }
 
 - (void)colorTheHotelRatingStars {
     NSNumber *hr = _eanHotel.hotelRating;
     double hrd = [hr doubleValue];
+    NSArray *stars = [NSArray arrayWithObjects:_star1, _star2, _star3, _star4, _star5, nil];
+    
+    if (hrd == 0) {
+        UILabel *negatoryLabel = [[UILabel alloc] initWithFrame:_star1.superview.bounds];
+        negatoryLabel.backgroundColor = [UIColor whiteColor];
+        negatoryLabel.text = @"Not Rated";
+        negatoryLabel.textColor = [UIColor grayColor];
+        negatoryLabel.textAlignment = NSTextAlignmentCenter;
+        negatoryLabel.font = [UIFont systemFontOfSize:15.0f];
+        [_star1.superview addSubview:negatoryLabel];
+        [_star1.superview bringSubviewToFront:negatoryLabel];
+        for (UIView *star in stars) {
+            [star removeFromSuperview];
+        }
+        return;
+    }
+    
     NSInteger floorHr = floor(hrd);
     hrd = hrd - floorHr;
     
@@ -219,7 +243,6 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     _star3.image = [_star3.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     _star4.image = [_star4.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     _star5.image = [_star5.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    NSArray *stars = [NSArray arrayWithObjects:_star1, _star2, _star3, _star4, _star5, nil];
     
     for (int j = 1; j <= 5; j++) {
         if (j <= [hr integerValue]) {
@@ -500,7 +523,11 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
         flf = _feesLabel.frame;
     }
     
-    _scrollViewOutlet.contentSize = CGSizeMake(_scrollViewOutlet.frame.size.width, flf.origin.y + flf.size.height + 57.0f);
+    CGRect barf = _bookRoomContainer.frame;
+    _bookRoomContainer.frame = CGRectMake(barf.origin.x, flf.origin.y + flf.size.height + 15.0f, barf.size.width, barf.size.height);
+    barf = _bookRoomContainer.frame;
+    
+    _scrollViewOutlet.contentSize = CGSizeMake(_scrollViewOutlet.frame.size.width, barf.origin.y + barf.size.height + 67.0f);
     [self dropTheSpinnerAlready:NO];
 }
 

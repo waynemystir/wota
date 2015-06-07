@@ -128,7 +128,6 @@
     }];
     
     cell.hotelNameLabel.text = hotel.hotelNameFormatted;
-    cell.waynester.text = [hotel.hotelRating stringValue];
     NSNumberFormatter *pf = kPriceRoundOffFormatter(hotel.rateCurrencyCode);
     cell.roomRateLabel.text = [pf stringFromNumber:hotel.lowRate];//[NSNumber numberWithLong:3339993339]
     cell.cityLabel.text = hotel.city;
