@@ -105,6 +105,10 @@
 		B09E41831AEB2D9B000A718D /* SelectBedTypeDelegateImplementation.m in Sources */ = {isa = PBXBuildFile; fileRef = B09E41821AEB2D9B000A718D /* SelectBedTypeDelegateImplementation.m */; };
 		B09E41851AEB43DA000A718D /* WotaButton.xib in Resources */ = {isa = PBXBuildFile; fileRef = B09E41841AEB43DA000A718D /* WotaButton.xib */; };
 		B0A87D681AD4B2B3001505A6 /* EanHotelRoomReservationResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = B0A87D671AD4B2B3001505A6 /* EanHotelRoomReservationResponse.m */; };
+		B0B50AD11B251FF300685384 /* GoogleNearbyPlace.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B50AD01B251FF300685384 /* GoogleNearbyPlace.m */; };
+		B0B50AD41B25285B00685384 /* GoogleNearbyPlaces.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B50AD31B25285B00685384 /* GoogleNearbyPlaces.m */; };
+		B0B50ADA1B252E5400685384 /* GooglePlaceMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B50AD91B252E5400685384 /* GooglePlaceMarker.m */; };
+		B0B50ADD1B255F2600685384 /* GoogleMarkerView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B50ADC1B255F2600685384 /* GoogleMarkerView.m */; };
 		B0BD381F1AF9812100EF5E4F /* NightlyRateTableViewDelegateImplementation.m in Sources */ = {isa = PBXBuildFile; fileRef = B0BD381E1AF9812100EF5E4F /* NightlyRateTableViewDelegateImplementation.m */; };
 		B0BD38211AF990F600EF5E4F /* NightRateTableCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0BD38201AF990F600EF5E4F /* NightRateTableCellView.xib */; };
 		B0BD38241AF9914600EF5E4F /* NightRateTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0BD38231AF9914600EF5E4F /* NightRateTableCellView.m */; };
@@ -334,6 +338,14 @@
 		B09E41841AEB43DA000A718D /* WotaButton.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WotaButton.xib; sourceTree = "<group>"; };
 		B0A87D661AD4B2B3001505A6 /* EanHotelRoomReservationResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanHotelRoomReservationResponse.h; sourceTree = "<group>"; };
 		B0A87D671AD4B2B3001505A6 /* EanHotelRoomReservationResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanHotelRoomReservationResponse.m; sourceTree = "<group>"; };
+		B0B50ACF1B251FF300685384 /* GoogleNearbyPlace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleNearbyPlace.h; sourceTree = "<group>"; };
+		B0B50AD01B251FF300685384 /* GoogleNearbyPlace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleNearbyPlace.m; sourceTree = "<group>"; };
+		B0B50AD21B25285B00685384 /* GoogleNearbyPlaces.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleNearbyPlaces.h; sourceTree = "<group>"; };
+		B0B50AD31B25285B00685384 /* GoogleNearbyPlaces.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleNearbyPlaces.m; sourceTree = "<group>"; };
+		B0B50AD81B252E5400685384 /* GooglePlaceMarker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GooglePlaceMarker.h; sourceTree = "<group>"; };
+		B0B50AD91B252E5400685384 /* GooglePlaceMarker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GooglePlaceMarker.m; sourceTree = "<group>"; };
+		B0B50ADB1B255F2600685384 /* GoogleMarkerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleMarkerView.h; sourceTree = "<group>"; };
+		B0B50ADC1B255F2600685384 /* GoogleMarkerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleMarkerView.m; sourceTree = "<group>"; };
 		B0BD381D1AF9812100EF5E4F /* NightlyRateTableViewDelegateImplementation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NightlyRateTableViewDelegateImplementation.h; sourceTree = "<group>"; };
 		B0BD381E1AF9812100EF5E4F /* NightlyRateTableViewDelegateImplementation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NightlyRateTableViewDelegateImplementation.m; sourceTree = "<group>"; };
 		B0BD38201AF990F600EF5E4F /* NightRateTableCellView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NightRateTableCellView.xib; sourceTree = "<group>"; };
@@ -482,6 +494,12 @@
 				B075AB081ADB687B0028C613 /* GoogleAddressComponent.m */,
 				B075AB0A1ADB73560028C613 /* GooglePlaces.h */,
 				B075AB0B1ADB73560028C613 /* GooglePlaces.m */,
+				B0B50ACF1B251FF300685384 /* GoogleNearbyPlace.h */,
+				B0B50AD01B251FF300685384 /* GoogleNearbyPlace.m */,
+				B0B50AD21B25285B00685384 /* GoogleNearbyPlaces.h */,
+				B0B50AD31B25285B00685384 /* GoogleNearbyPlaces.m */,
+				B0B50AD81B252E5400685384 /* GooglePlaceMarker.h */,
+				B0B50AD91B252E5400685384 /* GooglePlaceMarker.m */,
 			);
 			path = Google;
 			sourceTree = "<group>";
@@ -618,6 +636,8 @@
 				B00E77151B22ACFB00C27331 /* StarBoard.m */,
 				B00E77201B236A3B00C27331 /* HLTableViewCell.h */,
 				B00E77211B236A3B00C27331 /* HLTableViewCell.m */,
+				B0B50ADB1B255F2600685384 /* GoogleMarkerView.h */,
+				B0B50ADC1B255F2600685384 /* GoogleMarkerView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1120,6 +1140,7 @@
 				B0D01EC21B07EFE30001C558 /* NavTitleView.m in Sources */,
 				B0A87D681AD4B2B3001505A6 /* EanHotelRoomReservationResponse.m in Sources */,
 				B091B8951AD22EFC00BB6CB0 /* AvailableRoomTableViewCell.m in Sources */,
+				B0B50AD11B251FF300685384 /* GoogleNearbyPlace.m in Sources */,
 				B07958EC1AF4751100422182 /* EanSurcharge.m in Sources */,
 				B075AB091ADB687B0028C613 /* GoogleAddressComponent.m in Sources */,
 				B00872CD1AEC1D4900CB2B9D /* SelectSmokingPreferenceDelegateImplementation.m in Sources */,
@@ -1134,8 +1155,10 @@
 				B00872D01AEC99CB00CB2B9D /* EanAvailabilityRoomType.m in Sources */,
 				B0344C4A1AE5A696000BBFCE /* WotaCardNumberField.m in Sources */,
 				B0F554931B13798200E9B805 /* EanRoomRateDetails.m in Sources */,
+				B0B50ADA1B252E5400685384 /* GooglePlaceMarker.m in Sources */,
 				B0963CC11AC8BDC6002FD859 /* ChildTraveler.m in Sources */,
 				B00038661B10286E0000319A /* EanPropertyAmenity.m in Sources */,
+				B0B50ADD1B255F2600685384 /* GoogleMarkerView.m in Sources */,
 				B018C0451AD9BEC800DDCE2E /* GuestInfo.m in Sources */,
 				B06C98BF1B09586B00DBE09D /* CountryPicker.m in Sources */,
 				B09797CC1AC24BE20014FC7C /* MapViewController.m in Sources */,
@@ -1158,6 +1181,7 @@
 				B080B7CC1AC506B500075A32 /* EanHotelInformationResponse.m in Sources */,
 				B0344C4D1AE5A6E0000BBFCE /* WotaCardNumberFormatter.m in Sources */,
 				B09797FC1AC3BC690014FC7C /* UIViewController+KNSemiModal.m in Sources */,
+				B0B50AD41B25285B00685384 /* GoogleNearbyPlaces.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -23,6 +23,11 @@
 #import "AppEnvironment.h"
 #import "AppDelegate.h"
 #import "WotaTappableView.h"
+#import "LoadGooglePlacesData.h"
+#import "GoogleNearbyPlaces.h"
+#import "GoogleNearbyPlace.h"
+#import "GooglePlaceMarker.h"
+#import "GoogleMarkerView.h"
 
 #define degreesToRadians(x) (M_PI * x / 180.0)
 
@@ -40,7 +45,7 @@ CGFloat const kImageScrollerPortraitHeight = 500.0f;
 NSUInteger const kRoomImageViewContainersStartingTag = 1113151719;
 NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 
-@interface HotelInfoViewController () <CLLocationManagerDelegate, NavigationDelegate, UIScrollViewDelegate>
+@interface HotelInfoViewController () <CLLocationManagerDelegate, NavigationDelegate, UIScrollViewDelegate, GMSMapViewDelegate>
 
 @property (nonatomic) NSInteger currentPageNumber;
 @property (nonatomic) NSInteger totalNumberOfPages;
@@ -201,8 +206,9 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     // coordinate -33.86,151.20 at zoom level 6.
     GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:_eanHotel.latitude
                                                             longitude:_eanHotel.longitude
-                                                                 zoom:14.5f];
+                                                                 zoom:15.0f];
     mapView_ = [GMSMapView mapWithFrame:CGRectMake(0, 0, 320, 200) camera:camera];
+    mapView_.delegate = self;
     mapView_.myLocationEnabled = YES;
     //Curtesy of http://stackoverflow.com/questions/26796466/ios-how-to-get-rid-of-app-is-using-your-location-notification
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
@@ -213,6 +219,37 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     GMSMarker *marker = [[GMSMarker alloc] init];
     marker.position = CLLocationCoordinate2DMake(_eanHotel.latitude, _eanHotel.longitude);
     marker.map = mapView_;
+    
+    NSArray *types = [NSArray arrayWithObjects:@"bakery", @"bar", @"cafe", @"grocery_or_supermarket", @"restaurant", @"food", nil];
+    __weak typeof(self) weakSelf = self;
+    [[LoadGooglePlacesData sharedInstance] loadNearbyPlacesWithLatitude:_eanHotel.latitude longitude:_eanHotel.longitude types:types completionBlock:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+        if (nil != connectionError || ((NSHTTPURLResponse *)response).statusCode != 200) {
+            return;
+        } else {
+            [weakSelf nearbyPlaceCompletionBlock:data];
+        }
+    }];
+}
+
+- (void)nearbyPlaceCompletionBlock:(NSData *)data {
+    GoogleNearbyPlaces *gnps = [GoogleNearbyPlaces placesFromResponseData:data];
+    
+    for (GoogleNearbyPlace *gnp in gnps.nearbyPlaces) {
+        GooglePlaceMarker *gpm = [[GooglePlaceMarker alloc] initWithPlace:gnp];
+        gpm.map = mapView_;
+    }
+}
+
+- (UIView *)mapView:(GMSMapView *)mapView markerInfoContents:(GMSMarker *)marker {
+    GooglePlaceMarker *gpm = (GooglePlaceMarker *)marker;
+    
+    GoogleMarkerView *gmv = [[GoogleMarkerView alloc] initWithFrame:CGRectMake(0, 0, 300, 20)];
+    gmv.nameLabel.text = gpm.place.placeName;
+    [gmv.nameLabel sizeToFit];
+    gmv.frame = gmv.nameLabel.bounds;
+    gmv.nameLabel.center = gmv.center;
+    
+    return gmv;
 }
 
 - (void)colorTheHotelRatingStars {

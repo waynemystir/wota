@@ -17,7 +17,14 @@
 + (LoadGooglePlacesData *)sharedInstance:(id<LoadDataProtocol>)delegate;
 
 - (void)autoCompleteSomePlaces:(NSString *)queryString;
+
 - (void)loadPlaceDetails:(NSString *)placeId;
+
 - (void)loadPlaceDetailsWithPostalCode:(NSString *)postalCode;
+
+- (void)loadNearbyPlacesWithLatitude:(double)latitude
+                           longitude:(double)longitude
+                               types:(NSArray *)types
+                     completionBlock:(void(^)(NSURLResponse *response, NSData *data, NSError *connectionError))completionBlock;
 
 @end

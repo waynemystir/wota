@@ -105,6 +105,7 @@ NSString * const kKeyLongitude = @"longitude";
     gpd.location = [gpd.geometry objectForKey:@"location"];
     gpd.latitude = [[gpd.location objectForKey:@"lat"] doubleValue];
     gpd.longitude = [[gpd.location objectForKey:@"lng"] doubleValue];
+    gpd.types = [gpd.googlePlaceResultDict objectForKey:@"types"];
     
     [gpd save];
     

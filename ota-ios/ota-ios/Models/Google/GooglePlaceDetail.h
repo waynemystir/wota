@@ -41,6 +41,7 @@
 @property (nonatomic, strong) NSDictionary *location;
 @property (nonatomic, setter=setLatitude:) double latitude;
 @property (nonatomic, setter=setLongitude:) double longitude;
+@property (nonatomic, strong) NSArray *types;
 
 + (GooglePlaceDetail *)placeDetailFromId:(NSString *)placeId;
 + (GooglePlaceDetail *)placeDetailFromData:(NSData *)data;

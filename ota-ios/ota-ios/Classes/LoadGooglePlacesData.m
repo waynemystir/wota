@@ -83,6 +83,25 @@
     [self sendRequestStartedToDelegate:url];
 }
 
+- (void)loadNearbyPlacesWithLatitude:(double)latitude
+                           longitude:(double)longitude
+                               types:(NSArray *)types
+                     completionBlock:(void (^)(NSURLResponse *, NSData *, NSError *))completionBlock {
+    
+    NSString *typesString = [types componentsJoinedByString:@"|"];
+    NSString *urlString = [[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=%@&location=%f,%f&radius=%@&rankby=prominence&sensor=true&types=%@", GOOGLE_API_KEY, latitude, longitude, @2000, typesString] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setTimeoutInterval:URL_REQUEST_TIMEOUT];
+    [request setHTTPMethod:@"POST"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+        completionBlock(response, data, connectionError);
+    }];
+}
+
 - (void)sendRequestStartedToDelegate:(NSURL *)url {
     if ([self.delegate respondsToSelector:@selector(requestStarted:)]) {
         [self.delegate requestStarted:url];
