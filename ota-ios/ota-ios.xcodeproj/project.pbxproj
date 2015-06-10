@@ -72,6 +72,7 @@
 		B07958E61AF44A5800422182 /* EanChargeableRateInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B07958E51AF44A5800422182 /* EanChargeableRateInfo.m */; };
 		B07958E91AF451C000422182 /* EanNightlyRate.m in Sources */ = {isa = PBXBuildFile; fileRef = B07958E81AF451C000422182 /* EanNightlyRate.m */; };
 		B07958EC1AF4751100422182 /* EanSurcharge.m in Sources */ = {isa = PBXBuildFile; fileRef = B07958EB1AF4751100422182 /* EanSurcharge.m */; };
+		B07FC8681B27A8E70059A205 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B07FC8671B27A8E70059A205 /* MapKit.framework */; };
 		B080B7C41AC4ED7200075A32 /* SDWebImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B080B7C31AC4ED7200075A32 /* SDWebImage.framework */; };
 		B080B7C71AC5057100075A32 /* HotelInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B080B7C61AC5057100075A32 /* HotelInfoViewController.m */; };
 		B080B7C91AC505DC00075A32 /* HotelInfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B080B7C81AC505DC00075A32 /* HotelInfoView.xib */; };
@@ -281,6 +282,7 @@
 		B07958E81AF451C000422182 /* EanNightlyRate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanNightlyRate.m; sourceTree = "<group>"; };
 		B07958EA1AF4751100422182 /* EanSurcharge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanSurcharge.h; sourceTree = "<group>"; };
 		B07958EB1AF4751100422182 /* EanSurcharge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanSurcharge.m; sourceTree = "<group>"; };
+		B07FC8671B27A8E70059A205 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		B080B7C31AC4ED7200075A32 /* SDWebImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDWebImage.framework; sourceTree = "<group>"; };
 		B080B7C51AC5057100075A32 /* HotelInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotelInfoViewController.h; sourceTree = "<group>"; };
 		B080B7C61AC5057100075A32 /* HotelInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotelInfoViewController.m; sourceTree = "<group>"; };
@@ -427,6 +429,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B07FC8681B27A8E70059A205 /* MapKit.framework in Frameworks */,
 				B049D1FA1AC19B2200E2E18C /* AVFoundation.framework in Frameworks */,
 				B049D2061AC19B2300E2E18C /* CoreData.framework in Frameworks */,
 				B049D2071AC19B2300E2E18C /* CoreLocation.framework in Frameworks */,
@@ -690,6 +693,7 @@
 		B049D1F71AC19A7700E2E18C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B07FC8671B27A8E70059A205 /* MapKit.framework */,
 				B080B7C31AC4ED7200075A32 /* SDWebImage.framework */,
 				B049D2131AC19CB200E2E18C /* GoogleMaps.framework */,
 				B049D1F81AC19AC100E2E18C /* AVFoundation.framework */,

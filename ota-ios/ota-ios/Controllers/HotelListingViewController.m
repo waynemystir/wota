@@ -18,17 +18,27 @@
 #import "ChildTraveler.h"
 #import "NavigationView.h"
 #import "HLTableViewCell.h"
+#import <MapKit/MapKit.h>
+
+#define METERS_PER_MILE 1609.344
+
+NSTimeInterval const kFlipAnimationDuration = 0.7;
 
 @interface HotelListingViewController () <UITableViewDataSource, UITableViewDelegate, NavigationDelegate>
 
 @property (nonatomic) BOOL alreadyDroppedSpinner;
-@property (weak, nonatomic) IBOutlet UITableView *tableViewHotelList;
+@property (strong, nonatomic) UITableView *hotelsTableView;
 @property (nonatomic, strong) NSArray *hotelData;
-@property (nonatomic, strong) EanHotelListHotelSummary *selectedHotel;
+@property (weak, nonatomic) IBOutlet UIImageView *wmapImageView;
+@property (nonatomic, strong) UIView *containerView;
+@property (nonatomic, strong) MKMapView *mkMapView;
 
 @end
 
-@implementation HotelListingViewController
+@implementation HotelListingViewController {
+    
+    BOOL tableOrMap;
+}
 
 - (id)init {
     self = [super initWithNibName:@"HotelListingView" bundle:nil];
@@ -56,10 +66,31 @@
     self.automaticallyAdjustsScrollViewInsets = NO;
     //***********************************************************************
     
-    self.tableViewHotelList.dataSource = self;
-    self.tableViewHotelList.delegate = self;
-//    [self.tableViewHotelList registerNib:[UINib nibWithNibName:@"HotelListingTableViewCell" bundle:nil] forCellReuseIdentifier:@"hlTblViewCell"];
-//    [self.tableViewHotelList registerClass:[HotelTableViewCell class] forCellReuseIdentifier:@"hotelListCell"];
+    _containerView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, 320, 459)];
+    _containerView.backgroundColor = [UIColor blackColor];
+    [self.view addSubview:_containerView];
+    
+    _mkMapView = [[MKMapView alloc] initWithFrame:_containerView.bounds];
+    SelectionCriteria *sc = [SelectionCriteria singleton];
+    CLLocationCoordinate2D zoomLocation;
+    zoomLocation.latitude = sc.googlePlaceDetail.latitude;
+    zoomLocation.longitude= sc.googlePlaceDetail.longitude;
+    MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(zoomLocation, 2.5*METERS_PER_MILE, 2.5*METERS_PER_MILE);
+    [_mkMapView setRegion:viewRegion];
+    [_containerView addSubview:_mkMapView];
+    
+    _hotelsTableView = [[UITableView alloc] initWithFrame:_containerView.bounds];
+    _hotelsTableView.dataSource = self;
+    _hotelsTableView.delegate = self;
+    _hotelsTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    _hotelsTableView.separatorColor = [UIColor clearColor];
+    [_containerView addSubview:_hotelsTableView];
+    
+    UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(transitionBetweenTableAndMap)];
+    tgr.numberOfTapsRequired = 1;
+    tgr.numberOfTouchesRequired = 1;
+    _wmapImageView.userInteractionEnabled = YES;
+    [_wmapImageView addGestureRecognizer:tgr];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -75,6 +106,28 @@
     
     AppDelegate *ad = [[UIApplication sharedApplication] delegate];
     [ad dropDaSpinnerAlready];
+}
+
+#pragma mark flipping animation
+
+- (void)transitionBetweenTableAndMap {
+    if (tableOrMap) {
+        [UIView transitionFromView:_mkMapView
+                            toView:_hotelsTableView
+                          duration:0.8
+                           options:UIViewAnimationOptionTransitionFlipFromLeft
+                        completion:^(BOOL finished) {
+                            tableOrMap = NO;
+                        }];
+    } else {
+        [UIView transitionFromView:_hotelsTableView
+                            toView:_mkMapView
+                          duration:0.8
+                           options:UIViewAnimationOptionTransitionFlipFromLeft
+                        completion:^(BOOL finished) {
+                            tableOrMap = YES;
+                        }];
+    }
 }
 
 #pragma mark NavigationDelegate methods
@@ -99,10 +152,18 @@
     
     if (hotelList != nil) {
         self.hotelData = hotelList;
-        [self.tableViewHotelList reloadData];
+        [self.hotelsTableView reloadData];
     }
     
     [self dropDaSpinnerAlready];
+    
+    for (int j = 0; j < [_hotelData count]; j++) {
+        EanHotelListHotelSummary *hotel = [EanHotelListHotelSummary hotelFromObject:[self.hotelData objectAtIndex:j]];
+        MKPointAnnotation *newAnnotation = [[MKPointAnnotation alloc] init];
+        newAnnotation.coordinate = CLLocationCoordinate2DMake(hotel.latitude, hotel.longitude);
+        newAnnotation.title = hotel.hotelName;
+        [_mkMapView addAnnotation:newAnnotation];
+    }
 }
 
 #pragma mark UITableViewDataSource methods

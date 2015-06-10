@@ -89,7 +89,7 @@
                      completionBlock:(void (^)(NSURLResponse *, NSData *, NSError *))completionBlock {
     
     NSString *typesString = [types componentsJoinedByString:@"|"];
-    NSString *urlString = [[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=%@&location=%f,%f&radius=%@&rankby=prominence&sensor=true&types=%@", GOOGLE_API_KEY, latitude, longitude, @2000, typesString] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString *urlString = [[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=%@&location=%f,%f&radius=%@&rankby=prominence&sensor=true&types=%@", GOOGLE_API_KEY, latitude, longitude, @500, typesString] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
