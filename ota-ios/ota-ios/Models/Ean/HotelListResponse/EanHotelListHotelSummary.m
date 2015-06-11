@@ -11,8 +11,12 @@
 
 @implementation EanHotelListHotelSummary
 
-+ (EanHotelListHotelSummary *)hotelFromObject:(id)object {
-    if (object == nil) {
++ (EanHotelListHotelSummary *)hotelFromDict:(NSDictionary *)dict {
+    if (dict == nil) {
+        return nil;
+    }
+    
+    if (![dict isKindOfClass:[NSDictionary class]]) {
         return nil;
     }
     
@@ -21,37 +25,37 @@
     //*******************
     // TODO: handle cases where the following values are not empty or wrong data type
     //*******************
-    hotel.order = [[object objectForKey:@"@order"] integerValue];
-    hotel.hotelId = [object objectForKey:@"hotelId"];
-    hotel.hotelName = [object objectForKey:@"name"];
-    hotel.address1 = [object objectForKey:@"address1"];
-    hotel.address2 = [object objectForKey:@"address2"];
-    hotel.city = [object objectForKey:@"city"];
-    hotel.stateProvinceCode = [object objectForKey:@"stateProvinceCode"];
-    hotel.postalCode = [object objectForKey:@"postalCode"];
-    hotel.countryCode = [object objectForKey:@"countryCode"];
-    hotel.airportCode = [object objectForKey:@"airportCode"];
-    hotel.supplierType = [object objectForKey:@"supplierType"];
-    hotel.propertyCategory = [object objectForKey:@"propertyCategory"];
-    hotel.hotelRating = [object objectForKey:@"hotelRating"];
-    hotel.confidenceRating = [object objectForKey:@"confidenceRating"];
-    hotel.amenityMask = [object objectForKey:@"amenityMask"];
-    hotel.tripAdvisorRating = [object objectForKey:@"tripAdvisorRating"];
-    hotel.tripAdvisorReviewCount = [object objectForKey:@"tripAdvisorReviewCount"];
-    hotel.tripAdvisorRatingUrl = [object objectForKey:@"tripAdvisorRatingUrl"];
-    hotel.locationDescription = [object objectForKey:@"locationDescription"];
-    hotel.shortDescription = [object objectForKey:@"shortDescription"];
-    hotel.highRate = [object objectForKey:@"highRate"];
-    hotel.lowRate = [object objectForKey:@"lowRate"];
-    hotel.rateCurrencyCode = [object objectForKey:@"rateCurrencyCode"];
-    hotel.latitude = [[object objectForKey:@"latitude"] doubleValue];
-    hotel.longitude = [[object objectForKey:@"longitude"] doubleValue];
-    hotel.proximityDistance = [object objectForKey:@"proximityDistance"];
-    hotel.proximityUnit = [object objectForKey:@"proximityUnit"];
-    hotel.hotelInDestination = [[object objectForKey:@"hotelInDestination"] boolValue];
-    hotel.thumbNailUrl = [object objectForKey:@"thumbNailUrl"];
-    hotel.deepLink = [object objectForKey:@"deepLink"];
-    hotel.roomRateDetailsList = [object objectForKey:@"RoomRateDetailsList"];
+    hotel.order = [[dict objectForKey:@"@order"] integerValue];
+    hotel.hotelId = [dict objectForKey:@"hotelId"];
+    hotel.hotelName = [dict objectForKey:@"name"];
+    hotel.address1 = [dict objectForKey:@"address1"];
+    hotel.address2 = [dict objectForKey:@"address2"];
+    hotel.city = [dict objectForKey:@"city"];
+    hotel.stateProvinceCode = [dict objectForKey:@"stateProvinceCode"];
+    hotel.postalCode = [dict objectForKey:@"postalCode"];
+    hotel.countryCode = [dict objectForKey:@"countryCode"];
+    hotel.airportCode = [dict objectForKey:@"airportCode"];
+    hotel.supplierType = [dict objectForKey:@"supplierType"];
+    hotel.propertyCategory = [dict objectForKey:@"propertyCategory"];
+    hotel.hotelRating = [dict objectForKey:@"hotelRating"];
+    hotel.confidenceRating = [dict objectForKey:@"confidenceRating"];
+    hotel.amenityMask = [dict objectForKey:@"amenityMask"];
+    hotel.tripAdvisorRating = [dict objectForKey:@"tripAdvisorRating"];
+    hotel.tripAdvisorReviewCount = [dict objectForKey:@"tripAdvisorReviewCount"];
+    hotel.tripAdvisorRatingUrl = [dict objectForKey:@"tripAdvisorRatingUrl"];
+    hotel.locationDescription = [dict objectForKey:@"locationDescription"];
+    hotel.shortDescription = [dict objectForKey:@"shortDescription"];
+    hotel.highRate = [dict objectForKey:@"highRate"];
+    hotel.lowRate = [dict objectForKey:@"lowRate"];
+    hotel.rateCurrencyCode = [dict objectForKey:@"rateCurrencyCode"];
+    hotel.latitude = [[dict objectForKey:@"latitude"] doubleValue];
+    hotel.longitude = [[dict objectForKey:@"longitude"] doubleValue];
+    hotel.proximityDistance = [dict objectForKey:@"proximityDistance"];
+    hotel.proximityUnit = [dict objectForKey:@"proximityUnit"];
+    hotel.hotelInDestination = [[dict objectForKey:@"hotelInDestination"] boolValue];
+    hotel.thumbNailUrl = [dict objectForKey:@"thumbNailUrl"];
+    hotel.deepLink = [dict objectForKey:@"deepLink"];
+    hotel.roomRateDetailsList = [dict objectForKey:@"RoomRateDetailsList"];
     
     return hotel;
 }

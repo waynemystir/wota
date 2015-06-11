@@ -7,6 +7,7 @@
 //
 
 #import "EanHotelListResponse.h"
+#import "EanHotelListHotelSummary.h"
 
 @implementation EanHotelListResponse
 
@@ -42,10 +43,20 @@
     
     id hSumm = [hlr.hotelListDict objectForKey:@"HotelSummary"];
     
-    if ([hSumm isKindOfClass:[NSArray class]]) {
-        hlr.hotelList = hSumm;
+    if (nil == hSumm) {
+        hlr.hotelList = nil;
+    } else if ([hSumm isKindOfClass:[NSArray class]]) {
+        
+        NSMutableArray *tmpHotels = [NSMutableArray array];
+        for (int j = 0; j < [hSumm count]; j++) {
+            EanHotelListHotelSummary *hotel = [EanHotelListHotelSummary hotelFromDict:hSumm[j]];
+            [tmpHotels addObject:hotel];
+        }
+        
+        hlr.hotelList = [NSArray arrayWithArray:tmpHotels];
+        
     } else if ([hSumm isKindOfClass:[NSDictionary class]]) {
-        hlr.hotelList = [NSArray arrayWithObject:hSumm];
+        hlr.hotelList = [NSArray arrayWithObject:[EanHotelListHotelSummary hotelFromDict:hSumm]];
     } else {
         hlr.hotelList = nil;
     }

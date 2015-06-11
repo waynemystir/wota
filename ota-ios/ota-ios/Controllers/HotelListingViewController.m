@@ -19,12 +19,14 @@
 #import "NavigationView.h"
 #import "HLTableViewCell.h"
 #import <MapKit/MapKit.h>
+#import "WotaMapAnnotatioin.h"
+#import "WotaMKPinAnnotationView.h"
 
 #define METERS_PER_MILE 1609.344
 
 NSTimeInterval const kFlipAnimationDuration = 0.7;
 
-@interface HotelListingViewController () <UITableViewDataSource, UITableViewDelegate, NavigationDelegate>
+@interface HotelListingViewController () <UITableViewDataSource, UITableViewDelegate, NavigationDelegate, MKMapViewDelegate>
 
 @property (nonatomic) BOOL alreadyDroppedSpinner;
 @property (strong, nonatomic) UITableView *hotelsTableView;
@@ -71,11 +73,12 @@ NSTimeInterval const kFlipAnimationDuration = 0.7;
     [self.view addSubview:_containerView];
     
     _mkMapView = [[MKMapView alloc] initWithFrame:_containerView.bounds];
+    _mkMapView.delegate = self;
     SelectionCriteria *sc = [SelectionCriteria singleton];
     CLLocationCoordinate2D zoomLocation;
     zoomLocation.latitude = sc.googlePlaceDetail.latitude;
     zoomLocation.longitude= sc.googlePlaceDetail.longitude;
-    MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(zoomLocation, 2.5*METERS_PER_MILE, 2.5*METERS_PER_MILE);
+    MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(zoomLocation, 10*METERS_PER_MILE, 10*METERS_PER_MILE);
     [_mkMapView setRegion:viewRegion];
     [_containerView addSubview:_mkMapView];
     
@@ -151,19 +154,57 @@ NSTimeInterval const kFlipAnimationDuration = 0.7;
     NSArray *hotelList = [EanHotelListResponse eanObjectFromApiResponseData:responseData].hotelList;
     
     if (hotelList != nil) {
-        self.hotelData = hotelList;
-        [self.hotelsTableView reloadData];
+        _hotelData = hotelList;
+        [_hotelsTableView reloadData];
     }
     
     [self dropDaSpinnerAlready];
     
     for (int j = 0; j < [_hotelData count]; j++) {
-        EanHotelListHotelSummary *hotel = [EanHotelListHotelSummary hotelFromObject:[self.hotelData objectAtIndex:j]];
-        MKPointAnnotation *newAnnotation = [[MKPointAnnotation alloc] init];
-        newAnnotation.coordinate = CLLocationCoordinate2DMake(hotel.latitude, hotel.longitude);
-        newAnnotation.title = hotel.hotelName;
-        [_mkMapView addAnnotation:newAnnotation];
+        EanHotelListHotelSummary *hotel = [_hotelData objectAtIndex:j];
+        WotaMapAnnotatioin *annotation = [[WotaMapAnnotatioin alloc] init];
+        annotation.coordinate = CLLocationCoordinate2DMake(hotel.latitude, hotel.longitude);
+        NSString *imageUrlString = [@"http://images.travelnow.com" stringByAppendingString:hotel.thumbNailUrlEnhanced];
+        annotation.imageUrl = imageUrlString;
+        annotation.rowNUmber = j;
+        annotation.title = hotel.hotelNameFormatted;
+        [_mkMapView addAnnotation:annotation];
+        
     }
+}
+
+#pragma mark MKMapViewDelegate methods
+
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
+    WotaMapAnnotatioin *wa = (WotaMapAnnotatioin *)annotation;
+    WotaMKPinAnnotationView *annotationView = (WotaMKPinAnnotationView *) [mapView dequeueReusableAnnotationViewWithIdentifier:@"WotaPinReuse"];
+    if(!annotationView) {
+        annotationView = [[WotaMKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"WotaPinReuse"];
+        UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
+        
+        [iv setImageWithURL:[NSURL URLWithString:wa.imageUrl] placeholderImage:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+            // TODO: placeholder image
+            // TODO: if nothing comes back, replace hotel.thumbNailUrlEnhanced with hotel.thumbNailUrl and try again
+            ;
+        }];
+        
+        annotationView.leftCalloutAccessoryView = iv;
+        annotationView.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+    }
+    
+    annotationView.rowNUmber = wa.rowNUmber;
+    annotationView.enabled = YES;
+    annotationView.canShowCallout = YES;
+    
+    return annotationView;
+}
+
+- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control {
+    WotaMKPinAnnotationView *wp = (WotaMKPinAnnotationView *)view;
+    EanHotelListHotelSummary *hotel = [self.hotelData objectAtIndex:wp.rowNUmber];
+    HotelInfoViewController *hvc = [[HotelInfoViewController alloc] initWithHotel:hotel];
+    [[LoadEanData sharedInstance:hvc] loadHotelDetailsWithId:[hotel.hotelId stringValue]];
+    [self.navigationController pushViewController:hvc animated:YES];
 }
 
 #pragma mark UITableViewDataSource methods
@@ -178,7 +219,7 @@ NSTimeInterval const kFlipAnimationDuration = 0.7;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString *CellIdentifier = @"CellIdentifier";
-    EanHotelListHotelSummary *hotel = [EanHotelListHotelSummary hotelFromObject:[self.hotelData objectAtIndex:indexPath.row]];
+    EanHotelListHotelSummary *hotel = [_hotelData objectAtIndex:indexPath.row];
     HLTableViewCell *cell = [[HLTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier hotelRating:hotel.hotelRating];
     
     NSString *imageUrlString = [@"http://images.travelnow.com" stringByAppendingString:hotel.thumbNailUrlEnhanced];
@@ -203,7 +244,7 @@ NSTimeInterval const kFlipAnimationDuration = 0.7;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    EanHotelListHotelSummary *hotel = [EanHotelListHotelSummary hotelFromObject:[self.hotelData objectAtIndex:indexPath.row]];
+    EanHotelListHotelSummary *hotel = [self.hotelData objectAtIndex:indexPath.row];
     HotelInfoViewController *hvc = [[HotelInfoViewController alloc] initWithHotel:hotel];
     [[LoadEanData sharedInstance:hvc] loadHotelDetailsWithId:[hotel.hotelId stringValue]];
     [self.navigationController pushViewController:hvc animated:YES];

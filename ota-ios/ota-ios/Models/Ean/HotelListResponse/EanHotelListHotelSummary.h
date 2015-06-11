@@ -48,6 +48,6 @@
 @property (nonatomic, strong) NSArray *roomRateDetailsArray;
 @property (nonatomic, strong) EanRoomRateDetails *roomRateDetails;
 
-+ (EanHotelListHotelSummary *)hotelFromObject:(id)object;
++ (EanHotelListHotelSummary *)hotelFromDict:(NSDictionary *)dict;
 
 @end
