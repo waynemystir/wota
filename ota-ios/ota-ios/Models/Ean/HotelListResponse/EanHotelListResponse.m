@@ -8,6 +8,7 @@
 
 #import "EanHotelListResponse.h"
 #import "EanHotelListHotelSummary.h"
+#import "SelectionCriteria.h"
 
 @implementation EanHotelListResponse
 
@@ -60,6 +61,20 @@
     } else {
         hlr.hotelList = nil;
     }
+    
+    double maxLatDelta = 0.0;
+    double maxLonDelta = 0.0;
+    double selectedLat = [SelectionCriteria singleton].googlePlaceDetail.latitude;
+    double selectedLon = [SelectionCriteria singleton].googlePlaceDetail.longitude;
+    for (EanHotelListHotelSummary *hotel in hlr.hotelList) {
+        double latDelta = fabs(hotel.latitude - selectedLat);
+        maxLatDelta = fmax(maxLatDelta, latDelta);
+        
+        double lonDelta = fabs(hotel.longitude - selectedLon);
+        maxLonDelta = fmax(maxLonDelta, lonDelta);
+    }
+    hlr.maxLatitudeDelta = maxLatDelta;
+    hlr.maxLongitudeDelta = maxLonDelta;
     
     return hlr;
 }

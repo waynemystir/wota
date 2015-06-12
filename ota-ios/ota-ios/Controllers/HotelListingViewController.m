@@ -22,8 +22,6 @@
 #import "WotaMapAnnotatioin.h"
 #import "WotaMKPinAnnotationView.h"
 
-#define METERS_PER_MILE 1609.344
-
 NSTimeInterval const kFlipAnimationDuration = 0.7;
 
 @interface HotelListingViewController () <UITableViewDataSource, UITableViewDelegate, NavigationDelegate, MKMapViewDelegate>
@@ -74,12 +72,6 @@ NSTimeInterval const kFlipAnimationDuration = 0.7;
     
     _mkMapView = [[MKMapView alloc] initWithFrame:_containerView.bounds];
     _mkMapView.delegate = self;
-    SelectionCriteria *sc = [SelectionCriteria singleton];
-    CLLocationCoordinate2D zoomLocation;
-    zoomLocation.latitude = sc.googlePlaceDetail.latitude;
-    zoomLocation.longitude= sc.googlePlaceDetail.longitude;
-    MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(zoomLocation, 10*METERS_PER_MILE, 10*METERS_PER_MILE);
-    [_mkMapView setRegion:viewRegion];
     [_containerView addSubview:_mkMapView];
     
     _hotelsTableView = [[UITableView alloc] initWithFrame:_containerView.bounds];
@@ -151,14 +143,25 @@ NSTimeInterval const kFlipAnimationDuration = 0.7;
 }
 
 - (void)requestFinished:(NSData *)responseData {
-    NSArray *hotelList = [EanHotelListResponse eanObjectFromApiResponseData:responseData].hotelList;
+    EanHotelListResponse *ehlr = [EanHotelListResponse eanObjectFromApiResponseData:responseData];
+    NSArray *hotelList = ehlr.hotelList;
     
     if (hotelList != nil) {
         _hotelData = hotelList;
         [_hotelsTableView reloadData];
     }
     
-    [self dropDaSpinnerAlready];
+    SelectionCriteria *sc = [SelectionCriteria singleton];
+    CLLocationCoordinate2D zoomLocation;
+    zoomLocation.latitude = sc.googlePlaceDetail.latitude;
+    zoomLocation.longitude= sc.googlePlaceDetail.longitude;
+    
+    double spanLat = ehlr.maxLatitudeDelta*2.00;
+    double spanLon = ehlr.maxLongitudeDelta*2.00;
+    MKCoordinateSpan span = MKCoordinateSpanMake(spanLat, spanLon);
+    MKCoordinateRegion viewRegion = MKCoordinateRegionMake(zoomLocation, span);
+    
+    [_mkMapView setRegion:viewRegion];
     
     for (int j = 0; j < [_hotelData count]; j++) {
         EanHotelListHotelSummary *hotel = [_hotelData objectAtIndex:j];
@@ -166,11 +169,16 @@ NSTimeInterval const kFlipAnimationDuration = 0.7;
         annotation.coordinate = CLLocationCoordinate2DMake(hotel.latitude, hotel.longitude);
         NSString *imageUrlString = [@"http://images.travelnow.com" stringByAppendingString:hotel.thumbNailUrlEnhanced];
         annotation.imageUrl = imageUrlString;
+        
         annotation.rowNUmber = j;
         annotation.title = hotel.hotelNameFormatted;
+        NSNumberFormatter *cf = kPriceRoundOffFormatter(hotel.rateCurrencyCode);
+        annotation.subtitle = [NSString stringWithFormat:@"From %@/night", [cf stringFromNumber:hotel.lowRate]];
         [_mkMapView addAnnotation:annotation];
         
     }
+    
+    [self dropDaSpinnerAlready];
 }
 
 #pragma mark MKMapViewDelegate methods

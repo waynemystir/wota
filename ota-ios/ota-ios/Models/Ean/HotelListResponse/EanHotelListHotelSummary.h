@@ -38,7 +38,7 @@
 @property (nonatomic, strong) NSString *rateCurrencyCode;
 @property (nonatomic) double latitude;
 @property (nonatomic) double longitude;
-@property (nonatomic, strong) NSNumber *proximityDistance;
+@property (nonatomic) double proximityDistance;
 @property (nonatomic, strong) NSString *proximityUnit;
 @property (nonatomic) BOOL hotelInDestination;
 @property (nonatomic, strong) NSString *thumbNailUrl;

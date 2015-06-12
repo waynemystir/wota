@@ -50,7 +50,7 @@
     hotel.rateCurrencyCode = [dict objectForKey:@"rateCurrencyCode"];
     hotel.latitude = [[dict objectForKey:@"latitude"] doubleValue];
     hotel.longitude = [[dict objectForKey:@"longitude"] doubleValue];
-    hotel.proximityDistance = [dict objectForKey:@"proximityDistance"];
+    hotel.proximityDistance = [[dict objectForKey:@"proximityDistance"] doubleValue];
     hotel.proximityUnit = [dict objectForKey:@"proximityUnit"];
     hotel.hotelInDestination = [[dict objectForKey:@"hotelInDestination"] boolValue];
     hotel.thumbNailUrl = [dict objectForKey:@"thumbNailUrl"];

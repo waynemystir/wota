@@ -232,8 +232,8 @@ NSString * kURLeanBookReservation() {
             kURLeanHotelList(),
             EAN_PK_LATITUDE, latitude,
             EAN_PK_LONGITUDE, longitude,
-            EAN_PK_NUMBER_OF_RESULTS, @100,
-            EAN_PK_SEARCH_RADIUS, @40,
+            EAN_PK_NUMBER_OF_RESULTS, @150,
+            EAN_PK_SEARCH_RADIUS, @35,
             EAN_PK_SEARCH_RADIUS_UNIT, @"MI",
             EAN_PK_GEO_SORT, @"PROXIMITY"];
 }

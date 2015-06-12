@@ -8,7 +8,6 @@
 
 #import "HotelInfoViewController.h"
 #import <CoreLocation/CoreLocation.h>
-#import <GoogleMaps/GoogleMaps.h>
 #import "LoadEanData.h"
 #import "SelectionCriteria.h"
 #import "ChildTraveler.h"
@@ -24,12 +23,10 @@
 #import "AppDelegate.h"
 #import "WotaTappableView.h"
 #import "LoadGooglePlacesData.h"
-#import "GoogleNearbyPlaces.h"
-#import "GoogleNearbyPlace.h"
-#import "GooglePlaceMarker.h"
-#import "GoogleMarkerView.h"
+#import <MapKit/MapKit.h>
 
 #define degreesToRadians(x) (M_PI * x / 180.0)
+#define METERS_PER_MILE 1609.344
 
 typedef NS_ENUM(NSUInteger, HI_ORIENTATION) {
     HI_PORTRAIT = UIDeviceOrientationPortrait,
@@ -45,7 +42,7 @@ CGFloat const kImageScrollerPortraitHeight = 500.0f;
 NSUInteger const kRoomImageViewContainersStartingTag = 1113151719;
 NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 
-@interface HotelInfoViewController () <CLLocationManagerDelegate, NavigationDelegate, UIScrollViewDelegate, GMSMapViewDelegate>
+@interface HotelInfoViewController () <CLLocationManagerDelegate, NavigationDelegate, UIScrollViewDelegate>
 
 @property (nonatomic) NSInteger currentPageNumber;
 @property (nonatomic) NSInteger totalNumberOfPages;
@@ -88,11 +85,11 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 @property (nonatomic, strong) NSString *paymentTypesBulletted;
 @property (weak, nonatomic) IBOutlet UILabel *pageNumberLabel;
 @property (weak, nonatomic) IBOutlet WotaTappableView *bookRoomContainer;
+@property (nonatomic, strong) MKMapView *mapView;
 
 @end
 
 @implementation HotelInfoViewController {
-    GMSMapView *mapView_;
     CGRect mapRectInScroller;
 }
 
@@ -202,54 +199,21 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
         [self.locationManager requestWhenInUseAuthorization];
     }
     
-    // Create a GMSCameraPosition that tells the map to display the
-    // coordinate -33.86,151.20 at zoom level 6.
-    GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:_eanHotel.latitude
-                                                            longitude:_eanHotel.longitude
-                                                                 zoom:15.0f];
-    mapView_ = [GMSMapView mapWithFrame:CGRectMake(0, 0, 320, 200) camera:camera];
-    mapView_.delegate = self;
-    mapView_.myLocationEnabled = YES;
-    //Curtesy of http://stackoverflow.com/questions/26796466/ios-how-to-get-rid-of-app-is-using-your-location-notification
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
-    [_mapContainerOutlet addSubview:mapView_];
-    [_mapContainerOutlet sendSubviewToBack:mapView_];
+    _mapView = [[MKMapView alloc] initWithFrame:_mapContainerOutlet.bounds];
+    CLLocationCoordinate2D zoomLocation;
+    zoomLocation.latitude = _eanHotel.latitude;
+    zoomLocation.longitude= _eanHotel.longitude;
+    MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(zoomLocation, 0.4*METERS_PER_MILE, 0.4*METERS_PER_MILE);
+    [_mapView setRegion:viewRegion];
+//    _mapView.delegate = self;
+    [_mapContainerOutlet addSubview:_mapView];
+    [_mapContainerOutlet sendSubviewToBack:_mapView];
     
-    // Creates a marker in the center of the map.
-    GMSMarker *marker = [[GMSMarker alloc] init];
-    marker.position = CLLocationCoordinate2DMake(_eanHotel.latitude, _eanHotel.longitude);
-    marker.map = mapView_;
-    
-    NSArray *types = [NSArray arrayWithObjects:@"bakery", @"bar", @"cafe", @"grocery_or_supermarket", @"restaurant", @"food", nil];
-    __weak typeof(self) weakSelf = self;
-    [[LoadGooglePlacesData sharedInstance] loadNearbyPlacesWithLatitude:_eanHotel.latitude longitude:_eanHotel.longitude types:types completionBlock:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-        if (nil != connectionError || ((NSHTTPURLResponse *)response).statusCode != 200) {
-            return;
-        } else {
-            [weakSelf nearbyPlaceCompletionBlock:data];
-        }
-    }];
-}
-
-- (void)nearbyPlaceCompletionBlock:(NSData *)data {
-    GoogleNearbyPlaces *gnps = [GoogleNearbyPlaces placesFromResponseData:data];
-    
-    for (GoogleNearbyPlace *gnp in gnps.nearbyPlaces) {
-        GooglePlaceMarker *gpm = [[GooglePlaceMarker alloc] initWithPlace:gnp];
-        gpm.map = mapView_;
-    }
-}
-
-- (UIView *)mapView:(GMSMapView *)mapView markerInfoContents:(GMSMarker *)marker {
-    GooglePlaceMarker *gpm = (GooglePlaceMarker *)marker;
-    
-    GoogleMarkerView *gmv = [[GoogleMarkerView alloc] initWithFrame:CGRectMake(0, 0, 300, 20)];
-    gmv.nameLabel.text = gpm.place.placeName;
-    [gmv.nameLabel sizeToFit];
-    gmv.frame = gmv.nameLabel.bounds;
-    gmv.nameLabel.center = gmv.center;
-    
-    return gmv;
+    MKPointAnnotation *hotelAnnotation = [[MKPointAnnotation alloc] init];
+    hotelAnnotation.coordinate = CLLocationCoordinate2DMake(_eanHotel.latitude, _eanHotel.longitude);
+    hotelAnnotation.title = _eanHotel.hotelNameFormatted;
+    hotelAnnotation.subtitle = [NSString stringWithFormat:@"From %@/night", [cf stringFromNumber:_eanHotel.lowRate]];
+    [_mapView addAnnotation:hotelAnnotation];
 }
 
 - (void)colorTheHotelRatingStars {
@@ -310,14 +274,6 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 }
 
-- (void)appWillResignActive:(NSNotification*)note
-{
-    //Curtesy of http://stackoverflow.com/questions/26796466/ios-how-to-get-rid-of-app-is-using-your-location-notification
-    mapView_.myLocationEnabled = NO;
-    
-//    [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
-}
-
 - (void)dealloc {
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
@@ -345,7 +301,6 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     self.eanHotelInformationResponse = [EanHotelInformationResponse eanObjectFromApiResponseData:responseData];
     [self loadupTheImageScroller];
     [self loadupTheAmenities];
-//    self.someLabelOutlet.text = [NSString stringWithFormat:@"lat:%f long:%f", _eanHotel.latitude, _eanHotel.longitude];
     
 //    [self prepareTheSelectRoomViewController];
 }
@@ -361,7 +316,6 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     NSArray *ims = self.eanHotelInformationResponse.hotelImagesArray;
     for (int j = 0; j < [ims count]; j++) {
         EanHotelInfoImage *eanInfoImage = [EanHotelInfoImage imageFromDict:ims[j]];
-//        NSLog(@"WES %@", eanInfoImage.url);
         UIView *ivc = [[UIView alloc] initWithFrame:CGRectMake(j * 500, 0, 500.0f, 325.0f)];
         ivc.backgroundColor = [UIColor blackColor];
         ivc.tag = kRoomImageViewContainersStartingTag + j;
@@ -612,7 +566,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 - (void)loadDaMap {
     __weak UIScrollView *sv = _scrollViewOutlet;
     __weak UIView *mc = _mapContainerOutlet;
-    __weak UIView *mv = mapView_;
+    __weak UIView *mv = _mapView;
     [mc sendSubviewToBack:_mapOverlay];
     [mc bringSubviewToFront:mv];
     [sv bringSubviewToFront:mc];
@@ -637,7 +591,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     __weak UIScrollView *sv = _scrollViewOutlet;
     __weak UIView *mc = _mapContainerOutlet;
     __weak UIView *mo = _mapOverlay;
-    __weak UIView *mv = mapView_;
+    __weak UIView *mv = _mapView;
     __block CGRect mcf = mapRectInScroller;
     
     NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];

@@ -20,5 +20,7 @@
 @property (nonatomic) NSUInteger size;
 @property (nonatomic) NSUInteger activePropertyCount;
 @property (nonatomic, strong) NSArray *hotelList;
+@property (nonatomic) double maxLatitudeDelta;
+@property (nonatomic) double maxLongitudeDelta;
 
 @end
