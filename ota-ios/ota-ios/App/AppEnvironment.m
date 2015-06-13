@@ -113,6 +113,19 @@ NSDateFormatter * kEanApiDateFormatter() {
     return _eanApiDateFormatter;
 }
 
+NSDateFormatter * kPrettyDateFormatter() {
+    static NSDateFormatter *_prettyDateFormatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _prettyDateFormatter = [[NSDateFormatter alloc] init];
+        NSString *fStr = [NSDateFormatter dateFormatFromTemplate:@"MMMM dd, yyyy" options:0 locale:[NSLocale currentLocale]];
+        [_prettyDateFormatter setLocale:[NSLocale currentLocale]];
+        [_prettyDateFormatter setDateFormat:fStr];
+        
+    });
+    return _prettyDateFormatter;
+}
+
 NSDateFormatter * kShortDateFormatter() {
     static NSDateFormatter *f = nil;
     static dispatch_once_t shortDateOnceToken;

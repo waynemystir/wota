@@ -44,6 +44,7 @@ extern NSString * kWotaCacheGooglePlaceDetailDirectory();
  * Various formatters
  */
 extern NSDateFormatter * kEanApiDateFormatter();
+extern NSDateFormatter * kPrettyDateFormatter();
 extern NSDateFormatter * kShortDateFormatter();
 extern NSDateFormatter * kShortShortDateFormatter();
 extern NSNumberFormatter * kPriceRoundOffFormatter(NSString * currencyCode);

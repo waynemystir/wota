@@ -27,18 +27,22 @@
                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8Gq-Rz-Oo1" userLabel="addChildButton">
-                    <rect key="frame" x="244" y="12" width="55" height="55"/>
-                    <state key="normal" title="A">
+                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8Gq-Rz-Oo1" userLabel="addChildButton" customClass="WotaButton">
+                    <rect key="frame" x="244" y="23" width="46" height="30"/>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="27"/>
+                    <inset key="contentEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="4"/>
+                    <state key="normal" title="+">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
                         <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="ug3-n9-B5M"/>
                     </connections>
                 </button>
-                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lLK-UB-pjn" userLabel="minusChildButton">
-                    <rect key="frame" x="23" y="12" width="55" height="55"/>
-                    <state key="normal" title="M">
+                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lLK-UB-pjn" userLabel="minusChildButton" customClass="WotaButton">
+                    <rect key="frame" x="30" y="23" width="46" height="30"/>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="27"/>
+                    <inset key="contentEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="3"/>
+                    <state key="normal" title="-">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
@@ -53,9 +57,11 @@
                 </view>
                 <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1vG-yo-bwR" userLabel="childThreeView" customClass="ChildSubView">
                     <rect key="frame" x="12" y="203" width="140" height="100"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
                 <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TFr-ob-fDM" userLabel="childFourView" customClass="ChildSubView">
                     <rect key="frame" x="168" y="203" width="140" height="100"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>

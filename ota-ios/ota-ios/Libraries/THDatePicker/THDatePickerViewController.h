@@ -33,11 +33,16 @@
 +(THDatePickerViewController *)datePicker;
 
 @property (strong, nonatomic) NSDate * date;
+@property (nonatomic, strong) NSString *arrivalOrDepartureString;
 @property (weak, nonatomic) id<THDatePickerDelegate> delegate;
 @property (strong, nonatomic) UIColor *selectedBackgroundColor;
 @property (strong, nonatomic) UIColor *currentDateColor;
 @property (strong, nonatomic) UIColor *currentDateColorSelected;
 @property (nonatomic) float autoCloseCancelDelay;
+@property (nonatomic, strong) NSDate *maxDate;
+@property (nonatomic, strong) NSDate *minDate;
+
+- (void)forceRedraw;
 
 - (void)setDateHasItemsCallback:(BOOL (^)(NSDate * date))callback;
 

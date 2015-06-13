@@ -12,6 +12,7 @@
 #import "ChildAgeSelectorViewController.h"
 #import "UIViewController+KNSemiModal.h"
 #import "AppEnvironment.h"
+#import "WotaButton.h"
 
 NSTimeInterval const kCvAnimationDuration = 0.6;
 
@@ -26,7 +27,7 @@ NSTimeInterval const kCvAnimationDuration = 0.6;
 @property (weak, nonatomic) IBOutlet ChildSubView *childFourOutlet;
 @property (nonatomic) NSUInteger selectedChildOutlet;
 @property (nonatomic, strong) UILabel *selectorViewLabel;
-@property (nonatomic, strong) UIButton *doneButton;
+@property (nonatomic, strong) WotaButton *doneButton;
 @property (nonatomic, strong) UIPickerView *pickerView;
 @property (nonatomic, strong) NSMutableArray *pickerData;
 
@@ -223,6 +224,8 @@ NSTimeInterval const kCvAnimationDuration = 0.6;
     __block CGAffineTransform toTransform = CGAffineTransformMakeTranslation(0.0f, 0.0f);
     toTransform = CGAffineTransformScale(toTransform, 1.0f, 1.0f);
     
+    [childSubView.superview bringSubviewToFront:childSubView];
+    
     [UIView animateWithDuration:kCvAnimationDuration animations:^{
         childSubView.transform = toTransform;
     } completion:^(BOOL finished) {
@@ -303,7 +306,7 @@ NSTimeInterval const kCvAnimationDuration = 0.6;
 - (UIView *)childAgeSelectorView {
     UIView *view = [[UIView alloc] initWithFrame:self.view.bounds];
     view.autoresizesSubviews = YES;
-    view.backgroundColor = UIColorFromRGB(0xD2D2D2);
+    view.backgroundColor = [UIColor whiteColor];
     [view addSubview:self.selectorViewLabel];
     [view addSubview:self.doneButton];
     [view addSubview:self.pickerView];
@@ -312,21 +315,21 @@ NSTimeInterval const kCvAnimationDuration = 0.6;
 }
 
 - (void)setupLabelForAgeSelector {
-    self.selectorViewLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, 140, 40)];
-    self.selectorViewLabel.backgroundColor = [UIColor grayColor];
-    self.selectorViewLabel.text = @"Select child's age";
+    _selectorViewLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, 150, 32)];
+    _selectorViewLabel.backgroundColor = [UIColor clearColor];
+    _selectorViewLabel.text = @"Select child's age";
+    _selectorViewLabel.textColor = [UIColor blackColor];
+    _selectorViewLabel.font = [UIFont boldSystemFontOfSize:16.0f];
 }
 
 - (void)setupDoneButton {
-    self.doneButton = [[UIButton alloc] initWithFrame:CGRectMake(200, 10, 100, 40)];
+    self.doneButton = [WotaButton wbWithFrame:CGRectMake(255, 5, 60, 32)];
     [self.doneButton setTitle:@"Done" forState:UIControlStateNormal];
-    [self.doneButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    self.doneButton.backgroundColor = [UIColor yellowColor];
     [self.doneButton addTarget:self action:@selector(justPushIt:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)setupTheAgePickerViewAndData {
-    self.pickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(10, 50, 300, 240)];
+    self.pickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 87, 320, 162)];
     self.pickerView.dataSource = self;
     self.pickerView.delegate = self;
     

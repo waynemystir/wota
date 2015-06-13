@@ -35,7 +35,7 @@
         self.hasItemsIndicator.image = [UIImage imageNamed:@"calendar_littledot-disabled"];
     }
     else {
-        UIColor * color = [UIColor colorWithWhite:.3 alpha:1];
+        UIColor * color = self.tintColor;
         [self.dateButton setTitleColor:color forState:UIControlStateNormal];
         self.hasItemsIndicator.image = [UIImage imageNamed:@"calendar_littledot"];
     }
@@ -55,7 +55,7 @@
     else {
         [self setBackgroundColor:[UIColor whiteColor]];
         [self.dateButton setSelected:NO];
-        [self.dateButton setTitleColor:[UIColor colorWithWhite:.3 alpha:1] forState:UIControlStateNormal];
+        [self.dateButton setTitleColor:self.tintColor forState:UIControlStateNormal];
     }
     [self setCurrentColors];
 }

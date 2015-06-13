@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "WotaTappableView.h"
 
 IB_DESIGNABLE
 
-@interface ChildSubView : UIView
+@interface ChildSubView : WotaTappableView
 
 @property (weak, nonatomic) IBOutlet UILabel *worbelOutlet;
 @property (strong, nonatomic) IBOutlet UIView *theViewOutlet;

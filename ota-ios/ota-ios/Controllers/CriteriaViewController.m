@@ -42,9 +42,9 @@
 @property (nonatomic, strong) IBOutlet UIButton *checkHotelsOutlet;
 @property (nonatomic, strong) IBOutlet UIButton *kidsButton;
 
-@property (nonatomic, strong) THDatePickerViewController *datePicker;
+@property (nonatomic, strong) THDatePickerViewController *arrivalDatePicker;
+@property (nonatomic, strong) THDatePickerViewController *returnDatePicker;
 @property BOOL arrivalOrReturn; //arrival == NO and return == YES
-@property (nonatomic, strong) NSDateFormatter *viewFormatter;
 
 - (IBAction)justPushIt:(id)sender;
 
@@ -73,12 +73,9 @@
     [self setNumberOfAdultsLabel:0];
     [self setNumberOfKidsButtonLabel];
     
-    self.viewFormatter = [[NSDateFormatter alloc] init];
-    [_viewFormatter setDateFormat:@"MMMM dd, yyyy"];
-    
     self.arrivalOrReturn = NO;
-    [self refreshDisplayedArrivalDate];
     [self refreshDisplayedReturnDate];
+    [self refreshDisplayedArrivalDate];
     
 //    self.tableData = [NSArray arrayWithObjects:@"Albequerque", @"Saschatchawan", @"New Orleans", @"Madison", nil];
     self.autoCompleteTableViewOutlet = [[UITableView alloc] initWithFrame:CGRectMake(13, 122, 300, 0)];
@@ -102,18 +99,18 @@
 #pragma mark Various events and such
 
 - (void)startEnteringWhereTo {
-    if (!self.isAutoCompleteTableViewExpanded) {
+    if (!_isAutoCompleteTableViewExpanded) {
         [self animateTableViewExpansion];
     }
 }
 
 - (void)autoCompleteSomePlace {
-    self.autoCompleteOrPlaceDetails = NO;
+    _autoCompleteOrPlaceDetails = NO;
     [[LoadGooglePlacesData sharedInstance:self] autoCompleteSomePlaces:self.whereToTextFieldOutlet.text];
 }
 
 - (void)didFinishTextFieldKeyboard {
-    [self.whereToTextFieldOutlet resignFirstResponder];
+    [_whereToTextFieldOutlet resignFirstResponder];
     [self animateTableViewCompression];
 }
 
@@ -158,7 +155,9 @@
     }
     
     if (sc.numberOfAdults <= 1) {
-        // TODO: disable minus button
+        _minusAdultOutlet.enabled = NO;
+    } else if (sc.numberOfAdults > 1) {
+        _minusAdultOutlet.enabled = YES;
     }
     
     if (sc.numberOfAdults > 10) {
@@ -166,7 +165,7 @@
     }
     
     NSString *plural = sc.numberOfAdults == 1 ? @"" : @"s";
-    self.adultsLabel.text = [NSString stringWithFormat:@"%lu Adult%@", (unsigned long)sc.numberOfAdults, plural];
+    _adultsLabel.text = [NSString stringWithFormat:@"%lu Adult%@", (unsigned long)sc.numberOfAdults, plural];
 }
 
 - (void)presentKidsSelector {
@@ -198,9 +197,9 @@
 }
 
 - (void)requestFinished:(NSData *)responseData {
-    if (!self.autoCompleteOrPlaceDetails) {
-        self.tableData = [GoogleParser parseAutoCompleteResponse:responseData];
-        [self.autoCompleteTableViewOutlet reloadData];
+    if (!_autoCompleteOrPlaceDetails) {
+        _tableData = [GoogleParser parseAutoCompleteResponse:responseData];
+        [_autoCompleteTableViewOutlet reloadData];
     } else {
         NSString *response = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
         NSLog(@"PLACESDETAIL:%@", response);
@@ -294,43 +293,71 @@
 #pragma mark Various Date Picker methods
 
 - (void)presentTheDatePicker {
-    [self setupTheDatePicker];
     
-    if (!self.arrivalOrReturn) {
-        self.datePicker.date = [SelectionCriteria singleton].arrivalDate;
+    THDatePickerViewController *dp = nil;
+    
+    if (!_arrivalOrReturn) {
+        [self setupTheArrivalDatePicker];
+        dp = _arrivalDatePicker;
+        dp.date = [SelectionCriteria singleton].arrivalDate;
+        dp.minDate = [NSDate date];
+        dp.maxDate = kAddDays(500, [NSDate date]);
     } else {
-        self.datePicker.date = [SelectionCriteria singleton].returnDate;
+        [self setupTheReturnDatePicker];
+        dp = _returnDatePicker;
+        dp.date = [SelectionCriteria singleton].returnDate;
+        dp.minDate = kAddDays(1, [SelectionCriteria singleton].arrivalDate);
+        dp.maxDate = kAddDays(28, [SelectionCriteria singleton].arrivalDate);
     }
     
-    [self presentSemiViewController:self.datePicker withOptions:@{
-                                                                  KNSemiModalOptionKeys.pushParentBack    : @(NO),
-                                                                  KNSemiModalOptionKeys.animationDuration : @(0.4),
-                                                                  KNSemiModalOptionKeys.shadowOpacity     : @(0.3),
-                                                                  }];
+    [dp forceRedraw];
+    
+    [self presentSemiViewController:dp withOptions:@{
+                                                     KNSemiModalOptionKeys.pushParentBack    : @(NO),
+                                                     KNSemiModalOptionKeys.animationDuration : @(0.4),
+                                                     KNSemiModalOptionKeys.shadowOpacity     : @(0.3),
+                                                     }];
 }
 
-- (void)setupTheDatePicker {
-    if(self.datePicker)
+- (void)setupTheArrivalDatePicker {
+    if(_arrivalDatePicker)
         return;
     
-    self.datePicker = [THDatePickerViewController datePicker];
-    self.datePicker.delegate = self;
-    [self.datePicker setAllowClearDate:NO];
-    [self.datePicker setClearAsToday:YES];
-    [self.datePicker setAutoCloseOnSelectDate:YES];
-    [self.datePicker setAllowSelectionOfSelectedDate:YES];
-    [self.datePicker setDisableHistorySelection:YES];
-    [self.datePicker setDisableFutureSelection:NO];
-    [self.datePicker setSelectedBackgroundColor:[UIColor colorWithRed:125/255.0 green:208/255.0 blue:0/255.0 alpha:1.0]];
-    [self.datePicker setCurrentDateColor:[UIColor colorWithRed:242/255.0 green:121/255.0 blue:53/255.0 alpha:1.0]];
+    _arrivalDatePicker = [THDatePickerViewController datePicker];
+    _arrivalDatePicker.delegate = self;
+    [_arrivalDatePicker setAllowClearDate:NO];
+    [_arrivalDatePicker setClearAsToday:NO];
+    [_arrivalDatePicker setAutoCloseOnSelectDate:YES];
+    [_arrivalDatePicker setAllowSelectionOfSelectedDate:YES];
+    [_arrivalDatePicker setDisableHistorySelection:YES];
+    [_arrivalDatePicker setDisableFutureSelection:NO];
+    [_arrivalDatePicker setSelectedBackgroundColor:kWotaColorOne()];
+    [_arrivalDatePicker setCurrentDateColor:kWotaColorOne()];
     
-    [self.datePicker setDateHasItemsCallback:^BOOL(NSDate *date) {
-        int tmp = (arc4random() % 30)+1;
-        if(tmp % 5 == 0)
-            return YES;
-        return NO;
-    }];
+    _arrivalDatePicker.arrivalOrDepartureString = @"Arrival Date";
+    [_arrivalDatePicker setDateHasItemsCallback:nil];
 }
+
+- (void)setupTheReturnDatePicker {
+    if(_returnDatePicker)
+        return;
+    
+    _returnDatePicker = [THDatePickerViewController datePicker];
+    _returnDatePicker.delegate = self;
+    [_returnDatePicker setAllowClearDate:NO];
+    [_returnDatePicker setClearAsToday:NO];
+    [_returnDatePicker setAutoCloseOnSelectDate:YES];
+    [_returnDatePicker setAllowSelectionOfSelectedDate:YES];
+    [_returnDatePicker setDisableHistorySelection:YES];
+    [_returnDatePicker setDisableFutureSelection:NO];
+    [_returnDatePicker setSelectedBackgroundColor:kWotaColorOne()];
+    [_returnDatePicker setCurrentDateColor:kWotaColorOne()];
+    
+    _returnDatePicker.arrivalOrDepartureString = @"Departure Date";
+    [_returnDatePicker setDateHasItemsCallback:nil];
+}
+
+
 
 -(void)refreshDisplayedArrivalDate {
     SelectionCriteria *sc = [SelectionCriteria singleton];
@@ -338,22 +365,30 @@
         sc.arrivalDate = kAddDays(3, [NSDate date]);
     }
     
-    [self.arrivalDateOutlet setTitle:[_viewFormatter stringFromDate:sc.arrivalDate] forState:UIControlStateNormal];
+    [_arrivalDateOutlet setTitle:[kPrettyDateFormatter() stringFromDate:sc.arrivalDate] forState:UIControlStateNormal];
+    
+    NSDate *arrivalDatePlus28 = kAddDays(28, sc.arrivalDate);
+    
+    if (nil == sc.returnDate || [sc.arrivalDate compare:sc.returnDate] == NSOrderedDescending
+            || [sc.returnDate compare:arrivalDatePlus28] == NSOrderedDescending) {
+        sc.returnDate = kAddDays(1, sc.arrivalDate);
+        [self refreshDisplayedReturnDate];
+    }
 }
 
 -(void)refreshDisplayedReturnDate {
     SelectionCriteria *sc = [SelectionCriteria singleton];
     if (sc.returnDate == nil) {
-        sc.returnDate = kAddDays(6, [NSDate date]);
+        sc.returnDate = kAddDays(3, sc.arrivalDate);
     }
     
-    [self.returnDateOutlet setTitle:[_viewFormatter stringFromDate:sc.returnDate] forState:UIControlStateNormal];
+    [_returnDateOutlet setTitle:[kPrettyDateFormatter() stringFromDate:sc.returnDate] forState:UIControlStateNormal];
 }
 
 #pragma mark THDatePickerDelegate methods
 
 - (void)datePickerDonePressed:(THDatePickerViewController *)datePicker {
-    if (!self.arrivalOrReturn) {
+    if (!_arrivalOrReturn) {
         [SelectionCriteria singleton].arrivalDate = datePicker.date;
         [self refreshDisplayedArrivalDate];
     } else {
@@ -371,7 +406,7 @@
 }
 
 - (void)datePicker:(THDatePickerViewController *)datePicker selectedDate:(NSDate *)selectedDate {
-    NSLog(@"Date selected: %@",[_viewFormatter stringFromDate:selectedDate]);
+    NSLog(@"Date selected: %@",[kPrettyDateFormatter() stringFromDate:selectedDate]);
 }
 
 @end

@@ -38,6 +38,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *okBtn;
 @property (strong, nonatomic) IBOutlet UIView *calendarDaysView;
 @property (weak, nonatomic) IBOutlet UIView *weekdaysView;
+@property (weak, nonatomic) IBOutlet UILabel *arriveOrDepartLabel;
 
 - (IBAction)nextMonthPressed:(id)sender;
 - (IBAction)prevMonthPressed:(id)sender;
@@ -113,13 +114,16 @@
                                                  name:kSemiModalDidHideNotification
                                                object:nil];
     [self configureButtonAppearances];
+    
+    _arriveOrDepartLabel.text = _arrivalOrDepartureString;
+    
     if(_allowClearDate)
         [self showClearButton];
     else
         [self hideClearButton];
     [self addSwipeGestures];
     self.okBtn.enabled = [self shouldOkBeEnabled];
-    [self.okBtn setImage:[UIImage imageNamed:(_autoCloseOnSelectDate ? @"dialog_clear" : @"dialog_ok")] forState:UIControlStateNormal];
+//    [self.okBtn setImage:[UIImage imageNamed:(_autoCloseOnSelectDate ? @"dialog_clear" : @"dialog_ok")] forState:UIControlStateNormal];
     [self redraw];
 }
 
@@ -151,16 +155,24 @@
     [[self.prevBtn imageView] setContentMode: UIViewContentModeScaleAspectFit];
     [[self.clearBtn imageView] setContentMode: UIViewContentModeScaleAspectFit];
     [[self.closeBtn imageView] setContentMode: UIViewContentModeScaleAspectFit];
-    [[self.okBtn imageView] setContentMode: UIViewContentModeScaleAspectFit];
+//    [[self.okBtn imageView] setContentMode: UIViewContentModeScaleAspectFit];
     
     UIImage * img = [self imageOfColor:[UIColor colorWithWhite:.8 alpha:1]];
     [self.clearBtn setBackgroundImage:img forState:UIControlStateHighlighted];
     [self.closeBtn setBackgroundImage:img forState:UIControlStateHighlighted];
-    [self.okBtn setBackgroundImage:img forState:UIControlStateHighlighted];
+//    [self.okBtn setBackgroundImage:img forState:UIControlStateHighlighted];
     
-    img = [self imageOfColor:[UIColor colorWithWhite:.94 alpha:1]];
-    [self.nextBtn setBackgroundImage:img forState:UIControlStateHighlighted];
-    [self.prevBtn setBackgroundImage:img forState:UIControlStateHighlighted];
+//    img = [self imageOfColor:[UIColor colorWithWhite:.94 alpha:1]];
+//    [self.nextBtn setBackgroundImage:img forState:UIControlStateHighlighted];
+//    [self.prevBtn setBackgroundImage:img forState:UIControlStateHighlighted];
+    
+    UIImage *leftArrow = [[UIImage imageNamed:@"arrow_left"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    [_prevBtn setImage:leftArrow forState:UIControlStateNormal];
+    _prevBtn.tintColor = self.view.tintColor;
+    
+    UIImage *rightArrow = [[UIImage imageNamed:@"arrow_right"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    [_nextBtn setImage:rightArrow forState:UIControlStateNormal];
+    _nextBtn.tintColor = self.view.tintColor;
 }
 
 - (UIImage *)imageOfColor:(UIColor *)color {
@@ -187,6 +199,10 @@
 }
 
 #pragma mark - Redraw Dates
+
+- (void)forceRedraw {
+    [self redraw];
+}
 
 - (void)redraw {
     if(!self.firstOfCurrentMonth) [self setDisplayedMonthFromDate:[NSDate date]];
@@ -235,7 +251,8 @@
             [day setSelectedBackgroundColor:self.selectedBackgroundColor];
         
         [day setLightText:![self dateInCurrentMonth:date]];
-        [day setEnabled:![self dateInFutureAndShouldBeDisabled:date]];
+//        [day setEnabled:![self dateInFutureAndShouldBeDisabled:date]];
+        [day setEnabled:[self dateIsWithinAcceptableRange:date]];
         [day indicateDayHasItems:(_dateHasItemsCallback && _dateHasItemsCallback(date))];
         
         NSDateComponents *comps = [_calendar components:NSCalendarUnitDay fromDate:date];
@@ -250,6 +267,17 @@
         date = [_calendar dateByAddingComponents:offsetComponents toDate:date options:0];
         curX += cellWidth;
     }
+}
+
+- (BOOL)dateIsWithinAcceptableRange:(NSDate *)theDate {
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSInteger comps = (NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear);
+    theDate = [calendar dateFromComponents:[calendar components:comps fromDate:theDate]];
+    NSDate *minDate = [calendar dateFromComponents:[calendar components:comps fromDate:_minDate]];
+    NSDate *maxDate = [calendar dateFromComponents:[calendar components:comps fromDate:_maxDate]];
+    BOOL aboveMin = [theDate compare:minDate] == NSOrderedDescending || [theDate compare:minDate] == NSOrderedSame;
+    BOOL belowMax = [theDate compare:_maxDate] == NSOrderedAscending || [theDate compare:maxDate] == NSOrderedSame;
+    return aboveMin && belowMax;
 }
 
 - (void)redrawWeekdays:(int)dayWidth {
@@ -458,7 +486,7 @@
     curX+=buttonWidth+5;
     self.clearBtn.frame = CGRectMake(curX, 5, buttonWidth, buttonHeight);
     curX+=buttonWidth+5;
-    self.okBtn.frame = CGRectMake(curX, 5, buttonWidth, buttonHeight);
+//    self.okBtn.frame = CGRectMake(curX, 5, buttonWidth, buttonHeight);
     if (_clearAsToday) {
         [self.clearBtn setImage:nil forState:UIControlStateNormal];
         [self.clearBtn setTitle:NSLocalizedString(@"TODAY", @"Customize this for your language") forState:UIControlStateNormal];
@@ -476,7 +504,7 @@
     int curX = (width - buttonWidth*2 - 5)/2;
     self.closeBtn.frame = CGRectMake(curX, 5, buttonWidth, buttonHeight);
     curX+=buttonWidth+5;
-    self.okBtn.frame = CGRectMake(curX, 5, buttonWidth, buttonHeight);
+//    self.okBtn.frame = CGRectMake(curX, 5, buttonWidth, buttonHeight);
 }
 
 #pragma mark - Date Utils
