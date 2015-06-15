@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="HotelListingViewController">
@@ -19,9 +19,10 @@
                     <rect key="frame" x="0.0" y="523" width="320" height="45"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <subviews>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="wmap" id="UCb-A2-tWP" userLabel="wmapImageView">
+                        <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="wmap" id="UCb-A2-tWP" userLabel="wmapImageView">
                             <rect key="frame" x="0.0" y="3" width="49" height="39"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <color key="tintColor" red="1" green="0.028500660979999998" blue="0.046587595760000003" alpha="1" colorSpace="calibratedRGB"/>
                         </imageView>
                         <view contentMode="scaleToFill" id="rrC-X2-mfV" userLabel="bottomDiv">
                             <rect key="frame" x="0.0" y="0.0" width="320" height="0.5"/>
@@ -37,7 +38,7 @@
         </view>
     </objects>
     <resources>
-        <image name="wmap" width="22" height="39"/>
+        <image name="wmap" width="16" height="16"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>

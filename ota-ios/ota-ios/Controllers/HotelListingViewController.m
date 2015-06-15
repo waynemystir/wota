@@ -153,8 +153,8 @@ NSTimeInterval const kFlipAnimationDuration = 0.7;
     
     SelectionCriteria *sc = [SelectionCriteria singleton];
     CLLocationCoordinate2D zoomLocation;
-    zoomLocation.latitude = sc.googlePlaceDetail.latitude;
-    zoomLocation.longitude= sc.googlePlaceDetail.longitude;
+    zoomLocation.latitude = sc.latitude;
+    zoomLocation.longitude= sc.longitude;
     
     double spanLat = ehlr.maxLatitudeDelta*2.00;
     double spanLon = ehlr.maxLongitudeDelta*2.00;

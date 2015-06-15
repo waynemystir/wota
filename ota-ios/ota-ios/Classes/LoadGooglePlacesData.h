@@ -20,6 +20,10 @@
 
 - (void)loadPlaceDetails:(NSString *)placeId;
 
+- (void)loadPlaceDetailsWithLatitude:(double)latitude
+                           longitude:(double)longitude
+                     completionBlock:(void (^)(NSURLResponse *response, NSData *data, NSError *connectionError))completionBlock;
+
 - (void)loadPlaceDetailsWithPostalCode:(NSString *)postalCode;
 
 - (void)loadNearbyPlacesWithLatitude:(double)latitude

@@ -198,21 +198,41 @@ NSString * kURLeanBookReservation() {
 
 - (void)loadHotelsWithLatitude:(double)latitude
                      longitude:(double)longitude {
-    [self loadHotelsWithLatitude:latitude longitude:longitude arrivalDate:nil returnDate:nil];
+    [self loadHotelsWithLatitude:latitude
+                       longitude:longitude
+                     arrivalDate:nil
+                      returnDate:nil];
 }
 
 - (void)loadHotelsWithLatitude:(double)latitude
                      longitude:(double)longitude
                    arrivalDate:(NSString *)arrivalDate
                     returnDate:(NSString *)returnDate {
-    NSURL *url = [NSURL URLWithString:[self URLhotelListWithLatitude:latitude longitude:longitude arrivalDate:arrivalDate returnDate:returnDate]];
+    [self loadHotelsWithLatitude:latitude
+                       longitude:longitude
+                     arrivalDate:arrivalDate
+                      returnDate:returnDate
+                    searchRadius:@35];
+}
+
+- (void)loadHotelsWithLatitude:(double)latitude
+                     longitude:(double)longitude
+                   arrivalDate:(NSString *)arrivalDate
+                    returnDate:(NSString *)returnDate
+                  searchRadius:(NSNumber *)searchRadius {
+    NSURL *url = [NSURL URLWithString:[self URLhotelListWithLatitude:latitude
+                                                           longitude:longitude
+                                                         arrivalDate:arrivalDate
+                                                          returnDate:returnDate
+                                                        searchRadius:searchRadius]];
     [self fireOffConnectionWithURL:url httpMethod:HTTP_GET];
 }
 
 - (NSString *)URLhotelListWithLatitude:(double)latitude
                              longitude:(double)longitude
                            arrivalDate:(NSString *)arrivalDate
-                            returnDate:(NSString *)returnDate {
+                            returnDate:(NSString *)returnDate
+                          searchRadius:(NSNumber *)searchRadius {
     NSString *appendage = nil;
     
     if (arrivalDate == nil || returnDate == nil) {
@@ -223,17 +243,18 @@ NSString * kURLeanBookReservation() {
                      EAN_PK_DEPART_DATE, returnDate];
     }
     
-    return [[[self URLhotelListWithLatitude:latitude longitude:longitude] stringByAppendingString:appendage] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    return [[[self URLhotelListWithLatitude:latitude longitude:longitude searchRadius:searchRadius] stringByAppendingString:appendage] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 }
 
 - (NSString *)URLhotelListWithLatitude:(double)latitude
-                             longitude:(double)longitude {
+                             longitude:(double)longitude
+                          searchRadius:(NSNumber *)searchRadius {
     return [NSString stringWithFormat:@"%@&%@=%f&%@=%f&%@=%@&%@=%@&%@=%@&%@=%@",
             kURLeanHotelList(),
             EAN_PK_LATITUDE, latitude,
             EAN_PK_LONGITUDE, longitude,
             EAN_PK_NUMBER_OF_RESULTS, @150,
-            EAN_PK_SEARCH_RADIUS, @35,
+            EAN_PK_SEARCH_RADIUS, searchRadius,
             EAN_PK_SEARCH_RADIUS_UNIT, @"MI",
             EAN_PK_GEO_SORT, @"PROXIMITY"];
 }

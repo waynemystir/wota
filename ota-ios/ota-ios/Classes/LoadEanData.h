@@ -24,6 +24,12 @@
                    arrivalDate:(NSString *)arrivalDate
                     returnDate:(NSString *)returnDate;
 
+- (void)loadHotelsWithLatitude:(double)latitude
+                     longitude:(double)longitude
+                   arrivalDate:(NSString *)arrivalDate
+                    returnDate:(NSString *)returnDate
+                  searchRadius:(NSNumber *)searchRadius;
+
 - (void)loadHotelDetailsWithId:(NSString *)hotelId;
 
 - (void)loadPaymentTypesWithHotelId:(NSString *)hotelId

@@ -19,11 +19,16 @@
 #import "THDatePickerViewController.h"
 #import "ChildViewController.h"
 #import "AppEnvironment.h"
+#import "WotaTappableView.h"
+#import <MapKit/MapKit.h>
+#import <AddressBookUI/AddressBookUI.h>
 
-@interface CriteriaViewController () <LoadDataProtocol, UITableViewDataSource, UITableViewDelegate, THDatePickerDelegate>
+static double const DEFAULT_RADIUS = 10.0;
+static double const METERS_PER_MILE = 1609.344;
+
+@interface CriteriaViewController () <LoadDataProtocol, UITableViewDataSource, UITableViewDelegate, THDatePickerDelegate, MKMapViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UITextField *whereToTextFieldOutlet;
-@property (weak, nonatomic) IBOutlet UIButton *mapButtonOutlet;
 @property (strong, nonatomic) UITableView *autoCompleteTableViewOutlet;
 
 @property (nonatomic) BOOL isAutoCompleteTableViewExpanded;
@@ -33,6 +38,7 @@
 //autoComplete is NO and placeDetails is YES
 @property (nonatomic) BOOL autoCompleteOrPlaceDetails;
 
+@property (weak, nonatomic) IBOutlet WotaTappableView *mapBtnContainer;
 @property (nonatomic, strong) IBOutlet UIView *cupHolderOutlet;
 @property (nonatomic, strong) IBOutlet UIButton *arrivalDateOutlet;
 @property (nonatomic, strong) IBOutlet UIButton *returnDateOutlet;
@@ -45,6 +51,10 @@
 @property (nonatomic, strong) THDatePickerViewController *arrivalDatePicker;
 @property (nonatomic, strong) THDatePickerViewController *returnDatePicker;
 @property BOOL arrivalOrReturn; //arrival == NO and return == YES
+
+@property (nonatomic, strong) MKMapView *mapView;
+@property (nonatomic, strong) CLGeocoder *geoCoder;
+@property (nonatomic) BOOL manualRepositingMapRegion;
 
 - (IBAction)justPushIt:(id)sender;
 
@@ -70,6 +80,17 @@
     self.automaticallyAdjustsScrollViewInsets = NO;
     //***********************************************************************
     
+    _mapView = [[MKMapView alloc] initWithFrame:CGRectMake(0, 600, 320, 400)];
+    _mapView.delegate = self;
+    [self redrawMapViewAnimated:NO radius:DEFAULT_RADIUS];
+    [self.view addSubview:_mapView];
+    
+    UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(loadOrDropDaMapView)];
+    tgr.numberOfTapsRequired = 1;
+    tgr.numberOfTouchesRequired = 1;
+    _mapBtnContainer.userInteractionEnabled = YES;
+    [_mapBtnContainer addGestureRecognizer:tgr];
+    
     [self setNumberOfAdultsLabel:0];
     [self setNumberOfKidsButtonLabel];
     
@@ -85,15 +106,80 @@
     self.autoCompleteTableViewOutlet.sectionHeaderHeight = 0.0f;
     [self.view addSubview:self.autoCompleteTableViewOutlet];
     
-    self.whereToTextFieldOutlet.text = [SelectionCriteria singleton].whereTo;
-    [self.whereToTextFieldOutlet addTarget:self action:@selector(startEnteringWhereTo) forControlEvents:UIControlEventTouchDown];
-    [self.whereToTextFieldOutlet addTarget:self action:@selector(autoCompleteSomePlace) forControlEvents:UIControlEventEditingChanged];
-    [self.whereToTextFieldOutlet addTarget:self action:@selector(didFinishTextFieldKeyboard) forControlEvents:UIControlEventEditingDidEndOnExit];
+    _whereToTextFieldOutlet.text = [SelectionCriteria singleton].whereTo;
+    [_whereToTextFieldOutlet addTarget:self action:@selector(startEnteringWhereTo) forControlEvents:UIControlEventTouchDown];
+    [_whereToTextFieldOutlet addTarget:self action:@selector(autoCompleteSomePlace) forControlEvents:UIControlEventEditingChanged];
+    [_whereToTextFieldOutlet addTarget:self action:@selector(didFinishTextFieldKeyboard) forControlEvents:UIControlEventEditingDidEndOnExit];
+}
+
+- (void)redrawMapViewAnimated:(BOOL)animated radius:(double)radius {
+    SelectionCriteria *sc = [SelectionCriteria singleton];
+    CLLocationCoordinate2D zoomLocation;
+    zoomLocation.latitude = sc.latitude;
+    zoomLocation.longitude= sc.longitude;
+    MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(zoomLocation, radius*METERS_PER_MILE, radius*METERS_PER_MILE);
+    _manualRepositingMapRegion = YES;
+    [_mapView setRegion:viewRegion animated:animated];
+}
+
+- (void)geoCodingDawg {
+    if (nil == _geoCoder) {
+        _geoCoder = [[CLGeocoder alloc] init];
+    }
+    
+    [[LoadGooglePlacesData sharedInstance] loadPlaceDetailsWithLatitude:_mapView.region.center.latitude longitude:_mapView.region.center.longitude completionBlock:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+        
+        NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"PLACESDETAIL:%@", responseString);
+        [SelectionCriteria singleton].googlePlaceDetail = [GooglePlaceDetail placeDetailFromGeoCodeData:data];
+        _whereToTextFieldOutlet.text = [SelectionCriteria singleton].whereTo;
+    }];
+    
+//    CLLocation *loc = [[CLLocation alloc] initWithLatitude:_mapView.region.center.latitude longitude:_mapView.region.center.longitude];
+//    
+//    [_geoCoder reverseGeocodeLocation:loc completionHandler:^(NSArray *placemarks, NSError *error) {
+//        NSLog(@"placemarks count %lu", [placemarks count]);
+//        
+//        if ([placemarks count] != 1) {
+//            return;
+//        }
+//        
+//        CLPlacemark *pm  = placemarks[0];
+//        if (nil != pm) {
+//            WotaCLPlacemark *wpm = [[WotaCLPlacemark alloc] initWithPlacemark:pm];
+//            [SelectionCriteria singleton].clPlacemark = wpm;
+//            
+//            _whereToTextFieldOutlet.text = [SelectionCriteria singleton].whereTo;
+//            
+//            
+//        }
+//        
+////        NSDictionary *pmDict = pm.addressDictionary;
+////        NSString *abString = ABCreateStringWithAddressDictionary(pmDict, YES);
+////        NSLog(@"this should be interesting hey:%@", abString);
+////        
+////        NSString *city = [pmDict objectForKey:@"City"] ? : @"";
+////        NSString *state = [pmDict objectForKey:@"State"] ? : @"";
+////        NSString *country = [pmDict objectForKey:@"Country"] ? : @"";
+////        NSString *countryCode = [pmDict objectForKey:@"CountryCode"] ? : @"";
+////        
+////        _whereToTextFieldOutlet.text = [NSString stringWithFormat:@"%@, %@, %@", city, state, countryCode];
+//    }];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.navigationController.navigationBar.hidden = YES;
+}
+
+#pragma mark MKMapViewDelegate methods
+
+- (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
+    if (!_manualRepositingMapRegion) {
+        [self geoCodingDawg];
+    }
+    
+    _manualRepositingMapRegion = NO;
 }
 
 #pragma mark Various events and such
@@ -106,7 +192,7 @@
 
 - (void)autoCompleteSomePlace {
     _autoCompleteOrPlaceDetails = NO;
-    [[LoadGooglePlacesData sharedInstance:self] autoCompleteSomePlaces:self.whereToTextFieldOutlet.text];
+    [[LoadGooglePlacesData sharedInstance:self] autoCompleteSomePlaces:_whereToTextFieldOutlet.text];
 }
 
 - (void)didFinishTextFieldKeyboard {
@@ -115,10 +201,7 @@
 }
 
 - (IBAction)justPushIt:(id)sender {
-    if (sender == self.mapButtonOutlet) {
-        MapViewController *mvc = [MapViewController new];
-        [self.navigationController pushViewController:mvc animated:YES];
-    } else if (sender == self.checkHotelsOutlet) {
+    if (sender == self.checkHotelsOutlet) {
         [self letsFindHotels];
     } else if (sender == self.arrivalDateOutlet) {
         self.arrivalOrReturn = NO;
@@ -138,12 +221,15 @@
 }
 
 - (void)letsFindHotels {
-    GooglePlaceDetail *gpd = [SelectionCriteria singleton].googlePlaceDetail;
-    NSString *arrivalDt = [SelectionCriteria singleton].arrivalDateEanString;
-    NSString *returnDt = [SelectionCriteria singleton].returnDateEanString;
+    SelectionCriteria *sc = [SelectionCriteria singleton];
     
     HotelListingViewController *hvc = [HotelListingViewController new];
-    [[LoadEanData sharedInstance:hvc] loadHotelsWithLatitude:gpd.latitude longitude:gpd.longitude arrivalDate:arrivalDt returnDate:returnDt];
+    [[LoadEanData sharedInstance:hvc] loadHotelsWithLatitude:sc.latitude
+                                                   longitude:sc.longitude
+                                                 arrivalDate:sc.arrivalDateEanString
+                                                  returnDate:sc.returnDateEanString
+                                                searchRadius:@15];
+    
     [self.navigationController pushViewController:hvc animated:YES];
 }
 
@@ -204,6 +290,8 @@
         NSString *response = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
         NSLog(@"PLACESDETAIL:%@", response);
         [SelectionCriteria singleton].googlePlaceDetail = [GooglePlaceDetail placeDetailFromData:responseData];
+        _whereToTextFieldOutlet.text = [SelectionCriteria singleton].whereTo;
+        [self redrawMapViewAnimated:YES radius:DEFAULT_RADIUS];
     }
 }
 
@@ -244,7 +332,7 @@
     // to LoadEanData.loadHotelsWithLatitude:longitude: could return data for the wrong
     // place. And second, we could have mismatched data in SelectionCriteria between
     // whereTo and googlePlaceDetail.
-    [SelectionCriteria singleton].whereTo = self.whereToTextFieldOutlet.text = cell.outletPlaceName.text;
+//    _whereToTextFieldOutlet.text = cell.outletPlaceName.text;
     self.autoCompleteOrPlaceDetails = YES;
     [[LoadGooglePlacesData sharedInstance:self] loadPlaceDetails:cell.placeId];
     [self didFinishTextFieldKeyboard];
@@ -259,6 +347,28 @@
 }
 
 #pragma mark Some animation methods
+
+- (void)loadOrDropDaMapView {
+    __weak UIView *mv = _mapView;
+    
+    if (_mapView.frame.origin.y == 600) {
+        
+        [UIView animateWithDuration:0.6 animations:^{
+            mv.frame = CGRectMake(0, 150, 320, 400);
+        } completion:^(BOOL finished) {
+            ;
+        }];
+        
+    } else {
+        
+        [UIView animateWithDuration:0.6 animations:^{
+            mv.frame = CGRectMake(0, 600, 320, 400);
+        } completion:^(BOOL finished) {
+            ;
+        }];
+        
+    }
+}
 
 - (void)animateTableViewExpansion {
     __weak typeof(self) weakSelf = self;
@@ -369,7 +479,9 @@
     
     NSDate *arrivalDatePlus28 = kAddDays(28, sc.arrivalDate);
     
-    if (nil == sc.returnDate || [sc.arrivalDate compare:sc.returnDate] == NSOrderedDescending
+    if (nil == sc.returnDate
+            || [sc.arrivalDate compare:sc.returnDate] == NSOrderedDescending
+            || [sc.arrivalDate compare:sc.returnDate] == NSOrderedSame
             || [sc.returnDate compare:arrivalDatePlus28] == NSOrderedDescending) {
         sc.returnDate = kAddDays(1, sc.arrivalDate);
         [self refreshDisplayedReturnDate];

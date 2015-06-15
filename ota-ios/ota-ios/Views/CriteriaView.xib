@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CriteriaViewController">
@@ -12,7 +12,7 @@
                 <outlet property="checkHotelsOutlet" destination="z87-FF-p3g" id="wv4-49-qjk"/>
                 <outlet property="cupHolderOutlet" destination="kFk-pZ-S3t" id="WK9-SI-5fE"/>
                 <outlet property="kidsButton" destination="siV-2O-lDU" id="2JA-Lv-eDl"/>
-                <outlet property="mapButtonOutlet" destination="siT-74-Zl3" id="JXl-Ne-lui"/>
+                <outlet property="mapBtnContainer" destination="Cgs-Ws-WWR" id="XNc-zg-Ejd"/>
                 <outlet property="minusAdultOutlet" destination="wDc-E8-qCD" id="jCG-wO-mkO"/>
                 <outlet property="returnDateOutlet" destination="jp2-aZ-cy3" id="sSF-8t-hL6"/>
                 <outlet property="view" destination="iN0-l3-epB" id="nJX-7O-cmC"/>
@@ -25,21 +25,11 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Where to yo?" minimumFontSize="17" id="RXh-qF-H7q" userLabel="whereToTextField">
-                    <rect key="frame" x="15" y="92" width="250" height="30"/>
+                    <rect key="frame" x="8" y="92" width="270" height="30"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done"/>
                 </textField>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="siT-74-Zl3" userLabel="mapButton">
-                    <rect key="frame" x="275" y="86" width="22" height="39"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <state key="normal" image="wmap">
-                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                    </state>
-                    <connections>
-                        <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="Jh1-3W-a0v"/>
-                    </connections>
-                </button>
                 <view contentMode="scaleToFill" id="kFk-pZ-S3t" userLabel="cupHolder">
                     <rect key="frame" x="10" y="137" width="300" height="400"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -117,21 +107,32 @@
                             </connections>
                         </button>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="→" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="iyc-lV-TrT">
-                            <rect key="frame" x="6" y="44" width="51" height="21"/>
+                            <rect key="frame" x="4" y="44" width="44" height="21"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="33"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="30"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="←" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="a4V-zu-mps">
-                            <rect key="frame" x="3" y="96" width="51" height="21"/>
+                            <rect key="frame" x="3" y="96" width="44" height="21"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="33"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="30"/>
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                </view>
+                <view contentMode="scaleToFill" id="Cgs-Ws-WWR" userLabel="mapBtnContainer" customClass="WotaTappableView">
+                    <rect key="frame" x="284" y="92" width="30" height="30"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="wmap" id="YHa-fy-5RG">
+                            <rect key="frame" x="4" y="4" width="22" height="22"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        </imageView>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                 </view>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -139,7 +140,7 @@
         </view>
     </objects>
     <resources>
-        <image name="wmap" width="22" height="39"/>
+        <image name="wmap" width="16" height="16"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>

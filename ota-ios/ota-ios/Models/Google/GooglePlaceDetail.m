@@ -84,6 +84,63 @@ NSString * const kKeyLongitude = @"longitude";
     return [self placeDetailFromObject:jsonDictionary wrappedInResult:YES];
 }
 
++ (GooglePlaceDetail *)placeDetailFromGeoCodeData:(NSData *)data {
+    if (data == nil) {
+        return nil;
+    }
+    
+    if (![data isKindOfClass:[NSData class]]) {
+        return  nil;
+    }
+    
+    NSError *error;
+    NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+    if (error != nil) {
+        NSLog(@"");
+        return nil;
+    }
+    
+    NSString *respString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSLog(@"%@ PDFGeo:%@", NSStringFromClass(self.class), respString);
+    
+    return [self placeDetailFromGeocodeDict:jsonDictionary];
+}
+
++ (GooglePlaceDetail *)placeDetailFromGeocodeDict:(NSDictionary *)dict {
+    if (dict == nil) {
+        return nil;
+    }
+    
+    if (![dict isKindOfClass:[NSDictionary class]]) {
+        return nil;
+    }
+    
+    id resultsId = [dict objectForKey:@"results"];
+    
+    if (nil == resultsId || ![resultsId isKindOfClass:[NSArray class]] || [resultsId count] == 0) {
+        return nil;
+    }
+    
+    NSMutableArray *gpdsMut = [NSMutableArray array];
+    for (int j = 0; j < [resultsId count]; j++) {
+        GooglePlaceDetail *gpd = [self placeDetailFromObject:resultsId[j] wrappedInResult:NO];
+        
+        if ([gpd.types indexOfObject:@"neighborhood"] != NSNotFound) {
+            return gpd;
+        } else if ([gpd.types indexOfObject:@"locality"] != NSNotFound) {
+            return gpd;
+        }
+        
+        [gpdsMut addObject:gpd];
+    }
+    
+    if ([gpdsMut count] > 0) {
+        return gpdsMut[0];
+    } else {
+        return nil;
+    }
+}
+
 + (GooglePlaceDetail *)placeDetailFromObject:(id)object wrappedInResult:(BOOL)wrapped {
     if (object == nil) {
         return nil;
@@ -100,6 +157,7 @@ NSString * const kKeyLongitude = @"longitude";
     gpd.formattedAddress = [gpd.googlePlaceResultDict objectForKey:@"formatted_address"];
     gpd.addressComponents = [gpd.googlePlaceResultDict objectForKey:@"address_components"];
     [gpd parseAddressComponents];
+    gpd.placeName = [gpd.googlePlaceResultDict objectForKey:@"name"];
     gpd.placeId = [gpd.googlePlaceResultDict objectForKey:@"place_id"];
     gpd.geometry = [gpd.googlePlaceResultDict objectForKey:@"geometry"];
     gpd.location = [gpd.geometry objectForKey:@"location"];
@@ -169,6 +227,10 @@ NSString * const kKeyLongitude = @"longitude";
 }
 
 #pragma mark Getters and Setters
+
+- (NSString *)formattedWhereTo {
+    return _placeName ? : _formattedAddress;
+}
 
 - (void)setPlaceId:(NSString *)placeId {
     _placeId = placeId;

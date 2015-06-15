@@ -291,8 +291,8 @@ NSUInteger const kCardSecurityTag = 171736;
 
 - (void)updateGuestDetailsButtonTitle {
     GuestInfo *gi = [GuestInfo singleton];
-    UILabel *gdLabel = (UILabel *) [self.guestButtonOutlet viewWithTag:9191731483];
-    UILabel *fnLabel = (UILabel *) [self.guestButtonOutlet viewWithTag:90157295745];
+    UILabel *gdLabel = (UILabel *) [self.guestButtonOutlet viewWithTag:91917314];
+    UILabel *fnLabel = (UILabel *) [self.guestButtonOutlet viewWithTag:901572957];
     UILabel *lnLabel = (UILabel *) [self.guestButtonOutlet viewWithTag:4206971046];
     if (([gi.firstName length] > 0) && ([gi.lastName length] > 0)) {
         fnLabel.hidden = NO;

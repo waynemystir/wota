@@ -15,9 +15,9 @@
 
 NSTimeInterval const kNvAnimationDuration = 0.7;
 NSUInteger const kNavigationViewTag = 4141414141;
-NSUInteger const kDefaultBackButtonTag = 94234598217;
+NSUInteger const kDefaultBackButtonTag = 942398217;
 NSUInteger const kWhereToContainerTag = 34958739;
-NSUInteger const kWhereToLabelTag = 378209359451;
+NSUInteger const kWhereToLabelTag = 3782359451;
 NSUInteger const kTitleUnderViewTag = 9127539;
 NSUInteger const kBackCancelTag = 4729431;
 NSUInteger const kRightCheckMarkButton = 39618732;

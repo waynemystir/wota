@@ -46,7 +46,7 @@
     
     UIActivityIndicatorView *theSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:
                    UIActivityIndicatorViewStyleWhiteLarge];
-    theSpinner.tag = 7171717171;
+    theSpinner.tag = 71717171;
     theSpinner.center = _window.center;
     theSpinner.alpha = 0.0f;
     
@@ -88,7 +88,7 @@
     }
     _spinnerClass = nil;
     
-    __weak UIActivityIndicatorView *sp = (UIActivityIndicatorView *) [_window viewWithTag:7171717171];
+    __weak UIActivityIndicatorView *sp = (UIActivityIndicatorView *) [_window viewWithTag:71717171];
     __weak UIView *dw = [_window viewWithTag:91919191];
     dw.userInteractionEnabled = NO;
     

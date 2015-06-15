@@ -3,17 +3,17 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "mm.png"
+      "filename" : "wmap.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "mm@2x.png"
+      "filename" : "wmap@2x.png"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "mm@3x.png"
+      "filename" : "wmap@3x.png"
     }
   ],
   "info" : {

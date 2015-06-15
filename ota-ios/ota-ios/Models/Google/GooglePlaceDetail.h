@@ -11,6 +11,7 @@
 @interface GooglePlaceDetail : NSObject <NSCoding>
 
 @property (nonatomic, strong) NSDictionary *googlePlaceResultDict;
+@property (nonatomic, strong) NSString *placeName;
 @property (nonatomic, strong, setter=setPlaceId:) NSString *placeId;
 @property (nonatomic, strong) NSString *formattedAddress;
 @property (nonatomic, strong) NSArray *addressComponents;
@@ -43,8 +44,11 @@
 @property (nonatomic, setter=setLongitude:) double longitude;
 @property (nonatomic, strong) NSArray *types;
 
+@property (nonatomic, strong, readonly) NSString *formattedWhereTo;
+
 + (GooglePlaceDetail *)placeDetailFromId:(NSString *)placeId;
 + (GooglePlaceDetail *)placeDetailFromData:(NSData *)data;
++ (GooglePlaceDetail *)placeDetailFromGeoCodeData:(NSData *)data;
 + (GooglePlaceDetail *)placeDetailFromObject:(id)object wrappedInResult:(BOOL)wrapped;
 
 @end

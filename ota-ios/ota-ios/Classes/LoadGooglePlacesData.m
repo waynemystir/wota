@@ -69,6 +69,22 @@
     [self sendRequestStartedToDelegate:url];
 }
 
+- (void)loadPlaceDetailsWithLatitude:(double)latitude
+                           longitude:(double)longitude
+                     completionBlock:(void (^)(NSURLResponse *, NSData *, NSError *))completionBlock {
+    
+    NSString *urlString = [[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/geocode/json?&latlng=%f,%f&key=%@", latitude, longitude, GOOGLE_API_KEY] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setTimeoutInterval:URL_REQUEST_TIMEOUT];
+    [request setHTTPMethod:@"POST"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+        completionBlock(response, data, connectionError);
+    }];
+}
+
 - (void)loadPlaceDetailsWithPostalCode:(NSString *)postalCode {
     NSString *urlString = [[NSString stringWithFormat:@"https://maps.google.com/maps/api/geocode/json?components=postal_code:%@&key=%@&sensor=false", postalCode, GOOGLE_API_KEY] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSURL *url = [NSURL URLWithString:urlString];

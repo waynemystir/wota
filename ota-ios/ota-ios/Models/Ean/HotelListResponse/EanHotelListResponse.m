@@ -64,8 +64,8 @@
     
     double maxLatDelta = 0.0;
     double maxLonDelta = 0.0;
-    double selectedLat = [SelectionCriteria singleton].googlePlaceDetail.latitude;
-    double selectedLon = [SelectionCriteria singleton].googlePlaceDetail.longitude;
+    double selectedLat = [SelectionCriteria singleton].latitude;
+    double selectedLon = [SelectionCriteria singleton].longitude;
     for (EanHotelListHotelSummary *hotel in hlr.hotelList) {
         double latDelta = fabs(hotel.latitude - selectedLat);
         maxLatDelta = fmax(maxLatDelta, latDelta);
