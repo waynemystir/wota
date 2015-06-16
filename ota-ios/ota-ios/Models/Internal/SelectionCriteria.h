@@ -10,12 +10,10 @@
 #import "GooglePlaceDetail.h"
 #import "ChildTraveler.h"
 #import <CoreLocation/CoreLocation.h>
-#import "WotaCLPlacemark.h"
 
 @interface SelectionCriteria : NSObject <NSCoding>
 
 @property (nonatomic, strong, setter=setGooglePlaceDetail:) GooglePlaceDetail *googlePlaceDetail;
-@property (nonatomic, strong) WotaCLPlacemark *clPlacemark;
 @property (nonatomic, strong, setter=setArrivalDate:) NSDate *arrivalDate;
 @property (nonatomic, strong, setter=setReturnDate:) NSDate *returnDate;
 @property (nonatomic, setter=setNumberOfAdults:) NSUInteger numberOfAdults;

@@ -23,7 +23,7 @@
 #import <MapKit/MapKit.h>
 #import <AddressBookUI/AddressBookUI.h>
 
-static double const DEFAULT_RADIUS = 10.0;
+static double const DEFAULT_RADIUS = 5.0;
 static double const METERS_PER_MILE = 1609.344;
 
 @interface CriteriaViewController () <LoadDataProtocol, UITableViewDataSource, UITableViewDelegate, THDatePickerDelegate, MKMapViewDelegate>
@@ -134,37 +134,6 @@ static double const METERS_PER_MILE = 1609.344;
         [SelectionCriteria singleton].googlePlaceDetail = [GooglePlaceDetail placeDetailFromGeoCodeData:data];
         _whereToTextFieldOutlet.text = [SelectionCriteria singleton].whereTo;
     }];
-    
-//    CLLocation *loc = [[CLLocation alloc] initWithLatitude:_mapView.region.center.latitude longitude:_mapView.region.center.longitude];
-//    
-//    [_geoCoder reverseGeocodeLocation:loc completionHandler:^(NSArray *placemarks, NSError *error) {
-//        NSLog(@"placemarks count %lu", [placemarks count]);
-//        
-//        if ([placemarks count] != 1) {
-//            return;
-//        }
-//        
-//        CLPlacemark *pm  = placemarks[0];
-//        if (nil != pm) {
-//            WotaCLPlacemark *wpm = [[WotaCLPlacemark alloc] initWithPlacemark:pm];
-//            [SelectionCriteria singleton].clPlacemark = wpm;
-//            
-//            _whereToTextFieldOutlet.text = [SelectionCriteria singleton].whereTo;
-//            
-//            
-//        }
-//        
-////        NSDictionary *pmDict = pm.addressDictionary;
-////        NSString *abString = ABCreateStringWithAddressDictionary(pmDict, YES);
-////        NSLog(@"this should be interesting hey:%@", abString);
-////        
-////        NSString *city = [pmDict objectForKey:@"City"] ? : @"";
-////        NSString *state = [pmDict objectForKey:@"State"] ? : @"";
-////        NSString *country = [pmDict objectForKey:@"Country"] ? : @"";
-////        NSString *countryCode = [pmDict objectForKey:@"CountryCode"] ? : @"";
-////        
-////        _whereToTextFieldOutlet.text = [NSString stringWithFormat:@"%@, %@, %@", city, state, countryCode];
-//    }];
 }
 
 - (void)viewWillAppear:(BOOL)animated {

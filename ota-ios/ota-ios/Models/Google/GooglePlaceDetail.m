@@ -13,10 +13,11 @@
 NSString * const kKeyPlaceId = @"placeId";
 NSString * const kKeyLatitude = @"latitude";
 NSString * const kKeyLongitude = @"longitude";
+NSString * const kKeyDisplayName = @"displayName";
 
 @interface GooglePlaceDetail ()
 
-@property (nonatomic, strong) NSDictionary *dictionary;
+@property (nonatomic, strong) NSString *displayName;
 
 @end
 
@@ -27,6 +28,7 @@ NSString * const kKeyLongitude = @"longitude";
         _placeId = [aDecoder decodeObjectForKey:kKeyPlaceId];
         _latitude = [aDecoder decodeFloatForKey:kKeyLatitude];
         _longitude = [aDecoder decodeFloatForKey:kKeyLongitude];
+        _displayName = [aDecoder decodeObjectForKey:kKeyDisplayName];
     }
     return self;
 }
@@ -35,6 +37,7 @@ NSString * const kKeyLongitude = @"longitude";
     [aCoder encodeObject:_placeId forKey:kKeyPlaceId];
     [aCoder encodeFloat:_latitude forKey:kKeyLatitude];
     [aCoder encodeFloat:_longitude forKey:kKeyLongitude];
+    [aCoder encodeObject:_displayName forKey:kKeyDisplayName];
 }
 
 + (NSString *)pathToGooglePlaceDetailForId:(NSString *)placeId {
@@ -44,14 +47,6 @@ NSString * const kKeyLongitude = @"longitude";
 - (BOOL)save {
     BOOL saveResult = [NSKeyedArchiver archiveRootObject:self toFile:[[self class] pathToGooglePlaceDetailForId:_placeId]];
     return saveResult;
-}
-
-- (id)initWithDictionary:(NSDictionary *)dictionary {
-    self = [super init];
-    if (self != nil) {
-        _dictionary = dictionary;
-    }
-    return self;
 }
 
 + (GooglePlaceDetail *)placeDetailFromId:(NSString *)placeId {
@@ -80,6 +75,9 @@ NSString * const kKeyLongitude = @"longitude";
         NSLog(@"");
         return nil;
     }
+    
+    NSString *respString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSLog(@"%@ PDFData:%@", NSStringFromClass(self.class), respString);
     
     return [self placeDetailFromObject:jsonDictionary wrappedInResult:YES];
 }
@@ -127,15 +125,52 @@ NSString * const kKeyLongitude = @"longitude";
         
         if ([gpd.types indexOfObject:@"neighborhood"] != NSNotFound) {
             return gpd;
+        } else if ([gpd.types indexOfObject:@"sublocality"] != NSNotFound) {
+            [gpdsMut addObject:gpd];
+//            return gpd;
         } else if ([gpd.types indexOfObject:@"locality"] != NSNotFound) {
-            return gpd;
+            [gpdsMut addObject:gpd];
+//            return gpd;
+        } else if ([gpd.types indexOfObject:@"route"] != NSNotFound) {
+            [gpdsMut addObject:gpd];
+            //            return gpd;
+        } else if ([gpd.types indexOfObject:@"street_address"] != NSNotFound) {
+            [gpdsMut addObject:gpd];
         }
         
-        [gpdsMut addObject:gpd];
+//        [gpdsMut addObject:gpd];
     }
     
-    if ([gpdsMut count] > 0) {
+    if ([gpdsMut count] == 1) {
         return gpdsMut[0];
+    } else if ([gpdsMut count] > 1) {
+        
+        for (GooglePlaceDetail *wpd in gpdsMut) {
+            if ([wpd.types indexOfObject:@"sublocality"] != NSNotFound) {
+                return wpd;
+            }
+        }
+        
+        for (GooglePlaceDetail *wpd in gpdsMut) {
+            if ([wpd.types indexOfObject:@"locality"] != NSNotFound) {
+                return wpd;
+            }
+        }
+        
+        for (GooglePlaceDetail *wpd in gpdsMut) {
+            if ([wpd.types indexOfObject:@"route"] != NSNotFound) {
+                return wpd;
+            }
+        }
+        
+        for (GooglePlaceDetail *wpd in gpdsMut) {
+            if ([wpd.types indexOfObject:@"street_address"] != NSNotFound) {
+                return wpd;
+            }
+        }
+        
+        return gpdsMut[0];
+        
     } else {
         return nil;
     }
@@ -150,7 +185,7 @@ NSString * const kKeyLongitude = @"longitude";
         return nil;
     }
     
-    GooglePlaceDetail *gpd = [[GooglePlaceDetail alloc] initWithDictionary:object];
+    GooglePlaceDetail *gpd = [[GooglePlaceDetail alloc] init];
     
     gpd.googlePlaceResultDict = wrapped ? [object objectForKey:@"result"] : object;
     
@@ -164,6 +199,8 @@ NSString * const kKeyLongitude = @"longitude";
     gpd.latitude = [[gpd.location objectForKey:@"lat"] doubleValue];
     gpd.longitude = [[gpd.location objectForKey:@"lng"] doubleValue];
     gpd.types = [gpd.googlePlaceResultDict objectForKey:@"types"];
+    
+    [gpd setWotaDisplayName];
     
     [gpd save];
     
@@ -200,6 +237,9 @@ NSString * const kKeyLongitude = @"longitude";
             } else if ([type isEqualToString:@"neighborhood"]) {
                 self.neighborhoodShortName = gac.shortName;
                 self.neighborhoodLongName = gac.longName;
+            } else if ([type isEqualToString:@"sublocality"]) {
+                self.sublocalityShortName = gac.shortName;
+                self.sublocalityLongName = gac.longName;
             } else if ([type isEqualToString:@"locality"]) {
                 self.localityShortName = gac.shortName;
                 self.localityLongName = gac.longName;
@@ -229,7 +269,7 @@ NSString * const kKeyLongitude = @"longitude";
 #pragma mark Getters and Setters
 
 - (NSString *)formattedWhereTo {
-    return _placeName ? : _formattedAddress;
+    return _displayName;
 }
 
 - (void)setPlaceId:(NSString *)placeId {
@@ -253,6 +293,34 @@ NSString * const kKeyLongitude = @"longitude";
     }
     
     return _googleAddressComponents;
+}
+
+- (void)setWotaDisplayName {
+    
+    if (!stringIsEmpty(_placeName)) {
+        _displayName = _placeName;
+        return;
+    }
+    
+    NSString *neighborhood = _neighborhoodShortName ? : _sublocalityShortName ? : @"";
+    
+    NSString *city = _localityLongName ? : _postalTownShortName ? : _administrativeAreaLevel3ShortName ? : @"";
+    
+    NSString *sepNeighbCity = !stringIsEmpty(neighborhood) && !stringIsEmpty(city) ? @", " : @"";
+    
+    NSString *stateProvinceCode = _administrativeAreaLevel1ShortName;
+    
+    NSString *countryCode = _countryShortName;
+    
+    NSString *ccc = [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode];
+    
+    NSString *countryString = stringIsEmpty(countryCode) || [countryCode isEqualToString:ccc] ? @"" : [@", " stringByAppendingString:countryCode];
+    
+    if ([countryCode isEqualToString:@"US"] || [countryCode isEqualToString:@"CA"] || [countryCode isEqualToString:@"AU"]) {
+        _displayName = [NSString stringWithFormat:@"%@%@%@, %@%@", neighborhood, sepNeighbCity, city, stateProvinceCode, countryString];
+    } else {
+        _displayName = [NSString stringWithFormat:@"%@%@%@%@", neighborhood, sepNeighbCity, city, countryString];
+    }
 }
 
 @end

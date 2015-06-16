@@ -115,7 +115,6 @@
 		B0BD381F1AF9812100EF5E4F /* NightlyRateTableViewDelegateImplementation.m in Sources */ = {isa = PBXBuildFile; fileRef = B0BD381E1AF9812100EF5E4F /* NightlyRateTableViewDelegateImplementation.m */; };
 		B0BD38211AF990F600EF5E4F /* NightRateTableCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0BD38201AF990F600EF5E4F /* NightRateTableCellView.xib */; };
 		B0BD38241AF9914600EF5E4F /* NightRateTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0BD38231AF9914600EF5E4F /* NightRateTableCellView.m */; };
-		B0CA5F101B2E3C2800AC738A /* WotaCLPlacemark.m in Sources */ = {isa = PBXBuildFile; fileRef = B0CA5F0F1B2E3C2800AC738A /* WotaCLPlacemark.m */; };
 		B0D01DE51B02D4880001C558 /* NavigationView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D01DE41B02D4880001C558 /* NavigationView.m */; };
 		B0D01EB81B0590260001C558 /* BackCancelView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D01EB71B0590260001C558 /* BackCancelView.m */; };
 		B0D01EBB1B0657010001C558 /* CheckMarkView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D01EBA1B0657010001C558 /* CheckMarkView.m */; };
@@ -360,8 +359,6 @@
 		B0BD38201AF990F600EF5E4F /* NightRateTableCellView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NightRateTableCellView.xib; sourceTree = "<group>"; };
 		B0BD38221AF9914600EF5E4F /* NightRateTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NightRateTableCellView.h; sourceTree = "<group>"; };
 		B0BD38231AF9914600EF5E4F /* NightRateTableCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NightRateTableCellView.m; sourceTree = "<group>"; };
-		B0CA5F0E1B2E3C2800AC738A /* WotaCLPlacemark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WotaCLPlacemark.h; sourceTree = "<group>"; };
-		B0CA5F0F1B2E3C2800AC738A /* WotaCLPlacemark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WotaCLPlacemark.m; sourceTree = "<group>"; };
 		B0D01DE31B02D4880001C558 /* NavigationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavigationView.h; path = "ota-ios/Views/Navigation/NavigationView.h"; sourceTree = SOURCE_ROOT; };
 		B0D01DE41B02D4880001C558 /* NavigationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavigationView.m; path = "ota-ios/Views/Navigation/NavigationView.m"; sourceTree = SOURCE_ROOT; };
 		B0D01EB61B0590260001C558 /* BackCancelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackCancelView.h; sourceTree = "<group>"; };
@@ -759,8 +756,6 @@
 				B0BD38231AF9914600EF5E4F /* NightRateTableCellView.m */,
 				B06C98BD1B09586B00DBE09D /* CountryPicker.h */,
 				B06C98BE1B09586B00DBE09D /* CountryPicker.m */,
-				B0CA5F0E1B2E3C2800AC738A /* WotaCLPlacemark.h */,
-				B0CA5F0F1B2E3C2800AC738A /* WotaCLPlacemark.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1202,7 +1197,6 @@
 				B080B7CC1AC506B500075A32 /* EanHotelInformationResponse.m in Sources */,
 				B0344C4D1AE5A6E0000BBFCE /* WotaCardNumberFormatter.m in Sources */,
 				B09797FC1AC3BC690014FC7C /* UIViewController+KNSemiModal.m in Sources */,
-				B0CA5F101B2E3C2800AC738A /* WotaCLPlacemark.m in Sources */,
 				B0B50AD41B25285B00685384 /* GoogleNearbyPlaces.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

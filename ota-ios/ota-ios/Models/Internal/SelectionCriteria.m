@@ -12,17 +12,10 @@
 //NSString * const kKeyWhereTo = @"whereTo";
 NSString * const kKeyGooglePlaceDetail = @"googlePlaceDetail";
 NSString * const kKeyClPlacemark = @"kKeyClPlacemark";
-NSString * const kKeyGoogleOrMk = @"kKeyGoogleOrMk";
 NSString * const kKeyArrivalDate = @"arrivalDate";
 NSString * const kKeyReturnDate = @"returnDate";
 NSString * const kKeyNumberOfAdults = @"numberOfAdults";
 NSString * const kKeyChildTravelers = @"childTravelers";
-
-@interface SelectionCriteria ()
-
-@property (nonatomic) BOOL googleOrMk;
-
-@end
 
 @implementation SelectionCriteria
 
@@ -64,8 +57,6 @@ NSString * const kKeyChildTravelers = @"childTravelers";
     if (self = [super init]) {
 //        _whereTo = [aDecoder decodeObjectForKey:kKeyWhereTo];
         _googlePlaceDetail = [aDecoder decodeObjectForKey:kKeyGooglePlaceDetail];
-        _clPlacemark = [aDecoder decodeObjectForKey:kKeyClPlacemark];
-        _googleOrMk = [aDecoder decodeBoolForKey:kKeyGoogleOrMk];
         _arrivalDate = [aDecoder decodeObjectForKey:kKeyArrivalDate];
         _returnDate = [aDecoder decodeObjectForKey:kKeyReturnDate];
         _numberOfAdults = [aDecoder decodeIntegerForKey:kKeyNumberOfAdults];
@@ -76,8 +67,6 @@ NSString * const kKeyChildTravelers = @"childTravelers";
 - (void)encodeWithCoder:(NSCoder *)aCoder {
 //    [aCoder encodeObject:_whereTo forKey:kKeyWhereTo];
     [aCoder encodeObject:_googlePlaceDetail forKey:kKeyGooglePlaceDetail];
-    [aCoder encodeObject:_clPlacemark forKey:kKeyClPlacemark];
-    [aCoder encodeBool:_googleOrMk forKey:kKeyGoogleOrMk];
     [aCoder encodeObject:_arrivalDate forKey:kKeyArrivalDate];
     [aCoder encodeObject:_returnDate forKey:kKeyReturnDate];
     [aCoder encodeInteger:_numberOfAdults forKey:kKeyNumberOfAdults];
@@ -90,15 +79,15 @@ NSString * const kKeyChildTravelers = @"childTravelers";
 #pragma mark Getters
 
 - (NSString *)whereTo {
-    return _googleOrMk ? _clPlacemark.formattedWhereTo : _googlePlaceDetail.formattedWhereTo;
+    return _googlePlaceDetail.formattedWhereTo;
 }
 
 - (double)latitude {
-    return _googleOrMk ? _clPlacemark.location.coordinate.latitude : _googlePlaceDetail.latitude;
+    return _googlePlaceDetail.latitude;
 }
 
 - (double)longitude {
-    return _googleOrMk ? _clPlacemark.location.coordinate.longitude : _googlePlaceDetail.longitude;
+    return _googlePlaceDetail.longitude;
 }
 
 - (NSString *)arrivalDateEanString {
@@ -118,13 +107,6 @@ NSString * const kKeyChildTravelers = @"childTravelers";
 
 - (void)setGooglePlaceDetail:(GooglePlaceDetail *)googlePlaceDetail {
     _googlePlaceDetail = googlePlaceDetail;
-    _googleOrMk = NO;
-    [self save];
-}
-
-- (void)setClPlacemark:(WotaCLPlacemark *)clPlacemark {
-    _clPlacemark = clPlacemark;
-    _googleOrMk = YES;
     [self save];
 }
 

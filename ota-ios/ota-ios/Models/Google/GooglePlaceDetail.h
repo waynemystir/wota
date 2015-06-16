@@ -24,6 +24,8 @@
 @property (nonatomic, strong) NSString *premiseLongName;
 @property (nonatomic, strong) NSString *neighborhoodShortName;
 @property (nonatomic, strong) NSString *neighborhoodLongName;
+@property (nonatomic, strong) NSString *sublocalityShortName;
+@property (nonatomic, strong) NSString *sublocalityLongName;
 @property (nonatomic, strong) NSString *localityShortName;
 @property (nonatomic, strong) NSString *localityLongName;
 @property (nonatomic, strong) NSString *postalTownShortName;
