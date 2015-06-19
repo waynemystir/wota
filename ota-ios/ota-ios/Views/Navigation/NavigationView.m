@@ -162,7 +162,12 @@ NSUInteger const kRightCheckMarkView = 4921743;
         wtl = [[UILabel alloc] initWithFrame:CGRectMake(0, 3, 228, 21)];
         wtl.tag = kWhereToLabelTag;
         wtl.lineBreakMode = NSLineBreakByClipping;
-        wtl.text = [SelectionCriteria singleton].whereTo;
+        
+        NSArray *wta = [[SelectionCriteria singleton].whereTo componentsSeparatedByString:@","];
+        if ([wta count] > 0 && !stringIsEmpty(wta[0])) {
+            wtl.text = wta[0];
+        }
+        
         wtl.textColor = self.tintColor;
         wtl.textAlignment = NSTextAlignmentCenter;
         wtl.font = [UIFont boldSystemFontOfSize:15.0f];

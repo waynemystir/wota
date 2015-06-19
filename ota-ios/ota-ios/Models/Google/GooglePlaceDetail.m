@@ -123,9 +123,9 @@ NSString * const kKeyDisplayName = @"displayName";
     for (int j = 0; j < [resultsId count]; j++) {
         GooglePlaceDetail *gpd = [self placeDetailFromObject:resultsId[j] wrappedInResult:NO];
         
-        if ([gpd.types indexOfObject:@"neighborhood"] != NSNotFound) {
+        if ([gpd.types indexOfObject:@"neighborhood"] != NSNotFound || [gpd.types indexOfObject:@"airport"] != NSNotFound) {
             return gpd;
-        } else if ([gpd.types indexOfObject:@"sublocality"] != NSNotFound) {
+        } /*else if ([gpd.types indexOfObject:@"sublocality"] != NSNotFound) {
             [gpdsMut addObject:gpd];
 //            return gpd;
         } else if ([gpd.types indexOfObject:@"locality"] != NSNotFound) {
@@ -135,6 +135,10 @@ NSString * const kKeyDisplayName = @"displayName";
             [gpdsMut addObject:gpd];
             //            return gpd;
         } else if ([gpd.types indexOfObject:@"street_address"] != NSNotFound) {
+            [gpdsMut addObject:gpd];
+        } else if ([gpd.types indexOfObject:@"administrative_area_level_1"] != NSNotFound) {
+            [gpdsMut addObject:gpd];
+        }*/ else {
             [gpdsMut addObject:gpd];
         }
         
@@ -165,6 +169,24 @@ NSString * const kKeyDisplayName = @"displayName";
         
         for (GooglePlaceDetail *wpd in gpdsMut) {
             if ([wpd.types indexOfObject:@"street_address"] != NSNotFound) {
+                return wpd;
+            }
+        }
+        
+        for (GooglePlaceDetail *wpd in gpdsMut) {
+            if ([wpd.types indexOfObject:@"administrative_area_level_2"] != NSNotFound) {
+                return wpd;
+            }
+        }
+        
+        for (GooglePlaceDetail *wpd in gpdsMut) {
+            if ([wpd.types indexOfObject:@"administrative_area_level_1"] != NSNotFound) {
+                return wpd;
+            }
+        }
+        
+        for (GooglePlaceDetail *wpd in gpdsMut) {
+            if ([wpd.types indexOfObject:@"country"] != NSNotFound) {
                 return wpd;
             }
         }
@@ -220,10 +242,14 @@ NSString * const kKeyDisplayName = @"displayName";
         GoogleAddressComponent *gac = [GoogleAddressComponent addCompFromDict:(NSDictionary *)object];
         [self.googleAddressComponents addObject:gac];
         
+        if ([gac.types count] == 0) {
+            _blankType = gac.longName;
+        }
+        
         for (int j = 0; j < [gac.types count]; j++) {
             NSString *type = gac.types[j];
             
-            if (nil == type || [type isEqualToString:@""]) {
+            if (stringIsEmpty(type)) {
                 continue;
             } else if ([type isEqualToString:@"street_number"]) {
                 self.streetNumberShortName = gac.shortName;
@@ -272,6 +298,29 @@ NSString * const kKeyDisplayName = @"displayName";
     return _displayName;
 }
 
+- (NSString *)formattedWhereToFirst {
+    NSArray *wta = [_displayName componentsSeparatedByString:@", "];
+    if ([wta count] > 0 && !stringIsEmpty(wta[0])) {
+        return wta[0];
+    } else {
+        return @"";
+    }
+}
+
+- (NSString *)formattedWhereToSecond {
+    NSArray *wta = [_displayName componentsSeparatedByString:@", "];
+    if ([wta count] > 1) {
+        NSString *waynster = @"";
+        for (int j = 1; j < [wta count]; j++) {
+            NSString *separator = j == 1 ? @"" : @", ";
+            waynster = [waynster stringByAppendingFormat:@"%@%@", separator, wta[j]];
+        }
+        return waynster;
+    } else {
+        return @"";
+    }
+}
+
 - (void)setPlaceId:(NSString *)placeId {
     _placeId = placeId;
     [self save];
@@ -295,32 +344,75 @@ NSString * const kKeyDisplayName = @"displayName";
     return _googleAddressComponents;
 }
 
+- (void)setDisplayName:(NSString *)displayName {
+    _displayName = displayName;
+    [self save];
+}
+
 - (void)setWotaDisplayName {
     
-    if (!stringIsEmpty(_placeName)) {
-        _displayName = _placeName;
+//    if (!stringIsEmpty(_blankType)) {
+//        [self setDisplayName:_blankType];
+//        return;
+//    }
+    
+    if (!stringIsEmpty(_placeName) && [_placeName isEqualToString:_countryLongName]) {
+        [self setDisplayName:_placeName];
         return;
     }
     
-    NSString *neighborhood = _neighborhoodShortName ? : _sublocalityShortName ? : @"";
+    NSString *neighborhood = _placeName ? : _blankType ? : _neighborhoodLongName ? : _sublocalityLongName ? : @"";
     
-    NSString *city = _localityLongName ? : _postalTownShortName ? : _administrativeAreaLevel3ShortName ? : @"";
+    NSString *city = _localityLongName ? : _postalTownLongName ? : _administrativeAreaLevel3LongName ? : _administrativeAreaLevel2LongName ? : @"";
+    
+    city = [city isEqualToString:neighborhood] ? @"" : city;
     
     NSString *sepNeighbCity = !stringIsEmpty(neighborhood) && !stringIsEmpty(city) ? @", " : @"";
     
-    NSString *stateProvinceCode = _administrativeAreaLevel1ShortName;
+    NSString *neighbSepCity = [NSString stringWithFormat:@"%@%@%@", neighborhood, sepNeighbCity, city];
     
-    NSString *countryCode = _countryShortName;
+    // In a case like the Appalachian Trail in PA
+    neighbSepCity = !stringIsEmpty(neighbSepCity) ? neighbSepCity : _routeLongName ? : @"";
     
-    NSString *ccc = [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode];
+//    NSString *stateProvinceCode = (stringIsEmpty(neighbSepCity) ? _administrativeAreaLevel1LongName : _administrativeAreaLevel1ShortName) ? : @"";
     
-    NSString *countryString = stringIsEmpty(countryCode) || [countryCode isEqualToString:ccc] ? @"" : [@", " stringByAppendingString:countryCode];
+    NSString *stateProvinceCode = stringIsEmpty(_administrativeAreaLevel1LongName) ? @"" : _administrativeAreaLevel1LongName;
     
+    NSString *countryCode = _countryShortName ? : @"";
+    
+    NSString *countryName = _countryLongName ? : @"";
+    
+//    NSString *ccc = [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode];
+    
+    // TODO: Exception: try typing in Ozark and clicking Ozark Mountains
+//    NSString *countryString = stringIsEmpty(neighbSepCity) && stringIsEmpty(stateProvinceCode) ? countryName : stringIsEmpty(countryCode) || [countryCode isEqualToString:ccc] ? @"" : [@", " stringByAppendingString:countryName];
+    
+    // TODO: Exception: try typing in Ozark and clicking Ozark Mountains
+    NSString *countryString = stringIsEmpty(neighbSepCity) && stringIsEmpty(stateProvinceCode) ? countryName : [@", " stringByAppendingString:countryName];
+    
+    NSString *tmpDisplayName = @"";
     if ([countryCode isEqualToString:@"US"] || [countryCode isEqualToString:@"CA"] || [countryCode isEqualToString:@"AU"]) {
-        _displayName = [NSString stringWithFormat:@"%@%@%@, %@%@", neighborhood, sepNeighbCity, city, stateProvinceCode, countryString];
+        
+        // In a case like the Appalachian Trail in PA
+        neighbSepCity = !stringIsEmpty(neighbSepCity) ? neighbSepCity : _routeLongName ? : @"";
+        NSString *sepCityState = stringIsEmpty(neighbSepCity) ? @"" : @", ";
+        tmpDisplayName = [NSString stringWithFormat:@"%@%@%@%@", neighbSepCity, sepCityState, stateProvinceCode, countryString];
+        
     } else {
-        _displayName = [NSString stringWithFormat:@"%@%@%@%@", neighborhood, sepNeighbCity, city, countryString];
+        
+        // Analgous to Appalachian Trail case above but we want to be stingy abroad with this rule
+        neighbSepCity = stringIsEmpty(neighbSepCity) && stringIsEmpty(stateProvinceCode) ? _routeLongName : neighbSepCity ? : @"";
+        
+        if (!stringIsEmpty(neighbSepCity)) {
+            tmpDisplayName = [NSString stringWithFormat:@"%@%@", neighbSepCity, countryString];
+        } else if (!stringIsEmpty(stateProvinceCode)) {
+            tmpDisplayName = [NSString stringWithFormat:@"%@%@", stateProvinceCode, countryString];
+        } else if (!stringIsEmpty(countryName)) {
+            tmpDisplayName = [NSString stringWithFormat:@"%@", countryName];
+        }
     }
+    
+    [self setDisplayName:tmpDisplayName];
 }
 
 @end

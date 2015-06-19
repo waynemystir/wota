@@ -16,6 +16,7 @@
 @property (nonatomic, strong) NSString *formattedAddress;
 @property (nonatomic, strong) NSArray *addressComponents;
 @property (nonatomic, strong, getter=getGoogleAddressComponents) NSMutableArray *googleAddressComponents;
+@property (nonatomic, strong) NSString *blankType;
 @property (nonatomic, strong) NSString *streetNumberShortName;
 @property (nonatomic, strong) NSString *streetNumberLongName;
 @property (nonatomic, strong) NSString *routeShortName;
@@ -47,6 +48,8 @@
 @property (nonatomic, strong) NSArray *types;
 
 @property (nonatomic, strong, readonly) NSString *formattedWhereTo;
+@property (nonatomic, strong, readonly) NSString *formattedWhereToFirst;
+@property (nonatomic, strong, readonly) NSString *formattedWhereToSecond;
 
 + (GooglePlaceDetail *)placeDetailFromId:(NSString *)placeId;
 + (GooglePlaceDetail *)placeDetailFromData:(NSData *)data;

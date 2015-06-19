@@ -82,6 +82,14 @@ NSString * const kKeyChildTravelers = @"childTravelers";
     return _googlePlaceDetail.formattedWhereTo;
 }
 
+- (NSString *)whereToFirst {
+    return _googlePlaceDetail.formattedWhereToFirst;
+}
+
+- (NSString *)whereToSecond {
+    return _googlePlaceDetail.formattedWhereToSecond;
+}
+
 - (double)latitude {
     return _googlePlaceDetail.latitude;
 }

@@ -29,6 +29,7 @@ static double const METERS_PER_MILE = 1609.344;
 @interface CriteriaViewController () <LoadDataProtocol, UITableViewDataSource, UITableViewDelegate, THDatePickerDelegate, MKMapViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UITextField *whereToTextFieldOutlet;
+@property (weak, nonatomic) IBOutlet UILabel *whereToSecondLevel;
 @property (strong, nonatomic) UITableView *autoCompleteTableViewOutlet;
 
 @property (nonatomic) BOOL isAutoCompleteTableViewExpanded;
@@ -53,8 +54,7 @@ static double const METERS_PER_MILE = 1609.344;
 @property BOOL arrivalOrReturn; //arrival == NO and return == YES
 
 @property (nonatomic, strong) MKMapView *mapView;
-@property (nonatomic, strong) CLGeocoder *geoCoder;
-@property (nonatomic) BOOL manualRepositingMapRegion;
+@property (nonatomic, assign) BOOL nextRegionChangeIsFromUserInteraction;
 
 - (IBAction)justPushIt:(id)sender;
 
@@ -106,10 +106,12 @@ static double const METERS_PER_MILE = 1609.344;
     self.autoCompleteTableViewOutlet.sectionHeaderHeight = 0.0f;
     [self.view addSubview:self.autoCompleteTableViewOutlet];
     
-    _whereToTextFieldOutlet.text = [SelectionCriteria singleton].whereTo;
+    _whereToTextFieldOutlet.text = [SelectionCriteria singleton].whereToFirst;
     [_whereToTextFieldOutlet addTarget:self action:@selector(startEnteringWhereTo) forControlEvents:UIControlEventTouchDown];
     [_whereToTextFieldOutlet addTarget:self action:@selector(autoCompleteSomePlace) forControlEvents:UIControlEventEditingChanged];
     [_whereToTextFieldOutlet addTarget:self action:@selector(didFinishTextFieldKeyboard) forControlEvents:UIControlEventEditingDidEndOnExit];
+    
+    _whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
 }
 
 - (void)redrawMapViewAnimated:(BOOL)animated radius:(double)radius {
@@ -118,21 +120,16 @@ static double const METERS_PER_MILE = 1609.344;
     zoomLocation.latitude = sc.latitude;
     zoomLocation.longitude= sc.longitude;
     MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(zoomLocation, radius*METERS_PER_MILE, radius*METERS_PER_MILE);
-    _manualRepositingMapRegion = YES;
     [_mapView setRegion:viewRegion animated:animated];
 }
 
 - (void)geoCodingDawg {
-    if (nil == _geoCoder) {
-        _geoCoder = [[CLGeocoder alloc] init];
-    }
-    
     [[LoadGooglePlacesData sharedInstance] loadPlaceDetailsWithLatitude:_mapView.region.center.latitude longitude:_mapView.region.center.longitude completionBlock:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-        
-        NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        NSLog(@"PLACESDETAIL:%@", responseString);
         [SelectionCriteria singleton].googlePlaceDetail = [GooglePlaceDetail placeDetailFromGeoCodeData:data];
-        _whereToTextFieldOutlet.text = [SelectionCriteria singleton].whereTo;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            _whereToTextFieldOutlet.text = [SelectionCriteria singleton].whereToFirst;
+            _whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
+        });
     }];
 }
 
@@ -143,12 +140,27 @@ static double const METERS_PER_MILE = 1609.344;
 
 #pragma mark MKMapViewDelegate methods
 
+- (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated {
+    UIView* view = mapView.subviews.firstObject;
+    
+    // Curtesy of http://b2cloud.com.au/tutorial/mkmapview-determining-whether-region-change-is-from-user-interaction/
+    //	Look through gesture recognizers to determine
+    //	whether this region change is from user interaction
+    for(UIGestureRecognizer* recognizer in view.gestureRecognizers) {
+        //	The user caused of this...
+        if(recognizer.state == UIGestureRecognizerStateBegan
+           || recognizer.state == UIGestureRecognizerStateEnded) {
+            _nextRegionChangeIsFromUserInteraction = YES;
+            break;
+        }
+    }
+}
+
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
-    if (!_manualRepositingMapRegion) {
+    if(_nextRegionChangeIsFromUserInteraction) {
+        _nextRegionChangeIsFromUserInteraction = NO;
         [self geoCodingDawg];
     }
-    
-    _manualRepositingMapRegion = NO;
 }
 
 #pragma mark Various events and such
@@ -157,6 +169,9 @@ static double const METERS_PER_MILE = 1609.344;
     if (!_isAutoCompleteTableViewExpanded) {
         [self animateTableViewExpansion];
     }
+    
+    _whereToTextFieldOutlet.text = @"";
+    _whereToSecondLevel.text = @"";
 }
 
 - (void)autoCompleteSomePlace {
@@ -167,6 +182,9 @@ static double const METERS_PER_MILE = 1609.344;
 - (void)didFinishTextFieldKeyboard {
     [_whereToTextFieldOutlet resignFirstResponder];
     [self animateTableViewCompression];
+    
+    _whereToTextFieldOutlet.text = [SelectionCriteria singleton].whereToFirst;
+    _whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
 }
 
 - (IBAction)justPushIt:(id)sender {
@@ -256,10 +274,9 @@ static double const METERS_PER_MILE = 1609.344;
         _tableData = [GoogleParser parseAutoCompleteResponse:responseData];
         [_autoCompleteTableViewOutlet reloadData];
     } else {
-        NSString *response = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
-        NSLog(@"PLACESDETAIL:%@", response);
         [SelectionCriteria singleton].googlePlaceDetail = [GooglePlaceDetail placeDetailFromData:responseData];
-        _whereToTextFieldOutlet.text = [SelectionCriteria singleton].whereTo;
+        _whereToTextFieldOutlet.text = [SelectionCriteria singleton].whereToFirst;
+        _whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
         [self redrawMapViewAnimated:YES radius:DEFAULT_RADIUS];
     }
 }
@@ -304,7 +321,10 @@ static double const METERS_PER_MILE = 1609.344;
 //    _whereToTextFieldOutlet.text = cell.outletPlaceName.text;
     self.autoCompleteOrPlaceDetails = YES;
     [[LoadGooglePlacesData sharedInstance:self] loadPlaceDetails:cell.placeId];
-    [self didFinishTextFieldKeyboard];
+//    [self didFinishTextFieldKeyboard];
+    
+    [_whereToTextFieldOutlet resignFirstResponder];
+    [self animateTableViewCompression];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
@@ -413,7 +433,7 @@ static double const METERS_PER_MILE = 1609.344;
     [_arrivalDatePicker setSelectedBackgroundColor:kWotaColorOne()];
     [_arrivalDatePicker setCurrentDateColor:kWotaColorOne()];
     
-    _arrivalDatePicker.arrivalOrDepartureString = @"Arrival Date";
+    _arrivalDatePicker.arrivalOrDepartureString = @"Check-in Date";
     [_arrivalDatePicker setDateHasItemsCallback:nil];
 }
 
@@ -432,7 +452,7 @@ static double const METERS_PER_MILE = 1609.344;
     [_returnDatePicker setSelectedBackgroundColor:kWotaColorOne()];
     [_returnDatePicker setCurrentDateColor:kWotaColorOne()];
     
-    _returnDatePicker.arrivalOrDepartureString = @"Departure Date";
+    _returnDatePicker.arrivalOrDepartureString = @"Check-out Date";
     [_returnDatePicker setDateHasItemsCallback:nil];
 }
 

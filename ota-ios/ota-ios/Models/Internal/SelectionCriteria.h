@@ -19,6 +19,8 @@
 @property (nonatomic, setter=setNumberOfAdults:) NSUInteger numberOfAdults;
 
 @property (nonatomic, strong, readonly) NSString *whereTo;
+@property (nonatomic, strong, readonly) NSString *whereToFirst;
+@property (nonatomic, strong, readonly) NSString *whereToSecond;
 
 @property (nonatomic, readonly) double latitude;
 @property (nonatomic, readonly) double longitude;
