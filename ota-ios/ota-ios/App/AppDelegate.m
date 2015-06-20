@@ -13,7 +13,7 @@
 #import "CriteriaViewController.h"
 #import <GoogleMaps/GoogleMaps.h>
 
-@interface AppDelegate ()
+@interface AppDelegate () <CLLocationManagerDelegate>
 
 @property (nonatomic) Class spinnerClass;
 
@@ -126,7 +126,20 @@
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
     
+    [self setupLocationManager];
+    
     return YES;
+}
+
+- (void)setupLocationManager {
+    self.locationManager = [[CLLocationManager alloc] init];
+    self.locationManager.distanceFilter = kCLDistanceFilterNone;
+    self.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters;
+    self.locationManager.delegate = self;
+    
+    if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusAuthorizedWhenInUse) {
+        [self.locationManager requestWhenInUseAuthorization];
+    }
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

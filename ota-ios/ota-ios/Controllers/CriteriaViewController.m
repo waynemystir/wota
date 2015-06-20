@@ -80,7 +80,7 @@ static double const METERS_PER_MILE = 1609.344;
     self.automaticallyAdjustsScrollViewInsets = NO;
     //***********************************************************************
     
-    _mapView = [[MKMapView alloc] initWithFrame:CGRectMake(0, 600, 320, 400)];
+    _mapView = [[MKMapView alloc] initWithFrame:CGRectMake(0, 600, 320, 438)];
     _mapView.delegate = self;
     [self redrawMapViewAnimated:NO radius:DEFAULT_RADIUS];
     [self.view addSubview:_mapView];
@@ -99,12 +99,14 @@ static double const METERS_PER_MILE = 1609.344;
     [self refreshDisplayedArrivalDate];
     
 //    self.tableData = [NSArray arrayWithObjects:@"Albequerque", @"Saschatchawan", @"New Orleans", @"Madison", nil];
-    self.autoCompleteTableViewOutlet = [[UITableView alloc] initWithFrame:CGRectMake(13, 122, 300, 0)];
-    self.autoCompleteTableViewOutlet.backgroundColor = [UIColor whiteColor];
-    self.autoCompleteTableViewOutlet.dataSource = self;
-    self.autoCompleteTableViewOutlet.delegate = self;
-    self.autoCompleteTableViewOutlet.sectionHeaderHeight = 0.0f;
-    [self.view addSubview:self.autoCompleteTableViewOutlet];
+    _autoCompleteTableViewOutlet = [[UITableView alloc] initWithFrame:CGRectMake(0, 106, 320, 0)];
+    _autoCompleteTableViewOutlet.backgroundColor = [UIColor whiteColor];
+    _autoCompleteTableViewOutlet.separatorStyle = UITableViewCellSeparatorStyleNone;
+    _autoCompleteTableViewOutlet.separatorColor = [UIColor clearColor];
+    _autoCompleteTableViewOutlet.dataSource = self;
+    _autoCompleteTableViewOutlet.delegate = self;
+    _autoCompleteTableViewOutlet.sectionHeaderHeight = 0.0f;
+    [self.view addSubview:_autoCompleteTableViewOutlet];
     
     _whereToTextFieldOutlet.text = [SelectionCriteria singleton].whereToFirst;
     [_whereToTextFieldOutlet addTarget:self action:@selector(startEnteringWhereTo) forControlEvents:UIControlEventTouchDown];
@@ -180,6 +182,8 @@ static double const METERS_PER_MILE = 1609.344;
 }
 
 - (void)didFinishTextFieldKeyboard {
+    _tableData = nil;
+    [_autoCompleteTableViewOutlet reloadData];
     [_whereToTextFieldOutlet resignFirstResponder];
     [self animateTableViewCompression];
     
@@ -292,6 +296,17 @@ static double const METERS_PER_MILE = 1609.344;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.row == ([_tableData count] - 1)) {        
+        NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"PowerebByGoogleCell" owner:self options:nil];
+        UITableViewCell *poweredByGoogleCell = views.firstObject;
+//        UIView *pbgc = [poweredByGoogleCell.contentView viewWithTag:3173498];
+//        pbgc.layer.cornerRadius = 6.0f;
+//        pbgc.layer.borderColor = UIColorFromRGB(0xbbbbbb).CGColor;
+//        pbgc.layer.borderWidth = 0.5f;
+        return poweredByGoogleCell;
+    }
+    
     NSString *CellIdentifier = @"placeAutoCompleteCell";
     PlaceAutoCompleteTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
@@ -299,8 +314,11 @@ static double const METERS_PER_MILE = 1609.344;
         cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     }
     
-    GooglePlace *place = [GooglePlace placeFromObject:[self.tableData objectAtIndex:indexPath.row]];
+    GooglePlace *place = [_tableData objectAtIndex:indexPath.row];
     cell.outletPlaceName.text = place.placeName;
+//    cell.labelContainer.layer.cornerRadius = 6.0f;
+//    cell.labelContainer.layer.borderColor = UIColorFromRGB(0xbbbbbb).CGColor;
+//    cell.labelContainer.layer.borderWidth = 0.5f;
     cell.placeId = place.placeId;
     
     return cell;
@@ -308,7 +326,15 @@ static double const METERS_PER_MILE = 1609.344;
 
 #pragma mark UITableViewDelegate methods
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 48.0f;
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.row == [_tableData count] - 1) {
+        return;
+    }
+    
     PlaceAutoCompleteTableViewCell * cell = (PlaceAutoCompleteTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
     
     // TODO: I'm worried that we are setting the "where to" value here but that the
@@ -323,6 +349,8 @@ static double const METERS_PER_MILE = 1609.344;
     [[LoadGooglePlacesData sharedInstance:self] loadPlaceDetails:cell.placeId];
 //    [self didFinishTextFieldKeyboard];
     
+    _tableData = nil;
+    [_autoCompleteTableViewOutlet reloadData];
     [_whereToTextFieldOutlet resignFirstResponder];
     [self animateTableViewCompression];
 }
@@ -343,7 +371,7 @@ static double const METERS_PER_MILE = 1609.344;
     if (_mapView.frame.origin.y == 600) {
         
         [UIView animateWithDuration:0.6 animations:^{
-            mv.frame = CGRectMake(0, 150, 320, 400);
+            mv.frame = CGRectMake(0, 130, 320, 438);
         } completion:^(BOOL finished) {
             ;
         }];
@@ -351,7 +379,7 @@ static double const METERS_PER_MILE = 1609.344;
     } else {
         
         [UIView animateWithDuration:0.6 animations:^{
-            mv.frame = CGRectMake(0, 600, 320, 400);
+            mv.frame = CGRectMake(0, 600, 320, 438);
         } completion:^(BOOL finished) {
             ;
         }];
@@ -364,7 +392,7 @@ static double const METERS_PER_MILE = 1609.344;
     [UIView animateWithDuration:0.3 animations:^{
         typeof(self) strongSelf = weakSelf;
         CGRect acp = strongSelf.autoCompleteTableViewOutlet.frame;
-        strongSelf.autoCompleteTableViewOutlet.frame = CGRectMake(acp.origin.x, acp.origin.y, acp.size.width, 322.0f);
+        strongSelf.autoCompleteTableViewOutlet.frame = CGRectMake(acp.origin.x, acp.origin.y, acp.size.width, 267.0f);
         
 //        CGRect chf = strongSelf.cupHolder.frame;
 //        strongSelf.cupHolder.frame = CGRectMake(chf.origin.x, chf.origin.y + 322.0f, chf.size.width, chf.size.height);

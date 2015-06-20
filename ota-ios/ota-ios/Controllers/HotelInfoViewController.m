@@ -7,7 +7,6 @@
 //
 
 #import "HotelInfoViewController.h"
-#import <CoreLocation/CoreLocation.h>
 #import "LoadEanData.h"
 #import "SelectionCriteria.h"
 #import "ChildTraveler.h"
@@ -66,7 +65,6 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 @property (weak, nonatomic) IBOutlet UILabel *someLabelOutlet;
 @property (weak, nonatomic) IBOutlet UIView *mapContainerOutlet;
 @property (weak, nonatomic) IBOutlet UIView *mapOverlay;
-@property (nonatomic, strong) CLLocationManager *locationManager;
 @property (weak, nonatomic) IBOutlet UILabel *addressTitle;
 @property (weak, nonatomic) IBOutlet UILabel *addressLabelOutlet;
 @property (weak, nonatomic) IBOutlet UILabel *shortDescLabelOutlet;
@@ -189,15 +187,6 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     tgr3.numberOfTouchesRequired = 1;
     tgr3.cancelsTouchesInView = YES;
     [_mapOverlay addGestureRecognizer:tgr3];
-    
-    self.locationManager = [[CLLocationManager alloc] init];
-    self.locationManager.distanceFilter = kCLDistanceFilterNone;
-    self.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters;
-    self.locationManager.delegate = self;
-    
-    if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusAuthorizedWhenInUse) {
-        [self.locationManager requestWhenInUseAuthorization];
-    }
     
     _mapView = [[MKMapView alloc] initWithFrame:_mapContainerOutlet.bounds];
     CLLocationCoordinate2D zoomLocation;

@@ -10,6 +10,7 @@
 
 @interface PlaceAutoCompleteTableViewCell : UITableViewCell
 
+@property (weak, nonatomic) IBOutlet UIView *labelContainer;
 @property (weak, nonatomic) IBOutlet UILabel *outletPlaceName;
 @property (nonatomic, strong) NSString *placeId;
 

@@ -57,6 +57,8 @@
 		B049D2101AC19B2300E2E18C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B049D2051AC19B2300E2E18C /* SystemConfiguration.framework */; };
 		B049D2141AC19CB200E2E18C /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B049D2131AC19CB200E2E18C /* GoogleMaps.framework */; };
 		B049D2161AC19D1400E2E18C /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B049D2151AC19D1400E2E18C /* GoogleMaps.bundle */; };
+		B0508C6E1B34DCA8009CC56F /* PowerebByGoogleCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0508C6D1B34DCA8009CC56F /* PowerebByGoogleCell.xib */; };
+		B0508C741B351064009CC56F /* WotaPlace.m in Sources */ = {isa = PBXBuildFile; fileRef = B0508C731B351064009CC56F /* WotaPlace.m */; };
 		B058A4941AE8B52C00E42594 /* WotaButton.m in Sources */ = {isa = PBXBuildFile; fileRef = B058A4931AE8B52C00E42594 /* WotaButton.m */; };
 		B05BD6241AC1E9FB002C2882 /* AppEnvironment.m in Sources */ = {isa = PBXBuildFile; fileRef = B05BD6231AC1E9FB002C2882 /* AppEnvironment.m */; };
 		B05BD6271AC1EA65002C2882 /* LoadGooglePlacesData.m in Sources */ = {isa = PBXBuildFile; fileRef = B05BD6251AC1EA65002C2882 /* LoadGooglePlacesData.m */; };
@@ -256,6 +258,9 @@
 		B049D2051AC19B2300E2E18C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		B049D2131AC19CB200E2E18C /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMaps.framework; sourceTree = "<group>"; };
 		B049D2151AC19D1400E2E18C /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = Frameworks/GoogleMaps.framework/Versions/A/Resources/GoogleMaps.bundle; sourceTree = SOURCE_ROOT; };
+		B0508C6D1B34DCA8009CC56F /* PowerebByGoogleCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PowerebByGoogleCell.xib; sourceTree = "<group>"; };
+		B0508C721B351064009CC56F /* WotaPlace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WotaPlace.h; sourceTree = "<group>"; };
+		B0508C731B351064009CC56F /* WotaPlace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WotaPlace.m; sourceTree = "<group>"; };
 		B058A4921AE8B52C00E42594 /* WotaButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WotaButton.h; sourceTree = "<group>"; };
 		B058A4931AE8B52C00E42594 /* WotaButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WotaButton.m; sourceTree = "<group>"; };
 		B05BD6221AC1E9FB002C2882 /* AppEnvironment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppEnvironment.h; sourceTree = "<group>"; };
@@ -524,6 +529,8 @@
 				B018C0441AD9BEC800DDCE2E /* GuestInfo.m */,
 				B0D030001AE7380F00B1E75F /* PaymentDetails.h */,
 				B0D030011AE7380F00B1E75F /* PaymentDetails.m */,
+				B0508C721B351064009CC56F /* WotaPlace.h */,
+				B0508C731B351064009CC56F /* WotaPlace.m */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
@@ -625,6 +632,7 @@
 				B032F64F1AC1935000809395 /* MainView.xib */,
 				B032F6541AC193DB00809395 /* CriteriaView.xib */,
 				B05BD6311AC1FF54002C2882 /* PlaceAutoCompleteTableViewCell.xib */,
+				B0508C6D1B34DCA8009CC56F /* PowerebByGoogleCell.xib */,
 				B09797CD1AC2518D0014FC7C /* MapView.xib */,
 				B09797E61AC34DB70014FC7C /* HotelListingView.xib */,
 				B080B7C81AC505DC00075A32 /* HotelInfoView.xib */,
@@ -1087,6 +1095,7 @@
 				B09797E71AC34DB70014FC7C /* HotelListingView.xib in Resources */,
 				B06C98BC1B09585300DBE09D /* CountryPicker.bundle in Resources */,
 				B0D02FFB1AE6123000B1E75F /* visa.png in Resources */,
+				B0508C6E1B34DCA8009CC56F /* PowerebByGoogleCell.xib in Resources */,
 				B0FE0F4E1AC70A2500DAF635 /* SelectRoomView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1159,6 +1168,7 @@
 				B0B50AD11B251FF300685384 /* GoogleNearbyPlace.m in Sources */,
 				B07958EC1AF4751100422182 /* EanSurcharge.m in Sources */,
 				B075AB091ADB687B0028C613 /* GoogleAddressComponent.m in Sources */,
+				B0508C741B351064009CC56F /* WotaPlace.m in Sources */,
 				B00872CD1AEC1D4900CB2B9D /* SelectSmokingPreferenceDelegateImplementation.m in Sources */,
 				B0D02FE21AE6123000B1E75F /* PTKAddressZip.m in Sources */,
 				B09797F81AC3BC690014FC7C /* THDateDay.m in Sources */,

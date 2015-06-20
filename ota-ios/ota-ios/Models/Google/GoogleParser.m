@@ -7,6 +7,7 @@
 //
 
 #import "GoogleParser.h"
+#import "GooglePlace.h"
 
 @implementation GoogleParser
 
@@ -17,12 +18,24 @@
     if (error != nil) {
         NSLog(@"ERROR:%@", [error description]);
     } else {
-//        NSLog(@"GOOGLE PLACES RESPONSE:%@", [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
+        NSLog(@"AUTOCOMPLETERESPONSE:%@", [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
     }
     
     id predictions = [response objectForKey:@"predictions"];
     
-    return predictions;
+    if (nil == predictions || ![predictions isKindOfClass:[NSArray class]] || [predictions count] == 0) {
+        return nil;
+    }
+    
+    NSMutableArray *mutablePredictions = [NSMutableArray array];
+    for (int j = 0; j < [predictions count]; j++) {
+        GooglePlace *gp = [GooglePlace placeFromObject:predictions[j]];
+        [mutablePredictions addObject:gp];
+    }
+    
+    [mutablePredictions addObject:@"pwg"];
+    
+    return [NSArray arrayWithArray:mutablePredictions];
 }
 
 @end

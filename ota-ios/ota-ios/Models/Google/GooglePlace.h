@@ -7,11 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "WotaPlace.h"
 
-@interface GooglePlace : NSObject
-
-@property (nonatomic, strong) NSString *placeName;
-@property (nonatomic, strong) NSString *placeId;
+@interface GooglePlace : WotaPlace
 
 + (GooglePlace *)placeFromObject:(id)object;
 

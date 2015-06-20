@@ -25,14 +25,14 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Where to?" minimumFontSize="11" id="RXh-qF-H7q" userLabel="whereToTextField">
-                    <rect key="frame" x="8" y="92" width="270" height="30"/>
+                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Where to?" minimumFontSize="11" clearButtonMode="whileEditing" id="RXh-qF-H7q" userLabel="whereToTextField">
+                    <rect key="frame" x="6" y="76" width="271" height="30"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done"/>
                 </textField>
                 <view contentMode="scaleToFill" id="kFk-pZ-S3t" userLabel="cupHolder">
-                    <rect key="frame" x="10" y="137" width="300" height="400"/>
+                    <rect key="frame" x="10" y="121" width="300" height="400"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="zKx-ZL-Pj9" userLabel="arrivalDateButton" customClass="WotaButton">
@@ -125,7 +125,7 @@
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
                 <view contentMode="scaleToFill" id="Cgs-Ws-WWR" userLabel="mapBtnContainer" customClass="WotaTappableView">
-                    <rect key="frame" x="284" y="92" width="30" height="30"/>
+                    <rect key="frame" x="284" y="76" width="30" height="30"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <subviews>
                         <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="wmap" id="YHa-fy-5RG">
@@ -136,7 +136,7 @@
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                 </view>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="5X6-NV-LTS" userLabel="whereToSecondLevel">
-                    <rect key="frame" x="16" y="121" width="293" height="21"/>
+                    <rect key="frame" x="13" y="105" width="295" height="21"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                     <color key="textColor" red="0.69803921570000005" green="0.69803921570000005" blue="0.69803921570000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

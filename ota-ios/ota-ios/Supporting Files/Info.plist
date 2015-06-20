@@ -23,7 +23,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This will help you locate hotels and destinations better!</string>
+	<string>This will help you locate hotels and destinations!</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>
