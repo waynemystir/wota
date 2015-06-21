@@ -21,20 +21,17 @@
 #import "AppEnvironment.h"
 #import "WotaTappableView.h"
 #import <MapKit/MapKit.h>
-#import <AddressBookUI/AddressBookUI.h>
 
+static int const kAutoCompleteMinimumNumberOfCharacters = 3;
 static double const DEFAULT_RADIUS = 5.0;
 static double const METERS_PER_MILE = 1609.344;
 
-@interface CriteriaViewController () <LoadDataProtocol, UITableViewDataSource, UITableViewDelegate, THDatePickerDelegate, MKMapViewDelegate>
+@interface CriteriaViewController () <UITextFieldDelegate, LoadDataProtocol, UITableViewDataSource, UITableViewDelegate, THDatePickerDelegate, MKMapViewDelegate, CLLocationManagerDelegate>
 
 @property (weak, nonatomic) IBOutlet UITextField *whereToTextFieldOutlet;
 @property (weak, nonatomic) IBOutlet UILabel *whereToSecondLevel;
-@property (strong, nonatomic) UITableView *autoCompleteTableViewOutlet;
 
 @property (nonatomic) BOOL isAutoCompleteTableViewExpanded;
-
-@property (nonatomic, strong) NSArray *tableData;
 
 //autoComplete is NO and placeDetails is YES
 @property (nonatomic) BOOL autoCompleteOrPlaceDetails;
@@ -60,12 +57,25 @@ static double const METERS_PER_MILE = 1609.344;
 
 @end
 
-@implementation CriteriaViewController
+@implementation CriteriaViewController {
+    CLLocationManager *locationManager;
+    NSArray *tableData;
+    UITableView *autoCompleteTableView;
+}
 
 #pragma mark Lifecycle methods
 
 - (id)init {
-    self = [super initWithNibName:@"CriteriaView" bundle:nil];
+    if (self = [super initWithNibName:@"CriteriaView" bundle:nil]) {
+        locationManager = [[CLLocationManager alloc] init];
+        locationManager.distanceFilter = kCLDistanceFilterNone;
+        locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
+        locationManager.delegate = self;
+        
+        if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusAuthorizedWhenInUse) {
+            [locationManager requestWhenInUseAuthorization];
+        }
+    }
     return self;
 }
 
@@ -80,8 +90,14 @@ static double const METERS_PER_MILE = 1609.344;
     self.automaticallyAdjustsScrollViewInsets = NO;
     //***********************************************************************
     
+    // setup the map view
     _mapView = [[MKMapView alloc] initWithFrame:CGRectMake(0, 600, 320, 438)];
     _mapView.delegate = self;
+    
+    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse) {
+        _mapView.showsUserLocation = YES;
+    }
+    
     [self redrawMapViewAnimated:NO radius:DEFAULT_RADIUS];
     [self.view addSubview:_mapView];
     
@@ -99,21 +115,46 @@ static double const METERS_PER_MILE = 1609.344;
     [self refreshDisplayedArrivalDate];
     
 //    self.tableData = [NSArray arrayWithObjects:@"Albequerque", @"Saschatchawan", @"New Orleans", @"Madison", nil];
-    _autoCompleteTableViewOutlet = [[UITableView alloc] initWithFrame:CGRectMake(0, 106, 320, 0)];
-    _autoCompleteTableViewOutlet.backgroundColor = [UIColor whiteColor];
-    _autoCompleteTableViewOutlet.separatorStyle = UITableViewCellSeparatorStyleNone;
-    _autoCompleteTableViewOutlet.separatorColor = [UIColor clearColor];
-    _autoCompleteTableViewOutlet.dataSource = self;
-    _autoCompleteTableViewOutlet.delegate = self;
-    _autoCompleteTableViewOutlet.sectionHeaderHeight = 0.0f;
-    [self.view addSubview:_autoCompleteTableViewOutlet];
+    autoCompleteTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 106, 320, 0)];
+    autoCompleteTableView.backgroundColor = [UIColor whiteColor];
+    autoCompleteTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    autoCompleteTableView.separatorColor = [UIColor clearColor];
+    autoCompleteTableView.dataSource = self;
+    autoCompleteTableView.delegate = self;
+    autoCompleteTableView.sectionHeaderHeight = 0.0f;
+    [self.view addSubview:autoCompleteTableView];
     
-    _whereToTextFieldOutlet.text = [SelectionCriteria singleton].whereToFirst;
-    [_whereToTextFieldOutlet addTarget:self action:@selector(startEnteringWhereTo) forControlEvents:UIControlEventTouchDown];
-    [_whereToTextFieldOutlet addTarget:self action:@selector(autoCompleteSomePlace) forControlEvents:UIControlEventEditingChanged];
-    [_whereToTextFieldOutlet addTarget:self action:@selector(didFinishTextFieldKeyboard) forControlEvents:UIControlEventEditingDidEndOnExit];
+    tableData = [SelectionCriteria singleton].placesArray;
+    [autoCompleteTableView reloadData];
     
-    _whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
+    _whereToTextFieldOutlet.delegate = self;
+    _whereToTextFieldOutlet.text = @"";//[SelectionCriteria singleton].whereToFirst;
+    _whereToSecondLevel.text = @"";//[SelectionCriteria singleton].whereToSecond;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillResume:) name:UIApplicationWillEnterForegroundNotification object:nil];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    self.navigationController.navigationBar.hidden = YES;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
+}
+
+#pragma mark Various map methods
+
+- (void)appWillResignActive:(NSNotification *)notification {
+//    _mapView.showsUserLocation = NO;
+}
+
+- (void)appWillResume:(NSNotification *)notification {
+    if (_mapView.frame.origin.y == 130) {
+        _mapView.showsUserLocation = YES;
+    }
 }
 
 - (void)redrawMapViewAnimated:(BOOL)animated radius:(double)radius {
@@ -135,12 +176,36 @@ static double const METERS_PER_MILE = 1609.344;
     }];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    self.navigationController.navigationBar.hidden = YES;
+#pragma mark CLLocationManagerDelegate methods
+
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
+    if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusAuthorizedWhenInUse) {
+        return;
+    }
+    
+    _mapView.showsUserLocation = YES;
+    
+    if ([[SelectionCriteria singleton] currentLocationIsSelectedPlace]) {
+        [self redrawMapViewAnimated:YES radius:DEFAULT_RADIUS];
+    }
+    
+//    [manager startUpdatingLocation];
 }
 
 #pragma mark MKMapViewDelegate methods
+
+- (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation {
+    if (userLocation) {
+        ((WotaPlace *) [SelectionCriteria singleton].placesArray.firstObject).latitude = userLocation.location.coordinate.latitude;
+        ((WotaPlace *) [SelectionCriteria singleton].placesArray.firstObject).longitude = userLocation.location.coordinate.longitude;
+        
+        if ([[SelectionCriteria singleton] currentLocationIsSelectedPlace]) {
+            [self redrawMapViewAnimated:YES radius:DEFAULT_RADIUS];
+        }
+        
+//        _mapView.showsUserLocation = NO;
+    }
+}
 
 - (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated {
     UIView* view = mapView.subviews.firstObject;
@@ -165,9 +230,9 @@ static double const METERS_PER_MILE = 1609.344;
     }
 }
 
-#pragma mark Various events and such
+#pragma mark UITextFieldDelegate methods
 
-- (void)startEnteringWhereTo {
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
     if (!_isAutoCompleteTableViewExpanded) {
         [self animateTableViewExpansion];
     }
@@ -176,23 +241,44 @@ static double const METERS_PER_MILE = 1609.344;
     _whereToSecondLevel.text = @"";
 }
 
-- (void)autoCompleteSomePlace {
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     _autoCompleteOrPlaceDetails = NO;
-    [[LoadGooglePlacesData sharedInstance:self] autoCompleteSomePlaces:_whereToTextFieldOutlet.text];
+    NSString *autoCompleteText = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    if ([autoCompleteText length] >= kAutoCompleteMinimumNumberOfCharacters) {
+        [[LoadGooglePlacesData sharedInstance:self] autoCompleteSomePlaces:autoCompleteText];
+    } else {
+        return [self textFieldShouldClear:textField];
+    }
+    
+    return YES;
 }
 
-- (void)didFinishTextFieldKeyboard {
-    _tableData = nil;
-    [_autoCompleteTableViewOutlet reloadData];
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [_whereToTextFieldOutlet resignFirstResponder];
-    [self animateTableViewCompression];
-    
     _whereToTextFieldOutlet.text = [SelectionCriteria singleton].whereToFirst;
     _whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
+    [self animateTableViewCompression];
+    
+    return [self textFieldShouldClear:textField];
 }
+
+- (BOOL)textFieldShouldClear:(UITextField *)textField {
+    if (tableData != [SelectionCriteria singleton].placesArray) {
+        tableData = [SelectionCriteria singleton].placesArray;
+        [autoCompleteTableView reloadData];
+    }
+    return YES;
+}
+
+#pragma mark Various events and such
 
 - (IBAction)justPushIt:(id)sender {
     if (sender == self.checkHotelsOutlet) {
+        if ([SelectionCriteria singleton].googlePlaceDetail) {
+            [[SelectionCriteria singleton] savePlace:[SelectionCriteria singleton].googlePlaceDetail];
+            tableData = [SelectionCriteria singleton].placesArray;
+            [autoCompleteTableView reloadData];
+        }
         [self letsFindHotels];
     } else if (sender == self.arrivalDateOutlet) {
         self.arrivalOrReturn = NO;
@@ -275,10 +361,13 @@ static double const METERS_PER_MILE = 1609.344;
 
 - (void)requestFinished:(NSData *)responseData {
     if (!_autoCompleteOrPlaceDetails) {
-        _tableData = [GoogleParser parseAutoCompleteResponse:responseData];
-        [_autoCompleteTableViewOutlet reloadData];
+        tableData = [GoogleParser parseAutoCompleteResponse:responseData];
+        [autoCompleteTableView reloadData];
     } else {
-        [SelectionCriteria singleton].googlePlaceDetail = [GooglePlaceDetail placeDetailFromData:responseData];
+//        [SelectionCriteria singleton].googlePlaceDetail = [GooglePlaceDetail placeDetailFromData:responseData];
+        [[SelectionCriteria singleton] savePlace:[GooglePlaceDetail placeDetailFromData:responseData]];
+        tableData = [SelectionCriteria singleton].placesArray;
+        [autoCompleteTableView reloadData];
         _whereToTextFieldOutlet.text = [SelectionCriteria singleton].whereToFirst;
         _whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
         [self redrawMapViewAnimated:YES radius:DEFAULT_RADIUS];
@@ -292,18 +381,14 @@ static double const METERS_PER_MILE = 1609.344;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.tableData count];
+    return [tableData count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.row == ([_tableData count] - 1)) {        
+    if ([tableData[indexPath.row] isKindOfClass:[NSString class]]) {
         NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"PowerebByGoogleCell" owner:self options:nil];
         UITableViewCell *poweredByGoogleCell = views.firstObject;
-//        UIView *pbgc = [poweredByGoogleCell.contentView viewWithTag:3173498];
-//        pbgc.layer.cornerRadius = 6.0f;
-//        pbgc.layer.borderColor = UIColorFromRGB(0xbbbbbb).CGColor;
-//        pbgc.layer.borderWidth = 0.5f;
         return poweredByGoogleCell;
     }
     
@@ -314,11 +399,8 @@ static double const METERS_PER_MILE = 1609.344;
         cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     }
     
-    GooglePlace *place = [_tableData objectAtIndex:indexPath.row];
+    WotaPlace *place = [tableData objectAtIndex:indexPath.row];
     cell.outletPlaceName.text = place.placeName;
-//    cell.labelContainer.layer.cornerRadius = 6.0f;
-//    cell.labelContainer.layer.borderColor = UIColorFromRGB(0xbbbbbb).CGColor;
-//    cell.labelContainer.layer.borderWidth = 0.5f;
     cell.placeId = place.placeId;
     
     return cell;
@@ -331,28 +413,37 @@ static double const METERS_PER_MILE = 1609.344;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.row == [_tableData count] - 1) {
+    if ([tableData[indexPath.row] isKindOfClass:[NSString class]]) {
         return;
     }
     
     PlaceAutoCompleteTableViewCell * cell = (PlaceAutoCompleteTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
     
-    // TODO: I'm worried that we are setting the "where to" value here but that the
-    // Google place detail values aren't set until the "loadPlaceDetails" returns.
-    // The user could potentially click "Find Hotels" before the Google place details
-    // are returned. So we could have two potential problems from this. First, the call
-    // to LoadEanData.loadHotelsWithLatitude:longitude: could return data for the wrong
-    // place. And second, we could have mismatched data in SelectionCriteria between
-    // whereTo and googlePlaceDetail.
-//    _whereToTextFieldOutlet.text = cell.outletPlaceName.text;
-    self.autoCompleteOrPlaceDetails = YES;
-    [[LoadGooglePlacesData sharedInstance:self] loadPlaceDetails:cell.placeId];
-//    [self didFinishTextFieldKeyboard];
-    
-    _tableData = nil;
-    [_autoCompleteTableViewOutlet reloadData];
-    [_whereToTextFieldOutlet resignFirstResponder];
-    [self animateTableViewCompression];
+    if ([tableData[indexPath.row] isKindOfClass:[GooglePlace class]]) {
+        // TODO: I'm worried that we are setting the "where to" value here but that the
+        // Google place detail values aren't set until the "loadPlaceDetails" returns.
+        // The user could potentially click "Find Hotels" before the Google place details
+        // are returned. So we could have two potential problems from this. First, the call
+        // to LoadEanData.loadHotelsWithLatitude:longitude: could return data for the wrong
+        // place. And second, we could have mismatched data in SelectionCriteria between
+        // whereTo and googlePlaceDetail.
+        _autoCompleteOrPlaceDetails = YES;
+        [[LoadGooglePlacesData sharedInstance:self] loadPlaceDetails:cell.placeId];
+        tableData = [SelectionCriteria singleton].placesArray;
+        [autoCompleteTableView reloadData];
+        [_whereToTextFieldOutlet resignFirstResponder];
+        [self animateTableViewCompression];
+    } else if ([tableData[indexPath.row] isKindOfClass:[WotaPlace class]]) {
+        tableData = [SelectionCriteria singleton].placesArray;
+        [autoCompleteTableView reloadData];
+        [_whereToTextFieldOutlet resignFirstResponder];
+        [SelectionCriteria singleton].googlePlaceDetail = nil;
+        [SelectionCriteria singleton].selectedPlace = tableData[indexPath.row];
+        _whereToTextFieldOutlet.text = [SelectionCriteria singleton].whereToFirst;
+        _whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
+        [self animateTableViewCompression];
+        [self redrawMapViewAnimated:YES radius:DEFAULT_RADIUS];
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
@@ -370,6 +461,8 @@ static double const METERS_PER_MILE = 1609.344;
     
     if (_mapView.frame.origin.y == 600) {
         
+        _mapView.showsUserLocation = YES;
+        
         [UIView animateWithDuration:0.6 animations:^{
             mv.frame = CGRectMake(0, 130, 320, 438);
         } completion:^(BOOL finished) {
@@ -377,6 +470,8 @@ static double const METERS_PER_MILE = 1609.344;
         }];
         
     } else {
+        
+//        _mapView.showsUserLocation = NO;
         
         [UIView animateWithDuration:0.6 animations:^{
             mv.frame = CGRectMake(0, 600, 320, 438);
@@ -388,32 +483,22 @@ static double const METERS_PER_MILE = 1609.344;
 }
 
 - (void)animateTableViewExpansion {
-    __weak typeof(self) weakSelf = self;
+    __weak UIView *actv = autoCompleteTableView;
+    self.isAutoCompleteTableViewExpanded = YES;
     [UIView animateWithDuration:0.3 animations:^{
-        typeof(self) strongSelf = weakSelf;
-        CGRect acp = strongSelf.autoCompleteTableViewOutlet.frame;
-        strongSelf.autoCompleteTableViewOutlet.frame = CGRectMake(acp.origin.x, acp.origin.y, acp.size.width, 267.0f);
-        
-//        CGRect chf = strongSelf.cupHolder.frame;
-//        strongSelf.cupHolder.frame = CGRectMake(chf.origin.x, chf.origin.y + 322.0f, chf.size.width, chf.size.height);
+        CGRect acp = actv.frame;
+        actv.frame = CGRectMake(acp.origin.x, acp.origin.y, acp.size.width, 267.0f);
     } completion:^(BOOL finished) {
-        typeof(self) strongSelf = weakSelf;
-        strongSelf.isAutoCompleteTableViewExpanded = YES;
     }];
 }
 
 - (void)animateTableViewCompression {
-    __weak typeof(self) weakSelf = self;
+    __weak UIView *actv = autoCompleteTableView;
+    self.isAutoCompleteTableViewExpanded = NO;
     [UIView animateWithDuration:0.3 animations:^{
-        typeof(self) strongSelf = weakSelf;
-        CGRect acp = strongSelf.autoCompleteTableViewOutlet.frame;
-        strongSelf.autoCompleteTableViewOutlet.frame = CGRectMake(acp.origin.x, acp.origin.y, acp.size.width, 0.0f);
-        
-//        CGRect chf = strongSelf.cupHolder.frame;
-//        strongSelf.cupHolder.frame = CGRectMake(chf.origin.x, chf.origin.y - 322.0f, chf.size.width, chf.size.height);
+        CGRect acp = actv.frame;
+        actv.frame = CGRectMake(acp.origin.x, acp.origin.y, acp.size.width, 0.0f);
     } completion:^(BOOL finished) {
-        typeof(self) strongSelf = weakSelf;
-        strongSelf.isAutoCompleteTableViewExpanded = NO;
     }];
 }
 

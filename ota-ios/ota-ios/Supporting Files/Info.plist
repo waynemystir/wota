@@ -25,9 +25,7 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This will help you locate hotels and destinations!</string>
 	<key>UIBackgroundModes</key>
-	<array>
-		<string>location</string>
-	</array>
+	<array/>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>

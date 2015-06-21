@@ -9,7 +9,11 @@
 #import "SelectionCriteria.h"
 #import "AppEnvironment.h"
 
+NSString * const kWotaPlaceCurrentLocationId = @"kWotaPlaceCurrentLocationId";
+
 //NSString * const kKeyWhereTo = @"whereTo";
+NSString * const kKeyPlacesArray = @"kKeyPlacesArray";
+NSString * const kKeySelectedPlace = @"kKeySelectedPlaces";
 NSString * const kKeyGooglePlaceDetail = @"googlePlaceDetail";
 NSString * const kKeyClPlacemark = @"kKeyClPlacemark";
 NSString * const kKeyArrivalDate = @"arrivalDate";
@@ -43,9 +47,28 @@ NSString * const kKeyChildTravelers = @"childTravelers";
     if (nil == _selectionCriteria) {
         _selectionCriteria = [[self alloc] init];
         _selectionCriteria.numberOfAdults = 2;
+        WotaPlace *wp = [[WotaPlace alloc] init];
+        wp.placeId = kWotaPlaceCurrentLocationId;
+        wp.placeName = @"Current Location";
+        wp.displayName = @"Current Location";
+        _selectionCriteria.placesArray = [NSMutableArray arrayWithObject:wp];
+        _selectionCriteria.selectedPlace = wp;
+        [_selectionCriteria save];
     }
     
     return _selectionCriteria;
+}
+
+- (WotaPlace *)retrieveCurrentLocationPlace {
+    
+    return _placesArray.firstObject;
+    
+//    for (WotaPlace *obj in _placesArray){
+//        if([obj.placeId isEqualToString: kWotaPlaceCurrentLocationId])
+//            return obj;
+//    }
+//    
+//    return nil;
 }
 
 - (void)save {
@@ -56,7 +79,9 @@ NSString * const kKeyChildTravelers = @"childTravelers";
 - (id)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super init]) {
 //        _whereTo = [aDecoder decodeObjectForKey:kKeyWhereTo];
-        _googlePlaceDetail = [aDecoder decodeObjectForKey:kKeyGooglePlaceDetail];
+        _placesArray = [aDecoder decodeObjectForKey:kKeyPlacesArray];
+        _selectedPlace = [aDecoder decodeObjectForKey:kKeySelectedPlace];
+//        _googlePlaceDetail = [aDecoder decodeObjectForKey:kKeyGooglePlaceDetail];
         _arrivalDate = [aDecoder decodeObjectForKey:kKeyArrivalDate];
         _returnDate = [aDecoder decodeObjectForKey:kKeyReturnDate];
         _numberOfAdults = [aDecoder decodeIntegerForKey:kKeyNumberOfAdults];
@@ -66,7 +91,9 @@ NSString * const kKeyChildTravelers = @"childTravelers";
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
 //    [aCoder encodeObject:_whereTo forKey:kKeyWhereTo];
-    [aCoder encodeObject:_googlePlaceDetail forKey:kKeyGooglePlaceDetail];
+    [aCoder encodeObject:_placesArray forKey:kKeyPlacesArray];
+    [aCoder encodeObject:_selectedPlace forKey:kKeySelectedPlace];
+//    [aCoder encodeObject:_googlePlaceDetail forKey:kKeyGooglePlaceDetail];
     [aCoder encodeObject:_arrivalDate forKey:kKeyArrivalDate];
     [aCoder encodeObject:_returnDate forKey:kKeyReturnDate];
     [aCoder encodeInteger:_numberOfAdults forKey:kKeyNumberOfAdults];
@@ -79,23 +106,23 @@ NSString * const kKeyChildTravelers = @"childTravelers";
 #pragma mark Getters
 
 - (NSString *)whereTo {
-    return _googlePlaceDetail.formattedWhereTo;
+    return _googlePlaceDetail ? _googlePlaceDetail.formattedWhereTo : _selectedPlace.formattedWhereTo;
 }
 
 - (NSString *)whereToFirst {
-    return _googlePlaceDetail.formattedWhereToFirst;
+    return _googlePlaceDetail ? _googlePlaceDetail.formattedWhereToFirst : _selectedPlace.formattedWhereToFirst;
 }
 
 - (NSString *)whereToSecond {
-    return _googlePlaceDetail.formattedWhereToSecond;
+    return _googlePlaceDetail ? _googlePlaceDetail.formattedWhereToSecond : _selectedPlace.formattedWhereToSecond;
 }
 
 - (double)latitude {
-    return _googlePlaceDetail.latitude;
+    return _googlePlaceDetail ? _googlePlaceDetail.latitude : _selectedPlace.latitude;
 }
 
 - (double)longitude {
-    return _googlePlaceDetail.longitude;
+    return _googlePlaceDetail ? _googlePlaceDetail.longitude : _selectedPlace.longitude;
 }
 
 - (NSString *)arrivalDateEanString {
@@ -108,14 +135,38 @@ NSString * const kKeyChildTravelers = @"childTravelers";
 
 #pragma mark Setters
 
-//- (void)setWhereTo:(NSString *)whereTo {
-//    _whereTo = whereTo;
-//    [self save];
-//}
+- (void)setSelectedPlace:(WotaPlace *)selectedPlace {
+    _selectedPlace = selectedPlace;
+    
+    if ([self currentLocationIsSelectedPlace]) {
+        return;
+    }
+    
+    for (int j = 0; j < [_placesArray count]; j++) {
+        WotaPlace *wp = [_placesArray objectAtIndex:j];
+        if([wp.placeId isEqualToString: _selectedPlace.placeId]) {
+            [_placesArray removeObjectAtIndex:j];
+        }
+    }
+    
+    [_placesArray insertObject:_selectedPlace atIndex:1];
+    [self save];
+}
 
 - (void)setGooglePlaceDetail:(GooglePlaceDetail *)googlePlaceDetail {
     _googlePlaceDetail = googlePlaceDetail;
     [self save];
+}
+
+- (void)savePlace:(GooglePlaceDetail *)googlePlaceDetail {
+    _googlePlaceDetail = googlePlaceDetail;
+    WotaPlace *wp = [[WotaPlace alloc] init];
+    wp.placeId = googlePlaceDetail.placeId;
+    wp.placeName = googlePlaceDetail.placeName ? : googlePlaceDetail.formattedWhereToFirst;
+    wp.displayName = googlePlaceDetail.formattedWhereTo;
+    wp.latitude = googlePlaceDetail.latitude;
+    wp.longitude = googlePlaceDetail.longitude;
+    self.selectedPlace = wp;
 }
 
 - (void)setArrivalDate:(NSDate *)arrivalDate {
@@ -131,6 +182,12 @@ NSString * const kKeyChildTravelers = @"childTravelers";
 - (void)setNumberOfAdults:(NSUInteger)numberOfAdults {
     _numberOfAdults = numberOfAdults;
     [self save];
+}
+
+#pragma mark Helper methods
+
+- (BOOL)currentLocationIsSelectedPlace {
+    return [_selectedPlace.placeId isEqualToString:kWotaPlaceCurrentLocationId];
 }
 
 @end

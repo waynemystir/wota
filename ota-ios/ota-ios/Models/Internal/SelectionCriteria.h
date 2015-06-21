@@ -10,8 +10,14 @@
 #import "GooglePlaceDetail.h"
 #import "ChildTraveler.h"
 #import <CoreLocation/CoreLocation.h>
+#import "WotaPlace.h"
+
+extern NSString * const kSelectionCriteriaLocationNotificationName;
 
 @interface SelectionCriteria : NSObject <NSCoding>
+
+@property (nonatomic, strong) NSMutableArray *placesArray;
+@property (nonatomic, strong) WotaPlace *selectedPlace;
 
 @property (nonatomic, strong, setter=setGooglePlaceDetail:) GooglePlaceDetail *googlePlaceDetail;
 @property (nonatomic, strong, setter=setArrivalDate:) NSDate *arrivalDate;
@@ -27,6 +33,9 @@
 
 @property (nonatomic, strong, readonly) NSString *arrivalDateEanString;
 @property (nonatomic, strong, readonly) NSString *returnDateEanString;
+
+- (void)savePlace:(GooglePlaceDetail *)googlePlaceDetail;
+- (BOOL)currentLocationIsSelectedPlace;
 
 + (SelectionCriteria *)singleton;
 

@@ -8,9 +8,16 @@
 
 #import <Foundation/Foundation.h>
 
-@interface WotaPlace : NSObject
+@interface WotaPlace : NSObject <NSCoding>
 
 @property (nonatomic, strong) NSString *placeName;
 @property (nonatomic, strong) NSString *placeId;
+@property (nonatomic, strong) NSString *displayName;
+@property (nonatomic) double latitude;
+@property (nonatomic) double longitude;
+
+@property (nonatomic, strong, readonly) NSString *formattedWhereTo;
+@property (nonatomic, strong, readonly) NSString *formattedWhereToFirst;
+@property (nonatomic, strong, readonly) NSString *formattedWhereToSecond;
 
 @end
