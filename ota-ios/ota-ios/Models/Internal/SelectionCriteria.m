@@ -11,15 +11,13 @@
 
 NSString * const kWotaPlaceCurrentLocationId = @"kWotaPlaceCurrentLocationId";
 
-//NSString * const kKeyWhereTo = @"whereTo";
+NSUInteger const kMaximumNumberOfSavedPlaces = 10;
+
 NSString * const kKeyPlacesArray = @"kKeyPlacesArray";
 NSString * const kKeySelectedPlace = @"kKeySelectedPlaces";
-NSString * const kKeyGooglePlaceDetail = @"googlePlaceDetail";
-NSString * const kKeyClPlacemark = @"kKeyClPlacemark";
 NSString * const kKeyArrivalDate = @"arrivalDate";
 NSString * const kKeyReturnDate = @"returnDate";
 NSString * const kKeyNumberOfAdults = @"numberOfAdults";
-NSString * const kKeyChildTravelers = @"childTravelers";
 
 @implementation SelectionCriteria
 
@@ -37,11 +35,9 @@ NSString * const kKeyChildTravelers = @"childTravelers";
     SelectionCriteria *_selectionCriteria = nil;
     
     NSString* path = [self pathForSelectionCriteria];
-//    NSData* data = [[NSFileManager defaultManager] contentsAtPath:path];
     
     if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
         _selectionCriteria = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
-//        _selectionCriteria = [NSKeyedUnarchiver unarchiveObjectWithData:data];
     }
     
     if (nil == _selectionCriteria) {
@@ -60,15 +56,7 @@ NSString * const kKeyChildTravelers = @"childTravelers";
 }
 
 - (WotaPlace *)retrieveCurrentLocationPlace {
-    
     return _placesArray.firstObject;
-    
-//    for (WotaPlace *obj in _placesArray){
-//        if([obj.placeId isEqualToString: kWotaPlaceCurrentLocationId])
-//            return obj;
-//    }
-//    
-//    return nil;
 }
 
 - (void)save {
@@ -78,10 +66,8 @@ NSString * const kKeyChildTravelers = @"childTravelers";
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super init]) {
-//        _whereTo = [aDecoder decodeObjectForKey:kKeyWhereTo];
         _placesArray = [aDecoder decodeObjectForKey:kKeyPlacesArray];
         _selectedPlace = [aDecoder decodeObjectForKey:kKeySelectedPlace];
-//        _googlePlaceDetail = [aDecoder decodeObjectForKey:kKeyGooglePlaceDetail];
         _arrivalDate = [aDecoder decodeObjectForKey:kKeyArrivalDate];
         _returnDate = [aDecoder decodeObjectForKey:kKeyReturnDate];
         _numberOfAdults = [aDecoder decodeIntegerForKey:kKeyNumberOfAdults];
@@ -90,10 +76,8 @@ NSString * const kKeyChildTravelers = @"childTravelers";
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
-//    [aCoder encodeObject:_whereTo forKey:kKeyWhereTo];
     [aCoder encodeObject:_placesArray forKey:kKeyPlacesArray];
     [aCoder encodeObject:_selectedPlace forKey:kKeySelectedPlace];
-//    [aCoder encodeObject:_googlePlaceDetail forKey:kKeyGooglePlaceDetail];
     [aCoder encodeObject:_arrivalDate forKey:kKeyArrivalDate];
     [aCoder encodeObject:_returnDate forKey:kKeyReturnDate];
     [aCoder encodeInteger:_numberOfAdults forKey:kKeyNumberOfAdults];
@@ -150,7 +134,18 @@ NSString * const kKeyChildTravelers = @"childTravelers";
     }
     
     [_placesArray insertObject:_selectedPlace atIndex:1];
+    [self trimPlacesArray];
     [self save];
+}
+
+- (void)trimPlacesArray {
+    if ([_placesArray count] <= kMaximumNumberOfSavedPlaces) {
+        return;
+    }
+    
+    for (NSUInteger j = [_placesArray count] - kMaximumNumberOfSavedPlaces; j > 0; j--) {
+        [_placesArray removeObjectAtIndex:([_placesArray count] - 1)];
+    }
 }
 
 - (void)setGooglePlaceDetail:(GooglePlaceDetail *)googlePlaceDetail {

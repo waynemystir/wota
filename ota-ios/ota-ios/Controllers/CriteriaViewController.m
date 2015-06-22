@@ -30,27 +30,20 @@ static double const METERS_PER_MILE = 1609.344;
 
 @property (weak, nonatomic) IBOutlet UITextField *whereToTextFieldOutlet;
 @property (weak, nonatomic) IBOutlet UILabel *whereToSecondLevel;
-
-@property (nonatomic) BOOL isAutoCompleteTableViewExpanded;
-
-//autoComplete is NO and placeDetails is YES
-@property (nonatomic) BOOL autoCompleteOrPlaceDetails;
-
 @property (weak, nonatomic) IBOutlet WotaTappableView *mapBtnContainer;
-@property (nonatomic, strong) IBOutlet UIView *cupHolderOutlet;
-@property (nonatomic, strong) IBOutlet UIButton *arrivalDateOutlet;
-@property (nonatomic, strong) IBOutlet UIButton *returnDateOutlet;
-@property (nonatomic, strong) IBOutlet UILabel *adultsLabel;
-@property (nonatomic, strong) IBOutlet UIButton *addAdultOutlet;
-@property (nonatomic, strong) IBOutlet UIButton *minusAdultOutlet;
-@property (nonatomic, strong) IBOutlet UIButton *checkHotelsOutlet;
-@property (nonatomic, strong) IBOutlet UIButton *kidsButton;
+@property (nonatomic, weak) IBOutlet UIView *cupHolderOutlet;
+@property (nonatomic, weak) IBOutlet UIButton *arrivalDateOutlet;
+@property (nonatomic, weak) IBOutlet UIButton *returnDateOutlet;
+@property (nonatomic, weak) IBOutlet UILabel *adultsLabel;
+@property (nonatomic, weak) IBOutlet UIButton *addAdultOutlet;
+@property (nonatomic, weak) IBOutlet UIButton *minusAdultOutlet;
+@property (nonatomic, weak) IBOutlet UIButton *checkHotelsOutlet;
+@property (nonatomic, weak) IBOutlet UIButton *kidsButton;
 
-@property (nonatomic, strong) THDatePickerViewController *arrivalDatePicker;
-@property (nonatomic, strong) THDatePickerViewController *returnDatePicker;
-@property BOOL arrivalOrReturn; //arrival == NO and return == YES
-
-@property (nonatomic, strong) MKMapView *mapView;
+@property (nonatomic) BOOL userLocationHasUpdated;
+@property (nonatomic) BOOL arrivalOrReturn; //arrival == NO and return == YES
+@property (nonatomic) BOOL isAutoCompleteTableViewExpanded;
+@property (nonatomic) BOOL autoCompleteOrPlaceDetails;//autoComplete is NO and placeDetails is YES
 @property (nonatomic, assign) BOOL nextRegionChangeIsFromUserInteraction;
 
 - (IBAction)justPushIt:(id)sender;
@@ -61,6 +54,9 @@ static double const METERS_PER_MILE = 1609.344;
     CLLocationManager *locationManager;
     NSArray *tableData;
     UITableView *autoCompleteTableView;
+    MKMapView *mkMapView;
+    THDatePickerViewController *arrivalDatePicker;
+    THDatePickerViewController *returnDatePicker;
 }
 
 #pragma mark Lifecycle methods
@@ -91,15 +87,15 @@ static double const METERS_PER_MILE = 1609.344;
     //***********************************************************************
     
     // setup the map view
-    _mapView = [[MKMapView alloc] initWithFrame:CGRectMake(0, 600, 320, 438)];
-    _mapView.delegate = self;
+    mkMapView = [[MKMapView alloc] initWithFrame:CGRectMake(0, 600, 320, 438)];
+    mkMapView.delegate = self;
     
     if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse) {
-        _mapView.showsUserLocation = YES;
+        mkMapView.showsUserLocation = YES;
     }
     
     [self redrawMapViewAnimated:NO radius:DEFAULT_RADIUS];
-    [self.view addSubview:_mapView];
+    [self.view addSubview:mkMapView];
     
     UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(loadOrDropDaMapView)];
     tgr.numberOfTapsRequired = 1;
@@ -148,12 +144,12 @@ static double const METERS_PER_MILE = 1609.344;
 #pragma mark Various map methods
 
 - (void)appWillResignActive:(NSNotification *)notification {
-//    _mapView.showsUserLocation = NO;
+//    mapView.showsUserLocation = NO;
 }
 
 - (void)appWillResume:(NSNotification *)notification {
-    if (_mapView.frame.origin.y == 130) {
-        _mapView.showsUserLocation = YES;
+    if (mkMapView.frame.origin.y == 130) {
+        mkMapView.showsUserLocation = YES;
     }
 }
 
@@ -163,11 +159,11 @@ static double const METERS_PER_MILE = 1609.344;
     zoomLocation.latitude = sc.latitude;
     zoomLocation.longitude= sc.longitude;
     MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(zoomLocation, radius*METERS_PER_MILE, radius*METERS_PER_MILE);
-    [_mapView setRegion:viewRegion animated:animated];
+    [mkMapView setRegion:viewRegion animated:animated];
 }
 
-- (void)geoCodingDawg {
-    [[LoadGooglePlacesData sharedInstance] loadPlaceDetailsWithLatitude:_mapView.region.center.latitude longitude:_mapView.region.center.longitude completionBlock:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+- (void)reverseGeoCodingDawg {
+    [[LoadGooglePlacesData sharedInstance] loadPlaceDetailsWithLatitude:mkMapView.region.center.latitude longitude:mkMapView.region.center.longitude completionBlock:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         [SelectionCriteria singleton].googlePlaceDetail = [GooglePlaceDetail placeDetailFromGeoCodeData:data];
         dispatch_async(dispatch_get_main_queue(), ^{
             _whereToTextFieldOutlet.text = [SelectionCriteria singleton].whereToFirst;
@@ -180,13 +176,9 @@ static double const METERS_PER_MILE = 1609.344;
 
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
     if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusAuthorizedWhenInUse) {
-        return;
-    }
-    
-    _mapView.showsUserLocation = YES;
-    
-    if ([[SelectionCriteria singleton] currentLocationIsSelectedPlace]) {
-        [self redrawMapViewAnimated:YES radius:DEFAULT_RADIUS];
+        mkMapView.showsUserLocation = NO;
+    } else {
+        mkMapView.showsUserLocation = YES;
     }
     
 //    [manager startUpdatingLocation];
@@ -199,12 +191,14 @@ static double const METERS_PER_MILE = 1609.344;
         ((WotaPlace *) [SelectionCriteria singleton].placesArray.firstObject).latitude = userLocation.location.coordinate.latitude;
         ((WotaPlace *) [SelectionCriteria singleton].placesArray.firstObject).longitude = userLocation.location.coordinate.longitude;
         
-        if ([[SelectionCriteria singleton] currentLocationIsSelectedPlace]) {
+        if (!_userLocationHasUpdated && [[SelectionCriteria singleton] currentLocationIsSelectedPlace] && ![SelectionCriteria singleton].googlePlaceDetail) {
             [self redrawMapViewAnimated:YES radius:DEFAULT_RADIUS];
         }
         
-//        _mapView.showsUserLocation = NO;
+//        mapView.showsUserLocation = NO;
     }
+    
+    _userLocationHasUpdated = YES;
 }
 
 - (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated {
@@ -226,7 +220,7 @@ static double const METERS_PER_MILE = 1609.344;
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
     if(_nextRegionChangeIsFromUserInteraction) {
         _nextRegionChangeIsFromUserInteraction = NO;
-        [self geoCodingDawg];
+        [self reverseGeoCodingDawg];
     }
 }
 
@@ -274,12 +268,12 @@ static double const METERS_PER_MILE = 1609.344;
 
 - (IBAction)justPushIt:(id)sender {
     if (sender == self.checkHotelsOutlet) {
+        [self letsFindHotels];
         if ([SelectionCriteria singleton].googlePlaceDetail) {
             [[SelectionCriteria singleton] savePlace:[SelectionCriteria singleton].googlePlaceDetail];
-            tableData = [SelectionCriteria singleton].placesArray;
-            [autoCompleteTableView reloadData];
         }
-        [self letsFindHotels];
+        tableData = [SelectionCriteria singleton].placesArray;
+        [autoCompleteTableView reloadData];
     } else if (sender == self.arrivalDateOutlet) {
         self.arrivalOrReturn = NO;
         [self presentTheDatePicker];
@@ -400,7 +394,7 @@ static double const METERS_PER_MILE = 1609.344;
     }
     
     WotaPlace *place = [tableData objectAtIndex:indexPath.row];
-    cell.outletPlaceName.text = place.placeName;
+    cell.outletPlaceName.text = [place isKindOfClass:[GooglePlace class]] ? place.placeName : place.formattedWhereTo;
     cell.placeId = place.placeId;
     
     return cell;
@@ -457,29 +451,45 @@ static double const METERS_PER_MILE = 1609.344;
 #pragma mark Some animation methods
 
 - (void)loadOrDropDaMapView {
-    __weak UIView *mv = _mapView;
-    
-    if (_mapView.frame.origin.y == 600) {
+    if (_isAutoCompleteTableViewExpanded) {
         
-        _mapView.showsUserLocation = YES;
+        [_whereToTextFieldOutlet endEditing:YES];
+        [self animateTableViewCompression];
+        [self loadMapView];
         
-        [UIView animateWithDuration:0.6 animations:^{
-            mv.frame = CGRectMake(0, 130, 320, 438);
-        } completion:^(BOOL finished) {
-            ;
-        }];
+    } else if (mkMapView.frame.origin.y == 600) {
+        
+        [self loadMapView];
         
     } else {
         
-//        _mapView.showsUserLocation = NO;
-        
-        [UIView animateWithDuration:0.6 animations:^{
-            mv.frame = CGRectMake(0, 600, 320, 438);
-        } completion:^(BOOL finished) {
-            ;
-        }];
+        [self dropMapView];
         
     }
+}
+
+- (void)loadMapView {
+    if (tableData != [SelectionCriteria singleton].placesArray) {
+        tableData = [SelectionCriteria singleton].placesArray;
+        [autoCompleteTableView reloadData];
+    }
+    _whereToTextFieldOutlet.text = [SelectionCriteria singleton].whereToFirst;
+    _whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
+    __weak UIView *mv = mkMapView;
+    [UIView animateWithDuration:0.6 animations:^{
+        mv.frame = CGRectMake(0, 130, 320, 438);
+    } completion:^(BOOL finished) {
+        ;
+    }];
+}
+
+- (void)dropMapView {
+    __weak UIView *mv = mkMapView;
+    [UIView animateWithDuration:0.6 animations:^{
+        mv.frame = CGRectMake(0, 600, 320, 438);
+    } completion:^(BOOL finished) {
+        ;
+    }];
 }
 
 - (void)animateTableViewExpansion {
@@ -487,7 +497,7 @@ static double const METERS_PER_MILE = 1609.344;
     self.isAutoCompleteTableViewExpanded = YES;
     [UIView animateWithDuration:0.3 animations:^{
         CGRect acp = actv.frame;
-        actv.frame = CGRectMake(acp.origin.x, acp.origin.y, acp.size.width, 267.0f);
+        actv.frame = CGRectMake(acp.origin.x, acp.origin.y, acp.size.width, 247.0f);
     } completion:^(BOOL finished) {
     }];
 }
@@ -510,13 +520,13 @@ static double const METERS_PER_MILE = 1609.344;
     
     if (!_arrivalOrReturn) {
         [self setupTheArrivalDatePicker];
-        dp = _arrivalDatePicker;
+        dp = arrivalDatePicker;
         dp.date = [SelectionCriteria singleton].arrivalDate;
         dp.minDate = [NSDate date];
         dp.maxDate = kAddDays(500, [NSDate date]);
     } else {
         [self setupTheReturnDatePicker];
-        dp = _returnDatePicker;
+        dp = returnDatePicker;
         dp.date = [SelectionCriteria singleton].returnDate;
         dp.minDate = kAddDays(1, [SelectionCriteria singleton].arrivalDate);
         dp.maxDate = kAddDays(28, [SelectionCriteria singleton].arrivalDate);
@@ -532,41 +542,41 @@ static double const METERS_PER_MILE = 1609.344;
 }
 
 - (void)setupTheArrivalDatePicker {
-    if(_arrivalDatePicker)
+    if(arrivalDatePicker)
         return;
     
-    _arrivalDatePicker = [THDatePickerViewController datePicker];
-    _arrivalDatePicker.delegate = self;
-    [_arrivalDatePicker setAllowClearDate:NO];
-    [_arrivalDatePicker setClearAsToday:NO];
-    [_arrivalDatePicker setAutoCloseOnSelectDate:YES];
-    [_arrivalDatePicker setAllowSelectionOfSelectedDate:YES];
-    [_arrivalDatePicker setDisableHistorySelection:YES];
-    [_arrivalDatePicker setDisableFutureSelection:NO];
-    [_arrivalDatePicker setSelectedBackgroundColor:kWotaColorOne()];
-    [_arrivalDatePicker setCurrentDateColor:kWotaColorOne()];
+    arrivalDatePicker = [THDatePickerViewController datePicker];
+    arrivalDatePicker.delegate = self;
+    [arrivalDatePicker setAllowClearDate:NO];
+    [arrivalDatePicker setClearAsToday:NO];
+    [arrivalDatePicker setAutoCloseOnSelectDate:YES];
+    [arrivalDatePicker setAllowSelectionOfSelectedDate:YES];
+    [arrivalDatePicker setDisableHistorySelection:YES];
+    [arrivalDatePicker setDisableFutureSelection:NO];
+    [arrivalDatePicker setSelectedBackgroundColor:kWotaColorOne()];
+    [arrivalDatePicker setCurrentDateColor:kWotaColorOne()];
     
-    _arrivalDatePicker.arrivalOrDepartureString = @"Check-in Date";
-    [_arrivalDatePicker setDateHasItemsCallback:nil];
+    arrivalDatePicker.arrivalOrDepartureString = @"Check-in Date";
+    [arrivalDatePicker setDateHasItemsCallback:nil];
 }
 
 - (void)setupTheReturnDatePicker {
-    if(_returnDatePicker)
+    if(returnDatePicker)
         return;
     
-    _returnDatePicker = [THDatePickerViewController datePicker];
-    _returnDatePicker.delegate = self;
-    [_returnDatePicker setAllowClearDate:NO];
-    [_returnDatePicker setClearAsToday:NO];
-    [_returnDatePicker setAutoCloseOnSelectDate:YES];
-    [_returnDatePicker setAllowSelectionOfSelectedDate:YES];
-    [_returnDatePicker setDisableHistorySelection:YES];
-    [_returnDatePicker setDisableFutureSelection:NO];
-    [_returnDatePicker setSelectedBackgroundColor:kWotaColorOne()];
-    [_returnDatePicker setCurrentDateColor:kWotaColorOne()];
+    returnDatePicker = [THDatePickerViewController datePicker];
+    returnDatePicker.delegate = self;
+    [returnDatePicker setAllowClearDate:NO];
+    [returnDatePicker setClearAsToday:NO];
+    [returnDatePicker setAutoCloseOnSelectDate:YES];
+    [returnDatePicker setAllowSelectionOfSelectedDate:YES];
+    [returnDatePicker setDisableHistorySelection:YES];
+    [returnDatePicker setDisableFutureSelection:NO];
+    [returnDatePicker setSelectedBackgroundColor:kWotaColorOne()];
+    [returnDatePicker setCurrentDateColor:kWotaColorOne()];
     
-    _returnDatePicker.arrivalOrDepartureString = @"Check-out Date";
-    [_returnDatePicker setDateHasItemsCallback:nil];
+    returnDatePicker.arrivalOrDepartureString = @"Check-out Date";
+    [returnDatePicker setDateHasItemsCallback:nil];
 }
 
 
