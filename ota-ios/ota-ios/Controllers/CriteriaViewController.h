@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SearchViewController.h"
 
-@interface CriteriaViewController : UIViewController
+@interface CriteriaViewController : SearchViewController
 
 @end

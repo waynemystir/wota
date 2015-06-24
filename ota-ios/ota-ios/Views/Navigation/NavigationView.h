@@ -52,4 +52,6 @@ extern NSUInteger const kNavigationViewTag;
 - (void)rightViewEnableCheckMark;
 - (void)rightViewDisableCheckMark;
 
+- (void)rightViewAddSearch;
+
 @end

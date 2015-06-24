@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SearchViewController.h"
 #import "LoadEanData.h"
 
-@interface HotelListingViewController : UIViewController <LoadDataProtocol>
+@interface HotelListingViewController : SearchViewController <LoadDataProtocol>
 
 @end

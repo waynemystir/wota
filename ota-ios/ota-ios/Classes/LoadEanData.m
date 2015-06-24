@@ -412,7 +412,21 @@ NSString * kURLeanBookReservation() {
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
 //    NSLog(@"%@.%@:::%@", self.class, NSStringFromSelector(_cmd), [[[connection currentRequest] URL] absoluteString]);
-    [self.delegate requestFinished:self.responseData];
+    
+    if ([[[[connection currentRequest] URL] absoluteString] containsString:EAN_H0TEL_LIST]) {
+        [self.delegate requestFinished:self.responseData dataType:LOAD_EAN_HOTELS_LIST];
+    } else if ([[[[connection currentRequest] URL] absoluteString] containsString:EAN_HOTEL_INFO]) {
+        [self.delegate requestFinished:self.responseData dataType:LOAD_EAN_HOTEL_DETAILS];
+    } else if ([[[[connection currentRequest] URL] absoluteString] containsString:EAN_PAYMENT_TYPES]) {
+        [self.delegate requestFinished:self.responseData dataType:LOAD_EAN_PAYMENT_TYPES];
+    } else if ([[[[connection currentRequest] URL] absoluteString] containsString:EAN_ROOMS_AVAILABLE]) {
+        [self.delegate requestFinished:self.responseData dataType:LOAD_EAN_AVAILABLE_ROOMS];
+    } else if ([[[[connection currentRequest] URL] absoluteString] containsString:EAN_BOOK_RESERVATION]) {
+        [self.delegate requestFinished:self.responseData dataType:LOAD_EAN_BOOK];
+    } else {
+        assert(false);
+    }
+
 }
 
 #pragma mark NSURLConnectionDelegate methods

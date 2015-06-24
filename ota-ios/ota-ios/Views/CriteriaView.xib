@@ -17,7 +17,7 @@
                 <outlet property="returnDateOutlet" destination="jp2-aZ-cy3" id="sSF-8t-hL6"/>
                 <outlet property="view" destination="iN0-l3-epB" id="nJX-7O-cmC"/>
                 <outlet property="whereToSecondLevel" destination="5X6-NV-LTS" id="E3Z-3D-yw5"/>
-                <outlet property="whereToTextFieldOutlet" destination="RXh-qF-H7q" id="pPJ-Vd-7wf"/>
+                <outlet property="whereToTextField" destination="RXh-qF-H7q" id="s2R-hJ-XXT"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>

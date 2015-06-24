@@ -285,7 +285,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     NSLog(@"%@.%@ URL:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), [url absoluteString]);
 }
 
-- (void)requestFinished:(NSData *)responseData {
+- (void)requestFinished:(NSData *)responseData dataType:(LOAD_DATA_TYPE)dataType {
     self.eanHotelInformationResponse = [EanHotelInformationResponse eanObjectFromApiResponseData:responseData];
     [self loadupTheImageScroller];
     [self loadupTheAmenities];

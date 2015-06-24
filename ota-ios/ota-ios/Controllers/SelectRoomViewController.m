@@ -387,7 +387,8 @@ NSUInteger const kCardSecurityTag = 171736;
 
 #pragma mark LoadDataProtocol methods
 
-- (void)requestFinished:(NSData *)responseData {
+- (void)requestFinished:(NSData *)responseData dataType:(LOAD_DATA_TYPE)dataType {
+    // TODO: I added the dataType parameter to requestFinished: and I need to replace self.load_data_type with this.
     switch (self.load_data_type) {
         case LOAD_ROOM: {
             _preparedToDropSpinner = YES;

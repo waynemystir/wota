@@ -290,6 +290,22 @@ NSUInteger const kRightCheckMarkView = 4921743;
     b.enabled = YES;
 }
 
+- (void)rightViewAddSearch {
+    UIImage *im = [UIImage imageNamed:@"search.png"];
+    UIImageView *iv = [[UIImageView alloc] initWithImage:im];
+    iv.frame = CGRectMake(10, 12, 24, 24);
+    iv.contentMode = UIViewContentModeScaleAspectFit;
+    [_rightView addSubview:iv];
+    
+    if ([_navDelegate respondsToSelector:@selector(clickRight)]) {
+        UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:_navDelegate action:@selector(clickRight)];
+        tgr.numberOfTapsRequired = 1;
+        tgr.numberOfTouchesRequired = 1;
+        _rightView.userInteractionEnabled = YES;
+        [_rightView addGestureRecognizer:tgr];
+    }
+}
+
 - (NSTimeInterval)navigationAnimationDuration {
     if (_animationDuration > 0.0) {
         return _animationDuration;

@@ -46,7 +46,12 @@
     NSLog(@"%@.%@.:::%@", self.class, NSStringFromSelector(_cmd), url);
 }
 
-- (void)requestFinished:(NSData *)responseData {
+- (void)requestFinished:(NSData *)responseData dataType:(LOAD_DATA_TYPE)dataType {
+    
+    if (dataType != LOAD_EAN_BOOK) {
+        return;
+    }
+    
     NSString *respString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
     EanHotelRoomReservationResponse *hrrr = [EanHotelRoomReservationResponse eanObjectFromApiResponseData:responseData];
     self.itineraryOutlet.text = [NSString stringWithFormat:@"Itin:%ld", (long)hrrr.itineraryId];

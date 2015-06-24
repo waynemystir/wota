@@ -21,6 +21,13 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if ([self.tableData[indexPath.row] isKindOfClass:[NSString class]]) {
+        NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"PowerebByGoogleCell" owner:self options:nil];
+        UITableViewCell *poweredByGoogleCell = views.firstObject;
+        return poweredByGoogleCell;
+    }
+    
     NSString *CellIdentifier = @"placeAutoCompleteCell";
     PlaceAutoCompleteTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
@@ -28,7 +35,7 @@
         cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     }
     
-    GooglePlace *place = [GooglePlace placeFromObject:[self.tableData objectAtIndex:indexPath.row]];
+    GooglePlace *place = [self.tableData objectAtIndex:indexPath.row];
     cell.outletPlaceName.text = place.placeName;
     cell.placeId = place.placeId;
     
@@ -36,8 +43,12 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if ([self.tableData[indexPath.row] isKindOfClass:[NSString class]]) {
+        return;
+    }
+    
     if ([self.delegate respondsToSelector:@selector(didSelectRow:)]) {
-        [self.delegate didSelectRow:[GooglePlace placeFromObject:[self.tableData objectAtIndex:indexPath.row]]];
+        [self.delegate didSelectRow:[self.tableData objectAtIndex:indexPath.row]];
     }
 }
 
