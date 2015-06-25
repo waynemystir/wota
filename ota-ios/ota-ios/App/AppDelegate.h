@@ -13,7 +13,7 @@
 @property (strong, nonatomic) UIWindow *window;
 
 - (void)loadDaSpinner;
-- (void)dropDaSpinnerAlready;
+- (void)dropDaSpinnerAlreadyWithForce:(BOOL)force;
 
 @end
 

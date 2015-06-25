@@ -1503,7 +1503,7 @@ NSUInteger const kCardSecurityTag = 171736;
         return;
     }
     AppDelegate *ad = [[UIApplication sharedApplication] delegate];
-    [ad dropDaSpinnerAlready];
+    [ad dropDaSpinnerAlreadyWithForce:NO];
 }
 
 - (void)loadRoomDetailsView {

@@ -202,12 +202,8 @@ static double const METERS_PER_MILE = 1609.344;
 
 - (IBAction)justPushIt:(id)sender {
     if (sender == self.checkHotelsOutlet) {
-        [self letsFindHotels];
-        if ([SelectionCriteria singleton].googlePlaceDetail) {
-            [[SelectionCriteria singleton] savePlace:[SelectionCriteria singleton].googlePlaceDetail];
-        }
-        self.placesTableData = [SelectionCriteria singleton].placesArray;
-        [self.placesTableView reloadData];
+        HotelListingViewController *hvc = [HotelListingViewController new];
+        [self letsFindHotels:hvc];
     } else if (sender == self.arrivalDateOutlet) {
         self.arrivalOrReturn = NO;
         [self presentTheDatePicker];
@@ -225,18 +221,24 @@ static double const METERS_PER_MILE = 1609.344;
     }
 }
 
-- (void)letsFindHotels {
-    SelectionCriteria *sc = [SelectionCriteria singleton];
-    
-    HotelListingViewController *hvc = [HotelListingViewController new];
-    [[LoadEanData sharedInstance:hvc] loadHotelsWithLatitude:sc.latitude
-                                                   longitude:sc.longitude
-                                                 arrivalDate:sc.arrivalDateEanString
-                                                  returnDate:sc.returnDateEanString
-                                                searchRadius:@15];
-    
-    [self.navigationController pushViewController:hvc animated:YES];
-}
+//- (void)letsFindHotels:(HotelListingViewController *)hvc {
+//    SelectionCriteria *sc = [SelectionCriteria singleton];
+//    
+//    [[LoadEanData sharedInstance:hvc] loadHotelsWithLatitude:sc.latitude
+//                                                   longitude:sc.longitude
+//                                                 arrivalDate:sc.arrivalDateEanString
+//                                                  returnDate:sc.returnDateEanString
+//                                                searchRadius:@15];
+//    
+//    if ([SelectionCriteria singleton].googlePlaceDetail) {
+//        [[SelectionCriteria singleton] savePlace:[SelectionCriteria singleton].googlePlaceDetail];
+//    }
+//    
+//    self.placesTableData = [SelectionCriteria singleton].placesArray;
+//    [self.placesTableView reloadData];
+//    
+//    [self.navigationController pushViewController:hvc animated:YES];
+//}
 
 - (void)setNumberOfAdultsLabel:(NSInteger)change {
     SelectionCriteria *sc = [SelectionCriteria singleton];

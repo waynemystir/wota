@@ -291,9 +291,18 @@ NSUInteger const kRightCheckMarkView = 4921743;
 }
 
 - (void)rightViewAddSearch {
+    UIImage *imr = [UIImage imageNamed:@"refresh.png"];
+    UIImageView *ivr = [[UIImageView alloc] initWithImage:imr];
+    ivr.tag = 92827262;
+    ivr.frame = CGRectMake(6, 8, 32, 32);
+    ivr.contentMode = UIViewContentModeScaleAspectFit;
+    ivr.hidden = YES;
+    [_rightView addSubview:ivr];
+    
     UIImage *im = [UIImage imageNamed:@"search.png"];
     UIImageView *iv = [[UIImageView alloc] initWithImage:im];
-    iv.frame = CGRectMake(10, 12, 24, 24);
+    iv.tag = 93837363;
+    iv.frame = CGRectMake(8, 12, 26, 26);
     iv.contentMode = UIViewContentModeScaleAspectFit;
     [_rightView addSubview:iv];
     
@@ -304,6 +313,30 @@ NSUInteger const kRightCheckMarkView = 4921743;
         _rightView.userInteractionEnabled = YES;
         [_rightView addGestureRecognizer:tgr];
     }
+}
+
+- (void)rightViewFlipToRefresh {
+    UIView *ivr = [_rightView viewWithTag:92827262];
+    UIView *sv = [_rightView viewWithTag:93837363];
+    
+    [UIView transitionFromView:sv
+                        toView:ivr
+                      duration:0.3
+                       options:UIViewAnimationOptionTransitionFlipFromBottom|UIViewAnimationOptionShowHideTransitionViews
+                    completion:^(BOOL finished) {
+    }];
+}
+
+- (void)rightViewFlipToSearch {
+    UIView *ivr = [_rightView viewWithTag:92827262];
+    UIView *sv = [_rightView viewWithTag:93837363];
+    
+    [UIView transitionFromView:ivr
+                        toView:sv
+                      duration:0.3
+                       options:UIViewAnimationOptionTransitionFlipFromBottom|UIViewAnimationOptionShowHideTransitionViews
+                    completion:^(BOOL finished) {
+    }];
 }
 
 - (NSTimeInterval)navigationAnimationDuration {

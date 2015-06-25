@@ -65,7 +65,7 @@
     }];
 }
 
-- (void)dropDaSpinnerAlready {
+- (void)dropDaSpinnerAlreadyWithForce:(BOOL)force {
 //    if (nil == _spinnerClass) {
 //        return;
 //    }
@@ -83,7 +83,7 @@
     Class tvcClass = [[nc topViewController] class];
     
     // We're not going to kill a spinner for a different view controller
-    if (callingClass != _spinnerClass && callingClass != tvcClass) {
+    if (!force && callingClass != _spinnerClass && callingClass != tvcClass) {
         return;
     }
     _spinnerClass = nil;

@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "LoadGooglePlacesData.h"
 
+@class HotelListingViewController;
+
 extern double const DEFAULT_RADIUS;
 
 @interface SearchViewController : UIViewController <LoadDataProtocol>
@@ -24,5 +26,6 @@ extern double const DEFAULT_RADIUS;
 - (void)animateTableViewExpansion;
 - (void)animateTableViewCompression;
 - (void)redrawMapViewAnimated:(BOOL)animated radius:(double)radius;
+- (void)letsFindHotels:(HotelListingViewController *)hotelListingViewController;
 
 @end

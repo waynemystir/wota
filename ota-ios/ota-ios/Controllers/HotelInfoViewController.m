@@ -521,7 +521,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     _alreadyDroppedSpinner = YES;
     
     AppDelegate *ad = [[UIApplication sharedApplication] delegate];
-    [ad dropDaSpinnerAlready];
+    [ad dropDaSpinnerAlreadyWithForce:NO];
 }
 
 - (void)prepareTheSelectRoomViewControllerWithPlaceholderImage:(UIImage *)phi {

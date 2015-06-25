@@ -12,6 +12,9 @@
 #import "GoogleParser.h"
 #import "GooglePlace.h"
 #import "GooglePlaceDetail.h"
+#import "LoadEanData.h"
+#import "HotelListingViewController.h"
+#import "AppDelegate.h"
 
 static int const kAutoCompleteMinimumNumberOfCharacters = 4;
 double const DEFAULT_RADIUS = 5.0;
@@ -215,6 +218,30 @@ double const DEFAULT_RADIUS = 5.0;
 
 - (void)redrawMapViewAnimated:(BOOL)animated radius:(double)radius {
     [self doesNotRecognizeSelector:_cmd];
+}
+
+- (void)letsFindHotels:(HotelListingViewController *)hvc {
+    SelectionCriteria *sc = [SelectionCriteria singleton];
+    
+    [[LoadEanData sharedInstance:hvc] loadHotelsWithLatitude:sc.latitude
+                                                   longitude:sc.longitude
+                                                 arrivalDate:sc.arrivalDateEanString
+                                                  returnDate:sc.returnDateEanString
+                                                searchRadius:@15];
+    
+    if ([SelectionCriteria singleton].googlePlaceDetail) {
+        [[SelectionCriteria singleton] savePlace:[SelectionCriteria singleton].googlePlaceDetail];
+    }
+    
+    self.placesTableData = [SelectionCriteria singleton].placesArray;
+    [self.placesTableView reloadData];
+    
+    if (hvc != self) {
+        [self.navigationController pushViewController:hvc animated:YES];
+    } else {
+        AppDelegate *ad = [[UIApplication sharedApplication] delegate];
+        [ad loadDaSpinner];
+    }
 }
 
 @end

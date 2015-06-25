@@ -103,7 +103,7 @@ NSTimeInterval const kFlipAnimationDuration = 0.7;
     wt.backgroundColor = [UIColor whiteColor];
     wt.borderStyle = UITextBorderStyleRoundedRect;
     wt.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-    wt.returnKeyType = UIReturnKeyDone;
+    wt.returnKeyType = UIReturnKeySearch;
     wt.autocapitalizationType = UITextAutocapitalizationTypeNone;
     wt.autocorrectionType = UITextAutocorrectionTypeNo;
     wt.spellCheckingType = UITextSpellCheckingTypeNo;
@@ -135,7 +135,7 @@ NSTimeInterval const kFlipAnimationDuration = 0.7;
     _alreadyDroppedSpinner = YES;
     
     AppDelegate *ad = [[UIApplication sharedApplication] delegate];
-    [ad dropDaSpinnerAlready];
+    [ad dropDaSpinnerAlreadyWithForce:YES];
 }
 
 #pragma mark flipping animation
@@ -145,7 +145,7 @@ NSTimeInterval const kFlipAnimationDuration = 0.7;
         [UIView transitionFromView:_mkMapView
                             toView:_hotelsTableView
                           duration:0.8
-                           options:UIViewAnimationOptionTransitionFlipFromLeft
+                           options:UIViewAnimationOptionTransitionFlipFromLeft|UIViewAnimationOptionShowHideTransitionViews
                         completion:^(BOOL finished) {
                             tableOrMap = NO;
                         }];
@@ -153,7 +153,7 @@ NSTimeInterval const kFlipAnimationDuration = 0.7;
         [UIView transitionFromView:_hotelsTableView
                             toView:_mkMapView
                           duration:0.8
-                           options:UIViewAnimationOptionTransitionFlipFromLeft
+                           options:UIViewAnimationOptionTransitionFlipFromLeft|UIViewAnimationOptionShowHideTransitionViews
                         completion:^(BOOL finished) {
                             tableOrMap = YES;
                         }];
@@ -172,27 +172,53 @@ NSTimeInterval const kFlipAnimationDuration = 0.7;
 }
 
 - (void)clickRight {
+    NSTimeInterval ti = 0.3;
     __weak UIView *sc = _searchContainer;
     __weak UIView *bd = [sc viewWithTag:123456781];
+    __weak NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
+    nv.animationDuration = ti;
     if (sc.frame.size.height == 0) {
         [self.whereToTextField becomeFirstResponder];
         [self.view bringSubviewToFront:sc];
-        [UIView animateWithDuration:0.3 animations:^{
+        [nv animateToCancel];
+        [nv rightViewFlipToRefresh];
+        [UIView animateWithDuration:ti animations:^{
             sc.frame = CGRectMake(0, 63.4f, 320, 40);
             bd.frame = CGRectMake(0, 39.4f, 320, 0.6f);
         } completion:^(BOOL finished) {
-            ;
+            nv.animationDuration = 0.0;
         }];
     } else {
-        [self animateTableViewCompression];
-        [self.whereToTextField endEditing:YES];
-        [UIView animateWithDuration:0.3 animations:^{
-            sc.frame = CGRectMake(0, 63.4f, 320, 0);
-            bd.frame = CGRectMake(0, 0, 320, 0.6f);
-        } completion:^(BOOL finished) {
-            ;
-        }];
+        [self exitSearchModeWithSearch:YES];
     }
+}
+
+- (void)clickCancel {
+    [self exitSearchModeWithSearch:NO];
+}
+
+- (void)exitSearchModeWithSearch:(BOOL)search {
+    NSTimeInterval ti = 0.3;
+    __weak UIView *sc = _searchContainer;
+    __weak UIView *bd = [sc viewWithTag:123456781];
+    __weak NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
+    nv.animationDuration = ti;
+    _alreadyDroppedSpinner = NO;
+    
+    if (search) {
+        [self letsFindHotels:self];
+    }
+    
+    [self animateTableViewCompression];
+    [self.whereToTextField endEditing:YES];
+    [nv animateToBack];
+    [nv rightViewFlipToSearch];
+    [UIView animateWithDuration:ti animations:^{
+        sc.frame = CGRectMake(0, 63.4f, 320, 0);
+        bd.frame = CGRectMake(0, 0, 320, 0.6f);
+    } completion:^(BOOL finished) {
+        nv.animationDuration = 0.0;
+    }];
 }
 
 #pragma mark LoadDataProtocol methods
