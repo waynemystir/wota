@@ -37,7 +37,7 @@
 #import "CountryPicker.h"
 
 NSUInteger const kLoadDropRoomDetailsAnimationCurve = UIViewAnimationOptionCurveEaseInOut;
-NSTimeInterval const kSrAnimationDuration = 0.7f;
+NSTimeInterval const kSrAnimationDuration = 0.58f;
 
 typedef NS_ENUM(NSUInteger, LOAD_DATA) {
     LOAD_ROOM = 0,
@@ -200,6 +200,7 @@ NSUInteger const kCardSecurityTag = 171736;
 - (void)loadView {
     [super loadView];
     NavigationView *nv = [[NavigationView alloc] initWithDelegate:self];
+    nv.animationDuration = kSrAnimationDuration;
     [self.view addSubview:nv];
     [self.view bringSubviewToFront:nv];
     
@@ -393,6 +394,8 @@ NSUInteger const kCardSecurityTag = 171736;
         case LOAD_ROOM: {
             _preparedToDropSpinner = YES;
             self.eanHrar = [EanHotelRoomAvailabilityResponse eanObjectFromApiResponseData:responseData];
+            NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
+            nv.whereToLabel.text = self.eanHrar.hotelNameFormatted;
             self.tableData = self.eanHrar.hotelRoomArray;
             [self.roomsTableViewOutlet reloadData];
             [self dropDaSpinner];

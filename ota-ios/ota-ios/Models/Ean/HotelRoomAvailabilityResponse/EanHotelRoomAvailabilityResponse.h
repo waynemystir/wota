@@ -19,6 +19,7 @@
 @property (nonatomic, strong) NSDate *arrivalDate;
 @property (nonatomic, strong) NSDate *departureDate;
 @property (nonatomic, strong) NSString *hotelName;
+@property (nonatomic, strong) NSString *hotelNameFormatted;
 @property (nonatomic, strong) NSString *hotelAddress;
 @property (nonatomic, strong) NSString *hotelCity;
 @property (nonatomic, strong) NSString *hotelStateProvince;

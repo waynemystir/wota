@@ -19,7 +19,7 @@
 static int const kAutoCompleteMinimumNumberOfCharacters = 4;
 double const DEFAULT_RADIUS = 5.0;
 
-@interface SearchViewController () <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface SearchViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @end
 
@@ -103,6 +103,7 @@ double const DEFAULT_RADIUS = 5.0;
 //            [[SelectionCriteria singleton] savePlace:[GooglePlaceDetail placeDetailFromData:responseData]];
             self.placesTableData = [SelectionCriteria singleton].placesArray;
             [self.placesTableView reloadData];
+//            [self.placesTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
             self.whereToTextField.text = [SelectionCriteria singleton].whereToFirst;
             self.whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
             [self redrawMapViewAnimated:YES radius:DEFAULT_RADIUS];
@@ -199,7 +200,7 @@ double const DEFAULT_RADIUS = 5.0;
     __weak UIView *actv = self.placesTableView;
     [self.view bringSubviewToFront:actv];
     self.isPlacesTableViewExpanded = YES;
-    [UIView animateWithDuration:0.3 animations:^{
+    [UIView animateWithDuration:self.animationDuraton animations:^{
         actv.frame = self.placesTableViewExpandedFrame;
     } completion:^(BOOL finished) {
     }];
@@ -208,7 +209,7 @@ double const DEFAULT_RADIUS = 5.0;
 - (void)animateTableViewCompression {
     __weak UIView *actv = self.placesTableView;
     self.isPlacesTableViewExpanded = NO;
-    [UIView animateWithDuration:0.3 animations:^{
+    [UIView animateWithDuration:self.animationDuraton animations:^{
         actv.frame = self.placesTableViewZeroFrame;
     } completion:^(BOOL finished) {
     }];
@@ -242,6 +243,16 @@ double const DEFAULT_RADIUS = 5.0;
         AppDelegate *ad = [[UIApplication sharedApplication] delegate];
         [ad loadDaSpinner];
     }
+}
+
+#pragma mark Getter & Setter
+
+- (NSTimeInterval)animationDuraton {
+    if (_animationDuraton == 0.0) {
+        return 0.3;
+    }
+    
+    return _animationDuraton;
 }
 
 @end

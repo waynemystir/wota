@@ -221,25 +221,6 @@ static double const METERS_PER_MILE = 1609.344;
     }
 }
 
-//- (void)letsFindHotels:(HotelListingViewController *)hvc {
-//    SelectionCriteria *sc = [SelectionCriteria singleton];
-//    
-//    [[LoadEanData sharedInstance:hvc] loadHotelsWithLatitude:sc.latitude
-//                                                   longitude:sc.longitude
-//                                                 arrivalDate:sc.arrivalDateEanString
-//                                                  returnDate:sc.returnDateEanString
-//                                                searchRadius:@15];
-//    
-//    if ([SelectionCriteria singleton].googlePlaceDetail) {
-//        [[SelectionCriteria singleton] savePlace:[SelectionCriteria singleton].googlePlaceDetail];
-//    }
-//    
-//    self.placesTableData = [SelectionCriteria singleton].placesArray;
-//    [self.placesTableView reloadData];
-//    
-//    [self.navigationController pushViewController:hvc animated:YES];
-//}
-
 - (void)setNumberOfAdultsLabel:(NSInteger)change {
     SelectionCriteria *sc = [SelectionCriteria singleton];
     

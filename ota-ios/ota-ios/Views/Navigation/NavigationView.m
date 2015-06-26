@@ -26,6 +26,7 @@ NSUInteger const kRightCheckMarkView = 4921743;
 @interface NavigationView ()
 
 @property (nonatomic, strong) UIView *whereToContainer;
+@property (nonatomic, strong) UIColor *titleViewTextColor;
 
 @end
 
@@ -161,14 +162,9 @@ NSUInteger const kRightCheckMarkView = 4921743;
     if (nil == wtl) {
         wtl = [[UILabel alloc] initWithFrame:CGRectMake(0, 3, 228, 21)];
         wtl.tag = kWhereToLabelTag;
-        wtl.lineBreakMode = NSLineBreakByClipping;
-        
-        NSArray *wta = [[SelectionCriteria singleton].whereTo componentsSeparatedByString:@","];
-        if ([wta count] > 0 && !stringIsEmpty(wta[0])) {
-            wtl.text = wta[0];
-        }
-        
-        wtl.textColor = self.tintColor;
+        wtl.lineBreakMode = NSLineBreakByTruncatingTail;
+        wtl.text = [SelectionCriteria singleton].whereToFirst;
+        wtl.textColor = self.titleViewTextColor;
         wtl.textAlignment = NSTextAlignmentCenter;
         wtl.font = [UIFont boldSystemFontOfSize:15.0f];
     }
@@ -183,11 +179,11 @@ NSUInteger const kRightCheckMarkView = 4921743;
         UIImage *calendarImage = [[UIImage imageNamed:@"calendar.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         UIImageView *cv = [[UIImageView alloc ]initWithFrame:CGRectMake(0, 3, 16, 16)];
         cv.image = calendarImage;
-        cv.tintColor = self.tintColor;
+        cv.tintColor = self.titleViewTextColor;
         
         UILabel *datesLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, 107, 22)];
         datesLabel.font = [UIFont boldSystemFontOfSize:15.0f];;
-        datesLabel.textColor = self.tintColor;
+        datesLabel.textColor = self.titleViewTextColor;
         datesLabel.textAlignment = NSTextAlignmentLeft;
         NSDateFormatter *df = kShortShortDateFormatter();
         datesLabel.text = [NSString stringWithFormat:@"%@ - %@", [df stringFromDate:sc.arrivalDate], [df stringFromDate:sc.returnDate]];
@@ -199,12 +195,12 @@ NSUInteger const kRightCheckMarkView = 4921743;
         UIImage *userSilhouetteImage = [[UIImage imageNamed:@"user_silhouette"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         UIImageView *sv = [[UIImageView alloc] initWithFrame:CGRectMake(maxDatesPoint + 9, 3, 16, 16)];
         sv.image = userSilhouetteImage;
-        sv.tintColor = self.tintColor;
+        sv.tintColor = self.titleViewTextColor;
         CGFloat maxSilhPoint = CGRectGetMaxX(sv.frame);
         
         UILabel *numbLabel = [[UILabel alloc] initWithFrame:CGRectMake(maxSilhPoint + 2, 0, 25, 22)];
         numbLabel.font = [UIFont boldSystemFontOfSize:15.0f];;
-        numbLabel.textColor = self.tintColor;
+        numbLabel.textColor = self.titleViewTextColor;
         numbLabel.textAlignment = NSTextAlignmentLeft;
         numbLabel.text = [NSString stringWithFormat:@"%lu", (sc.numberOfAdults + [ChildTraveler numberOfKids])];
         [numbLabel sizeToFit];
@@ -344,6 +340,10 @@ NSUInteger const kRightCheckMarkView = 4921743;
         return _animationDuration;
     }
     return kNvAnimationDuration;
+}
+
+- (UIColor *)titleViewTextColor {
+    return [UIColor blackColor];
 }
 
 @end

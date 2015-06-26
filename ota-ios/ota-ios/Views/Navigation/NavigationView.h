@@ -29,6 +29,7 @@ extern NSUInteger const kNavigationViewTag;
 
 - (id)initWithDelegate:(id<NavigationDelegate>)navDelegate;
 
+@property (nonatomic, strong) UILabel *whereToLabel;
 @property (nonatomic, strong) UIView *leftView;
 @property (nonatomic, strong) UIView *rightView;
 @property (nonatomic, strong) UIView *titleView;

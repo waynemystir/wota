@@ -12,6 +12,7 @@
 #import "EanCancelPolicyInfo.h"
 #import "AppEnvironment.h"
 #import "EanNightlyRate.h"
+#import "NSString+HTML.h"
 
 NSString * const kNonrefundableString = @"This rate is non-refundable";
 NSString * const kFreeCancelString = @"Free Cancellation by";
@@ -117,6 +118,10 @@ NSString * const kFreeCancelString = @"Free Cancellation by";
     }
     
     return hrar;
+}
+
+- (NSString *)hotelNameFormatted {
+    return [_hotelName stringByConvertingHTMLToPlainText];
 }
 
 @end

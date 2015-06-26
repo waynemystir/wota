@@ -22,13 +22,14 @@
 #import "WotaMKPinAnnotationView.h"
 
 NSTimeInterval const kFlipAnimationDuration = 0.7;
+NSTimeInterval const kSearchModeAnimationDuration = 0.36;
 
 @interface HotelListingViewController () <NavigationDelegate, MKMapViewDelegate>
 
 @property (nonatomic) BOOL alreadyDroppedSpinner;
 @property (strong, nonatomic) UITableView *hotelsTableView;
 @property (nonatomic, strong) HotelsTableViewDelegateImplementation *hotelTableViewDelegate;
-@property (weak, nonatomic) IBOutlet UIImageView *wmapImageView;
+@property (weak, nonatomic) IBOutlet UIView *wmapIvContainer;
 @property (nonatomic, strong) UIView *containerView;
 @property (nonatomic, strong) MKMapView *mkMapView;
 @property (nonatomic, strong) UIView *searchContainer;
@@ -43,7 +44,9 @@ NSTimeInterval const kFlipAnimationDuration = 0.7;
 #pragma mark Lifecycle
 
 - (id)init {
-    self = [super initWithNibName:@"HotelListingView" bundle:nil];
+    if (self = [super initWithNibName:@"HotelListingView" bundle:nil]) {
+        self.animationDuraton = kSearchModeAnimationDuration;
+    }
     return self;
 }
 
@@ -74,6 +77,9 @@ NSTimeInterval const kFlipAnimationDuration = 0.7;
     
     _mkMapView = [[MKMapView alloc] initWithFrame:_containerView.bounds];
     _mkMapView.delegate = self;
+    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse) {
+        _mkMapView.showsUserLocation = YES;
+    }
     [_containerView addSubview:_mkMapView];
     
     _hotelTableViewDelegate = [[HotelsTableViewDelegateImplementation alloc] init];
@@ -88,8 +94,8 @@ NSTimeInterval const kFlipAnimationDuration = 0.7;
     UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(transitionBetweenTableAndMap)];
     tgr.numberOfTapsRequired = 1;
     tgr.numberOfTouchesRequired = 1;
-    _wmapImageView.userInteractionEnabled = YES;
-    [_wmapImageView addGestureRecognizer:tgr];
+    _wmapIvContainer.userInteractionEnabled = YES;
+    [_wmapIvContainer addGestureRecognizer:tgr];
     
     _searchContainer = [[UIView alloc] initWithFrame:CGRectMake(0, 63.4f, 320, 0)];
     _searchContainer.clipsToBounds = YES;
@@ -103,7 +109,7 @@ NSTimeInterval const kFlipAnimationDuration = 0.7;
     wt.backgroundColor = [UIColor whiteColor];
     wt.borderStyle = UITextBorderStyleRoundedRect;
     wt.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-    wt.returnKeyType = UIReturnKeySearch;
+    wt.returnKeyType = UIReturnKeyDone;
     wt.autocapitalizationType = UITextAutocapitalizationTypeNone;
     wt.autocorrectionType = UITextAutocorrectionTypeNo;
     wt.spellCheckingType = UITextSpellCheckingTypeNo;
@@ -144,16 +150,16 @@ NSTimeInterval const kFlipAnimationDuration = 0.7;
     if (tableOrMap) {
         [UIView transitionFromView:_mkMapView
                             toView:_hotelsTableView
-                          duration:0.8
-                           options:UIViewAnimationOptionTransitionFlipFromLeft|UIViewAnimationOptionShowHideTransitionViews
+                          duration:0.75
+                           options:UIViewAnimationOptionTransitionFlipFromLeft|UIViewAnimationOptionShowHideTransitionViews|UIViewAnimationOptionAllowAnimatedContent
                         completion:^(BOOL finished) {
                             tableOrMap = NO;
                         }];
     } else {
         [UIView transitionFromView:_hotelsTableView
                             toView:_mkMapView
-                          duration:0.8
-                           options:UIViewAnimationOptionTransitionFlipFromLeft|UIViewAnimationOptionShowHideTransitionViews
+                          duration:0.75
+                           options:UIViewAnimationOptionTransitionFlipFromLeft|UIViewAnimationOptionShowHideTransitionViews|UIViewAnimationOptionAllowAnimatedContent
                         completion:^(BOOL finished) {
                             tableOrMap = YES;
                         }];
@@ -172,17 +178,17 @@ NSTimeInterval const kFlipAnimationDuration = 0.7;
 }
 
 - (void)clickRight {
-    NSTimeInterval ti = 0.3;
     __weak UIView *sc = _searchContainer;
     __weak UIView *bd = [sc viewWithTag:123456781];
     __weak NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
-    nv.animationDuration = ti;
+    nv.animationDuration = kSearchModeAnimationDuration;
     if (sc.frame.size.height == 0) {
+//        self.whereToTextField.placeholder = [SelectionCriteria singleton].whereToFirst;
         [self.whereToTextField becomeFirstResponder];
         [self.view bringSubviewToFront:sc];
         [nv animateToCancel];
         [nv rightViewFlipToRefresh];
-        [UIView animateWithDuration:ti animations:^{
+        [UIView animateWithDuration:kSearchModeAnimationDuration animations:^{
             sc.frame = CGRectMake(0, 63.4f, 320, 40);
             bd.frame = CGRectMake(0, 39.4f, 320, 0.6f);
         } completion:^(BOOL finished) {
@@ -198,27 +204,40 @@ NSTimeInterval const kFlipAnimationDuration = 0.7;
 }
 
 - (void)exitSearchModeWithSearch:(BOOL)search {
-    NSTimeInterval ti = 0.3;
     __weak UIView *sc = _searchContainer;
     __weak UIView *bd = [sc viewWithTag:123456781];
     __weak NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
-    nv.animationDuration = ti;
+    nv.animationDuration = kSearchModeAnimationDuration;
     _alreadyDroppedSpinner = NO;
     
     if (search) {
         [self letsFindHotels:self];
+        nv.whereToLabel.text = [SelectionCriteria singleton].whereToFirst;
     }
     
     [self animateTableViewCompression];
     [self.whereToTextField endEditing:YES];
     [nv animateToBack];
     [nv rightViewFlipToSearch];
-    [UIView animateWithDuration:ti animations:^{
+    [UIView animateWithDuration:kSearchModeAnimationDuration animations:^{
         sc.frame = CGRectMake(0, 63.4f, 320, 0);
         bd.frame = CGRectMake(0, 0, 320, 0.6f);
     } completion:^(BOOL finished) {
         nv.animationDuration = 0.0;
     }];
+}
+
+#pragma mark UITextFieldDelegate overrides
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    self.whereToTextField.placeholder = [SelectionCriteria singleton].whereToFirst;
+    [super textFieldDidBeginEditing:textField];
+    [self.view bringSubviewToFront:_searchContainer];
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [self exitSearchModeWithSearch:NO];
+    return YES;
 }
 
 #pragma mark LoadDataProtocol methods
@@ -235,12 +254,9 @@ NSTimeInterval const kFlipAnimationDuration = 0.7;
     }
     
     EanHotelListResponse *ehlr = [EanHotelListResponse eanObjectFromApiResponseData:responseData];
-    NSArray *hotelList = ehlr.hotelList;
-    
-    if (hotelList != nil) {
-        _hotelTableViewDelegate.hotelData = hotelList;
-        [_hotelsTableView reloadData];
-    }
+    _hotelTableViewDelegate.hotelData = ehlr.hotelList;
+    [_hotelsTableView reloadData];
+    [_hotelsTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
     
     SelectionCriteria *sc = [SelectionCriteria singleton];
     CLLocationCoordinate2D zoomLocation;
@@ -252,8 +268,10 @@ NSTimeInterval const kFlipAnimationDuration = 0.7;
     MKCoordinateSpan span = MKCoordinateSpanMake(spanLat, spanLon);
     MKCoordinateRegion viewRegion = MKCoordinateRegionMake(zoomLocation, span);
     
-    [_mkMapView setRegion:viewRegion];
+    [_mkMapView setRegion:viewRegion animated:tableOrMap];
+    [_mkMapView setNeedsDisplay];
     
+    // TODO: I might have to remove any existing annotations before adding the following?
     for (int j = 0; j < [_hotelTableViewDelegate.hotelData count]; j++) {
         EanHotelListHotelSummary *hotel = [_hotelTableViewDelegate.hotelData objectAtIndex:j];
         WotaMapAnnotatioin *annotation = [[WotaMapAnnotatioin alloc] init];
@@ -275,6 +293,10 @@ NSTimeInterval const kFlipAnimationDuration = 0.7;
 #pragma mark MKMapViewDelegate methods
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
+    if ([annotation isKindOfClass:[MKUserLocation class]]) {
+        return nil;
+    }
+    
     WotaMapAnnotatioin *wa = (WotaMapAnnotatioin *)annotation;
     WotaMKPinAnnotationView *annotationView = (WotaMKPinAnnotationView *) [mapView dequeueReusableAnnotationViewWithIdentifier:@"WotaPinReuse"];
     if(!annotationView) {

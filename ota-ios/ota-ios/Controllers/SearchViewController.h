@@ -13,7 +13,7 @@
 
 extern double const DEFAULT_RADIUS;
 
-@interface SearchViewController : UIViewController <LoadDataProtocol>
+@interface SearchViewController : UIViewController <LoadDataProtocol, UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet UITextField *whereToTextField;
 @property (weak, nonatomic) IBOutlet UILabel *whereToSecondLevel;
@@ -22,6 +22,7 @@ extern double const DEFAULT_RADIUS;
 @property (nonatomic) CGRect placesTableViewZeroFrame;
 @property (nonatomic) CGRect placesTableViewExpandedFrame;
 @property (nonatomic) BOOL isPlacesTableViewExpanded;
+@property (nonatomic) NSTimeInterval animationDuraton;
 
 - (void)animateTableViewExpansion;
 - (void)animateTableViewCompression;

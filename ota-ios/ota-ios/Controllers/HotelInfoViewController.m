@@ -33,7 +33,7 @@ typedef NS_ENUM(NSUInteger, HI_ORIENTATION) {
     HI_LANDSCAPE_RIGHT = UIDeviceOrientationLandscapeRight
 };
 
-NSTimeInterval const kHiAnimationDuration = 0.5;
+NSTimeInterval const kHiAnimationDuration = 0.43;
 CGFloat const kImageScrollerStartY = -100.0f;
 CGFloat const kImageScrollerStartHeight = 325.0f;
 CGFloat const kImageScrollerPortraitY = 34.0f;
@@ -113,6 +113,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     [super loadView];
     NavigationView *nv = [[NavigationView alloc] initWithDelegate:self];
     nv.animationDuration = kHiAnimationDuration;
+    nv.whereToLabel.text = _eanHotel.hotelNameFormatted;
     [self.view addSubview:nv];
     
     AppDelegate *ad = [[UIApplication sharedApplication] delegate];
@@ -195,6 +196,9 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(zoomLocation, 0.4*METERS_PER_MILE, 0.4*METERS_PER_MILE);
     [_mapView setRegion:viewRegion];
 //    _mapView.delegate = self;
+    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse) {
+        _mapView.showsUserLocation = YES;
+    }
     [_mapContainerOutlet addSubview:_mapView];
     [_mapContainerOutlet sendSubviewToBack:_mapView];
     
@@ -396,7 +400,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
         _diningTitle.frame = CGRectMake(dtf.origin.x, acf.origin.y + acf.size.height + 15.0f, dtf.size.width, dtf.size.height);
         dtf = _diningTitle.frame;
         
-        _diningLabel.text = hd.diningDescription;
+        _diningLabel.text = stringByStrippingHTML(hd.diningDescription);
         CGSize size = [_diningLabel sizeThatFits:CGSizeMake(dlf.size.width, CGFLOAT_MAX)];
         dlf.size.height = size.height;
         _diningLabel.frame = dlf;
