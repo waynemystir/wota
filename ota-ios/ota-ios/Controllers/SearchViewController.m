@@ -41,6 +41,7 @@ double const DEFAULT_RADIUS = 5.0;
     [self.placesTableView reloadData];
     
     self.whereToTextField.delegate = self;
+    [self resetWhereToTfAppearance];
     self.whereToTextField.text = @"";//[SelectionCriteria singleton].whereToFirst;
     self.whereToSecondLevel.text = @"";//[SelectionCriteria singleton].whereToSecond;
 }
@@ -54,6 +55,10 @@ double const DEFAULT_RADIUS = 5.0;
     
     self.whereToTextField.text = @"";
     self.whereToSecondLevel.text = @"";
+    
+    self.whereToTextField.layer.cornerRadius = WOTA_CORNER_RADIUS;
+    self.whereToTextField.layer.borderColor = kWotaColorOne().CGColor;
+    self.whereToTextField.layer.borderWidth = 1.0f;
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
@@ -82,6 +87,10 @@ double const DEFAULT_RADIUS = 5.0;
         [self.placesTableView reloadData];
     }
     return YES;
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    [self resetWhereToTfAppearance];
 }
 
 #pragma mark LoadDataProtocol methods
@@ -253,6 +262,14 @@ double const DEFAULT_RADIUS = 5.0;
     }
     
     return _animationDuraton;
+}
+
+#pragma mark Helpers
+
+- (void)resetWhereToTfAppearance {
+    self.whereToTextField.layer.cornerRadius = 6.0f;
+    self.whereToTextField.layer.borderColor = UIColorFromRGB(0xbbbbbb).CGColor;
+    self.whereToTextField.layer.borderWidth = 0.7f;
 }
 
 @end

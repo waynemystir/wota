@@ -35,6 +35,7 @@ static double const METERS_PER_MILE = 1609.344;
 @property (nonatomic) BOOL userLocationHasUpdated;
 @property (nonatomic) BOOL arrivalOrReturn; //arrival == NO and return == YES
 @property (nonatomic, assign) BOOL nextRegionChangeIsFromUserInteraction;
+@property (nonatomic) BOOL notMyFirstRodeo;
 
 - (IBAction)justPushIt:(id)sender;
 
@@ -108,6 +109,14 @@ static double const METERS_PER_MILE = 1609.344;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.navigationController.navigationBar.hidden = YES;
+    
+    if (_notMyFirstRodeo) {
+        self.whereToTextField.text = [SelectionCriteria singleton].whereToFirst;
+        self.whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
+        [self redrawMapViewAnimated:NO radius:DEFAULT_RADIUS];
+    }
+    
+    _notMyFirstRodeo = YES;
 }
 
 - (void)dealloc {

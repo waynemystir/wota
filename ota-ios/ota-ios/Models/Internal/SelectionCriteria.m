@@ -161,6 +161,7 @@ NSString * const kKeyNumberOfAdults = @"numberOfAdults";
     wp.displayName = googlePlaceDetail.formattedWhereTo;
     wp.latitude = googlePlaceDetail.latitude;
     wp.longitude = googlePlaceDetail.longitude;
+    wp.placeDetailLevel = googlePlaceDetail.placeDetailLevel;
     self.selectedPlace = wp;
 }
 

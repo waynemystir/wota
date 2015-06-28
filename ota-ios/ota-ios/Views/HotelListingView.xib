@@ -6,7 +6,10 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="HotelListingViewController">
             <connections>
+                <outlet property="pricesAvgLabel" destination="slo-EV-bKG" id="rLw-AN-mt6"/>
+                <outlet property="searchMapBtn" destination="DXV-hu-yRR" id="BD7-6O-eTs"/>
                 <outlet property="view" destination="iN0-l3-epB" id="r3P-ph-HPJ"/>
+                <outlet property="wmapImageView" destination="UCb-A2-tWP" id="yDy-7N-aXb"/>
                 <outlet property="wmapIvContainer" destination="hVi-kd-Wwn" id="cte-2J-SKc"/>
             </connections>
         </placeholder>
@@ -36,6 +39,24 @@
                             </subviews>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         </view>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="DXV-hu-yRR" userLabel="searchMapBtn">
+                            <rect key="frame" x="103" y="1" width="114" height="43"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                            <state key="normal" title="Search Map">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="clickSearchMap:" destination="-1" eventType="touchUpInside" id="GjY-ds-9hU"/>
+                            </connections>
+                        </button>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Prices Average, per night" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="slo-EV-bKG" userLabel="pricesAvgLabel">
+                            <rect key="frame" x="68" y="1" width="184" height="43"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
                     </subviews>
                     <color key="backgroundColor" red="0.92941176470588238" green="0.92941176470588238" blue="0.92941176470588238" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                 </view>

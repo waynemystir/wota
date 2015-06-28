@@ -21,7 +21,7 @@
 #import "WotaMapAnnotatioin.h"
 #import "WotaMKPinAnnotationView.h"
 
-NSTimeInterval const kFlipAnimationDuration = 0.7;
+NSTimeInterval const kFlipAnimationDuration = 0.75;
 NSTimeInterval const kSearchModeAnimationDuration = 0.36;
 
 @interface HotelListingViewController () <NavigationDelegate, MKMapViewDelegate>
@@ -30,9 +30,15 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
 @property (strong, nonatomic) UITableView *hotelsTableView;
 @property (nonatomic, strong) HotelsTableViewDelegateImplementation *hotelTableViewDelegate;
 @property (weak, nonatomic) IBOutlet UIView *wmapIvContainer;
+@property (weak, nonatomic) IBOutlet UIImageView *wmapImageView;
+@property (nonatomic, weak) UIImageView *hamburgerImageView;
 @property (nonatomic, strong) UIView *containerView;
 @property (nonatomic, strong) MKMapView *mkMapView;
 @property (nonatomic, strong) UIView *searchContainer;
+@property (weak, nonatomic) IBOutlet UIButton *searchMapBtn;
+@property (weak, nonatomic) IBOutlet UILabel *pricesAvgLabel;
+
+- (IBAction)clickSearchMap:(id)sender;
 
 @end
 
@@ -97,15 +103,21 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     _wmapIvContainer.userInteractionEnabled = YES;
     [_wmapIvContainer addGestureRecognizer:tgr];
     
+    UIImage *hamburger = [[UIImage imageNamed:@"hamburger"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    UIImageView *hiv = [[UIImageView alloc] initWithImage:hamburger];
+    hiv.frame = CGRectMake(8, 10, 25, 27);
+    hiv.hidden = YES;
+    _hamburgerImageView = hiv;
+    [_wmapIvContainer addSubview:_hamburgerImageView];
+    
+    _searchMapBtn.alpha = 0.0f;
+    
     _searchContainer = [[UIView alloc] initWithFrame:CGRectMake(0, 63.4f, 320, 0)];
     _searchContainer.clipsToBounds = YES;
     _searchContainer.backgroundColor = kNavigationColor();
     [self.view addSubview:_searchContainer];
     
     UITextField *wt = [[UITextField alloc] initWithFrame:CGRectMake(6, 5, 308, 30)];
-    wt.layer.borderColor = kWotaColorOne().CGColor;
-    wt.layer.borderWidth = 1.0f;
-    wt.layer.cornerRadius = 6.0f;
     wt.backgroundColor = [UIColor whiteColor];
     wt.borderStyle = UITextBorderStyleRoundedRect;
     wt.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
@@ -113,8 +125,9 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     wt.autocapitalizationType = UITextAutocapitalizationTypeNone;
     wt.autocorrectionType = UITextAutocorrectionTypeNo;
     wt.spellCheckingType = UITextSpellCheckingTypeNo;
+    wt.clearButtonMode = UITextFieldViewModeWhileEditing;
     wt.placeholder = @"Where to?";
-    wt.font = [UIFont systemFontOfSize:17.0f];
+    wt.font = [UIFont systemFontOfSize:16.0f];
     self.whereToTextField = wt;
     [_searchContainer addSubview:self.whereToTextField];
     
@@ -150,19 +163,45 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     if (tableOrMap) {
         [UIView transitionFromView:_mkMapView
                             toView:_hotelsTableView
-                          duration:0.75
+                          duration:kFlipAnimationDuration
                            options:UIViewAnimationOptionTransitionFlipFromLeft|UIViewAnimationOptionShowHideTransitionViews|UIViewAnimationOptionAllowAnimatedContent
                         completion:^(BOOL finished) {
                             tableOrMap = NO;
                         }];
+        
+        [UIView transitionFromView:_hamburgerImageView
+                            toView:_wmapImageView
+                          duration:kFlipAnimationDuration
+                           options:UIViewAnimationOptionTransitionFlipFromLeft|UIViewAnimationOptionShowHideTransitionViews|UIViewAnimationOptionAllowAnimatedContent
+                        completion:^(BOOL finished) {
+                        }];
+        
+        [UIView animateWithDuration:kFlipAnimationDuration animations:^{
+            _searchMapBtn.alpha = 0.0f;
+            _pricesAvgLabel.alpha = 1.0f;
+            ;
+        }];
     } else {
         [UIView transitionFromView:_hotelsTableView
                             toView:_mkMapView
-                          duration:0.75
+                          duration:kFlipAnimationDuration
                            options:UIViewAnimationOptionTransitionFlipFromLeft|UIViewAnimationOptionShowHideTransitionViews|UIViewAnimationOptionAllowAnimatedContent
                         completion:^(BOOL finished) {
                             tableOrMap = YES;
                         }];
+        
+        [UIView transitionFromView:_wmapImageView
+                            toView:_hamburgerImageView
+                          duration:kFlipAnimationDuration
+                           options:UIViewAnimationOptionTransitionFlipFromLeft|UIViewAnimationOptionShowHideTransitionViews|UIViewAnimationOptionAllowAnimatedContent
+                        completion:^(BOOL finished) {
+                        }];
+        
+        [UIView animateWithDuration:kFlipAnimationDuration animations:^{
+            _searchMapBtn.alpha = 1.0f;
+            _pricesAvgLabel.alpha = 0.0f;
+            ;
+        }];
     }
 }
 
@@ -271,6 +310,7 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     [_mkMapView setRegion:viewRegion animated:tableOrMap];
     [_mkMapView setNeedsDisplay];
     
+    [self removeAllPinsButUserLocation];
     // TODO: I might have to remove any existing annotations before adding the following?
     for (int j = 0; j < [_hotelTableViewDelegate.hotelData count]; j++) {
         EanHotelListHotelSummary *hotel = [_hotelTableViewDelegate.hotelData objectAtIndex:j];
@@ -332,6 +372,35 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
 
 - (void)redrawMapViewAnimated:(BOOL)animated radius:(double)radius {
     
+}
+
+#pragma mark Various
+
+- (void)removeAllPinsButUserLocation {
+    id userLocation = [_mkMapView userLocation];
+    NSMutableArray *pins = [[NSMutableArray alloc] initWithArray:[_mkMapView annotations]];
+    if (userLocation != nil) {
+        [pins removeObject:userLocation];
+    }
+    
+    [_mkMapView removeAnnotations:pins];
+}
+
+- (IBAction)clickSearchMap:(id)sender {
+    [self reverseGeoCodingDawg];
+}
+
+- (void)reverseGeoCodingDawg {
+    __weak NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
+    __weak typeof(self) wes = self;
+    [[LoadGooglePlacesData sharedInstance] loadPlaceDetailsWithLatitude:_mkMapView.region.center.latitude longitude:_mkMapView.region.center.longitude completionBlock:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+        [SelectionCriteria singleton].googlePlaceDetail = [GooglePlaceDetail placeDetailFromGeoCodeData:data];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            wes.alreadyDroppedSpinner = NO;
+            [wes letsFindHotels:wes];
+            nv.whereToLabel.text = [SelectionCriteria singleton].whereToFirst;
+        });
+    }];
 }
 
 @end

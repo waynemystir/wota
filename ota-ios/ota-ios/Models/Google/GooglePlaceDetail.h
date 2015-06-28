@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "AppEnvironment.h"
 
 @interface GooglePlaceDetail : NSObject <NSCoding>
 
@@ -17,6 +18,16 @@
 @property (nonatomic, strong) NSArray *addressComponents;
 @property (nonatomic, strong, getter=getGoogleAddressComponents) NSMutableArray *googleAddressComponents;
 @property (nonatomic, strong) NSString *blankType;
+@property (nonatomic, strong) NSString *airportShortName;
+@property (nonatomic, strong) NSString *airportLongName;
+@property (nonatomic, strong) NSString *establishmentShortName;
+@property (nonatomic, strong) NSString *establishmentLongName;
+@property (nonatomic, strong) NSString *naturalFeatureShortName;
+@property (nonatomic, strong) NSString *naturalFeatureLongName;
+@property (nonatomic, strong) NSString *pointOfInterestShortName;
+@property (nonatomic, strong) NSString *pointOfInterestLongName;
+@property (nonatomic, strong) NSString *parkShortName;
+@property (nonatomic, strong) NSString *parkLongName;
 @property (nonatomic, strong) NSString *streetNumberShortName;
 @property (nonatomic, strong) NSString *streetNumberLongName;
 @property (nonatomic, strong) NSString *routeShortName;
@@ -45,6 +56,7 @@
 @property (nonatomic, strong) NSDictionary *location;
 @property (nonatomic, setter=setLatitude:) double latitude;
 @property (nonatomic, setter=setLongitude:) double longitude;
+@property (nonatomic) PLACE_DETAIL_LEVEL placeDetailLevel;
 @property (nonatomic, strong) NSArray *types;
 
 @property (nonatomic, strong, readonly) NSString *formattedWhereTo;

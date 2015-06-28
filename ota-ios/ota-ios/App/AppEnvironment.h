@@ -66,4 +66,11 @@ extern UIColor * kTheColorOfMoney();
  */
 extern CGFloat const WOTA_CORNER_RADIUS;
 extern NSDate * kAddDays(int days, NSDate * toDate);
+typedef NS_ENUM(NSUInteger, PLACE_DETAIL_LEVEL) {
+    PLACE_LEVEL_EMPTY = 0,
+    PLACE_LEVEL_NEIGHBORHOOD,
+    PLACE_LEVEL_CITY,
+    PLACE_LEVEL_STATE,
+    PLACE_LEVEL_COUNTRY
+};
 
