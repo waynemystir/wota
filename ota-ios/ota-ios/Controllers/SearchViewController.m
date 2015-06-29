@@ -18,6 +18,7 @@
 
 static int const kAutoCompleteMinimumNumberOfCharacters = 4;
 double const DEFAULT_RADIUS = 5.0;
+static double const METERS_PER_MILE = 1609.344;
 
 @interface SearchViewController () <UITableViewDataSource, UITableViewDelegate>
 
@@ -44,6 +45,17 @@ double const DEFAULT_RADIUS = 5.0;
     [self resetWhereToTfAppearance];
     self.whereToTextField.text = @"";//[SelectionCriteria singleton].whereToFirst;
     self.whereToSecondLevel.text = @"";//[SelectionCriteria singleton].whereToSecond;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    if (self.notMyFirstRodeo) {
+        self.placesTableData = [SelectionCriteria singleton].placesArray;
+        [self.placesTableView reloadData];
+    }
+    
+    self.notMyFirstRodeo = YES;
+    
+    [super viewWillAppear:animated];
 }
 
 #pragma mark UITextFieldDelegate methods
@@ -102,7 +114,7 @@ double const DEFAULT_RADIUS = 5.0;
 - (void)requestFinished:(NSData *)responseData dataType:(LOAD_DATA_TYPE)dataType {
     switch (dataType) {
         case LOAD_GOOGLE_AUTOCOMPLETE: {
-            self.placesTableData = [GoogleParser parseAutoCompleteResponse:responseData];
+            self.placesTableData = [NSMutableArray arrayWithArray:[GoogleParser parseAutoCompleteResponse:responseData]];
             [self.placesTableView reloadData];
             break;
         }
@@ -115,7 +127,9 @@ double const DEFAULT_RADIUS = 5.0;
 //            [self.placesTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
             self.whereToTextField.text = [SelectionCriteria singleton].whereToFirst;
             self.whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
-            [self redrawMapViewAnimated:YES radius:DEFAULT_RADIUS];
+            if (self.redrawMapOnSelection) {
+                [self redrawMapViewAnimated:YES radius:DEFAULT_RADIUS];
+            }
             break;
         }
             
@@ -156,6 +170,26 @@ double const DEFAULT_RADIUS = 5.0;
     return cell;
 }
 
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    return indexPath.row != 0;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        if ([[SelectionCriteria singleton].selectedPlace.placeId isEqualToString:((WotaPlace *)[self.placesTableData objectAtIndex:indexPath.row]).placeId]) {
+            [SelectionCriteria singleton].selectedPlace = [SelectionCriteria singleton].placesArray.firstObject;
+        }
+        
+        if ([[SelectionCriteria singleton].googlePlaceDetail.placeId isEqualToString:((WotaPlace *)[self.placesTableData objectAtIndex:indexPath.row]).placeId]) {
+            [SelectionCriteria singleton].googlePlaceDetail = nil;
+        }
+        
+        [self.placesTableData removeObjectAtIndex:indexPath.row];
+        [[SelectionCriteria singleton] save];
+        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+}
+
 #pragma mark UITableViewDelegate methods
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -191,7 +225,9 @@ double const DEFAULT_RADIUS = 5.0;
         self.whereToTextField.text = [SelectionCriteria singleton].whereToFirst;
         self.whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
         [self animateTableViewCompression];
-        [self redrawMapViewAnimated:YES radius:DEFAULT_RADIUS];
+        if (self.redrawMapOnSelection) {
+            [self redrawMapViewAnimated:YES radius:DEFAULT_RADIUS];
+        }
     }
 }
 
@@ -224,20 +260,37 @@ double const DEFAULT_RADIUS = 5.0;
     }];
 }
 
-#pragma mark Methods to override
+#pragma mark Various methods likely called by sublclasses
 
 - (void)redrawMapViewAnimated:(BOOL)animated radius:(double)radius {
-    [self doesNotRecognizeSelector:_cmd];
+    MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(self.zoomLocation, radius*METERS_PER_MILE, radius*METERS_PER_MILE);
+    [self.mkMapView setRegion:viewRegion animated:animated];
+}
+
+- (CLLocationCoordinate2D)zoomLocation {
+    SelectionCriteria *sc = [SelectionCriteria singleton];
+    CLLocationCoordinate2D zoomLocation;
+    zoomLocation.latitude = sc.latitude;
+    zoomLocation.longitude= sc.longitude;
+    return zoomLocation;
 }
 
 - (void)letsFindHotels:(HotelListingViewController *)hvc {
+    [self letsFindHotels:hvc searchRadius:15.0];
+}
+
+- (void)letsFindHotels:(HotelListingViewController *)hvc searchRadius:(CLLocationDistance)searchRadius {
     SelectionCriteria *sc = [SelectionCriteria singleton];
+    
+    searchRadius = fmax(searchRadius, 1);
+    searchRadius = fmin(searchRadius, 50);
+    int sri = ceil(searchRadius);
     
     [[LoadEanData sharedInstance:hvc] loadHotelsWithLatitude:sc.latitude
                                                    longitude:sc.longitude
                                                  arrivalDate:sc.arrivalDateEanString
                                                   returnDate:sc.returnDateEanString
-                                                searchRadius:@15];
+                                                searchRadius:[NSNumber numberWithInt:sri]];
     
     if ([SelectionCriteria singleton].googlePlaceDetail) {
         [[SelectionCriteria singleton] savePlace:[SelectionCriteria singleton].googlePlaceDetail];
@@ -252,6 +305,23 @@ double const DEFAULT_RADIUS = 5.0;
         AppDelegate *ad = [[UIApplication sharedApplication] delegate];
         [ad loadDaSpinner];
     }
+}
+
+- (CLLocationDistance)mapRadiusInMeters {
+    // init center location from center coordinate
+    CLLocation *centerLocation = [[CLLocation alloc] initWithLatitude:self.mkMapView.centerCoordinate.latitude
+                                                            longitude:self.mkMapView.centerCoordinate.longitude];
+    
+    double topCenterLat = centerLocation.coordinate.latitude-self.mkMapView.region.span.latitudeDelta/2.;
+    CLLocation *topCenterLocation = [[CLLocation alloc] initWithLatitude:topCenterLat
+                                                               longitude:centerLocation.coordinate.longitude];
+    
+    CLLocationDistance distance = [centerLocation distanceFromLocation:topCenterLocation];
+    return distance;
+}
+
+- (CLLocationDistance)mapRadiusInMiles {
+    return self.mapRadiusInMeters / METERS_PER_MILE;
 }
 
 #pragma mark Getter & Setter

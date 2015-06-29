@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "LoadGooglePlacesData.h"
+#import <MapKit/MapKit.h>
 
 @class HotelListingViewController;
 
@@ -17,16 +18,23 @@ extern double const DEFAULT_RADIUS;
 
 @property (weak, nonatomic) IBOutlet UITextField *whereToTextField;
 @property (weak, nonatomic) IBOutlet UILabel *whereToSecondLevel;
-@property (nonatomic, strong) NSArray *placesTableData;
+@property (nonatomic, strong) NSMutableArray *placesTableData;
 @property (nonatomic, strong) UITableView *placesTableView;
 @property (nonatomic) CGRect placesTableViewZeroFrame;
 @property (nonatomic) CGRect placesTableViewExpandedFrame;
 @property (nonatomic) BOOL isPlacesTableViewExpanded;
 @property (nonatomic) NSTimeInterval animationDuraton;
+@property (nonatomic, strong) MKMapView *mkMapView;
+@property (nonatomic) CLLocationCoordinate2D zoomLocation;
+@property (nonatomic) CLLocationDistance mapRadiusInMeters;
+@property (nonatomic) CLLocationDistance mapRadiusInMiles;
+@property (nonatomic) BOOL notMyFirstRodeo;
+@property (nonatomic) BOOL redrawMapOnSelection;
 
 - (void)animateTableViewExpansion;
 - (void)animateTableViewCompression;
 - (void)redrawMapViewAnimated:(BOOL)animated radius:(double)radius;
 - (void)letsFindHotels:(HotelListingViewController *)hotelListingViewController;
+- (void)letsFindHotels:(HotelListingViewController *)hotelListingViewController searchRadius:(CLLocationDistance)searchRadius;
 
 @end

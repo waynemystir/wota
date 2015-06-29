@@ -94,7 +94,6 @@
 		B097457E1B28FF9100E4A9AD /* WotaMapAnnotatioin.m in Sources */ = {isa = PBXBuildFile; fileRef = B097457D1B28FF9100E4A9AD /* WotaMapAnnotatioin.m */; };
 		B09745871B29226800E4A9AD /* WotaMKPinAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = B09745861B29226800E4A9AD /* WotaMKPinAnnotationView.m */; };
 		B09797C91AC23C1F0014FC7C /* GoogleParser.m in Sources */ = {isa = PBXBuildFile; fileRef = B09797C81AC23C1F0014FC7C /* GoogleParser.m */; };
-		B09797CC1AC24BE20014FC7C /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B09797CB1AC24BE20014FC7C /* MapViewController.m */; };
 		B09797CE1AC2518D0014FC7C /* MapView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B09797CD1AC2518D0014FC7C /* MapView.xib */; };
 		B09797D11AC321F90014FC7C /* GooglePlaceDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = B09797D01AC321F90014FC7C /* GooglePlaceDetail.m */; };
 		B09797E21AC343DD0014FC7C /* HotelListingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B09797E01AC343DD0014FC7C /* HotelListingViewController.m */; };
@@ -324,8 +323,6 @@
 		B09745861B29226800E4A9AD /* WotaMKPinAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WotaMKPinAnnotationView.m; sourceTree = "<group>"; };
 		B09797C71AC23C1F0014FC7C /* GoogleParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleParser.h; sourceTree = "<group>"; };
 		B09797C81AC23C1F0014FC7C /* GoogleParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleParser.m; sourceTree = "<group>"; };
-		B09797CA1AC24BE20014FC7C /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapViewController.h; sourceTree = "<group>"; };
-		B09797CB1AC24BE20014FC7C /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
 		B09797CD1AC2518D0014FC7C /* MapView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MapView.xib; sourceTree = "<group>"; };
 		B09797CF1AC321F90014FC7C /* GooglePlaceDetail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GooglePlaceDetail.h; sourceTree = "<group>"; };
 		B09797D01AC321F90014FC7C /* GooglePlaceDetail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GooglePlaceDetail.m; sourceTree = "<group>"; };
@@ -678,8 +675,6 @@
 				B061FE7A1B38FC77005773B3 /* SearchViewController.m */,
 				B032F6511AC193B300809395 /* CriteriaViewController.h */,
 				B032F6521AC193B300809395 /* CriteriaViewController.m */,
-				B09797CA1AC24BE20014FC7C /* MapViewController.h */,
-				B09797CB1AC24BE20014FC7C /* MapViewController.m */,
 				B09797E11AC343DD0014FC7C /* HotelListingViewController.h */,
 				B09797E01AC343DD0014FC7C /* HotelListingViewController.m */,
 				B080B7C51AC5057100075A32 /* HotelInfoViewController.h */,
@@ -1198,7 +1193,6 @@
 				B0B50ADD1B255F2600685384 /* GoogleMarkerView.m in Sources */,
 				B018C0451AD9BEC800DDCE2E /* GuestInfo.m in Sources */,
 				B06C98BF1B09586B00DBE09D /* CountryPicker.m in Sources */,
-				B09797CC1AC24BE20014FC7C /* MapViewController.m in Sources */,
 				B0D02FE41AE6123000B1E75F /* PTKCardCVC.m in Sources */,
 				B09797E21AC343DD0014FC7C /* HotelListingViewController.m in Sources */,
 				B0BD38241AF9914600EF5E4F /* NightRateTableCellView.m in Sources */,

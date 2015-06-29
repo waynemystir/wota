@@ -17,7 +17,6 @@
 #import "SelectionCriteria.h"
 #import "ChildTraveler.h"
 #import "NavigationView.h"
-#import <MapKit/MapKit.h>
 #import "WotaMapAnnotatioin.h"
 #import "WotaMKPinAnnotationView.h"
 
@@ -33,7 +32,6 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
 @property (weak, nonatomic) IBOutlet UIImageView *wmapImageView;
 @property (nonatomic, weak) UIImageView *hamburgerImageView;
 @property (nonatomic, strong) UIView *containerView;
-@property (nonatomic, strong) MKMapView *mkMapView;
 @property (nonatomic, strong) UIView *searchContainer;
 @property (weak, nonatomic) IBOutlet UIButton *searchMapBtn;
 @property (weak, nonatomic) IBOutlet UILabel *pricesAvgLabel;
@@ -81,12 +79,12 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     _containerView.backgroundColor = [UIColor blackColor];
     [self.view addSubview:_containerView];
     
-    _mkMapView = [[MKMapView alloc] initWithFrame:_containerView.bounds];
-    _mkMapView.delegate = self;
+    self.mkMapView = [[MKMapView alloc] initWithFrame:_containerView.bounds];
+    self.mkMapView.delegate = self;
     if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse) {
-        _mkMapView.showsUserLocation = YES;
+        self.mkMapView.showsUserLocation = YES;
     }
-    [_containerView addSubview:_mkMapView];
+    [_containerView addSubview:self.mkMapView];
     
     _hotelTableViewDelegate = [[HotelsTableViewDelegateImplementation alloc] init];
     
@@ -161,7 +159,7 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
 
 - (void)transitionBetweenTableAndMap {
     if (tableOrMap) {
-        [UIView transitionFromView:_mkMapView
+        [UIView transitionFromView:self.mkMapView
                             toView:_hotelsTableView
                           duration:kFlipAnimationDuration
                            options:UIViewAnimationOptionTransitionFlipFromLeft|UIViewAnimationOptionShowHideTransitionViews|UIViewAnimationOptionAllowAnimatedContent
@@ -183,7 +181,7 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
         }];
     } else {
         [UIView transitionFromView:_hotelsTableView
-                            toView:_mkMapView
+                            toView:self.mkMapView
                           duration:kFlipAnimationDuration
                            options:UIViewAnimationOptionTransitionFlipFromLeft|UIViewAnimationOptionShowHideTransitionViews|UIViewAnimationOptionAllowAnimatedContent
                         completion:^(BOOL finished) {
@@ -297,21 +295,16 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     [_hotelsTableView reloadData];
     [_hotelsTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
     
-    SelectionCriteria *sc = [SelectionCriteria singleton];
-    CLLocationCoordinate2D zoomLocation;
-    zoomLocation.latitude = sc.latitude;
-    zoomLocation.longitude= sc.longitude;
-    
     double spanLat = ehlr.maxLatitudeDelta*2.00;
     double spanLon = ehlr.maxLongitudeDelta*2.00;
     MKCoordinateSpan span = MKCoordinateSpanMake(spanLat, spanLon);
-    MKCoordinateRegion viewRegion = MKCoordinateRegionMake(zoomLocation, span);
+    MKCoordinateRegion viewRegion = MKCoordinateRegionMake(self.zoomLocation, span);
     
-    [_mkMapView setRegion:viewRegion animated:tableOrMap];
-    [_mkMapView setNeedsDisplay];
+    [self.mkMapView setRegion:viewRegion animated:tableOrMap];
+    [self.mkMapView setNeedsDisplay];
     
     [self removeAllPinsButUserLocation];
-    // TODO: I might have to remove any existing annotations before adding the following?
+    
     for (int j = 0; j < [_hotelTableViewDelegate.hotelData count]; j++) {
         EanHotelListHotelSummary *hotel = [_hotelTableViewDelegate.hotelData objectAtIndex:j];
         WotaMapAnnotatioin *annotation = [[WotaMapAnnotatioin alloc] init];
@@ -323,8 +316,7 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
         annotation.title = hotel.hotelNameFormatted;
         NSNumberFormatter *cf = kPriceRoundOffFormatter(hotel.rateCurrencyCode);
         annotation.subtitle = [NSString stringWithFormat:@"From %@/night", [cf stringFromNumber:hotel.lowRate]];
-        [_mkMapView addAnnotation:annotation];
-        
+        [self.mkMapView addAnnotation:annotation];
     }
     
     [self dropDaSpinnerAlready];
@@ -368,22 +360,16 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     [self.navigationController pushViewController:hvc animated:YES];
 }
 
-#pragma mark Overrides
-
-- (void)redrawMapViewAnimated:(BOOL)animated radius:(double)radius {
-    
-}
-
 #pragma mark Various
 
 - (void)removeAllPinsButUserLocation {
-    id userLocation = [_mkMapView userLocation];
-    NSMutableArray *pins = [[NSMutableArray alloc] initWithArray:[_mkMapView annotations]];
+    id userLocation = [self.mkMapView userLocation];
+    NSMutableArray *pins = [[NSMutableArray alloc] initWithArray:[self.mkMapView annotations]];
     if (userLocation != nil) {
         [pins removeObject:userLocation];
     }
     
-    [_mkMapView removeAnnotations:pins];
+    [self.mkMapView removeAnnotations:pins];
 }
 
 - (IBAction)clickSearchMap:(id)sender {
@@ -393,11 +379,11 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
 - (void)reverseGeoCodingDawg {
     __weak NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
     __weak typeof(self) wes = self;
-    [[LoadGooglePlacesData sharedInstance] loadPlaceDetailsWithLatitude:_mkMapView.region.center.latitude longitude:_mkMapView.region.center.longitude completionBlock:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+    [[LoadGooglePlacesData sharedInstance] loadPlaceDetailsWithLatitude:self.mkMapView.region.center.latitude longitude:self.mkMapView.region.center.longitude completionBlock:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         [SelectionCriteria singleton].googlePlaceDetail = [GooglePlaceDetail placeDetailFromGeoCodeData:data];
         dispatch_async(dispatch_get_main_queue(), ^{
             wes.alreadyDroppedSpinner = NO;
-            [wes letsFindHotels:wes];
+            [wes letsFindHotels:wes searchRadius:self.mapRadiusInMiles];
             nv.whereToLabel.text = [SelectionCriteria singleton].whereToFirst;
         });
     }];

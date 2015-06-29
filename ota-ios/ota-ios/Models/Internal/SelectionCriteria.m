@@ -11,7 +11,7 @@
 
 NSString * const kWotaPlaceCurrentLocationId = @"kWotaPlaceCurrentLocationId";
 
-NSUInteger const kMaximumNumberOfSavedPlaces = 10;
+NSUInteger const kMaximumNumberOfSavedPlaces = 20;
 
 NSString * const kKeyPlacesArray = @"kKeyPlacesArray";
 NSString * const kKeySelectedPlace = @"kKeySelectedPlaces";

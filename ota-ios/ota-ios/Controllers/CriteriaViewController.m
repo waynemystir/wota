@@ -10,15 +10,11 @@
 #import "SelectionCriteria.h"
 #import "ChildTraveler.h"
 #import "LoadGooglePlacesData.h"
-#import "MapViewController.h"
 #import "HotelListingViewController.h"
 #import "THDatePickerViewController.h"
 #import "ChildViewController.h"
 #import "AppEnvironment.h"
 #import "WotaTappableView.h"
-#import <MapKit/MapKit.h>
-
-static double const METERS_PER_MILE = 1609.344;
 
 @interface CriteriaViewController () <THDatePickerDelegate, MKMapViewDelegate, CLLocationManagerDelegate>
 
@@ -35,7 +31,6 @@ static double const METERS_PER_MILE = 1609.344;
 @property (nonatomic) BOOL userLocationHasUpdated;
 @property (nonatomic) BOOL arrivalOrReturn; //arrival == NO and return == YES
 @property (nonatomic, assign) BOOL nextRegionChangeIsFromUserInteraction;
-@property (nonatomic) BOOL notMyFirstRodeo;
 
 - (IBAction)justPushIt:(id)sender;
 
@@ -43,7 +38,6 @@ static double const METERS_PER_MILE = 1609.344;
 
 @implementation CriteriaViewController {
     CLLocationManager *locationManager;
-    MKMapView *mkMapView;
     THDatePickerViewController *arrivalDatePicker;
     THDatePickerViewController *returnDatePicker;
 }
@@ -74,15 +68,16 @@ static double const METERS_PER_MILE = 1609.344;
     //***********************************************************************
     
     // setup the map view
-    mkMapView = [[MKMapView alloc] initWithFrame:CGRectMake(0, 600, 320, 438)];
-    mkMapView.delegate = self;
+    self.mkMapView = [[MKMapView alloc] initWithFrame:CGRectMake(0, 600, 320, 438)];
+    self.mkMapView.delegate = self;
     
     if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse) {
-        mkMapView.showsUserLocation = YES;
+        self.mkMapView.showsUserLocation = YES;
     }
     
+    self.redrawMapOnSelection = YES;
     [self redrawMapViewAnimated:NO radius:DEFAULT_RADIUS];
-    [self.view addSubview:mkMapView];
+    [self.view addSubview:self.mkMapView];
     
     UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(loadOrDropDaMapView)];
     tgr.numberOfTapsRequired = 1;
@@ -107,16 +102,16 @@ static double const METERS_PER_MILE = 1609.344;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
     self.navigationController.navigationBar.hidden = YES;
     
-    if (_notMyFirstRodeo) {
+    // TODO: Does this belong in SearchViewController?
+    if (self.notMyFirstRodeo) {
         self.whereToTextField.text = [SelectionCriteria singleton].whereToFirst;
         self.whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
         [self redrawMapViewAnimated:NO radius:DEFAULT_RADIUS];
     }
     
-    _notMyFirstRodeo = YES;
+    [super viewWillAppear:animated];
 }
 
 - (void)dealloc {
@@ -131,22 +126,13 @@ static double const METERS_PER_MILE = 1609.344;
 }
 
 - (void)appWillResume:(NSNotification *)notification {
-    if (mkMapView.frame.origin.y == 130) {
-        mkMapView.showsUserLocation = YES;
+    if (self.mkMapView.frame.origin.y == 130) {
+        self.mkMapView.showsUserLocation = YES;
     }
 }
 
-- (void)redrawMapViewAnimated:(BOOL)animated radius:(double)radius {
-    SelectionCriteria *sc = [SelectionCriteria singleton];
-    CLLocationCoordinate2D zoomLocation;
-    zoomLocation.latitude = sc.latitude;
-    zoomLocation.longitude= sc.longitude;
-    MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(zoomLocation, radius*METERS_PER_MILE, radius*METERS_PER_MILE);
-    [mkMapView setRegion:viewRegion animated:animated];
-}
-
 - (void)reverseGeoCodingDawg {
-    [[LoadGooglePlacesData sharedInstance] loadPlaceDetailsWithLatitude:mkMapView.region.center.latitude longitude:mkMapView.region.center.longitude completionBlock:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+    [[LoadGooglePlacesData sharedInstance] loadPlaceDetailsWithLatitude:self.mkMapView.region.center.latitude longitude:self.mkMapView.region.center.longitude completionBlock:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         [SelectionCriteria singleton].googlePlaceDetail = [GooglePlaceDetail placeDetailFromGeoCodeData:data];
         dispatch_async(dispatch_get_main_queue(), ^{
             self.whereToTextField.text = [SelectionCriteria singleton].whereToFirst;
@@ -159,9 +145,9 @@ static double const METERS_PER_MILE = 1609.344;
 
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
     if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusAuthorizedWhenInUse) {
-        mkMapView.showsUserLocation = NO;
+        self.mkMapView.showsUserLocation = NO;
     } else {
-        mkMapView.showsUserLocation = YES;
+        self.mkMapView.showsUserLocation = YES;
     }
     
 //    [manager startUpdatingLocation];
@@ -282,7 +268,7 @@ static double const METERS_PER_MILE = 1609.344;
         [self animateTableViewCompression];
         [self loadMapView];
         
-    } else if (mkMapView.frame.origin.y == 600) {
+    } else if (self.mkMapView.frame.origin.y == 600) {
         
         [self loadMapView];
         
@@ -300,7 +286,7 @@ static double const METERS_PER_MILE = 1609.344;
     }
     self.whereToTextField.text = [SelectionCriteria singleton].whereToFirst;
     self.whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
-    __weak UIView *mv = mkMapView;
+    __weak UIView *mv = self.mkMapView;
     [UIView animateWithDuration:0.6 animations:^{
         mv.frame = CGRectMake(0, 130, 320, 438);
     } completion:^(BOOL finished) {
@@ -309,7 +295,7 @@ static double const METERS_PER_MILE = 1609.344;
 }
 
 - (void)dropMapView {
-    __weak UIView *mv = mkMapView;
+    __weak UIView *mv = self.mkMapView;
     [UIView animateWithDuration:0.6 animations:^{
         mv.frame = CGRectMake(0, 600, 320, 438);
     } completion:^(BOOL finished) {

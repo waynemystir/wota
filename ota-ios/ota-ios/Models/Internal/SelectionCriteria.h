@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "GooglePlaceDetail.h"
 #import "ChildTraveler.h"
-#import <CoreLocation/CoreLocation.h>
 #import "WotaPlace.h"
 
 extern NSString * const kSelectionCriteriaLocationNotificationName;
@@ -36,6 +35,8 @@ extern NSString * const kSelectionCriteriaLocationNotificationName;
 
 - (void)savePlace:(GooglePlaceDetail *)googlePlaceDetail;
 - (BOOL)currentLocationIsSelectedPlace;
+
+- (void)save;
 
 + (SelectionCriteria *)singleton;
 
