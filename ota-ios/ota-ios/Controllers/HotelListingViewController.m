@@ -248,7 +248,7 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     _alreadyDroppedSpinner = NO;
     
     if (search) {
-        [self letsFindHotels:self];
+        [self letsFindHotels:self searchRadius:[SelectionCriteria singleton].zoomRadius];
         nv.whereToLabel.text = [SelectionCriteria singleton].whereToFirst;
     }
     
@@ -295,8 +295,8 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     [_hotelsTableView reloadData];
     [_hotelsTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
     
-    double spanLat = ehlr.maxLatitudeDelta*2.00;
-    double spanLon = ehlr.maxLongitudeDelta*2.00;
+    double spanLat = ehlr.maxLatitudeDelta*2.20;
+    double spanLon = ehlr.maxLongitudeDelta*2.20;
     MKCoordinateSpan span = MKCoordinateSpanMake(spanLat, spanLon);
     MKCoordinateRegion viewRegion = MKCoordinateRegionMake(self.zoomLocation, span);
     
@@ -381,6 +381,7 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     __weak typeof(self) wes = self;
     [[LoadGooglePlacesData sharedInstance] loadPlaceDetailsWithLatitude:self.mkMapView.region.center.latitude longitude:self.mkMapView.region.center.longitude completionBlock:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         [SelectionCriteria singleton].googlePlaceDetail = [GooglePlaceDetail placeDetailFromGeoCodeData:data];
+        [SelectionCriteria singleton].googlePlaceDetail.zoomRadius = self.mapRadiusInMiles;
         dispatch_async(dispatch_get_main_queue(), ^{
             wes.alreadyDroppedSpinner = NO;
             [wes letsFindHotels:wes searchRadius:self.mapRadiusInMiles];

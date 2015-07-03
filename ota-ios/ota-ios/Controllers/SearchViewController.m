@@ -121,6 +121,7 @@ static double const METERS_PER_MILE = 1609.344;
             
         case LOAD_GOOGLE_PLACES: {
             [SelectionCriteria singleton].googlePlaceDetail = [GooglePlaceDetail placeDetailFromData:responseData];
+            self.useMapRadiusForSearch = NO;
 //            [[SelectionCriteria singleton] savePlace:[GooglePlaceDetail placeDetailFromData:responseData]];
             self.placesTableData = [SelectionCriteria singleton].placesArray;
             [self.placesTableView reloadData];
@@ -128,7 +129,7 @@ static double const METERS_PER_MILE = 1609.344;
             self.whereToTextField.text = [SelectionCriteria singleton].whereToFirst;
             self.whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
             if (self.redrawMapOnSelection) {
-                [self redrawMapViewAnimated:YES radius:DEFAULT_RADIUS];
+                [self redrawMapViewAnimated:YES radius:[SelectionCriteria singleton].googlePlaceDetail.zoomRadius];
             }
             break;
         }
@@ -216,6 +217,7 @@ static double const METERS_PER_MILE = 1609.344;
         [self.placesTableView reloadData];
         [self.whereToTextField resignFirstResponder];
         [self animateTableViewCompression];
+        self.useMapRadiusForSearch = NO;
     } else if ([self.placesTableData[indexPath.row] isKindOfClass:[WotaPlace class]]) {
         self.placesTableData = [SelectionCriteria singleton].placesArray;
         [self.placesTableView reloadData];
@@ -226,8 +228,9 @@ static double const METERS_PER_MILE = 1609.344;
         self.whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
         [self animateTableViewCompression];
         if (self.redrawMapOnSelection) {
-            [self redrawMapViewAnimated:YES radius:DEFAULT_RADIUS];
+            [self redrawMapViewAnimated:YES radius:[SelectionCriteria singleton].selectedPlace.zoomRadius];
         }
+        self.useMapRadiusForSearch = NO;
     }
 }
 
@@ -263,7 +266,7 @@ static double const METERS_PER_MILE = 1609.344;
 #pragma mark Various methods likely called by sublclasses
 
 - (void)redrawMapViewAnimated:(BOOL)animated radius:(double)radius {
-    MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(self.zoomLocation, radius*METERS_PER_MILE, radius*METERS_PER_MILE);
+    MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(self.zoomLocation, 1.6*radius*METERS_PER_MILE, 1.6*radius*METERS_PER_MILE);
     [self.mkMapView setRegion:viewRegion animated:animated];
 }
 
@@ -279,9 +282,10 @@ static double const METERS_PER_MILE = 1609.344;
     [self letsFindHotels:hvc searchRadius:15.0];
 }
 
-- (void)letsFindHotels:(HotelListingViewController *)hvc searchRadius:(CLLocationDistance)searchRadius {
+- (void)letsFindHotels:(HotelListingViewController *)hvc searchRadius:(double)searchRadius {
     SelectionCriteria *sc = [SelectionCriteria singleton];
     
+    searchRadius = searchRadius * 1.1;
     searchRadius = fmax(searchRadius, 1);
     searchRadius = fmin(searchRadius, 50);
     int sri = ceil(searchRadius);

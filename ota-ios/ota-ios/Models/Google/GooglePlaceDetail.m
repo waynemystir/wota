@@ -8,6 +8,9 @@
 
 #import "GooglePlaceDetail.h"
 #import "GoogleAddressComponent.h"
+#import <CoreLocation/CoreLocation.h>
+
+static double const METERS_PER_MILE = 1609.344;
 
 NSString * const kKeyPlaceId = @"placeId";
 NSString * const kKeyLatitude = @"latitude";
@@ -230,6 +233,7 @@ NSString * const kKeyDisplayName = @"displayName";
     gpd.location = [gpd.geometry objectForKey:@"location"];
     gpd.latitude = [[gpd.location objectForKey:@"lat"] doubleValue];
     gpd.longitude = [[gpd.location objectForKey:@"lng"] doubleValue];
+    gpd.viewport = [gpd.geometry objectForKey:@"viewport"];
     gpd.types = [gpd.googlePlaceResultDict objectForKey:@"types"];
     
     [gpd setWotaDisplayName];
@@ -388,12 +392,14 @@ NSString * const kKeyDisplayName = @"displayName";
 
 - (void)setWotaDisplayName {
     
+    _zoomRadius = [self viewportToMilesRadius];
+    
 //    if (!stringIsEmpty(_blankType)) {
 //        [self setDisplayName:_blankType];
 //        return;
 //    }
     
-    if (!stringIsEmpty(_placeName) && [_placeName isEqualToString:_countryLongName]) {
+    if (!stringIsEmpty(_placeName) && [_types containsObject:@"country"] && [_placeName isEqualToString:_countryLongName]) {
         _placeDetailLevel = PLACE_LEVEL_COUNTRY;
         [self setDisplayName:_placeName];
         return;
@@ -403,11 +409,11 @@ NSString * const kKeyDisplayName = @"displayName";
     
     NSString *city = _localityLongName ? : _postalTownLongName ? : _administrativeAreaLevel3LongName ? : /*_administrativeAreaLevel2LongName ? :*/ @"";
     
-    city = [city isEqualToString:neighborhood] ? @"" : city;
+    neighborhood = [neighborhood isEqualToString:city] ? @"" : neighborhood;
     
     NSString *sepNeighbCity = !stringIsEmpty(neighborhood) && !stringIsEmpty(city) ? @", " : @"";
     
-    NSString *neighbSepCity = [NSString stringWithFormat:@"%@%@%@", neighborhood, sepNeighbCity, city];
+    NSString *neighbSepCity = [_types containsObject:@"administrative_area_level_1"] ? @"" : [NSString stringWithFormat:@"%@%@%@", neighborhood, sepNeighbCity, city];
     
     // In a case like the Appalachian Trail in PA
     neighbSepCity = !stringIsEmpty(neighbSepCity) ? neighbSepCity : _routeLongName ? : @"";
@@ -415,6 +421,8 @@ NSString * const kKeyDisplayName = @"displayName";
 //    NSString *stateProvinceCode = (stringIsEmpty(neighbSepCity) ? _administrativeAreaLevel1LongName : _administrativeAreaLevel1ShortName) ? : @"";
     
     NSString *stateProvinceCode = stringIsEmpty(_administrativeAreaLevel1LongName) ? @"" : _administrativeAreaLevel1LongName;
+    
+//    neighbSepCity = [_types containsObject:@"administrative_area_level_1"] ? @"" : neighbSepCity;
     
     NSString *countryCode = _countryShortName ? : @"";
     
@@ -450,9 +458,10 @@ NSString * const kKeyDisplayName = @"displayName";
         }
     }
     
-    if (!stringIsEmpty(neighborhood) || [neighbSepCity isEqualToString:_routeLongName]) {
+    if (!stringIsEmpty(neighbSepCity) && ![_types containsObject:@"airport"] && ![_types containsObject:@"transit_station"]
+            && (!stringIsEmpty(neighborhood) || [neighbSepCity isEqualToString:_routeLongName])) {
         _placeDetailLevel = PLACE_LEVEL_NEIGHBORHOOD;
-    } else if (!stringIsEmpty(city)) {
+    } else if (!stringIsEmpty(neighbSepCity) && !stringIsEmpty(city)) {
         _placeDetailLevel = PLACE_LEVEL_CITY;
     } else if (!stringIsEmpty(stateProvinceCode)) {
         _placeDetailLevel = PLACE_LEVEL_STATE;
@@ -463,6 +472,55 @@ NSString * const kKeyDisplayName = @"displayName";
     }
     
     [self setDisplayName:tmpDisplayName];
+}
+
+- (double)zoomRadius {
+    if (_zoomRadius != 0.0) {
+        return _zoomRadius;
+    }
+    
+    switch (_placeDetailLevel) {
+        case PLACE_LEVEL_NEIGHBORHOOD:
+            return 2.0;
+        case PLACE_LEVEL_CITY:
+            return 12.0;
+        case PLACE_LEVEL_STATE:
+            return 50.0;
+        case PLACE_LEVEL_COUNTRY:
+            return 50.0;
+        case PLACE_LEVEL_EMPTY:
+            return 12.0;
+            
+        default:
+            return 12.0;
+    }
+}
+
+- (double)viewportToMilesRadius {
+    if (!_viewport) {
+        return 0.0;
+    }
+    
+    NSDictionary *northeast = [_viewport objectForKey:@"northeast"];
+    if (!northeast) {
+        return 0.0;
+    }
+    
+    NSDictionary *southwest = [_viewport objectForKey:@"southwest"];
+    if (!southwest) {
+        return 0.0;
+    }
+    
+    double neLat = [[northeast objectForKey:@"lat"] doubleValue];
+    double neLng = [[northeast objectForKey:@"lng"] doubleValue];
+    double swLat = [[southwest objectForKey:@"lat"] doubleValue];
+    double swLng = [[southwest objectForKey:@"lng"] doubleValue];
+    
+    CLLocation *neLoc = [[CLLocation alloc] initWithLatitude:neLat longitude:neLng];
+    CLLocation *swLoc = [[CLLocation alloc] initWithLatitude:swLat longitude:swLng];
+    
+    CLLocationDistance distance = [swLoc distanceFromLocation:neLoc];
+    return distance / METERS_PER_MILE / 3.3;
 }
 
 @end

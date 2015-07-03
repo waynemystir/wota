@@ -8,6 +8,7 @@
 
 #import "LoadEanData.h"
 #import "AppEnvironment.h"
+#import <CommonCrypto/CommonDigest.h>
 #import "ChildTraveler.h"
 
 typedef NS_ENUM(NSUInteger, HTTP_METHOD) {
@@ -21,11 +22,13 @@ typedef NS_ENUM(NSUInteger, HTTP_METHOD) {
 NSString * const EAN_API_EXPERIENCE = @"PARTNER_MOBILE_APP";
 NSString * const EAN_MINOR_REV = @"29";
 //http://developer.ean.com/docs/getting-started/api-access/
-NSString * const EAN_CID = @"55505";
-//NSString * const EAN_CID = @"482231";
-NSString * const EAN_API_KEY = @"ds5gqba7fbetw3wwgq7nnjku";
-NSString * const EAN_SHARED_SECRET = @"QzrgJ6Vc";
-NSString * const EAN_GEN_REQ_BASE_URL = @"http://dev.api.ean.com";
+//NSString * const EAN_CID = @"55505";
+NSString * const EAN_CID = @"482231";
+//NSString * const EAN_API_KEY = @"ds5gqba7fbetw3wwgq7nnjku";
+NSString * const EAN_API_KEY = @"5fo5tmsoq7oul81bdon0ju59nu";
+//NSString * const EAN_SHARED_SECRET = @"QzrgJ6Vc";
+NSString * const EAN_SHARED_SECRET = @"ifpa7qqkuiu1";
+NSString * const EAN_GEN_REQ_BASE_URL = @"http://api.ean.com";
 NSString * const EAN_BOK_REQ_BASE_URL = @"https://book.api.ean.com";
 NSString * const EAN_URL_EXT = @"ean-services/rs";
 NSString * const EAN_H0TEL_LIST = @"hotel/v3/list";
@@ -43,6 +46,7 @@ NSString * const EAN_PK_API_EXPERIENCE = @"apiExperience";
 NSString * const EAN_PK_MINOR_REV = @"minorRev";
 NSString * const EAN_PK_API_KEY = @"apiKey";
 NSString * const EAN_PK_CID = @"cid";
+NSString * const EAN_PK_SIG = @"sig";
 NSString * const EAN_PK_CUSTIPADD = @"customerIpAddress";
 NSString * const EAN_PK_CUSTUSERAGENT = @"customerUserAgent";
 NSString * const EAN_PK_CUSTSESSID = @"customerSessionId";
@@ -103,11 +107,32 @@ NSString * const EAN_HOTEL_IMAGES = @"HOTEL_IMAGES";
  * Various URL's
  */
 
+NSString * kEanGenerateSigMD5() {
+    // Curtesy of http://stackoverflow.com/questions/2018550/how-do-i-create-an-md5-hash-of-a-string-in-cocoa
+    NSTimeInterval uts = [[NSDate date] timeIntervalSince1970];
+    NSUInteger utsInt = uts;
+    NSString *unixTimeStamp = [NSString stringWithFormat:@"%lu", utsInt];
+    
+    NSString *stringToHash = [NSString stringWithFormat:@"%@%@%@", EAN_API_KEY, EAN_SHARED_SECRET, unixTimeStamp];
+    const char *cstr = [stringToHash UTF8String];
+    unsigned char result[16];
+    CC_MD5(cstr, (CC_LONG)strlen(cstr), result);
+    
+    return [[NSString stringWithFormat:
+             @"%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X",
+             result[0], result[1], result[2], result[3],
+             result[4], result[5], result[6], result[7],
+             result[8], result[9], result[10], result[11],
+             result[12], result[13], result[14], result[15]
+             ] lowercaseString];
+}
+
 NSString * kEanCommonParameters() {
-    return [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@",
+    return [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@",
             EAN_PK_API_EXPERIENCE, EAN_API_EXPERIENCE,
             EAN_PK_CID, EAN_CID,
             EAN_PK_API_KEY, EAN_API_KEY,
+            EAN_PK_SIG, kEanGenerateSigMD5(),
             EAN_PK_MINOR_REV, EAN_MINOR_REV,
             EAN_PK_LOCALE, [[NSLocale currentLocale] objectForKey:NSLocaleIdentifier],
             EAN_PK_CURRENCY_CODE, [[NSLocale currentLocale] objectForKey:NSLocaleCurrencyCode]];
@@ -253,10 +278,12 @@ NSString * kURLeanBookReservation() {
             kURLeanHotelList(),
             EAN_PK_LATITUDE, latitude,
             EAN_PK_LONGITUDE, longitude,
-            EAN_PK_NUMBER_OF_RESULTS, @150,
+            EAN_PK_NUMBER_OF_RESULTS, @200,
             EAN_PK_SEARCH_RADIUS, searchRadius,
             EAN_PK_SEARCH_RADIUS_UNIT, @"MI",
-            EAN_PK_GEO_SORT, @"PROXIMITY"];
+            EAN_PK_GEO_SORT, @"CITY_VALUE"//,
+//            @"includeSurrounding", @"false"
+            ];
 }
 
 - (void)loadHotelDetailsWithId:(NSString *)hotelId {

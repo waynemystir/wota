@@ -30,11 +30,12 @@ extern double const DEFAULT_RADIUS;
 @property (nonatomic) CLLocationDistance mapRadiusInMiles;
 @property (nonatomic) BOOL notMyFirstRodeo;
 @property (nonatomic) BOOL redrawMapOnSelection;
+@property (nonatomic) BOOL useMapRadiusForSearch;
 
 - (void)animateTableViewExpansion;
 - (void)animateTableViewCompression;
 - (void)redrawMapViewAnimated:(BOOL)animated radius:(double)radius;
 - (void)letsFindHotels:(HotelListingViewController *)hotelListingViewController;
-- (void)letsFindHotels:(HotelListingViewController *)hotelListingViewController searchRadius:(CLLocationDistance)searchRadius;
+- (void)letsFindHotels:(HotelListingViewController *)hotelListingViewController searchRadius:(double)searchRadius;
 
 @end

@@ -76,7 +76,7 @@
     }
     
     self.redrawMapOnSelection = YES;
-    [self redrawMapViewAnimated:NO radius:DEFAULT_RADIUS];
+    [self redrawMapViewAnimated:NO radius:[SelectionCriteria singleton].zoomRadius];
     [self.view addSubview:self.mkMapView];
     
     UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(loadOrDropDaMapView)];
@@ -108,7 +108,7 @@
     if (self.notMyFirstRodeo) {
         self.whereToTextField.text = [SelectionCriteria singleton].whereToFirst;
         self.whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
-        [self redrawMapViewAnimated:NO radius:DEFAULT_RADIUS];
+        [self redrawMapViewAnimated:NO radius:[SelectionCriteria singleton].zoomRadius];
     }
     
     [super viewWillAppear:animated];
@@ -161,7 +161,7 @@
         ((WotaPlace *) [SelectionCriteria singleton].placesArray.firstObject).longitude = userLocation.location.coordinate.longitude;
         
         if (!_userLocationHasUpdated && [[SelectionCriteria singleton] currentLocationIsSelectedPlace] && ![SelectionCriteria singleton].googlePlaceDetail) {
-            [self redrawMapViewAnimated:YES radius:DEFAULT_RADIUS];
+            [self redrawMapViewAnimated:YES radius:[SelectionCriteria singleton].zoomRadius];
         }
         
 //        mapView.showsUserLocation = NO;
@@ -189,6 +189,7 @@
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
     if(_nextRegionChangeIsFromUserInteraction) {
         _nextRegionChangeIsFromUserInteraction = NO;
+        self.useMapRadiusForSearch = YES;
         [self reverseGeoCodingDawg];
     }
 }
@@ -198,7 +199,16 @@
 - (IBAction)justPushIt:(id)sender {
     if (sender == self.checkHotelsOutlet) {
         HotelListingViewController *hvc = [HotelListingViewController new];
-        [self letsFindHotels:hvc];
+        
+        if (self.useMapRadiusForSearch) {
+            [SelectionCriteria singleton].zoomRadius = self.mapRadiusInMiles;
+//            [self letsFindHotels:hvc searchRadius:self.mapRadiusInMiles];
+        } /*else {
+            [self letsFindHotels:hvc searchRadius:[SelectionCriteria singleton].zoomRadius];
+        }*/
+        
+        [self letsFindHotels:hvc searchRadius:[SelectionCriteria singleton].zoomRadius];
+        
     } else if (sender == self.arrivalDateOutlet) {
         self.arrivalOrReturn = NO;
         [self presentTheDatePicker];

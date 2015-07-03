@@ -56,6 +56,8 @@
 @property (nonatomic, strong) NSDictionary *location;
 @property (nonatomic, setter=setLatitude:) double latitude;
 @property (nonatomic, setter=setLongitude:) double longitude;
+@property (nonatomic, strong) NSDictionary *viewport;
+@property (nonatomic) double zoomRadius;
 @property (nonatomic) PLACE_DETAIL_LEVEL placeDetailLevel;
 @property (nonatomic, strong) NSArray *types;
 

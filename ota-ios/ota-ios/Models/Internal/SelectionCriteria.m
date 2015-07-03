@@ -109,6 +109,10 @@ NSString * const kKeyNumberOfAdults = @"numberOfAdults";
     return _googlePlaceDetail ? _googlePlaceDetail.longitude : _selectedPlace.longitude;
 }
 
+- (double)zoomRadius {
+    return _googlePlaceDetail ? _googlePlaceDetail.zoomRadius : _selectedPlace.zoomRadius;
+}
+
 - (NSString *)arrivalDateEanString {
     return [kEanApiDateFormatter() stringFromDate:_arrivalDate];
 }
@@ -118,6 +122,15 @@ NSString * const kKeyNumberOfAdults = @"numberOfAdults";
 }
 
 #pragma mark Setters
+
+- (void)setZoomRadius:(double)zoomRadius {
+    if (_googlePlaceDetail) {
+        _googlePlaceDetail.zoomRadius = zoomRadius;
+    } else {
+        _selectedPlace.zoomRadius = zoomRadius;
+        [self save];
+    }
+}
 
 - (void)setSelectedPlace:(WotaPlace *)selectedPlace {
     _selectedPlace = selectedPlace;
@@ -161,6 +174,7 @@ NSString * const kKeyNumberOfAdults = @"numberOfAdults";
     wp.displayName = googlePlaceDetail.formattedWhereTo;
     wp.latitude = googlePlaceDetail.latitude;
     wp.longitude = googlePlaceDetail.longitude;
+    wp.zoomRadius = googlePlaceDetail.zoomRadius;
     wp.placeDetailLevel = googlePlaceDetail.placeDetailLevel;
     self.selectedPlace = wp;
 }

@@ -16,6 +16,7 @@
 @property (nonatomic, strong) NSString *displayName;
 @property (nonatomic) double latitude;
 @property (nonatomic) double longitude;
+@property (nonatomic) double zoomRadius;
 @property (nonatomic) PLACE_DETAIL_LEVEL placeDetailLevel;
 
 @property (nonatomic, strong, readonly) NSString *formattedWhereTo;

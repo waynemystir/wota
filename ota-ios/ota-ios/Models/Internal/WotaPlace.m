@@ -12,6 +12,7 @@ NSString * const kKeyPlacePlaceName = @"placeName";
 NSString * const kKeyPlacePlaceId = @"placeId";
 NSString * const kKeyPlaceLatitude = @"latitude";
 NSString * const kKeyPlaceLongitude = @"longitude";
+NSString * const kKeyZoomRadius = @"zoomRadius";
 NSString * const kKeyPlaceDetailLevel = @"placeDetailLevel";
 NSString * const kKeyPlaceDisplayName = @"displayName";
 
@@ -21,8 +22,9 @@ NSString * const kKeyPlaceDisplayName = @"displayName";
     if (self = [super init]) {
         _placeName = [aDecoder decodeObjectForKey:kKeyPlacePlaceName];
         _placeId = [aDecoder decodeObjectForKey:kKeyPlacePlaceId];
-        _latitude = [aDecoder decodeFloatForKey:kKeyPlaceLatitude];
-        _longitude = [aDecoder decodeFloatForKey:kKeyPlaceLongitude];
+        _latitude = [aDecoder decodeDoubleForKey:kKeyPlaceLatitude];
+        _longitude = [aDecoder decodeDoubleForKey:kKeyPlaceLongitude];
+        _zoomRadius = [aDecoder decodeDoubleForKey:kKeyZoomRadius];
         _placeDetailLevel = [aDecoder decodeIntForKey:kKeyPlaceDetailLevel];
         _displayName = [aDecoder decodeObjectForKey:kKeyPlaceDisplayName];
     }
@@ -32,8 +34,9 @@ NSString * const kKeyPlaceDisplayName = @"displayName";
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [aCoder encodeObject:_placeName forKey:kKeyPlacePlaceName];
     [aCoder encodeObject:_placeId forKey:kKeyPlacePlaceId];
-    [aCoder encodeFloat:_latitude forKey:kKeyPlaceLatitude];
-    [aCoder encodeFloat:_longitude forKey:kKeyPlaceLongitude];
+    [aCoder encodeDouble:_latitude forKey:kKeyPlaceLatitude];
+    [aCoder encodeDouble:_longitude forKey:kKeyPlaceLongitude];
+    [aCoder encodeDouble:_zoomRadius forKey:kKeyZoomRadius];
     [aCoder encodeInt:_placeDetailLevel forKey:kKeyPlaceDetailLevel];
     [aCoder encodeObject:_displayName forKey:kKeyPlaceDisplayName];
 }
@@ -75,6 +78,28 @@ NSString * const kKeyPlaceDisplayName = @"displayName";
         return waynster;
     } else {
         return @"";
+    }
+}
+
+- (double)zoomRadius {
+    if (_zoomRadius != 0.0) {
+        return _zoomRadius;
+    }
+    
+    switch (_placeDetailLevel) {
+        case PLACE_LEVEL_NEIGHBORHOOD:
+            return 2.0;
+        case PLACE_LEVEL_CITY:
+            return 12.0;
+        case PLACE_LEVEL_STATE:
+            return 50.0;
+        case PLACE_LEVEL_COUNTRY:
+            return 50.0;
+        case PLACE_LEVEL_EMPTY:
+            return 12.0;
+            
+        default:
+            return 12.0;
     }
 }
 
