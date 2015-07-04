@@ -520,7 +520,7 @@ NSString * const kKeyDisplayName = @"displayName";
     CLLocation *swLoc = [[CLLocation alloc] initWithLatitude:swLat longitude:swLng];
     
     CLLocationDistance distance = [swLoc distanceFromLocation:neLoc];
-    return distance / METERS_PER_MILE / 3.3;
+    return distance / METERS_PER_MILE / 1.5;
 }
 
 @end

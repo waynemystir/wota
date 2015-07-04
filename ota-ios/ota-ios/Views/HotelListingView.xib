@@ -6,8 +6,11 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="HotelListingViewController">
             <connections>
+                <outlet property="filterImageView" destination="phd-Nh-0Yx" id="54F-t4-Zt8"/>
                 <outlet property="pricesAvgLabel" destination="slo-EV-bKG" id="rLw-AN-mt6"/>
                 <outlet property="searchMapBtn" destination="DXV-hu-yRR" id="BD7-6O-eTs"/>
+                <outlet property="sortFilterContainer" destination="v0V-rV-waS" id="iSy-PM-IYu"/>
+                <outlet property="sortImageView" destination="X63-HR-ivW" id="zip-OV-6O0"/>
                 <outlet property="view" destination="iN0-l3-epB" id="r3P-ph-HPJ"/>
                 <outlet property="wmapImageView" destination="UCb-A2-tWP" id="yDy-7N-aXb"/>
                 <outlet property="wmapIvContainer" destination="hVi-kd-Wwn" id="cte-2J-SKc"/>
@@ -50,13 +53,28 @@
                                 <action selector="clickSearchMap:" destination="-1" eventType="touchUpInside" id="GjY-ds-9hU"/>
                             </connections>
                         </button>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Prices Average, per night" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="slo-EV-bKG" userLabel="pricesAvgLabel">
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Prices average, per night" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="slo-EV-bKG" userLabel="pricesAvgLabel">
                             <rect key="frame" x="68" y="1" width="184" height="43"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                             <nil key="highlightedColor"/>
                         </label>
+                        <view contentMode="scaleToFill" id="v0V-rV-waS" userLabel="sortFilterContainer">
+                            <rect key="frame" x="279" y="0.0" width="41" height="45"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <subviews>
+                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sort" id="X63-HR-ivW" userLabel="sortImageView">
+                                    <rect key="frame" x="5" y="4" width="31" height="39"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                </imageView>
+                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="filter" id="phd-Nh-0Yx" userLabel="filterImageView">
+                                    <rect key="frame" x="10" y="9" width="23" height="31"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                </imageView>
+                            </subviews>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        </view>
                     </subviews>
                     <color key="backgroundColor" red="0.92941176470588238" green="0.92941176470588238" blue="0.92941176470588238" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                 </view>
@@ -66,7 +84,9 @@
         </view>
     </objects>
     <resources>
-        <image name="wmap" width="16" height="16"/>
+        <image name="filter" width="32" height="32"/>
+        <image name="sort" width="32" height="32"/>
+        <image name="wmap" width="32" height="32"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>

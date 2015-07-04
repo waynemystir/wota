@@ -47,6 +47,7 @@ NSString * const kKeyNumberOfAdults = @"numberOfAdults";
         wp.placeId = kWotaPlaceCurrentLocationId;
         wp.placeName = @"Current Location";
         wp.displayName = @"Current Location";
+        wp.zoomRadius = 25.0;
         _selectionCriteria.placesArray = [NSMutableArray arrayWithObject:wp];
         _selectionCriteria.selectedPlace = wp;
         [_selectionCriteria save];

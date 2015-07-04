@@ -35,7 +35,6 @@ extern double const DEFAULT_RADIUS;
 - (void)animateTableViewExpansion;
 - (void)animateTableViewCompression;
 - (void)redrawMapViewAnimated:(BOOL)animated radius:(double)radius;
-- (void)letsFindHotels:(HotelListingViewController *)hotelListingViewController;
 - (void)letsFindHotels:(HotelListingViewController *)hotelListingViewController searchRadius:(double)searchRadius;
 
 @end

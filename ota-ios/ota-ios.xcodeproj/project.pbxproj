@@ -43,6 +43,7 @@
 		B03B527E1AF99425007E2EA7 /* PriceDetailsPopupView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B03B527D1AF99425007E2EA7 /* PriceDetailsPopupView.xib */; };
 		B03C2BAA1AED74E700C13AC5 /* EanRateInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B03C2BA91AED74E700C13AC5 /* EanRateInfo.m */; };
 		B03C2BAD1AED8FAD00C13AC5 /* EanRoomImage.m in Sources */ = {isa = PBXBuildFile; fileRef = B03C2BAC1AED8FAD00C13AC5 /* EanRoomImage.m */; };
+		B03DA0071B46D5930039B9C6 /* FilterTableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B03DA0061B46D5930039B9C6 /* FilterTableView.xib */; };
 		B049D1FA1AC19B2200E2E18C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B049D1F81AC19AC100E2E18C /* AVFoundation.framework */; };
 		B049D2061AC19B2300E2E18C /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B049D1FB1AC19B2300E2E18C /* CoreData.framework */; };
 		B049D2071AC19B2300E2E18C /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B049D1FC1AC19B2300E2E18C /* CoreLocation.framework */; };
@@ -245,6 +246,7 @@
 		B03C2BA91AED74E700C13AC5 /* EanRateInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanRateInfo.m; sourceTree = "<group>"; };
 		B03C2BAB1AED8FAD00C13AC5 /* EanRoomImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanRoomImage.h; sourceTree = "<group>"; };
 		B03C2BAC1AED8FAD00C13AC5 /* EanRoomImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanRoomImage.m; sourceTree = "<group>"; };
+		B03DA0061B46D5930039B9C6 /* FilterTableView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FilterTableView.xib; sourceTree = "<group>"; };
 		B049D1F81AC19AC100E2E18C /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		B049D1FB1AC19B2300E2E18C /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		B049D1FC1AC19B2300E2E18C /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -638,6 +640,7 @@
 				B0508C6D1B34DCA8009CC56F /* PowerebByGoogleCell.xib */,
 				B09797CD1AC2518D0014FC7C /* MapView.xib */,
 				B09797E61AC34DB70014FC7C /* HotelListingView.xib */,
+				B03DA0061B46D5930039B9C6 /* FilterTableView.xib */,
 				B080B7C81AC505DC00075A32 /* HotelInfoView.xib */,
 				B0FE0F481AC6ED0000DAF635 /* BookView.xib */,
 				B0FE0F4D1AC70A2500DAF635 /* SelectRoomView.xib */,
@@ -1069,6 +1072,7 @@
 				B0D02FEF1AE6123000B1E75F /* cvc.png in Resources */,
 				B09797F91AC3BC690014FC7C /* THDateDay.xib in Resources */,
 				B0D02FFD1AE6123000B1E75F /* gradient@2x.png in Resources */,
+				B03DA0071B46D5930039B9C6 /* FilterTableView.xib in Resources */,
 				B0D02FF31AE6123000B1E75F /* discover.png in Resources */,
 				B0D02FEB1AE6123000B1E75F /* amex.png in Resources */,
 				B0D02FF51AE6123000B1E75F /* jcb.png in Resources */,

@@ -19,6 +19,7 @@
 #import "NavigationView.h"
 #import "WotaMapAnnotatioin.h"
 #import "WotaMKPinAnnotationView.h"
+#import "WotaTappableView.h"
 
 NSTimeInterval const kFlipAnimationDuration = 0.75;
 NSTimeInterval const kSearchModeAnimationDuration = 0.36;
@@ -35,6 +36,11 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
 @property (nonatomic, strong) UIView *searchContainer;
 @property (weak, nonatomic) IBOutlet UIButton *searchMapBtn;
 @property (weak, nonatomic) IBOutlet UILabel *pricesAvgLabel;
+@property (weak, nonatomic) IBOutlet UIView *sortFilterContainer;
+@property (weak, nonatomic) IBOutlet UIImageView *sortImageView;
+@property (weak, nonatomic) IBOutlet UIImageView *filterImageView;
+@property (nonatomic) double listMaxLatitudeDelta;
+@property (nonatomic) double listMaxLongitudeDelta;
 
 - (IBAction)clickSearchMap:(id)sender;
 
@@ -95,6 +101,8 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     _hotelsTableView.separatorColor = [UIColor clearColor];
     [_containerView addSubview:_hotelsTableView];
     
+    [self setupTheFilterView];
+    
     UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(transitionBetweenTableAndMap)];
     tgr.numberOfTapsRequired = 1;
     tgr.numberOfTouchesRequired = 1;
@@ -107,6 +115,8 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     hiv.hidden = YES;
     _hamburgerImageView = hiv;
     [_wmapIvContainer addSubview:_hamburgerImageView];
+    
+    _filterImageView.hidden = YES;
     
     _searchMapBtn.alpha = 0.0f;
     
@@ -137,6 +147,8 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     self.placesTableViewZeroFrame = CGRectMake(0, 63.4f, 320, 0);
     self.placesTableViewExpandedFrame = CGRectMake(0, 103.4f, 320, 248.5f);
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onHotelDataChanged) name:kNotificationHotelDataChanged object:nil];
+    
     [super viewDidLoad];
 }
 
@@ -153,6 +165,10 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     
     AppDelegate *ad = [[UIApplication sharedApplication] delegate];
     [ad dropDaSpinnerAlreadyWithForce:YES];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationHotelDataChanged object:nil];
 }
 
 #pragma mark flipping animation
@@ -174,6 +190,13 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
                         completion:^(BOOL finished) {
                         }];
         
+        [UIView transitionFromView:_filterImageView
+                            toView:_sortImageView
+                          duration:kFlipAnimationDuration
+                           options:UIViewAnimationOptionTransitionFlipFromLeft|UIViewAnimationOptionShowHideTransitionViews|UIViewAnimationOptionAllowAnimatedContent
+                        completion:^(BOOL finished) {
+                        }];
+        
         [UIView animateWithDuration:kFlipAnimationDuration animations:^{
             _searchMapBtn.alpha = 0.0f;
             _pricesAvgLabel.alpha = 1.0f;
@@ -190,6 +213,13 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
         
         [UIView transitionFromView:_wmapImageView
                             toView:_hamburgerImageView
+                          duration:kFlipAnimationDuration
+                           options:UIViewAnimationOptionTransitionFlipFromLeft|UIViewAnimationOptionShowHideTransitionViews|UIViewAnimationOptionAllowAnimatedContent
+                        completion:^(BOOL finished) {
+                        }];
+        
+        [UIView transitionFromView:_sortImageView
+                            toView:_filterImageView
                           duration:kFlipAnimationDuration
                            options:UIViewAnimationOptionTransitionFlipFromLeft|UIViewAnimationOptionShowHideTransitionViews|UIViewAnimationOptionAllowAnimatedContent
                         completion:^(BOOL finished) {
@@ -295,29 +325,13 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     [_hotelsTableView reloadData];
     [_hotelsTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
     
-    double spanLat = ehlr.maxLatitudeDelta*2.20;
-    double spanLon = ehlr.maxLongitudeDelta*2.20;
-    MKCoordinateSpan span = MKCoordinateSpanMake(spanLat, spanLon);
-    MKCoordinateRegion viewRegion = MKCoordinateRegionMake(self.zoomLocation, span);
+    UITextField *tf = (UITextField *) [_hotelsTableView.tableHeaderView viewWithTag:41414141];
+    tf.text = @"";
     
-    [self.mkMapView setRegion:viewRegion animated:tableOrMap];
-    [self.mkMapView setNeedsDisplay];
+    _listMaxLatitudeDelta = ehlr.maxLatitudeDelta;
+    _listMaxLongitudeDelta = ehlr.maxLongitudeDelta;
     
-    [self removeAllPinsButUserLocation];
-    
-    for (int j = 0; j < [_hotelTableViewDelegate.hotelData count]; j++) {
-        EanHotelListHotelSummary *hotel = [_hotelTableViewDelegate.hotelData objectAtIndex:j];
-        WotaMapAnnotatioin *annotation = [[WotaMapAnnotatioin alloc] init];
-        annotation.coordinate = CLLocationCoordinate2DMake(hotel.latitude, hotel.longitude);
-        NSString *imageUrlString = [@"http://images.travelnow.com" stringByAppendingString:hotel.thumbNailUrlEnhanced];
-        annotation.imageUrl = imageUrlString;
-        
-        annotation.rowNUmber = j;
-        annotation.title = hotel.hotelNameFormatted;
-        NSNumberFormatter *cf = kPriceRoundOffFormatter(hotel.rateCurrencyCode);
-        annotation.subtitle = [NSString stringWithFormat:@"From %@/night", [cf stringFromNumber:hotel.lowRate]];
-        [self.mkMapView addAnnotation:annotation];
-    }
+    [self redrawMapAnnotations];
     
     [self dropDaSpinnerAlready];
 }
@@ -354,7 +368,7 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
 
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control {
     WotaMKPinAnnotationView *wp = (WotaMKPinAnnotationView *)view;
-    EanHotelListHotelSummary *hotel = [_hotelTableViewDelegate.hotelData objectAtIndex:wp.rowNUmber];
+    EanHotelListHotelSummary *hotel = [_hotelTableViewDelegate.currentHotelData objectAtIndex:wp.rowNUmber];
     HotelInfoViewController *hvc = [[HotelInfoViewController alloc] initWithHotel:hotel];
     [[LoadEanData sharedInstance:hvc] loadHotelDetailsWithId:[hotel.hotelId stringValue]];
     [self.navigationController pushViewController:hvc animated:YES];
@@ -388,6 +402,77 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
             nv.whereToLabel.text = [SelectionCriteria singleton].whereToFirst;
         });
     }];
+}
+
+- (void)onHotelDataChanged {
+    [_hotelsTableView reloadData];
+    [self redrawMapAnnotations];
+}
+
+- (void)redrawMapAnnotations {
+    double spanLat = _listMaxLatitudeDelta*2.40;
+    double spanLon = _listMaxLongitudeDelta*2.40;
+    MKCoordinateSpan span = MKCoordinateSpanMake(spanLat, spanLon);
+    MKCoordinateRegion viewRegion = MKCoordinateRegionMake(self.zoomLocation, span);
+    
+    [self.mkMapView setRegion:viewRegion animated:tableOrMap];
+    [self.mkMapView setNeedsDisplay];
+    
+    [self removeAllPinsButUserLocation];
+    
+    for (int j = 0; j < [_hotelTableViewDelegate.currentHotelData count]; j++) {
+        EanHotelListHotelSummary *hotel = [_hotelTableViewDelegate.currentHotelData objectAtIndex:j];
+        WotaMapAnnotatioin *annotation = [[WotaMapAnnotatioin alloc] init];
+        annotation.coordinate = CLLocationCoordinate2DMake(hotel.latitude, hotel.longitude);
+        NSString *imageUrlString = [@"http://images.travelnow.com" stringByAppendingString:hotel.thumbNailUrlEnhanced];
+        annotation.imageUrl = imageUrlString;
+        
+        annotation.rowNUmber = j;
+        annotation.title = hotel.hotelNameFormatted;
+        NSNumberFormatter *cf = kPriceRoundOffFormatter(hotel.rateCurrencyCode);
+        annotation.subtitle = [NSString stringWithFormat:@"From %@/night", [cf stringFromNumber:hotel.lowRate]];
+        [self.mkMapView addAnnotation:annotation];
+    }
+}
+
+- (void)setupTheFilterView {
+    NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"FilterTableView" owner:self options:nil];
+    UIView *filterView = views.firstObject;
+    UITextField *tf = (UITextField *) [filterView viewWithTag:41414141];
+    tf.delegate = _hotelTableViewDelegate;
+    
+    UIImage *im = [[UIImage imageNamed:@"search.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    UIImageView *iv = [[UIImageView alloc] initWithImage:im];
+    iv.tintColor = [UIColor blackColor];
+    iv.contentMode = UIViewContentModeScaleAspectFit;
+    iv.frame = CGRectMake(10, 8, 14, 14);
+    
+    UIView *ivc = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 26, 30)];
+    ivc.backgroundColor = [UIColor clearColor];
+    [ivc addSubview:iv];
+    
+    UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickFilterButton)];
+    tgr.numberOfTapsRequired = 1;
+    tgr.numberOfTouchesRequired = 1;
+    tgr.cancelsTouchesInView = YES;
+    WotaTappableView *filterContainer = (WotaTappableView *) [filterView viewWithTag:1239871];
+    filterContainer.tapColor = kWotaColorOne();
+    filterContainer.untapColor = [UIColor clearColor];
+    filterContainer.userInteractionEnabled = YES;
+    [filterContainer addGestureRecognizer:tgr];
+    
+    UIView *separator = [[UILabel alloc] initWithFrame:CGRectMake(0, 43.5f, 320, 0.5f)];
+    separator.backgroundColor = [UIColor blackColor];
+    [filterView addSubview:separator];
+    
+    [tf setLeftViewMode:UITextFieldViewModeAlways];
+    tf.leftView = ivc;
+    
+    _hotelsTableView.tableHeaderView = filterView;
+}
+
+- (void)clickFilterButton {
+    NSLog(@"Waynes Wild & Wacky World");
 }
 
 @end

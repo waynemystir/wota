@@ -8,8 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@interface HotelsTableViewDelegateImplementation : NSObject <UITableViewDataSource, UITableViewDelegate>
+extern NSString * const kNotificationHotelDataChanged;
+
+@interface HotelsTableViewDelegateImplementation : NSObject <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
 
 @property (nonatomic, strong) NSArray *hotelData;
+@property (nonatomic, strong, readonly) NSArray *currentHotelData;
 
 @end

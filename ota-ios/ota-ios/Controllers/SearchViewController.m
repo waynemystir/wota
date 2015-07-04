@@ -278,14 +278,10 @@ static double const METERS_PER_MILE = 1609.344;
     return zoomLocation;
 }
 
-- (void)letsFindHotels:(HotelListingViewController *)hvc {
-    [self letsFindHotels:hvc searchRadius:15.0];
-}
-
 - (void)letsFindHotels:(HotelListingViewController *)hvc searchRadius:(double)searchRadius {
     SelectionCriteria *sc = [SelectionCriteria singleton];
     
-    searchRadius = searchRadius * 1.1;
+    searchRadius = searchRadius * 0.6;
     searchRadius = fmax(searchRadius, 1);
     searchRadius = fmin(searchRadius, 50);
     int sri = ceil(searchRadius);
@@ -328,7 +324,7 @@ static double const METERS_PER_MILE = 1609.344;
     return self.mapRadiusInMeters / METERS_PER_MILE;
 }
 
-#pragma mark Getter & Setter
+#pragma mark Getter
 
 - (NSTimeInterval)animationDuraton {
     if (_animationDuraton == 0.0) {
