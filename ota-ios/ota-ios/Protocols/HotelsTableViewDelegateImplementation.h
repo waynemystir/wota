@@ -7,12 +7,28 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Trotter-Swift.h"
 
-extern NSString * const kNotificationHotelDataChanged;
+extern NSString * const kNotificationHotelDataFiltered;
 
 @interface HotelsTableViewDelegateImplementation : NSObject <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
 
 @property (nonatomic, strong) NSArray *hotelData;
 @property (nonatomic, strong, readonly) NSArray *currentHotelData;
+@property (nonatomic, readonly) BOOL inFilterMode;
+@property (nonatomic) BOOL inFilterModePriorToLoadingFilterView;
+
+@property (nonatomic, strong) NSNumber *bottomPrice;
+@property (nonatomic, strong) NSNumber *topPrice;
+
+@property (nonatomic) double selectedBottomPrice;
+@property (nonatomic) double selectedTopPrice;
+
+@property (nonatomic) double selectStarRating;
+
+- (void)priceSliderChanged:(RangeSlider *)priceSlider;
+- (void)starClicked:(UITapGestureRecognizer *)tgr;
+- (int)numberOfFilteredHotels;
+- (void)letsFilter;
 
 @end

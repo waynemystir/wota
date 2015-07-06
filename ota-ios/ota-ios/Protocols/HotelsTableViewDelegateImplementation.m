@@ -15,13 +15,16 @@
 #import "LoadEanData.h"
 #import "AppDelegate.h"
 
-NSString * const kNotificationHotelDataChanged = @"kNotificationHotelDataChanged";
+NSString * const kNotificationHotelDataFiltered = @"kNotificationHotelDataFiltered";
 
 @interface HotelsTableViewDelegateImplementation () {
-    BOOL inFilterMode;
+    BOOL inHotelNameFilterMode;
+    BOOL inPriceFilterMode;
+    BOOL inStarFilterMode;
 }
 
 @property (nonatomic, strong) NSMutableArray *filterableData;
+@property (nonatomic, strong) NSString *filterText;
 
 @end
 
@@ -34,12 +37,12 @@ NSString * const kNotificationHotelDataChanged = @"kNotificationHotelDataChanged
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return inFilterMode ? self.filterableData.count : self.hotelData.count;
+    return self.currentHotelData.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString *CellIdentifier = @"CellIdentifier";
-    EanHotelListHotelSummary *hotel = inFilterMode ? _filterableData[indexPath.row] : _hotelData[indexPath.row];
+    EanHotelListHotelSummary *hotel = self.currentHotelData[indexPath.row];
     HLTableViewCell *cell = [[HLTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier hotelRating:hotel.hotelRating];
     
     NSString *imageUrlString = [@"http://images.travelnow.com" stringByAppendingString:hotel.thumbNailUrlEnhanced];
@@ -64,7 +67,7 @@ NSString * const kNotificationHotelDataChanged = @"kNotificationHotelDataChanged
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    EanHotelListHotelSummary *hotel = inFilterMode ? _filterableData[indexPath.row] : _hotelData[indexPath.row];
+    EanHotelListHotelSummary *hotel = self.currentHotelData[indexPath.row];
     HotelInfoViewController *hvc = [[HotelInfoViewController alloc] initWithHotel:hotel];
     [[LoadEanData sharedInstance:hvc] loadHotelDetailsWithId:[hotel.hotelId stringValue]];
     
@@ -82,24 +85,138 @@ NSString * const kNotificationHotelDataChanged = @"kNotificationHotelDataChanged
 #pragma mark UITextFieldDelegate methods
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
-    inFilterMode = YES;
+    inHotelNameFilterMode = YES;
     textField.layer.cornerRadius = 6.0f;
     textField.layer.borderColor = kWotaColorOne().CGColor;
     textField.layer.borderWidth = 0.7f;
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-    NSString *searchText = [textField.text stringByReplacingCharactersInRange:range withString:string];
-    if (stringIsEmpty(searchText)) {
-        self.filterableData = [NSMutableArray arrayWithArray:self.hotelData];
-        [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHotelDataChanged object:self];
-        return YES;
+    _filterText = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    [self letsFilter];
+    return YES;
+}
+
+- (BOOL)textFieldShouldClear:(UITextField *)textField {
+    textField.text = _filterText = @"";
+    [self letsFilter];
+    return YES;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField endEditing:YES];
+    return YES;
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    inHotelNameFilterMode = !stringIsEmpty(textField.text);
+    [self letsFilter];
+    textField.layer.cornerRadius = 6.0f;
+    textField.layer.borderColor = UIColorFromRGB(0xdddddd).CGColor;
+    textField.layer.borderWidth = 0.7f;
+}
+
+#pragma mark Public methods
+
+- (void)priceSliderChanged:(RangeSlider *)rangeSlider {
+    NSNumberFormatter *pf = kPriceRoundOffFormatter([[NSLocale currentLocale] objectForKey:NSLocaleCurrencyCode]);
+    
+    UILabel *w = (UILabel *) [rangeSlider.superview viewWithTag:12345];
+    self.selectedBottomPrice = (1 - rangeSlider.lowerValue) * [self.bottomPrice doubleValue] + rangeSlider.lowerValue * [self.topPrice doubleValue];
+    w.text = [pf stringFromNumber:[NSNumber numberWithDouble:self.selectedBottomPrice]];//[NSString stringWithFormat:@"%.0f", self.selectedBottomPrice];
+    
+    UILabel *u = (UILabel *) [rangeSlider.superview viewWithTag:98765];
+    self.selectedTopPrice = (1 - rangeSlider.upperValue) * [self.bottomPrice doubleValue] + rangeSlider.upperValue * [self.topPrice doubleValue];
+    u.text = [pf stringFromNumber:[NSNumber numberWithDouble:self.selectedTopPrice]];//[NSString stringWithFormat:@"%.0f", self.selectedTopPrice];
+    
+    UILabel *wes = (UILabel *) [rangeSlider.superview viewWithTag:434343];
+    NSString *plural = self.hotelData.count > 1 ? @"s" : @"";
+    wes.text = [NSString stringWithFormat:@"%d of %lu Hotel%@", [self numberOfFilteredHotels], self.hotelData.count, plural];
+    
+    inPriceFilterMode = rangeSlider.lowerValue != 0.0 || rangeSlider.upperValue != 1.0;
+}
+
+- (void)starClicked:(UITapGestureRecognizer *)tgr {
+    UIView *starsContainer = tgr.view.superview;
+    
+    int starNumber = (int)tgr.view.tag - 4300;
+    for (int j = 1; j <= 5; j++) {
+        UIView *sc = [starsContainer viewWithTag:(4300 + j)];
+        ((UIView *)sc.subviews.firstObject).tintColor = j <= starNumber ? kWotaColorOne() : [UIColor grayColor];
+        self.selectStarRating = j == starNumber ? (double)j : self.selectStarRating;
     }
     
+    inStarFilterMode = YES;
+    
+    UILabel *wes = (UILabel *) [starsContainer.superview viewWithTag:434343];
+    NSString *plural = self.hotelData.count > 1 ? @"s" : @"";
+    wes.text = [NSString stringWithFormat:@"%d of %lu Hotel%@", [self numberOfFilteredHotels], self.hotelData.count, plural];
+}
+
+- (int)numberOfFilteredHotels {
+    return (int)[self performFilter].count;
+}
+
+#pragma mark Getters
+
+- (BOOL)inFilterMode {
+    return inHotelNameFilterMode || inPriceFilterMode || inStarFilterMode;
+}
+
+- (NSArray *)currentHotelData {
+    return self.inFilterMode ? _filterableData : _hotelData;
+}
+
+- (NSNumber *)bottomPrice {
+    NSNumber *bp = [NSNumber numberWithDouble:1000.0];
+    
+    for (EanHotelListHotelSummary *hotel in self.hotelData) {
+        double lr = [hotel.lowRate doubleValue];
+        bp = lr < [bp doubleValue] ? [NSNumber numberWithDouble:lr] : bp;
+    }
+    
+    return bp;
+}
+
+- (NSNumber *)topPrice {
+    NSNumber *tp = [NSNumber numberWithDouble:0.0];
+    
+    for (EanHotelListHotelSummary *hotel in self.hotelData) {
+        double lr = [hotel.lowRate doubleValue];
+        tp = lr > [tp doubleValue] ? [NSNumber numberWithDouble:lr] : tp;
+    }
+    
+    return tp;
+}
+
+#pragma mark Setter
+
+- (void)setHotelData:(NSArray *)hotelData {
+    inHotelNameFilterMode = inPriceFilterMode = inStarFilterMode = NO;
+    _filterText = @"";
+    _selectStarRating = 0.0;
+    _hotelData = hotelData;
+    self.filterableData = [NSMutableArray arrayWithArray:_hotelData];
+}
+
+#pragma mark Da Filter
+
+- (void)letsFilter {
+    if (self.inFilterMode || self.inFilterModePriorToLoadingFilterView) {
+        self.filterableData = [self performFilter];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHotelDataFiltered object:self];
+    }
+}
+
+- (NSMutableArray *)performFilter {
     NSMutableArray *searchResults = [self.hotelData mutableCopy];
     
+    /*******
+     * First filter hotel name
+     ******/
+    
     // strip out all the leading and trailing spaces
-    NSString *strippedString = [searchText stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    NSString *strippedString = [_filterText stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     
     // break up the search terms (separated by spaces)
     NSArray *searchItems = nil;
@@ -145,47 +262,45 @@ NSString * const kNotificationHotelDataChanged = @"kNotificationHotelDataChanged
     [NSCompoundPredicate andPredicateWithSubpredicates:andMatchPredicates];
     searchResults = [[searchResults filteredArrayUsingPredicate:finalCompoundPredicate] mutableCopy];
     
-    self.filterableData = searchResults;
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHotelDataChanged object:self];
+    /*******
+     * Now filter low rate
+     ******/
     
-    return YES;
-}
-
-- (BOOL)textFieldShouldClear:(UITextField *)textField {
-    textField.text = @"";
-    self.filterableData = [NSMutableArray arrayWithArray:self.hotelData];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHotelDataChanged object:self];
-    return YES;
-}
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    [textField endEditing:YES];
-    return YES;
-}
-
-- (void)textFieldDidEndEditing:(UITextField *)textField {
-    if (stringIsEmpty(textField.text)) {
-        self.filterableData = [NSMutableArray arrayWithArray:self.hotelData];
-    }
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHotelDataChanged object:self];
+    NSExpression *lhsLR = [NSExpression expressionForKeyPath:@"lowRate"];
+    NSExpression *rhsGT = [NSExpression expressionForConstantValue:[NSNumber numberWithDouble:self.selectedBottomPrice]];
+    NSExpression *rhsLT = [NSExpression expressionForConstantValue:[NSNumber numberWithDouble:self.selectedTopPrice]];
     
-    textField.layer.cornerRadius = 6.0f;
-    textField.layer.borderColor = UIColorFromRGB(0xdddddd).CGColor;
-    textField.layer.borderWidth = 0.7f;
-}
-
-#pragma mark Getter
-
-- (NSArray *)currentHotelData {
-    return inFilterMode ? _filterableData : _hotelData;
-}
-
-#pragma mark Setters
-
-- (void)setHotelData:(NSArray *)hotelData {
-    inFilterMode = NO;
-    _hotelData = hotelData;
-    self.filterableData = [NSMutableArray arrayWithCapacity:_hotelData.count];
+    NSPredicate *greaterThanPredicate = [NSComparisonPredicate
+                                         predicateWithLeftExpression:lhsLR
+                                         rightExpression:rhsGT
+                                         modifier:NSDirectPredicateModifier
+                                         type:NSGreaterThanOrEqualToPredicateOperatorType
+                                         options:0];
+    
+    NSPredicate *lessThanPredicate = [NSComparisonPredicate
+                                      predicateWithLeftExpression:lhsLR
+                                      rightExpression:rhsLT
+                                      modifier:NSDirectPredicateModifier
+                                      type:NSLessThanOrEqualToPredicateOperatorType
+                                      options:0];
+    
+    NSMutableArray *LRItemsPredicate = [NSMutableArray array];
+    [LRItemsPredicate addObject:greaterThanPredicate];
+    [LRItemsPredicate addObject:lessThanPredicate];
+    
+    NSCompoundPredicate *LRCompoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:LRItemsPredicate];
+    searchResults = [[searchResults filteredArrayUsingPredicate:LRCompoundPredicate] mutableCopy];
+    
+    /*******
+     * And finally filter star rating
+     ******/
+    
+    NSExpression *lhsSR = [NSExpression expressionForKeyPath:@"hotelRating"];
+    NSExpression *rhsSR = [NSExpression expressionForConstantValue:[NSNumber numberWithDouble:self.selectStarRating]];
+    
+    NSPredicate *greaterThanStarPredicate = [NSComparisonPredicate predicateWithLeftExpression:lhsSR rightExpression:rhsSR modifier:NSDirectPredicateModifier type:NSGreaterThanOrEqualToPredicateOperatorType options:0];
+    
+    return [[searchResults filteredArrayUsingPredicate:greaterThanStarPredicate] mutableCopy];
 }
 
 @end

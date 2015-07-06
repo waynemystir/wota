@@ -119,6 +119,10 @@
 		B0BD381F1AF9812100EF5E4F /* NightlyRateTableViewDelegateImplementation.m in Sources */ = {isa = PBXBuildFile; fileRef = B0BD381E1AF9812100EF5E4F /* NightlyRateTableViewDelegateImplementation.m */; };
 		B0BD38211AF990F600EF5E4F /* NightRateTableCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0BD38201AF990F600EF5E4F /* NightRateTableCellView.xib */; };
 		B0BD38241AF9914600EF5E4F /* NightRateTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0BD38231AF9914600EF5E4F /* NightRateTableCellView.m */; };
+		B0CBC7D91B483C2E00F61CA9 /* FilterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0CBC7D81B483C2D00F61CA9 /* FilterView.xib */; };
+		B0CBC8521B48AF9200F61CA9 /* RangeSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CBC84F1B48AF9200F61CA9 /* RangeSlider.swift */; };
+		B0CBC8531B48AF9200F61CA9 /* RangeSliderThumbLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CBC8501B48AF9200F61CA9 /* RangeSliderThumbLayer.swift */; };
+		B0CBC8541B48AF9200F61CA9 /* RangeSliderTrackLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CBC8511B48AF9200F61CA9 /* RangeSliderTrackLayer.swift */; };
 		B0D01DE51B02D4880001C558 /* NavigationView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D01DE41B02D4880001C558 /* NavigationView.m */; };
 		B0D01EB81B0590260001C558 /* BackCancelView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D01EB71B0590260001C558 /* BackCancelView.m */; };
 		B0D01EBB1B0657010001C558 /* CheckMarkView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D01EBA1B0657010001C558 /* CheckMarkView.m */; };
@@ -369,6 +373,11 @@
 		B0BD38201AF990F600EF5E4F /* NightRateTableCellView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NightRateTableCellView.xib; sourceTree = "<group>"; };
 		B0BD38221AF9914600EF5E4F /* NightRateTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NightRateTableCellView.h; sourceTree = "<group>"; };
 		B0BD38231AF9914600EF5E4F /* NightRateTableCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NightRateTableCellView.m; sourceTree = "<group>"; };
+		B0CBC7D81B483C2D00F61CA9 /* FilterView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FilterView.xib; sourceTree = "<group>"; };
+		B0CBC84E1B48AF9200F61CA9 /* ota-ios-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ota-ios-Bridging-Header.h"; sourceTree = "<group>"; };
+		B0CBC84F1B48AF9200F61CA9 /* RangeSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RangeSlider.swift; sourceTree = "<group>"; };
+		B0CBC8501B48AF9200F61CA9 /* RangeSliderThumbLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RangeSliderThumbLayer.swift; sourceTree = "<group>"; };
+		B0CBC8511B48AF9200F61CA9 /* RangeSliderTrackLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RangeSliderTrackLayer.swift; sourceTree = "<group>"; };
 		B0D01DE31B02D4880001C558 /* NavigationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavigationView.h; path = "ota-ios/Views/Navigation/NavigationView.h"; sourceTree = SOURCE_ROOT; };
 		B0D01DE41B02D4880001C558 /* NavigationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavigationView.m; path = "ota-ios/Views/Navigation/NavigationView.m"; sourceTree = SOURCE_ROOT; };
 		B0D01EB61B0590260001C558 /* BackCancelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackCancelView.h; sourceTree = "<group>"; };
@@ -641,6 +650,7 @@
 				B09797CD1AC2518D0014FC7C /* MapView.xib */,
 				B09797E61AC34DB70014FC7C /* HotelListingView.xib */,
 				B03DA0061B46D5930039B9C6 /* FilterTableView.xib */,
+				B0CBC7D81B483C2D00F61CA9 /* FilterView.xib */,
 				B080B7C81AC505DC00075A32 /* HotelInfoView.xib */,
 				B0FE0F481AC6ED0000DAF635 /* BookView.xib */,
 				B0FE0F4D1AC70A2500DAF635 /* SelectRoomView.xib */,
@@ -770,6 +780,10 @@
 				B0BD38231AF9914600EF5E4F /* NightRateTableCellView.m */,
 				B06C98BD1B09586B00DBE09D /* CountryPicker.h */,
 				B06C98BE1B09586B00DBE09D /* CountryPicker.m */,
+				B0CBC84F1B48AF9200F61CA9 /* RangeSlider.swift */,
+				B0CBC8501B48AF9200F61CA9 /* RangeSliderThumbLayer.swift */,
+				B0CBC8511B48AF9200F61CA9 /* RangeSliderTrackLayer.swift */,
+				B0CBC84E1B48AF9200F61CA9 /* ota-ios-Bridging-Header.h */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1091,6 +1105,7 @@
 				B0D02FFE1AE6123000B1E75F /* textfield.png in Resources */,
 				B05BD6321AC1FF54002C2882 /* PlaceAutoCompleteTableViewCell.xib in Resources */,
 				B018C0421AD96A7600DDCE2E /* GuestDetailsView.xib in Resources */,
+				B0CBC7D91B483C2E00F61CA9 /* FilterView.xib in Resources */,
 				B0D02FF61AE6123000B1E75F /* jcb@2x.png in Resources */,
 				B0D02FFA1AE6123000B1E75F /* placeholder@2x.png in Resources */,
 				B09797CE1AC2518D0014FC7C /* MapView.xib in Resources */,
@@ -1151,6 +1166,7 @@
 				B09797D11AC321F90014FC7C /* GooglePlaceDetail.m in Sources */,
 				B05BD6301AC1FEE3002C2882 /* GooglePlace.m in Sources */,
 				B07958E91AF451C000422182 /* EanNightlyRate.m in Sources */,
+				B0CBC8521B48AF9200F61CA9 /* RangeSlider.swift in Sources */,
 				B0D02FE81AE6123000B1E75F /* PTKTextField.m in Sources */,
 				B0122E471AD088F800E44319 /* EanAvailabilityHotelRoomResponse.m in Sources */,
 				B09E41801AEA8C11000A718D /* EanBedType.m in Sources */,
@@ -1180,6 +1196,7 @@
 				B075AB091ADB687B0028C613 /* GoogleAddressComponent.m in Sources */,
 				B0508C741B351064009CC56F /* WotaPlace.m in Sources */,
 				B00872CD1AEC1D4900CB2B9D /* SelectSmokingPreferenceDelegateImplementation.m in Sources */,
+				B0CBC8541B48AF9200F61CA9 /* RangeSliderTrackLayer.swift in Sources */,
 				B0D02FE21AE6123000B1E75F /* PTKAddressZip.m in Sources */,
 				B09797F81AC3BC690014FC7C /* THDateDay.m in Sources */,
 				B09797FA1AC3BC690014FC7C /* THDatePickerViewController.m in Sources */,
@@ -1188,6 +1205,7 @@
 				B07958E61AF44A5800422182 /* EanChargeableRateInfo.m in Sources */,
 				B05BD6241AC1E9FB002C2882 /* AppEnvironment.m in Sources */,
 				B09797C91AC23C1F0014FC7C /* GoogleParser.m in Sources */,
+				B0CBC8531B48AF9200F61CA9 /* RangeSliderThumbLayer.swift in Sources */,
 				B00872D01AEC99CB00CB2B9D /* EanAvailabilityRoomType.m in Sources */,
 				B0344C4A1AE5A696000BBFCE /* WotaCardNumberField.m in Sources */,
 				B0F554931B13798200E9B805 /* EanRoomRateDetails.m in Sources */,
@@ -1259,6 +1277,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				DEFINES_MODULE = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1278,6 +1297,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = Trotter;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1302,6 +1322,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				DEFINES_MODULE = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1314,6 +1335,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = Trotter;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -1325,6 +1347,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1336,6 +1359,9 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = Trotter;
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "ota-ios/Classes/ota-ios-Bridging-Header.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "$(SWIFT_MODULE_NAME)-Swift.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -1344,6 +1370,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1355,6 +1382,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = Trotter;
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "ota-ios/Classes/ota-ios-Bridging-Header.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "$(SWIFT_MODULE_NAME)-Swift.h";
 			};
 			name = Release;
 		};

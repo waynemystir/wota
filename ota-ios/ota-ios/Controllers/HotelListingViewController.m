@@ -20,6 +20,8 @@
 #import "WotaMapAnnotatioin.h"
 #import "WotaMKPinAnnotationView.h"
 #import "WotaTappableView.h"
+#import "WotaButton.h"
+#import "Trotter-Swift.h"
 
 NSTimeInterval const kFlipAnimationDuration = 0.75;
 NSTimeInterval const kSearchModeAnimationDuration = 0.36;
@@ -41,6 +43,7 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
 @property (weak, nonatomic) IBOutlet UIImageView *filterImageView;
 @property (nonatomic) double listMaxLatitudeDelta;
 @property (nonatomic) double listMaxLongitudeDelta;
+@property (weak, nonatomic) IBOutlet UIView *overlay;
 
 - (IBAction)clickSearchMap:(id)sender;
 
@@ -99,15 +102,23 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     _hotelsTableView.delegate = _hotelTableViewDelegate;
     _hotelsTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _hotelsTableView.separatorColor = [UIColor clearColor];
+    _hotelsTableView.delaysContentTouches = NO;
     [_containerView addSubview:_hotelsTableView];
     
-    [self setupTheFilterView];
+    [self setupTheFilterTableView];
     
     UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(transitionBetweenTableAndMap)];
     tgr.numberOfTapsRequired = 1;
     tgr.numberOfTouchesRequired = 1;
     _wmapIvContainer.userInteractionEnabled = YES;
     [_wmapIvContainer addGestureRecognizer:tgr];
+    
+    UITapGestureRecognizer *tgr2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickSortFilterButton)];
+    tgr2.numberOfTapsRequired = 1;
+    tgr2.numberOfTouchesRequired = 1;
+    tgr2.cancelsTouchesInView = NO;
+    _sortFilterContainer.userInteractionEnabled = YES;
+    [_sortFilterContainer addGestureRecognizer:tgr2];
     
     UIImage *hamburger = [[UIImage imageNamed:@"hamburger"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIImageView *hiv = [[UIImageView alloc] initWithImage:hamburger];
@@ -147,7 +158,7 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     self.placesTableViewZeroFrame = CGRectMake(0, 63.4f, 320, 0);
     self.placesTableViewExpandedFrame = CGRectMake(0, 103.4f, 320, 248.5f);
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onHotelDataChanged) name:kNotificationHotelDataChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onHotelDataFiltered) name:kNotificationHotelDataFiltered object:nil];
     
     [super viewDidLoad];
 }
@@ -168,7 +179,7 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
 }
 
 - (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationHotelDataChanged object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationHotelDataFiltered object:nil];
 }
 
 #pragma mark flipping animation
@@ -331,7 +342,8 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     _listMaxLatitudeDelta = ehlr.maxLatitudeDelta;
     _listMaxLongitudeDelta = ehlr.maxLongitudeDelta;
     
-    [self redrawMapAnnotations];
+    [self redrawMapAnnotationsAndRegion:YES];
+    [self setupTheFilterView];
     
     [self dropDaSpinnerAlready];
 }
@@ -344,9 +356,9 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     }
     
     WotaMapAnnotatioin *wa = (WotaMapAnnotatioin *)annotation;
-    WotaMKPinAnnotationView *annotationView = (WotaMKPinAnnotationView *) [mapView dequeueReusableAnnotationViewWithIdentifier:@"WotaPinReuse"];
-    if(!annotationView) {
-        annotationView = [[WotaMKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"WotaPinReuse"];
+//    WotaMKPinAnnotationView *annotationView = (WotaMKPinAnnotationView *) [mapView dequeueReusableAnnotationViewWithIdentifier:@"WotaPinReuse"];
+//    if(!annotationView) {
+        WotaMKPinAnnotationView *annotationView = [[WotaMKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"WotaPinReuse"];
         UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
         
         [iv setImageWithURL:[NSURL URLWithString:wa.imageUrl] placeholderImage:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
@@ -357,7 +369,7 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
         
         annotationView.leftCalloutAccessoryView = iv;
         annotationView.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
-    }
+//    }
     
     annotationView.rowNUmber = wa.rowNUmber;
     annotationView.enabled = YES;
@@ -404,19 +416,21 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     }];
 }
 
-- (void)onHotelDataChanged {
+- (void)onHotelDataFiltered {
     [_hotelsTableView reloadData];
-    [self redrawMapAnnotations];
+    [self redrawMapAnnotationsAndRegion:NO];
 }
 
-- (void)redrawMapAnnotations {
-    double spanLat = _listMaxLatitudeDelta*2.40;
-    double spanLon = _listMaxLongitudeDelta*2.40;
-    MKCoordinateSpan span = MKCoordinateSpanMake(spanLat, spanLon);
-    MKCoordinateRegion viewRegion = MKCoordinateRegionMake(self.zoomLocation, span);
-    
-    [self.mkMapView setRegion:viewRegion animated:tableOrMap];
-    [self.mkMapView setNeedsDisplay];
+- (void)redrawMapAnnotationsAndRegion:(BOOL)redrawRegion {
+    if (redrawRegion) {
+        double spanLat = _listMaxLatitudeDelta*2.40;
+        double spanLon = _listMaxLongitudeDelta*2.40;
+        MKCoordinateSpan span = MKCoordinateSpanMake(spanLat, spanLon);
+        MKCoordinateRegion viewRegion = MKCoordinateRegionMake(self.zoomLocation, span);
+        
+        [self.mkMapView setRegion:viewRegion animated:tableOrMap];
+        [self.mkMapView setNeedsDisplay];
+    }
     
     [self removeAllPinsButUserLocation];
     
@@ -435,7 +449,7 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     }
 }
 
-- (void)setupTheFilterView {
+- (void)setupTheFilterTableView {
     NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"FilterTableView" owner:self options:nil];
     UIView *filterView = views.firstObject;
     UITextField *tf = (UITextField *) [filterView viewWithTag:41414141];
@@ -454,7 +468,7 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickFilterButton)];
     tgr.numberOfTapsRequired = 1;
     tgr.numberOfTouchesRequired = 1;
-    tgr.cancelsTouchesInView = YES;
+    tgr.cancelsTouchesInView = NO;
     WotaTappableView *filterContainer = (WotaTappableView *) [filterView viewWithTag:1239871];
     filterContainer.tapColor = kWotaColorOne();
     filterContainer.untapColor = [UIColor clearColor];
@@ -471,8 +485,132 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     _hotelsTableView.tableHeaderView = filterView;
 }
 
+- (void)setupTheFilterView {
+    UIView *fv = [self.view viewWithTag:91929394];
+    UIView *starsContainer = nil;
+    
+    if (!fv) {
+        NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"FilterView" owner:self options:nil];
+        fv = views.firstObject;
+        fv.frame = CGRectMake(0, 600, 320, 300);
+        [self.view addSubview:fv];
+        
+        UIButton *db = (WotaButton *) [fv viewWithTag:16171819];
+        [db addTarget:self action:@selector(dropFilterView) forControlEvents:UIControlEventTouchUpInside];
+        
+        UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dropFilterView)];
+        tgr.numberOfTapsRequired = 1;
+        tgr.numberOfTouchesRequired = 1;
+        _overlay.userInteractionEnabled = YES;
+        [_overlay addGestureRecognizer:tgr];
+        
+        starsContainer = [fv viewWithTag:4300];
+        
+        UITapGestureRecognizer *tgr1 = [[UITapGestureRecognizer alloc] initWithTarget:self.hotelTableViewDelegate action:@selector(starClicked:)];
+        tgr1.numberOfTapsRequired = 1;
+        tgr1.numberOfTouchesRequired = 1;
+        [[starsContainer viewWithTag:4301] addGestureRecognizer:tgr1];
+        
+        UITapGestureRecognizer *tgr2 = [[UITapGestureRecognizer alloc] initWithTarget:self.hotelTableViewDelegate action:@selector(starClicked:)];
+        tgr2.numberOfTapsRequired = 1;
+        tgr2.numberOfTouchesRequired = 1;
+        [[starsContainer viewWithTag:4302] addGestureRecognizer:tgr2];
+        
+        UITapGestureRecognizer *tgr3 = [[UITapGestureRecognizer alloc] initWithTarget:self.hotelTableViewDelegate action:@selector(starClicked:)];
+        tgr3.numberOfTapsRequired = 1;
+        tgr3.numberOfTouchesRequired = 1;
+        [[starsContainer viewWithTag:4303] addGestureRecognizer:tgr3];
+        
+        UITapGestureRecognizer *tgr4 = [[UITapGestureRecognizer alloc] initWithTarget:self.hotelTableViewDelegate action:@selector(starClicked:)];
+        tgr4.numberOfTapsRequired = 1;
+        tgr4.numberOfTouchesRequired = 1;
+        [[starsContainer viewWithTag:4304] addGestureRecognizer:tgr4];
+        
+        UITapGestureRecognizer *tgr5 = [[UITapGestureRecognizer alloc] initWithTarget:self.hotelTableViewDelegate action:@selector(starClicked:)];
+        tgr5.numberOfTapsRequired = 1;
+        tgr5.numberOfTouchesRequired = 1;
+        [[starsContainer viewWithTag:4305] addGestureRecognizer:tgr5];
+    }
+    
+    RangeSlider *oldPs = (RangeSlider *) [fv viewWithTag:39383736];
+    if (oldPs) {
+        [oldPs removeFromSuperview];
+    }
+    
+    RangeSlider *ps = [[RangeSlider alloc] initWithFrame:CGRectMake(20, 119, 280, 40)];
+    ps.tag = 39383736;
+    [fv addSubview:ps];
+    [ps addTarget:self.hotelTableViewDelegate action:@selector(priceSliderChanged:) forControlEvents:UIControlEventValueChanged];
+    
+    starsContainer = [fv viewWithTag:4300];
+    ((UIView *) [starsContainer viewWithTag:4301].subviews.firstObject).tintColor = [UIColor grayColor];
+    ((UIView *) [starsContainer viewWithTag:4302].subviews.firstObject).tintColor = [UIColor grayColor];
+    ((UIView *) [starsContainer viewWithTag:4303].subviews.firstObject).tintColor = [UIColor grayColor];
+    ((UIView *) [starsContainer viewWithTag:4304].subviews.firstObject).tintColor = [UIColor grayColor];
+    ((UIView *) [starsContainer viewWithTag:4305].subviews.firstObject).tintColor = [UIColor grayColor];
+    
+    [self updateFilterViewNumbers:fv];
+}
+
+#pragma mark Filter methods
+
+- (void)clickSortFilterButton {
+    if (tableOrMap) {
+        [self clickFilterButton];
+    } else {
+        
+    }
+}
+
 - (void)clickFilterButton {
-    NSLog(@"Waynes Wild & Wacky World");
+    [self loadFilterView];
+    [self.view endEditing:YES];
+}
+
+- (void)loadFilterView {
+    __weak UIView *fv = [self.view viewWithTag:91929394];
+    [self updateFilterViewNumbers:fv];
+    [self.view bringSubviewToFront:_overlay];
+    [self.view bringSubviewToFront:fv];
+    self.hotelTableViewDelegate.inFilterModePriorToLoadingFilterView = self.hotelTableViewDelegate.inFilterMode;
+    [UIView animateWithDuration:kSearchModeAnimationDuration animations:^{
+        _overlay.alpha = 0.7f;
+        fv.frame = CGRectMake(0, 268, 320, 300);
+    } completion:^(BOOL finished) {
+        ;
+    }];
+}
+
+- (void)dropFilterView {
+    [self.hotelTableViewDelegate letsFilter];
+    __weak UIView *fv = [self.view viewWithTag:91929394];
+    [UIView animateWithDuration:kSearchModeAnimationDuration animations:^{
+        _overlay.alpha = 0.0f;
+        fv.frame = CGRectMake(0, 600, 320, 300);
+    } completion:^(BOOL finished) {
+        [self.view sendSubviewToBack:_overlay];
+        [self.view sendSubviewToBack:fv];
+    }];
+}
+
+- (void)updateFilterViewNumbers:(UIView *)fv {
+    RangeSlider *ps = (RangeSlider *) [fv viewWithTag:39383736];
+    [self.hotelTableViewDelegate priceSliderChanged:ps];
+    
+//    NSNumberFormatter *pf = kPriceRoundOffFormatter([[NSLocale currentLocale] objectForKey:NSLocaleCurrencyCode]);
+//    
+//    UILabel *w = (UILabel *) [fv viewWithTag:12345];
+//    self.hotelTableViewDelegate.selectedBottomPrice = (1 - ps.lowerValue) * [self.hotelTableViewDelegate.bottomPrice doubleValue] + ps.lowerValue * [self.hotelTableViewDelegate.topPrice doubleValue];
+//    w.text = [pf stringFromNumber:[NSNumber numberWithDouble:self.hotelTableViewDelegate.selectedBottomPrice]];//[NSString stringWithFormat:@"%.0f", self.hotelTableViewDelegate.selectedBottomPrice];
+//    
+//    UILabel *u = (UILabel *) [fv viewWithTag:98765];
+//    self.hotelTableViewDelegate.selectedTopPrice = (1 - ps.upperValue) * [self.hotelTableViewDelegate.bottomPrice doubleValue] + ps.upperValue * [self.hotelTableViewDelegate.topPrice doubleValue];
+//    u.text = [pf stringFromNumber:[NSNumber numberWithDouble:self.hotelTableViewDelegate.selectedTopPrice]];//[NSString stringWithFormat:@"%.0f", self.hotelTableViewDelegate.selectedTopPrice];
+//    
+//    UILabel *wes = (UILabel *) [fv viewWithTag:434343];
+//    int numbHotels = [self.hotelTableViewDelegate numberOfFilteredHotels];
+//    NSString *plural = self.hotelTableViewDelegate.hotelData.count > 1 ? @"s" : @"";
+//    wes.text = [NSString stringWithFormat:@"%d of %lu Hotel%@", numbHotels, self.hotelTableViewDelegate.hotelData.count, plural];
 }
 
 @end

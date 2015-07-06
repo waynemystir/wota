@@ -7,6 +7,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="HotelListingViewController">
             <connections>
                 <outlet property="filterImageView" destination="phd-Nh-0Yx" id="54F-t4-Zt8"/>
+                <outlet property="overlay" destination="vUb-MH-iX1" id="t8a-Jv-lBh"/>
                 <outlet property="pricesAvgLabel" destination="slo-EV-bKG" id="rLw-AN-mt6"/>
                 <outlet property="searchMapBtn" destination="DXV-hu-yRR" id="BD7-6O-eTs"/>
                 <outlet property="sortFilterContainer" destination="v0V-rV-waS" id="iSy-PM-IYu"/>
@@ -21,6 +22,11 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
+                <view alpha="0.0" contentMode="scaleToFill" id="vUb-MH-iX1" userLabel="overlay">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                </view>
                 <view contentMode="scaleToFill" id="T3F-AE-8uw" userLabel="footerView">
                     <rect key="frame" x="0.0" y="523" width="320" height="45"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -57,7 +63,7 @@
                             <rect key="frame" x="68" y="1" width="184" height="43"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <view contentMode="scaleToFill" id="v0V-rV-waS" userLabel="sortFilterContainer">
