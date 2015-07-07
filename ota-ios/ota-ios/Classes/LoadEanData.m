@@ -111,7 +111,7 @@ NSString * kEanGenerateSigMD5() {
     // Curtesy of http://stackoverflow.com/questions/2018550/how-do-i-create-an-md5-hash-of-a-string-in-cocoa
     NSTimeInterval uts = [[NSDate date] timeIntervalSince1970];
     NSUInteger utsInt = uts;
-    NSString *unixTimeStamp = [NSString stringWithFormat:@"%lu", utsInt];
+    NSString *unixTimeStamp = [NSString stringWithFormat:@"%lu", (unsigned long)utsInt];
     
     NSString *stringToHash = [NSString stringWithFormat:@"%@%@%@", EAN_API_KEY, EAN_SHARED_SECRET, unixTimeStamp];
     const char *cstr = [stringToHash UTF8String];

@@ -131,7 +131,7 @@ NSString * const kNotificationHotelDataFiltered = @"kNotificationHotelDataFilter
     
     UILabel *wes = (UILabel *) [rangeSlider.superview viewWithTag:434343];
     NSString *plural = self.hotelData.count > 1 ? @"s" : @"";
-    wes.text = [NSString stringWithFormat:@"%d of %lu Hotel%@", [self numberOfFilteredHotels], self.hotelData.count, plural];
+    wes.text = [NSString stringWithFormat:@"%d of %lu Hotel%@", [self numberOfFilteredHotels], (unsigned long)self.hotelData.count, plural];
     
     inPriceFilterMode = rangeSlider.lowerValue != 0.0 || rangeSlider.upperValue != 1.0;
 }
@@ -139,18 +139,32 @@ NSString * const kNotificationHotelDataFiltered = @"kNotificationHotelDataFilter
 - (void)starClicked:(UITapGestureRecognizer *)tgr {
     UIView *starsContainer = tgr.view.superview;
     
-    int starNumber = (int)tgr.view.tag - 4300;
-    for (int j = 1; j <= 5; j++) {
-        UIView *sc = [starsContainer viewWithTag:(4300 + j)];
-        ((UIView *)sc.subviews.firstObject).tintColor = j <= starNumber ? kWotaColorOne() : [UIColor grayColor];
-        self.selectStarRating = j == starNumber ? (double)j : self.selectStarRating;
+    if (tgr.view.tag == 4299) {
+        ((UILabel *)tgr.view).textColor = kWotaColorOne();
+        
+        for (int j = 1; j <= 5; j++) {
+            UIView *sc = [starsContainer viewWithTag:(4300 + j)];
+            ((UIView *)sc.subviews.firstObject).tintColor = [UIColor grayColor];
+        }
+        
+        self.selectStarRating = 0.0;
+        inStarFilterMode = NO;
+    } else {
+        ((UILabel *)[starsContainer viewWithTag:4299]).textColor = [UIColor grayColor];
+        
+        int starNumber = (int)tgr.view.tag - 4300;
+        for (int j = 1; j <= 5; j++) {
+            UIView *sc = [starsContainer viewWithTag:(4300 + j)];
+            ((UIView *)sc.subviews.firstObject).tintColor = j <= starNumber ? kWotaColorOne() : [UIColor grayColor];
+            self.selectStarRating = j == starNumber ? (double)j : self.selectStarRating;
+        }
+        
+        inStarFilterMode = YES;
     }
-    
-    inStarFilterMode = YES;
     
     UILabel *wes = (UILabel *) [starsContainer.superview viewWithTag:434343];
     NSString *plural = self.hotelData.count > 1 ? @"s" : @"";
-    wes.text = [NSString stringWithFormat:@"%d of %lu Hotel%@", [self numberOfFilteredHotels], self.hotelData.count, plural];
+    wes.text = [NSString stringWithFormat:@"%d of %lu Hotel%@", [self numberOfFilteredHotels], (unsigned long)self.hotelData.count, plural];
 }
 
 - (int)numberOfFilteredHotels {

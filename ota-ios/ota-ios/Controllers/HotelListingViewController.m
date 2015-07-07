@@ -506,6 +506,11 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
         
         starsContainer = [fv viewWithTag:4300];
         
+        UITapGestureRecognizer *tgr0 = [[UITapGestureRecognizer alloc] initWithTarget:self.hotelTableViewDelegate action:@selector(starClicked:)];
+        tgr0.numberOfTapsRequired = 1;
+        tgr0.numberOfTouchesRequired = 1;
+        [[starsContainer viewWithTag:4299] addGestureRecognizer:tgr0];
+        
         UITapGestureRecognizer *tgr1 = [[UITapGestureRecognizer alloc] initWithTarget:self.hotelTableViewDelegate action:@selector(starClicked:)];
         tgr1.numberOfTapsRequired = 1;
         tgr1.numberOfTouchesRequired = 1;
@@ -543,6 +548,7 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     [ps addTarget:self.hotelTableViewDelegate action:@selector(priceSliderChanged:) forControlEvents:UIControlEventValueChanged];
     
     starsContainer = [fv viewWithTag:4300];
+    ((UILabel *) [starsContainer viewWithTag:4299]).textColor = kWotaColorOne();
     ((UIView *) [starsContainer viewWithTag:4301].subviews.firstObject).tintColor = [UIColor grayColor];
     ((UIView *) [starsContainer viewWithTag:4302].subviews.firstObject).tintColor = [UIColor grayColor];
     ((UIView *) [starsContainer viewWithTag:4303].subviews.firstObject).tintColor = [UIColor grayColor];

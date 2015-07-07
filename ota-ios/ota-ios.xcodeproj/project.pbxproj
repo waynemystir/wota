@@ -1299,6 +1299,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Trotter;
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "ota-ios/Classes/ota-ios-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1337,6 +1338,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Trotter;
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "ota-ios/Classes/ota-ios-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
