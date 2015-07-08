@@ -281,7 +281,7 @@ static double const METERS_PER_MILE = 1609.344;
 - (void)letsFindHotels:(HotelListingViewController *)hvc searchRadius:(double)searchRadius {
     SelectionCriteria *sc = [SelectionCriteria singleton];
     
-    searchRadius = searchRadius * 0.8;
+    searchRadius = searchRadius * 0.92;
     searchRadius = fmax(searchRadius, 1);
     searchRadius = fmin(searchRadius, 50);
     int sri = ceil(searchRadius);

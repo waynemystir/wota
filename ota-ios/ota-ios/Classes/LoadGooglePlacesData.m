@@ -137,12 +137,15 @@
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-    if ([[[[connection currentRequest] URL] absoluteString] containsString:@"autocomplete"]) {
+    NSString *cs = [[[connection currentRequest] URL] absoluteString];
+    if ([cs containsString:@"autocomplete"]) {
         [self.delegate requestFinished:self.responseData dataType:LOAD_GOOGLE_AUTOCOMPLETE];
-    } else if ([[[[connection currentRequest] URL] absoluteString] containsString:@"place/details"]
-               || [[[[connection currentRequest] URL] absoluteString] containsString:@"maps/api/geocode"]
-               || [[[[connection currentRequest] URL] absoluteString] containsString:@"maps/api/place"]) {
+    } else if ([cs containsString:@"place/details"]
+               || [cs containsString:@"maps/api/geocode"]
+               || [cs containsString:@"maps/api/place"]) {
         [self.delegate requestFinished:self.responseData dataType:LOAD_GOOGLE_PLACES];
+    } else {
+        assert(false);
     }
 }
 

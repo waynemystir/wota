@@ -14,6 +14,7 @@
 #import "HotelInfoViewController.h"
 #import "LoadEanData.h"
 #import "AppDelegate.h"
+#import "WotaTappableView.h"
 
 NSString * const kNotificationHotelDataFiltered = @"kNotificationHotelDataFiltered";
 
@@ -169,6 +170,17 @@ NSString * const kNotificationHotelDataFiltered = @"kNotificationHotelDataFilter
 
 - (int)numberOfFilteredHotels {
     return (int)[self performFilter].count;
+}
+
+- (void)letsSortYo:(UITapGestureRecognizer *)tgr {
+    NSLog(@"WESWESWES:%@:%ld", NSStringFromSelector(_cmd), (long)tgr.view.tag);
+    
+    int wayne = (int)tgr.view.tag;
+    
+    for (int j = 5101; j <= 5104; j++) {
+        WotaTappableView *wtv = (WotaTappableView *)[tgr.view.superview viewWithTag:j];
+        wtv.borderColor = j == wayne ? kWotaColorOne() : [UIColor clearColor];
+    }
 }
 
 #pragma mark Getters

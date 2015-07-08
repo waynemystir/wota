@@ -51,7 +51,7 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
 
 @implementation HotelListingViewController {
     BOOL tableOrMap;
-    BOOL searchOpenOrClosed;
+    BOOL filterViewUp;
 }
 
 #pragma mark Lifecycle
@@ -344,6 +344,7 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     
     [self redrawMapAnnotationsAndRegion:YES];
     [self setupTheFilterView];
+    [self setupTheSortView];
     
     [self dropDaSpinnerAlready];
 }
@@ -498,7 +499,7 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
         UIButton *db = (WotaButton *) [fv viewWithTag:16171819];
         [db addTarget:self action:@selector(dropFilterView) forControlEvents:UIControlEventTouchUpInside];
         
-        UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dropFilterView)];
+        UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dropFilterOrSortView)];
         tgr.numberOfTapsRequired = 1;
         tgr.numberOfTouchesRequired = 1;
         _overlay.userInteractionEnabled = YES;
@@ -558,13 +559,53 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     [self updateFilterViewNumbers:fv];
 }
 
+- (void)setupTheSortView {
+    UIView *sv = [self.view viewWithTag:414377];
+    
+    if (!sv) {
+        NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"SortView" owner:self options:nil];
+        sv = views.firstObject;
+        sv.frame = CGRectMake(0, 600, 320, 300);
+        [self.view addSubview:sv];
+        
+        UIButton *db = (WotaButton *) [sv viewWithTag:36373839];
+        [db addTarget:self action:@selector(dropSortView) forControlEvents:UIControlEventTouchUpInside];
+        
+        UITapGestureRecognizer *tgr1 = [[UITapGestureRecognizer alloc] initWithTarget:self.hotelTableViewDelegate action:@selector(letsSortYo:)];
+        tgr1.numberOfTapsRequired = 1;
+        tgr1.numberOfTouchesRequired = 1;
+        [[sv viewWithTag:5101] addGestureRecognizer:tgr1];
+        
+        UITapGestureRecognizer *tgr2 = [[UITapGestureRecognizer alloc] initWithTarget:self.hotelTableViewDelegate action:@selector(letsSortYo:)];
+        tgr2.numberOfTapsRequired = 1;
+        tgr2.numberOfTouchesRequired = 1;
+        [[sv viewWithTag:5102] addGestureRecognizer:tgr2];
+        
+        UITapGestureRecognizer *tgr3 = [[UITapGestureRecognizer alloc] initWithTarget:self.hotelTableViewDelegate action:@selector(letsSortYo:)];
+        tgr3.numberOfTapsRequired = 1;
+        tgr3.numberOfTouchesRequired = 1;
+        [[sv viewWithTag:5103] addGestureRecognizer:tgr3];
+        
+        UITapGestureRecognizer *tgr4 = [[UITapGestureRecognizer alloc] initWithTarget:self.hotelTableViewDelegate action:@selector(letsSortYo:)];
+        tgr4.numberOfTapsRequired = 1;
+        tgr4.numberOfTouchesRequired = 1;
+        [[sv viewWithTag:5104] addGestureRecognizer:tgr4];
+    }
+    
+    ((WotaTappableView *)[sv viewWithTag:5101]).borderColor = kWotaColorOne();
+    ((WotaTappableView *)[sv viewWithTag:5102]).borderColor = [UIColor clearColor];
+    ((WotaTappableView *)[sv viewWithTag:5103]).borderColor = [UIColor clearColor];
+    ((WotaTappableView *)[sv viewWithTag:5104]).borderColor = [UIColor clearColor];
+}
+
 #pragma mark Filter methods
 
 - (void)clickSortFilterButton {
     if (tableOrMap) {
         [self clickFilterButton];
     } else {
-        
+        [self loadSortView];
+        [self.view endEditing:YES];
     }
 }
 
@@ -579,6 +620,7 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     [self.view bringSubviewToFront:_overlay];
     [self.view bringSubviewToFront:fv];
     self.hotelTableViewDelegate.inFilterModePriorToLoadingFilterView = self.hotelTableViewDelegate.inFilterMode;
+    filterViewUp = YES;
     [UIView animateWithDuration:kSearchModeAnimationDuration animations:^{
         _overlay.alpha = 0.7f;
         fv.frame = CGRectMake(0, 268, 320, 300);
@@ -590,6 +632,7 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
 - (void)dropFilterView {
     [self.hotelTableViewDelegate letsFilter];
     __weak UIView *fv = [self.view viewWithTag:91929394];
+    filterViewUp = NO;
     [UIView animateWithDuration:kSearchModeAnimationDuration animations:^{
         _overlay.alpha = 0.0f;
         fv.frame = CGRectMake(0, 600, 320, 300);
@@ -602,21 +645,40 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
 - (void)updateFilterViewNumbers:(UIView *)fv {
     RangeSlider *ps = (RangeSlider *) [fv viewWithTag:39383736];
     [self.hotelTableViewDelegate priceSliderChanged:ps];
-    
-//    NSNumberFormatter *pf = kPriceRoundOffFormatter([[NSLocale currentLocale] objectForKey:NSLocaleCurrencyCode]);
-//    
-//    UILabel *w = (UILabel *) [fv viewWithTag:12345];
-//    self.hotelTableViewDelegate.selectedBottomPrice = (1 - ps.lowerValue) * [self.hotelTableViewDelegate.bottomPrice doubleValue] + ps.lowerValue * [self.hotelTableViewDelegate.topPrice doubleValue];
-//    w.text = [pf stringFromNumber:[NSNumber numberWithDouble:self.hotelTableViewDelegate.selectedBottomPrice]];//[NSString stringWithFormat:@"%.0f", self.hotelTableViewDelegate.selectedBottomPrice];
-//    
-//    UILabel *u = (UILabel *) [fv viewWithTag:98765];
-//    self.hotelTableViewDelegate.selectedTopPrice = (1 - ps.upperValue) * [self.hotelTableViewDelegate.bottomPrice doubleValue] + ps.upperValue * [self.hotelTableViewDelegate.topPrice doubleValue];
-//    u.text = [pf stringFromNumber:[NSNumber numberWithDouble:self.hotelTableViewDelegate.selectedTopPrice]];//[NSString stringWithFormat:@"%.0f", self.hotelTableViewDelegate.selectedTopPrice];
-//    
-//    UILabel *wes = (UILabel *) [fv viewWithTag:434343];
-//    int numbHotels = [self.hotelTableViewDelegate numberOfFilteredHotels];
-//    NSString *plural = self.hotelTableViewDelegate.hotelData.count > 1 ? @"s" : @"";
-//    wes.text = [NSString stringWithFormat:@"%d of %lu Hotel%@", numbHotels, self.hotelTableViewDelegate.hotelData.count, plural];
+}
+
+- (void)loadSortView {
+    __weak UIView *sv = [self.view viewWithTag:414377];
+//    [self updateFilterViewNumbers:fv];
+    [self.view bringSubviewToFront:_overlay];
+    [self.view bringSubviewToFront:sv];
+//    self.hotelTableViewDelegate.inFilterModePriorToLoadingFilterView = self.hotelTableViewDelegate.inFilterMode;
+    [UIView animateWithDuration:kSearchModeAnimationDuration animations:^{
+        _overlay.alpha = 0.7f;
+        sv.frame = CGRectMake(0, 268, 320, 300);
+    } completion:^(BOOL finished) {
+        ;
+    }];
+}
+
+- (void)dropSortView {
+//    [self.hotelTableViewDelegate letsFilter];
+    __weak UIView *sv = [self.view viewWithTag:414377];
+    [UIView animateWithDuration:kSearchModeAnimationDuration animations:^{
+        _overlay.alpha = 0.0f;
+        sv.frame = CGRectMake(0, 600, 320, 300);
+    } completion:^(BOOL finished) {
+        [self.view sendSubviewToBack:_overlay];
+        [self.view sendSubviewToBack:sv];
+    }];
+}
+
+- (void)dropFilterOrSortView {
+    if (tableOrMap || filterViewUp) {
+        [self dropFilterView];
+    } else {
+        [self dropSortView];
+    }
 }
 
 @end

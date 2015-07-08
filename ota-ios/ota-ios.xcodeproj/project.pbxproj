@@ -16,6 +16,7 @@
 		B00E771C1B234A5A00C27331 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = B00E77191B234A5A00C27331 /* GTMNSString+HTML.m */; };
 		B00E771D1B234A5A00C27331 /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = B00E771B1B234A5A00C27331 /* NSString+HTML.m */; };
 		B00E77221B236A3B00C27331 /* HLTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B00E77211B236A3B00C27331 /* HLTableViewCell.m */; };
+		B010E3841B4CCE7300CA8374 /* SortView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B010E3831B4CCE7300CA8374 /* SortView.xib */; };
 		B0122E441AD0885D00E44319 /* EanHotelRoomAvailabilityResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = B0122E431AD0885D00E44319 /* EanHotelRoomAvailabilityResponse.m */; };
 		B0122E471AD088F800E44319 /* EanAvailabilityHotelRoomResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = B0122E461AD088F800E44319 /* EanAvailabilityHotelRoomResponse.m */; };
 		B0122E4D1AD0A88500E44319 /* EanHotelDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = B0122E4C1AD0A88500E44319 /* EanHotelDetails.m */; };
@@ -200,6 +201,7 @@
 		B00E771B1B234A5A00C27331 /* NSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+HTML.m"; sourceTree = "<group>"; };
 		B00E77201B236A3B00C27331 /* HLTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLTableViewCell.h; sourceTree = "<group>"; };
 		B00E77211B236A3B00C27331 /* HLTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLTableViewCell.m; sourceTree = "<group>"; };
+		B010E3831B4CCE7300CA8374 /* SortView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SortView.xib; sourceTree = "<group>"; };
 		B0122E421AD0885D00E44319 /* EanHotelRoomAvailabilityResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EanHotelRoomAvailabilityResponse.h; path = "ota-ios/Models/Ean/HotelRoomAvailabilityResponse/EanHotelRoomAvailabilityResponse.h"; sourceTree = SOURCE_ROOT; };
 		B0122E431AD0885D00E44319 /* EanHotelRoomAvailabilityResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EanHotelRoomAvailabilityResponse.m; path = "ota-ios/Models/Ean/HotelRoomAvailabilityResponse/EanHotelRoomAvailabilityResponse.m"; sourceTree = SOURCE_ROOT; };
 		B0122E451AD088F800E44319 /* EanAvailabilityHotelRoomResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EanAvailabilityHotelRoomResponse.h; path = "ota-ios/Models/Ean/HotelRoomAvailabilityResponse/EanAvailabilityHotelRoomResponse.h"; sourceTree = SOURCE_ROOT; };
@@ -651,6 +653,7 @@
 				B09797E61AC34DB70014FC7C /* HotelListingView.xib */,
 				B03DA0061B46D5930039B9C6 /* FilterTableView.xib */,
 				B0CBC7D81B483C2D00F61CA9 /* FilterView.xib */,
+				B010E3831B4CCE7300CA8374 /* SortView.xib */,
 				B080B7C81AC505DC00075A32 /* HotelInfoView.xib */,
 				B0FE0F481AC6ED0000DAF635 /* BookView.xib */,
 				B0FE0F4D1AC70A2500DAF635 /* SelectRoomView.xib */,
@@ -1102,6 +1105,7 @@
 				B0D02FF71AE6123000B1E75F /* mastercard.png in Resources */,
 				B0FE0F491AC6ED0000DAF635 /* BookView.xib in Resources */,
 				B032F6551AC193DB00809395 /* CriteriaView.xib in Resources */,
+				B010E3841B4CCE7300CA8374 /* SortView.xib in Resources */,
 				B0D02FFE1AE6123000B1E75F /* textfield.png in Resources */,
 				B05BD6321AC1FF54002C2882 /* PlaceAutoCompleteTableViewCell.xib in Resources */,
 				B018C0421AD96A7600DDCE2E /* GuestDetailsView.xib in Resources */,

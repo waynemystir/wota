@@ -30,5 +30,6 @@ extern NSString * const kNotificationHotelDataFiltered;
 - (void)starClicked:(UITapGestureRecognizer *)tgr;
 - (int)numberOfFilteredHotels;
 - (void)letsFilter;
+- (void)letsSortYo:(UITapGestureRecognizer *)tgr;
 
 @end
