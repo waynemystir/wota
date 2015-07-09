@@ -16,7 +16,15 @@
 #import "AppDelegate.h"
 #import "WotaTappableView.h"
 
+typedef NS_ENUM(NSUInteger, SORT_TYPE) {
+    SORT_FEATURED = 5101,
+    SORT_PRICE_LOW_TO_HIGH = 5102,
+    SORT_PRICE_HIGH_TO_LOW = 5103,
+    SORT_STARS = 5104
+};
+
 NSString * const kNotificationHotelDataFiltered = @"kNotificationHotelDataFiltered";
+NSString * const kNotificationHotelDataSorted = @"kNotificationHotelDataSorted";
 
 @interface HotelsTableViewDelegateImplementation () {
     BOOL inHotelNameFilterMode;
@@ -26,6 +34,8 @@ NSString * const kNotificationHotelDataFiltered = @"kNotificationHotelDataFilter
 
 @property (nonatomic, strong) NSMutableArray *filterableData;
 @property (nonatomic, strong) NSString *filterText;
+@property (nonatomic) SORT_TYPE sortType;
+@property (nonatomic, strong) NSComparator sortComparator;
 
 @end
 
@@ -173,14 +183,20 @@ NSString * const kNotificationHotelDataFiltered = @"kNotificationHotelDataFilter
 }
 
 - (void)letsSortYo:(UITapGestureRecognizer *)tgr {
-    NSLog(@"WESWESWES:%@:%ld", NSStringFromSelector(_cmd), (long)tgr.view.tag);
-    
     int wayne = (int)tgr.view.tag;
+    if (wayne == self.sortType) {
+        return;
+    }
     
     for (int j = 5101; j <= 5104; j++) {
         WotaTappableView *wtv = (WotaTappableView *)[tgr.view.superview viewWithTag:j];
         wtv.borderColor = j == wayne ? kWotaColorOne() : [UIColor clearColor];
     }
+    
+    self.sortType = wayne;
+    _hotelData = [_hotelData sortedArrayUsingComparator:self.sortComparator];
+    self.filterableData = [NSMutableArray arrayWithArray:[self.filterableData sortedArrayUsingComparator:self.sortComparator]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationHotelDataSorted object:self];
 }
 
 #pragma mark Getters
@@ -213,6 +229,63 @@ NSString * const kNotificationHotelDataFiltered = @"kNotificationHotelDataFilter
     }
     
     return tp;
+}
+
+- (NSComparator)sortComparator {
+    if (!_sortComparator) {
+        
+        __weak typeof(self) wes = self;
+        
+        _sortComparator = ^(id obj1, id obj2) {
+            EanHotelListHotelSummary *h1 = obj1;
+            EanHotelListHotelSummary *h2 = obj2;
+            
+            switch (wes.sortType) {
+                case SORT_FEATURED: {
+                    if (h1.featuredOrder < h2.featuredOrder) {
+                        return NSOrderedAscending;
+                    } else if (h1.featuredOrder > h2.featuredOrder) {
+                        return NSOrderedDescending;
+                    }
+                    break;
+                }
+                    
+                case SORT_PRICE_LOW_TO_HIGH: {
+                    if ([h1.lowRate doubleValue] < [h2.lowRate doubleValue]) {
+                        return NSOrderedAscending;
+                    } else if ([h1.lowRate doubleValue] > [h2.lowRate doubleValue]) {
+                        return NSOrderedDescending;
+                    }
+                    break;
+                }
+                    
+                case SORT_PRICE_HIGH_TO_LOW: {
+                    if ([h1.lowRate doubleValue] > [h2.lowRate doubleValue]) {
+                        return NSOrderedAscending;
+                    } else if ([h1.lowRate doubleValue] < [h2.lowRate doubleValue]) {
+                        return NSOrderedDescending;
+                    }
+                    break;
+                }
+                    
+                case SORT_STARS: {
+                    if ([h1.hotelRating doubleValue] > [h2.hotelRating doubleValue]) {
+                        return NSOrderedAscending;
+                    } else if ([h1.hotelRating doubleValue] < [h2.hotelRating doubleValue]) {
+                        return NSOrderedDescending;
+                    }
+                    break;
+                }
+                    
+                default:
+                    break;
+            }
+            
+            return NSOrderedSame;
+        };
+    }
+    
+    return _sortComparator;
 }
 
 #pragma mark Setter

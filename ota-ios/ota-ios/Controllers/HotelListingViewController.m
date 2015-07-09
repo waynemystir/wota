@@ -160,6 +160,8 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onHotelDataFiltered) name:kNotificationHotelDataFiltered object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onHotelDataSorted) name:kNotificationHotelDataSorted object:nil];
+    
     [super viewDidLoad];
 }
 
@@ -180,6 +182,7 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationHotelDataFiltered object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationHotelDataSorted object:nil];
 }
 
 #pragma mark flipping animation
@@ -422,6 +425,15 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     [self redrawMapAnnotationsAndRegion:NO];
 }
 
+- (void)letsSortYo:(UITapGestureRecognizer *)tgr {
+    [self.hotelTableViewDelegate letsSortYo:tgr];
+    [self dropSortView];
+}
+
+- (void)onHotelDataSorted {
+    [_hotelsTableView reloadData];
+}
+
 - (void)redrawMapAnnotationsAndRegion:(BOOL)redrawRegion {
     if (redrawRegion) {
         double spanLat = _listMaxLatitudeDelta*2.40;
@@ -571,22 +583,22 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
         UIButton *db = (WotaButton *) [sv viewWithTag:36373839];
         [db addTarget:self action:@selector(dropSortView) forControlEvents:UIControlEventTouchUpInside];
         
-        UITapGestureRecognizer *tgr1 = [[UITapGestureRecognizer alloc] initWithTarget:self.hotelTableViewDelegate action:@selector(letsSortYo:)];
+        UITapGestureRecognizer *tgr1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(letsSortYo:)];
         tgr1.numberOfTapsRequired = 1;
         tgr1.numberOfTouchesRequired = 1;
         [[sv viewWithTag:5101] addGestureRecognizer:tgr1];
         
-        UITapGestureRecognizer *tgr2 = [[UITapGestureRecognizer alloc] initWithTarget:self.hotelTableViewDelegate action:@selector(letsSortYo:)];
+        UITapGestureRecognizer *tgr2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(letsSortYo:)];
         tgr2.numberOfTapsRequired = 1;
         tgr2.numberOfTouchesRequired = 1;
         [[sv viewWithTag:5102] addGestureRecognizer:tgr2];
         
-        UITapGestureRecognizer *tgr3 = [[UITapGestureRecognizer alloc] initWithTarget:self.hotelTableViewDelegate action:@selector(letsSortYo:)];
+        UITapGestureRecognizer *tgr3 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(letsSortYo:)];
         tgr3.numberOfTapsRequired = 1;
         tgr3.numberOfTouchesRequired = 1;
         [[sv viewWithTag:5103] addGestureRecognizer:tgr3];
         
-        UITapGestureRecognizer *tgr4 = [[UITapGestureRecognizer alloc] initWithTarget:self.hotelTableViewDelegate action:@selector(letsSortYo:)];
+        UITapGestureRecognizer *tgr4 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(letsSortYo:)];
         tgr4.numberOfTapsRequired = 1;
         tgr4.numberOfTouchesRequired = 1;
         [[sv viewWithTag:5104] addGestureRecognizer:tgr4];

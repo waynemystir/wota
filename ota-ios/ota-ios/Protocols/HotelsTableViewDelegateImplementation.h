@@ -10,6 +10,7 @@
 #import "Trotter-Swift.h"
 
 extern NSString * const kNotificationHotelDataFiltered;
+extern NSString * const kNotificationHotelDataSorted;
 
 @interface HotelsTableViewDelegateImplementation : NSObject <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
 

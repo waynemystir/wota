@@ -25,7 +25,7 @@
     //*******************
     // TODO: handle cases where the following values are not empty or wrong data type
     //*******************
-    hotel.order = [[dict objectForKey:@"@order"] integerValue];
+    hotel.featuredOrder = [[dict objectForKey:@"@order"] integerValue];
     hotel.hotelId = [dict objectForKey:@"hotelId"];
     hotel.hotelName = [dict objectForKey:@"name"];
     hotel.address1 = [dict objectForKey:@"address1"];

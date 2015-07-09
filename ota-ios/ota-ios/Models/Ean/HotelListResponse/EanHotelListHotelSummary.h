@@ -11,7 +11,7 @@
 
 @interface EanHotelListHotelSummary : NSObject
 
-@property (nonatomic) NSUInteger order;
+@property (nonatomic) NSUInteger featuredOrder;
 @property (nonatomic, strong) NSNumber *hotelId;
 @property (nonatomic, strong) NSString *hotelName;
 @property (nonatomic, strong, readonly) NSString *hotelNameFormatted;
