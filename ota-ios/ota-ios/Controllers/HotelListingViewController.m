@@ -293,7 +293,6 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     
     if (search) {
         [self letsFindHotels:self searchRadius:[SelectionCriteria singleton].zoomRadius];
-        nv.whereToLabel.text = [SelectionCriteria singleton].whereToFirst;
     }
     
     [self animateTableViewCompression];
@@ -335,7 +334,14 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     }
     
     EanHotelListResponse *ehlr = [EanHotelListResponse eanObjectFromApiResponseData:responseData];
+    
+    if (ehlr.hotelList.count == 0) {
+        [self handleNoHotels];
+        return;
+    }
+    
     _hotelTableViewDelegate.hotelData = ehlr.hotelList;
+    [self showOrHideTvControls];
     [_hotelsTableView reloadData];
     [_hotelsTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
     
@@ -348,6 +354,9 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     [self redrawMapAnnotationsAndRegion:YES];
     [self setupTheFilterView];
     [self setupTheSortView];
+    
+    __weak NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
+    nv.whereToLabel.text = [SelectionCriteria singleton].whereToFirst;
     
     [self dropDaSpinnerAlready];
 }
@@ -436,8 +445,8 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
 
 - (void)redrawMapAnnotationsAndRegion:(BOOL)redrawRegion {
     if (redrawRegion) {
-        double spanLat = _listMaxLatitudeDelta*2.40;
-        double spanLon = _listMaxLongitudeDelta*2.40;
+        double spanLat = _listMaxLatitudeDelta*2.50;
+        double spanLon = _listMaxLongitudeDelta*2.50;
         MKCoordinateSpan span = MKCoordinateSpanMake(spanLat, spanLon);
         MKCoordinateRegion viewRegion = MKCoordinateRegionMake(self.zoomLocation, span);
         
@@ -661,10 +670,8 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
 
 - (void)loadSortView {
     __weak UIView *sv = [self.view viewWithTag:414377];
-//    [self updateFilterViewNumbers:fv];
     [self.view bringSubviewToFront:_overlay];
     [self.view bringSubviewToFront:sv];
-//    self.hotelTableViewDelegate.inFilterModePriorToLoadingFilterView = self.hotelTableViewDelegate.inFilterMode;
     [UIView animateWithDuration:kSearchModeAnimationDuration animations:^{
         _overlay.alpha = 0.7f;
         sv.frame = CGRectMake(0, 268, 320, 300);
@@ -674,7 +681,6 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
 }
 
 - (void)dropSortView {
-//    [self.hotelTableViewDelegate letsFilter];
     __weak UIView *sv = [self.view viewWithTag:414377];
     [UIView animateWithDuration:kSearchModeAnimationDuration animations:^{
         _overlay.alpha = 0.0f;
@@ -690,6 +696,66 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
         [self dropFilterView];
     } else {
         [self dropSortView];
+    }
+}
+
+#pragma mark No hotels
+
+- (void)handleNoHotels {
+    [self dropDaSpinnerAlready];
+    [self showOrHideTvControls];
+    
+    NSArray *vs = [[NSBundle mainBundle] loadNibNamed:@"NoHotelsView" owner:self options:nil];
+    __block UIView *nhv = vs.firstObject;
+    nhv.frame = CGRectMake(15, 210, 290, 165);
+    nhv.layer.cornerRadius = WOTA_CORNER_RADIUS;
+    nhv.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
+    WotaButton *ok = (WotaButton *)[nhv viewWithTag:471395];
+    [ok addTarget:self action:@selector(okToNoHotels:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:nhv];
+    
+    UIView *ov = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 568)];
+    ov.tag = 14942484;
+    ov.backgroundColor = [UIColor blackColor];
+    ov.alpha = 0.0;
+    ov.userInteractionEnabled = YES;
+    [self.view addSubview:ov];
+    
+    [self.view bringSubviewToFront:ov];
+    [self.view bringSubviewToFront:nhv];
+    [UIView animateWithDuration:0.2 animations:^{
+        nhv.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+        ov.alpha = 0.7f;
+    } completion:^(BOOL finished) {
+        ;
+    }];
+}
+
+- (void)okToNoHotels:(WotaButton *)wb {
+    __weak UIView *nhv = wb.superview;
+    __weak UIView *ov = [self.view viewWithTag:14942484];
+    [UIView animateWithDuration:0.2 animations:^{
+        nhv.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
+        ov.alpha = 0.0f;
+    } completion:^(BOOL finished) {
+        [nhv removeFromSuperview];
+        [ov removeFromSuperview];
+    }];
+}
+
+- (void)showOrHideTvControls {
+    if (self.hotelTableViewDelegate.hotelData.count == 0) {
+        self.hotelsTableView.tableHeaderView.hidden = YES;
+        self.wmapIvContainer.hidden = YES;
+        self.searchMapBtn.hidden = YES;
+        self.pricesAvgLabel.hidden = YES;
+        self.sortFilterContainer.hidden = YES;
+    } else {
+        self.hotelsTableView.tableHeaderView.hidden = NO;
+        self.wmapIvContainer.hidden = NO;
+        self.searchMapBtn.hidden = NO;
+        self.pricesAvgLabel.hidden = NO;
+        self.sortFilterContainer.hidden = NO;
     }
 }
 

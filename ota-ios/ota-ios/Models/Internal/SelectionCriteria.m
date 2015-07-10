@@ -114,6 +114,10 @@ NSString * const kKeyNumberOfAdults = @"numberOfAdults";
     return _googlePlaceDetail ? _googlePlaceDetail.zoomRadius : _selectedPlace.zoomRadius;
 }
 
+- (BOOL)isLodging {
+    return _googlePlaceDetail ? _googlePlaceDetail.isLodging : _selectedPlace.isLodging;
+}
+
 - (NSString *)arrivalDateEanString {
     return [kEanApiDateFormatter() stringFromDate:_arrivalDate];
 }

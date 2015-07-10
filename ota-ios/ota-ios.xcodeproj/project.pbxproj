@@ -45,20 +45,9 @@
 		B03C2BAA1AED74E700C13AC5 /* EanRateInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B03C2BA91AED74E700C13AC5 /* EanRateInfo.m */; };
 		B03C2BAD1AED8FAD00C13AC5 /* EanRoomImage.m in Sources */ = {isa = PBXBuildFile; fileRef = B03C2BAC1AED8FAD00C13AC5 /* EanRoomImage.m */; };
 		B03DA0071B46D5930039B9C6 /* FilterTableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B03DA0061B46D5930039B9C6 /* FilterTableView.xib */; };
-		B049D1FA1AC19B2200E2E18C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B049D1F81AC19AC100E2E18C /* AVFoundation.framework */; };
-		B049D2061AC19B2300E2E18C /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B049D1FB1AC19B2300E2E18C /* CoreData.framework */; };
 		B049D2071AC19B2300E2E18C /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B049D1FC1AC19B2300E2E18C /* CoreLocation.framework */; };
-		B049D2081AC19B2300E2E18C /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B049D1FD1AC19B2300E2E18C /* CoreText.framework */; };
-		B049D2091AC19B2300E2E18C /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B049D1FE1AC19B2300E2E18C /* GLKit.framework */; };
-		B049D20A1AC19B2300E2E18C /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B049D1FF1AC19B2300E2E18C /* ImageIO.framework */; };
-		B049D20B1AC19B2300E2E18C /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B049D2001AC19B2300E2E18C /* libc++.dylib */; };
-		B049D20C1AC19B2300E2E18C /* libicucore.A.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B049D2011AC19B2300E2E18C /* libicucore.A.dylib */; };
-		B049D20D1AC19B2300E2E18C /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B049D2021AC19B2300E2E18C /* libz.dylib */; };
-		B049D20E1AC19B2300E2E18C /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B049D2031AC19B2300E2E18C /* OpenGLES.framework */; };
 		B049D20F1AC19B2300E2E18C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B049D2041AC19B2300E2E18C /* QuartzCore.framework */; };
 		B049D2101AC19B2300E2E18C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B049D2051AC19B2300E2E18C /* SystemConfiguration.framework */; };
-		B049D2141AC19CB200E2E18C /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B049D2131AC19CB200E2E18C /* GoogleMaps.framework */; };
-		B049D2161AC19D1400E2E18C /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B049D2151AC19D1400E2E18C /* GoogleMaps.bundle */; };
 		B0508C6E1B34DCA8009CC56F /* PowerebByGoogleCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0508C6D1B34DCA8009CC56F /* PowerebByGoogleCell.xib */; };
 		B0508C741B351064009CC56F /* WotaPlace.m in Sources */ = {isa = PBXBuildFile; fileRef = B0508C731B351064009CC56F /* WotaPlace.m */; };
 		B058A4941AE8B52C00E42594 /* WotaButton.m in Sources */ = {isa = PBXBuildFile; fileRef = B058A4931AE8B52C00E42594 /* WotaButton.m */; };
@@ -86,6 +75,9 @@
 		B09077871AE5AF5300F2D3CB /* WotaMoneyKit.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B09077861AE5AF5300F2D3CB /* WotaMoneyKit.bundle */; };
 		B091B8951AD22EFC00BB6CB0 /* AvailableRoomTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B091B8941AD22EFC00BB6CB0 /* AvailableRoomTableViewCell.m */; };
 		B091B8971AD22FEF00BB6CB0 /* AvailableRoomTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B091B8961AD22FEF00BB6CB0 /* AvailableRoomTableViewCell.xib */; };
+		B09277E11B4F30450094159B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B09277E01B4F30450094159B /* CoreGraphics.framework */; };
+		B09277E31B4F30940094159B /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B09277E21B4F30940094159B /* ImageIO.framework */; };
+		B09277E51B4F70CC0094159B /* NoHotelsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B09277E41B4F70CC0094159B /* NoHotelsView.xib */; };
 		B0963CB91AC786E3002FD859 /* SelectionCriteria.m in Sources */ = {isa = PBXBuildFile; fileRef = B0963CB81AC786E3002FD859 /* SelectionCriteria.m */; };
 		B0963CBC1AC89445002FD859 /* ChildViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B0963CBB1AC89445002FD859 /* ChildViewController.m */; };
 		B0963CBE1AC89459002FD859 /* ChildView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0963CBD1AC89459002FD859 /* ChildView.xib */; };
@@ -115,7 +107,6 @@
 		B0A87D681AD4B2B3001505A6 /* EanHotelRoomReservationResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = B0A87D671AD4B2B3001505A6 /* EanHotelRoomReservationResponse.m */; };
 		B0B50AD11B251FF300685384 /* GoogleNearbyPlace.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B50AD01B251FF300685384 /* GoogleNearbyPlace.m */; };
 		B0B50AD41B25285B00685384 /* GoogleNearbyPlaces.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B50AD31B25285B00685384 /* GoogleNearbyPlaces.m */; };
-		B0B50ADA1B252E5400685384 /* GooglePlaceMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B50AD91B252E5400685384 /* GooglePlaceMarker.m */; };
 		B0B50ADD1B255F2600685384 /* GoogleMarkerView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B50ADC1B255F2600685384 /* GoogleMarkerView.m */; };
 		B0BD381F1AF9812100EF5E4F /* NightlyRateTableViewDelegateImplementation.m in Sources */ = {isa = PBXBuildFile; fileRef = B0BD381E1AF9812100EF5E4F /* NightlyRateTableViewDelegateImplementation.m */; };
 		B0BD38211AF990F600EF5E4F /* NightRateTableCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0BD38201AF990F600EF5E4F /* NightRateTableCellView.xib */; };
@@ -253,20 +244,9 @@
 		B03C2BAB1AED8FAD00C13AC5 /* EanRoomImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanRoomImage.h; sourceTree = "<group>"; };
 		B03C2BAC1AED8FAD00C13AC5 /* EanRoomImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanRoomImage.m; sourceTree = "<group>"; };
 		B03DA0061B46D5930039B9C6 /* FilterTableView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FilterTableView.xib; sourceTree = "<group>"; };
-		B049D1F81AC19AC100E2E18C /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
-		B049D1FB1AC19B2300E2E18C /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		B049D1FC1AC19B2300E2E18C /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
-		B049D1FD1AC19B2300E2E18C /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
-		B049D1FE1AC19B2300E2E18C /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
-		B049D1FF1AC19B2300E2E18C /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
-		B049D2001AC19B2300E2E18C /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
-		B049D2011AC19B2300E2E18C /* libicucore.A.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.A.dylib; path = usr/lib/libicucore.A.dylib; sourceTree = SDKROOT; };
-		B049D2021AC19B2300E2E18C /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		B049D2031AC19B2300E2E18C /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		B049D2041AC19B2300E2E18C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		B049D2051AC19B2300E2E18C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		B049D2131AC19CB200E2E18C /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMaps.framework; sourceTree = "<group>"; };
-		B049D2151AC19D1400E2E18C /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = Frameworks/GoogleMaps.framework/Versions/A/Resources/GoogleMaps.bundle; sourceTree = SOURCE_ROOT; };
 		B0508C6D1B34DCA8009CC56F /* PowerebByGoogleCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PowerebByGoogleCell.xib; sourceTree = "<group>"; };
 		B0508C721B351064009CC56F /* WotaPlace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WotaPlace.h; sourceTree = "<group>"; };
 		B0508C731B351064009CC56F /* WotaPlace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WotaPlace.m; sourceTree = "<group>"; };
@@ -313,6 +293,9 @@
 		B091B8931AD22EFC00BB6CB0 /* AvailableRoomTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AvailableRoomTableViewCell.h; sourceTree = "<group>"; };
 		B091B8941AD22EFC00BB6CB0 /* AvailableRoomTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AvailableRoomTableViewCell.m; sourceTree = "<group>"; };
 		B091B8961AD22FEF00BB6CB0 /* AvailableRoomTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AvailableRoomTableViewCell.xib; sourceTree = "<group>"; };
+		B09277E01B4F30450094159B /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		B09277E21B4F30940094159B /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		B09277E41B4F70CC0094159B /* NoHotelsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NoHotelsView.xib; sourceTree = "<group>"; };
 		B0963CB71AC786E3002FD859 /* SelectionCriteria.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectionCriteria.h; sourceTree = "<group>"; };
 		B0963CB81AC786E3002FD859 /* SelectionCriteria.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectionCriteria.m; sourceTree = "<group>"; };
 		B0963CBA1AC89445002FD859 /* ChildViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChildViewController.h; sourceTree = "<group>"; };
@@ -366,8 +349,6 @@
 		B0B50AD01B251FF300685384 /* GoogleNearbyPlace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleNearbyPlace.m; sourceTree = "<group>"; };
 		B0B50AD21B25285B00685384 /* GoogleNearbyPlaces.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleNearbyPlaces.h; sourceTree = "<group>"; };
 		B0B50AD31B25285B00685384 /* GoogleNearbyPlaces.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleNearbyPlaces.m; sourceTree = "<group>"; };
-		B0B50AD81B252E5400685384 /* GooglePlaceMarker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GooglePlaceMarker.h; sourceTree = "<group>"; };
-		B0B50AD91B252E5400685384 /* GooglePlaceMarker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GooglePlaceMarker.m; sourceTree = "<group>"; };
 		B0B50ADB1B255F2600685384 /* GoogleMarkerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleMarkerView.h; sourceTree = "<group>"; };
 		B0B50ADC1B255F2600685384 /* GoogleMarkerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleMarkerView.m; sourceTree = "<group>"; };
 		B0BD381D1AF9812100EF5E4F /* NightlyRateTableViewDelegateImplementation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NightlyRateTableViewDelegateImplementation.h; sourceTree = "<group>"; };
@@ -456,19 +437,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B09277E31B4F30940094159B /* ImageIO.framework in Frameworks */,
+				B09277E11B4F30450094159B /* CoreGraphics.framework in Frameworks */,
 				B07FC8681B27A8E70059A205 /* MapKit.framework in Frameworks */,
-				B049D1FA1AC19B2200E2E18C /* AVFoundation.framework in Frameworks */,
-				B049D2061AC19B2300E2E18C /* CoreData.framework in Frameworks */,
 				B049D2071AC19B2300E2E18C /* CoreLocation.framework in Frameworks */,
-				B049D2081AC19B2300E2E18C /* CoreText.framework in Frameworks */,
 				B080B7C41AC4ED7200075A32 /* SDWebImage.framework in Frameworks */,
-				B049D2091AC19B2300E2E18C /* GLKit.framework in Frameworks */,
-				B049D20A1AC19B2300E2E18C /* ImageIO.framework in Frameworks */,
-				B049D20B1AC19B2300E2E18C /* libc++.dylib in Frameworks */,
-				B049D20C1AC19B2300E2E18C /* libicucore.A.dylib in Frameworks */,
-				B049D20D1AC19B2300E2E18C /* libz.dylib in Frameworks */,
-				B049D2141AC19CB200E2E18C /* GoogleMaps.framework in Frameworks */,
-				B049D20E1AC19B2300E2E18C /* OpenGLES.framework in Frameworks */,
 				B049D20F1AC19B2300E2E18C /* QuartzCore.framework in Frameworks */,
 				B049D2101AC19B2300E2E18C /* SystemConfiguration.framework in Frameworks */,
 			);
@@ -528,8 +501,6 @@
 				B0B50AD01B251FF300685384 /* GoogleNearbyPlace.m */,
 				B0B50AD21B25285B00685384 /* GoogleNearbyPlaces.h */,
 				B0B50AD31B25285B00685384 /* GoogleNearbyPlaces.m */,
-				B0B50AD81B252E5400685384 /* GooglePlaceMarker.h */,
-				B0B50AD91B252E5400685384 /* GooglePlaceMarker.m */,
 			);
 			path = Google;
 			sourceTree = "<group>";
@@ -615,7 +586,6 @@
 		B032F6271AC18F6700809395 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				B049D2151AC19D1400E2E18C /* GoogleMaps.bundle */,
 				B032F6281AC18F6700809395 /* Info.plist */,
 				B032F6291AC18F6700809395 /* main.m */,
 				B06C98BB1B09585300DBE09D /* CountryPicker.bundle */,
@@ -654,6 +624,7 @@
 				B03DA0061B46D5930039B9C6 /* FilterTableView.xib */,
 				B0CBC7D81B483C2D00F61CA9 /* FilterView.xib */,
 				B010E3831B4CCE7300CA8374 /* SortView.xib */,
+				B09277E41B4F70CC0094159B /* NoHotelsView.xib */,
 				B080B7C81AC505DC00075A32 /* HotelInfoView.xib */,
 				B0FE0F481AC6ED0000DAF635 /* BookView.xib */,
 				B0FE0F4D1AC70A2500DAF635 /* SelectRoomView.xib */,
@@ -731,18 +702,10 @@
 			isa = PBXGroup;
 			children = (
 				B07FC8671B27A8E70059A205 /* MapKit.framework */,
-				B080B7C31AC4ED7200075A32 /* SDWebImage.framework */,
-				B049D2131AC19CB200E2E18C /* GoogleMaps.framework */,
-				B049D1F81AC19AC100E2E18C /* AVFoundation.framework */,
-				B049D1FB1AC19B2300E2E18C /* CoreData.framework */,
 				B049D1FC1AC19B2300E2E18C /* CoreLocation.framework */,
-				B049D1FD1AC19B2300E2E18C /* CoreText.framework */,
-				B049D1FE1AC19B2300E2E18C /* GLKit.framework */,
-				B049D1FF1AC19B2300E2E18C /* ImageIO.framework */,
-				B049D2001AC19B2300E2E18C /* libc++.dylib */,
-				B049D2011AC19B2300E2E18C /* libicucore.A.dylib */,
-				B049D2021AC19B2300E2E18C /* libz.dylib */,
-				B049D2031AC19B2300E2E18C /* OpenGLES.framework */,
+				B080B7C31AC4ED7200075A32 /* SDWebImage.framework */,
+				B09277E21B4F30940094159B /* ImageIO.framework */,
+				B09277E01B4F30450094159B /* CoreGraphics.framework */,
 				B049D2041AC19B2300E2E18C /* QuartzCore.framework */,
 				B049D2051AC19B2300E2E18C /* SystemConfiguration.framework */,
 			);
@@ -1102,6 +1065,7 @@
 				B0D02FF91AE6123000B1E75F /* placeholder.png in Resources */,
 				B0D02FFF1AE6123000B1E75F /* textfield@2x.png in Resources */,
 				B09797FB1AC3BC690014FC7C /* THDatePickerViewController.xib in Resources */,
+				B09277E51B4F70CC0094159B /* NoHotelsView.xib in Resources */,
 				B0D02FF71AE6123000B1E75F /* mastercard.png in Resources */,
 				B0FE0F491AC6ED0000DAF635 /* BookView.xib in Resources */,
 				B032F6551AC193DB00809395 /* CriteriaView.xib in Resources */,
@@ -1119,7 +1083,6 @@
 				B032F6501AC1935000809395 /* MainView.xib in Resources */,
 				B0BD38211AF990F600EF5E4F /* NightRateTableCellView.xib in Resources */,
 				B0963CBE1AC89459002FD859 /* ChildView.xib in Resources */,
-				B049D2161AC19D1400E2E18C /* GoogleMaps.bundle in Resources */,
 				B09797E71AC34DB70014FC7C /* HotelListingView.xib in Resources */,
 				B06C98BC1B09585300DBE09D /* CountryPicker.bundle in Resources */,
 				B0D02FFB1AE6123000B1E75F /* visa.png in Resources */,
@@ -1213,7 +1176,6 @@
 				B00872D01AEC99CB00CB2B9D /* EanAvailabilityRoomType.m in Sources */,
 				B0344C4A1AE5A696000BBFCE /* WotaCardNumberField.m in Sources */,
 				B0F554931B13798200E9B805 /* EanRoomRateDetails.m in Sources */,
-				B0B50ADA1B252E5400685384 /* GooglePlaceMarker.m in Sources */,
 				B0963CC11AC8BDC6002FD859 /* ChildTraveler.m in Sources */,
 				B00038661B10286E0000319A /* EanPropertyAmenity.m in Sources */,
 				B0B50ADD1B255F2600685384 /* GoogleMarkerView.m in Sources */,
@@ -1378,7 +1340,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Wayne Small";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",

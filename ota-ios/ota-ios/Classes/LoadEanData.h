@@ -28,7 +28,8 @@
                      longitude:(double)longitude
                    arrivalDate:(NSString *)arrivalDate
                     returnDate:(NSString *)returnDate
-                  searchRadius:(NSNumber *)searchRadius;
+                  searchRadius:(NSNumber *)searchRadius
+                 withProximity:(BOOL)withProximity;
 
 - (void)loadHotelDetailsWithId:(NSString *)hotelId;
 

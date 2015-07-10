@@ -30,6 +30,7 @@ extern NSString * const kSelectionCriteriaLocationNotificationName;
 @property (nonatomic, readonly) double latitude;
 @property (nonatomic, readonly) double longitude;
 @property (nonatomic) double zoomRadius;
+@property (nonatomic, readonly) BOOL isLodging;
 
 @property (nonatomic, strong, readonly) NSString *arrivalDateEanString;
 @property (nonatomic, strong, readonly) NSString *returnDateEanString;

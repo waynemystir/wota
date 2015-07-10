@@ -15,6 +15,7 @@ NSString * const kKeyPlaceLongitude = @"longitude";
 NSString * const kKeyZoomRadius = @"zoomRadius";
 NSString * const kKeyPlaceDetailLevel = @"placeDetailLevel";
 NSString * const kKeyPlaceDisplayName = @"displayName";
+NSString * const kKeyIsLodging = @"isLodging";
 
 @implementation WotaPlace
 
@@ -27,6 +28,7 @@ NSString * const kKeyPlaceDisplayName = @"displayName";
         _zoomRadius = [aDecoder decodeDoubleForKey:kKeyZoomRadius];
         _placeDetailLevel = [aDecoder decodeIntForKey:kKeyPlaceDetailLevel];
         _displayName = [aDecoder decodeObjectForKey:kKeyPlaceDisplayName];
+        _isLodging = [aDecoder decodeBoolForKey:kKeyIsLodging];
     }
     return self;
 }
@@ -39,6 +41,7 @@ NSString * const kKeyPlaceDisplayName = @"displayName";
     [aCoder encodeDouble:_zoomRadius forKey:kKeyZoomRadius];
     [aCoder encodeInt:_placeDetailLevel forKey:kKeyPlaceDetailLevel];
     [aCoder encodeObject:_displayName forKey:kKeyPlaceDisplayName];
+    [aCoder encodeBool:_isLodging forKey:kKeyIsLodging];
 }
 
 #pragma mark Getters

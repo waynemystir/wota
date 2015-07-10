@@ -290,7 +290,8 @@ static double const METERS_PER_MILE = 1609.344;
                                                    longitude:sc.longitude
                                                  arrivalDate:sc.arrivalDateEanString
                                                   returnDate:sc.returnDateEanString
-                                                searchRadius:[NSNumber numberWithInt:sri]];
+                                                searchRadius:[NSNumber numberWithInt:sri]
+                                               withProximity:sc.isLodging];
     
     if ([SelectionCriteria singleton].googlePlaceDetail) {
         [[SelectionCriteria singleton] savePlace:[SelectionCriteria singleton].googlePlaceDetail];

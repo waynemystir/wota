@@ -60,6 +60,7 @@
 @property (nonatomic) double zoomRadius;
 @property (nonatomic) PLACE_DETAIL_LEVEL placeDetailLevel;
 @property (nonatomic, strong) NSArray *types;
+@property (nonatomic) BOOL isLodging;
 
 @property (nonatomic, strong, readonly) NSString *formattedWhereTo;
 @property (nonatomic, strong, readonly) NSString *formattedWhereToFirst;

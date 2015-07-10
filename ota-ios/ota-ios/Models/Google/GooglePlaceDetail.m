@@ -235,6 +235,7 @@ NSString * const kKeyDisplayName = @"displayName";
     gpd.longitude = [[gpd.location objectForKey:@"lng"] doubleValue];
     gpd.viewport = [gpd.geometry objectForKey:@"viewport"];
     gpd.types = [gpd.googlePlaceResultDict objectForKey:@"types"];
+    gpd.isLodging = [gpd.types containsObject:@"lodging"];
     
     [gpd setWotaDisplayName];
     
