@@ -57,6 +57,21 @@
     hotel.deepLink = [dict objectForKey:@"deepLink"];
     hotel.roomRateDetailsList = [dict objectForKey:@"RoomRateDetailsList"];
     
+    id idRoomRateDetails = [hotel.roomRateDetailsList objectForKey:@"RoomRateDetails"];
+    if ([idRoomRateDetails isKindOfClass:[NSDictionary class]]) {
+        hotel.roomRateDetails = [EanRoomRateDetails roomRateDetailsFromDict:idRoomRateDetails];
+        hotel.roomRateDetailsArray = [NSArray arrayWithObject:hotel.roomRateDetails];
+    } else if ([idRoomRateDetails isKindOfClass:[NSArray class]]) {
+        NSMutableArray *tmpRrdArray = [NSMutableArray array];
+        for (int j = 0; j < [idRoomRateDetails count]; j++) {
+            if ([idRoomRateDetails[j] isKindOfClass:[NSDictionary class]]) {
+                EanRoomRateDetails *rrd = [EanRoomRateDetails roomRateDetailsFromDict:idRoomRateDetails[j]];
+                [tmpRrdArray addObject:rrd];
+            }
+        }
+        hotel.roomRateDetailsArray = [NSArray arrayWithArray:tmpRrdArray];
+    }
+    
     return hotel;
 }
 

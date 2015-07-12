@@ -63,6 +63,10 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     return self;
 }
 
+- (void)didReceiveMemoryWarning {
+    NSLog(@"%@:didReceiveMemoryWarning", self.class);
+}
+
 - (void)loadView {
     [super loadView];
     
@@ -168,6 +172,7 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.navigationController.navigationBar.hidden = YES;
+    [self showOrHideTvControls];
 }
 
 - (void)dropDaSpinnerAlready {
@@ -416,7 +421,7 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
 }
 
 - (void)reverseGeoCodingDawg {
-    __weak NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
+//    __weak NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
     __weak typeof(self) wes = self;
     [[LoadGooglePlacesData sharedInstance] loadPlaceDetailsWithLatitude:self.mkMapView.region.center.latitude longitude:self.mkMapView.region.center.longitude completionBlock:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         [SelectionCriteria singleton].googlePlaceDetail = [GooglePlaceDetail placeDetailFromGeoCodeData:data];
@@ -424,7 +429,7 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
         dispatch_async(dispatch_get_main_queue(), ^{
             wes.alreadyDroppedSpinner = NO;
             [wes letsFindHotels:wes searchRadius:self.mapRadiusInMiles];
-            nv.whereToLabel.text = [SelectionCriteria singleton].whereToFirst;
+//            nv.whereToLabel.text = [SelectionCriteria singleton].whereToFirst;
         });
     }];
 }
@@ -441,6 +446,7 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
 
 - (void)onHotelDataSorted {
     [_hotelsTableView reloadData];
+    [self redrawMapAnnotationsAndRegion:NO];
 }
 
 - (void)redrawMapAnnotationsAndRegion:(BOOL)redrawRegion {

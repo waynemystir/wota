@@ -113,7 +113,7 @@ NSString * const kKeyChildAge = @"childAge";
 
 #pragma mark Various helper methods
 
-+ (NSUInteger)numberOfKids {
++ (int)numberOfKids {
     // I think we can probably just return [[self childTravelers] count]
     // without these nil and zero checks... because "count" on a nil or
     // empty array should just return zero... or so I've heard. But what
@@ -122,7 +122,7 @@ NSString * const kKeyChildAge = @"childAge";
         return 0;
     }
     
-    return [[self childTravelers] count];
+    return (int)[[self childTravelers] count];
 }
 
 + (NSInteger)addChildTraveler {

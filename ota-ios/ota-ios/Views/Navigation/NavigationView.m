@@ -202,7 +202,7 @@ NSUInteger const kRightCheckMarkView = 4921743;
         numbLabel.font = [UIFont boldSystemFontOfSize:15.0f];;
         numbLabel.textColor = self.titleViewTextColor;
         numbLabel.textAlignment = NSTextAlignmentLeft;
-        numbLabel.text = [NSString stringWithFormat:@"%lu", (sc.numberOfAdults + [ChildTraveler numberOfKids])];
+        numbLabel.text = [NSString stringWithFormat:@"%d", ((int)sc.numberOfAdults + [ChildTraveler numberOfKids])];
         [numbLabel sizeToFit];
         CGRect nn = numbLabel.frame;
         numbLabel.frame = CGRectMake(nn.origin.x, nn.origin.y, nn.size.width, 22);

@@ -96,6 +96,10 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     return self;
 }
 
+- (void)didReceiveMemoryWarning {
+    NSLog(@"%@:didReceiveMemoryWarning", self.class);
+}
+
 - (id)initWithHotel:(EanHotelListHotelSummary *)eanHotel {
     self = [self init];
     if (self != nil) {

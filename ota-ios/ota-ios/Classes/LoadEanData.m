@@ -7,6 +7,7 @@
 //
 
 #import "LoadEanData.h"
+#import "AppDelegate.h"
 #import "AppEnvironment.h"
 #import <CommonCrypto/CommonDigest.h>
 #import "ChildTraveler.h"
@@ -16,9 +17,8 @@ typedef NS_ENUM(NSUInteger, HTTP_METHOD) {
     HTTP_POST = 1
 };
 
-/**
- * Ean stuff
- */
+#pragma mark EAN stuff
+
 NSString * const EAN_API_EXPERIENCE = @"PARTNER_MOBILE_APP";
 NSString * const EAN_MINOR_REV = @"29";
 //http://developer.ean.com/docs/getting-started/api-access/
@@ -38,9 +38,7 @@ NSString * const EAN_ROOMS_AVAILABLE = @"hotel/v3/avail";
 NSString * const EAN_BOOK_RESERVATION = @"hotel/v3/res";
 NSString * const EAN_GEO_SEARCH = @"hotel/v3/geoSearch";
 
-/**
- * URL parameter keys
- */
+#pragma mark URL parameter keys
 
 NSString * const EAN_PK_API_EXPERIENCE = @"apiExperience";
 NSString * const EAN_PK_MINOR_REV = @"minorRev";
@@ -96,16 +94,13 @@ NSString * const EAN_PK_CC_STATE_PROV_CODE = @"stateProvinceCode";
 NSString * const EAN_PK_CC_COUNTRY_CODE = @"countryCode";
 NSString * const EAN_PK_CC_POSTAL_CODE = @"postalCode";
 
-/**
- * Various EAN parameter value constants
- */
+#pragma mark Various EAN parameter value constants
+
 NSString * const EAN_ROOM_TYPES = @"ROOM_TYPES";
 NSString * const EAN_ROOM_AMENITIES = @"ROOM_AMENITIES";
 NSString * const EAN_HOTEL_IMAGES = @"HOTEL_IMAGES";
 
-/**
- * Various URL's
- */
+#pragma mark Various EAN parameter values
 
 NSString * kEanGenerateSigMD5() {
     // Curtesy of http://stackoverflow.com/questions/2018550/how-do-i-create-an-md5-hash-of-a-string-in-cocoa
@@ -127,16 +122,41 @@ NSString * kEanGenerateSigMD5() {
              ] lowercaseString];
 }
 
+NSString * kEanCustomerSessionId() {
+    static NSString *_customerSessionId = nil;
+    if (!_customerSessionId) {
+        NSString *csid = [[[NSUUID UUID] UUIDString] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        _customerSessionId = [NSString stringWithFormat:@"Trotter-CustSessID-%@", csid];
+    }
+    return _customerSessionId;
+}
+
+NSString * kEanCustomerUserAgent() {
+    static NSString *_customerUserAgent = nil;
+    if (!_customerUserAgent) {
+        NSString *appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleNameKey];
+        NSString *appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey];
+        NSString *osVersion = [[UIDevice currentDevice] systemVersion];
+        _customerUserAgent = [NSString stringWithFormat:@"%@/%@ (iOS %@) MOBILE_APP", appName, appVersion, osVersion];
+    }
+    return _customerUserAgent;
+}
+
 NSString * kEanCommonParameters() {
-    return [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@",
+    return [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@",
             EAN_PK_API_EXPERIENCE, EAN_API_EXPERIENCE,
             EAN_PK_CID, EAN_CID,
             EAN_PK_API_KEY, EAN_API_KEY,
             EAN_PK_SIG, kEanGenerateSigMD5(),
             EAN_PK_MINOR_REV, EAN_MINOR_REV,
             EAN_PK_LOCALE, [[NSLocale currentLocale] objectForKey:NSLocaleIdentifier],
-            EAN_PK_CURRENCY_CODE, [[NSLocale currentLocale] objectForKey:NSLocaleCurrencyCode]];
+            EAN_PK_CURRENCY_CODE, [[NSLocale currentLocale] objectForKey:NSLocaleCurrencyCode],
+            EAN_PK_CUSTIPADD, [AppDelegate externalIP],
+            EAN_PK_CUSTSESSID, kEanCustomerSessionId(),
+            EAN_PK_CUSTUSERAGENT, kEanCustomerUserAgent()];
 }
+
+#pragma mark Various EAN URL's
 
 NSString * kEanRequest(NSString * endPoint) {
     return [NSString stringWithFormat:@"%@/%@/%@?%@",
@@ -151,7 +171,7 @@ NSString * kURLeanHotelInfo() {
     return kEanRequest(EAN_HOTEL_INFO);
 }
 
-NSString *kURLeanPaymentTypes() {
+NSString * kURLeanPaymentTypes() {
     return kEanRequest(EAN_PAYMENT_TYPES);
 }
 
@@ -209,8 +229,14 @@ NSString * kURLeanBookReservation() {
         }
     }
     
+//    NSString *appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleNameKey];
+//    NSString *appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey];
+//    NSString *osVersion = [[UIDevice currentDevice] systemVersion];
+//    NSString *userAgent = [NSString stringWithFormat:@"%@/%@ (iOS %@) MOBILE_APP", appName, appVersion, osVersion];
+    
     [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+//    [request setValue:userAgent forHTTPHeaderField:@"User-Agent"];
     NSURLConnection *connection = [NSURLConnection connectionWithRequest:request delegate:self];
     self.responseData = [NSMutableData data];
     [connection start];
@@ -311,6 +337,13 @@ NSString * kURLeanBookReservation() {
     [request setHTTPMethod:@"GET"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    
+//    NSString *appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleNameKey];
+//    NSString *appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey];
+//    NSString *osVersion = [[UIDevice currentDevice] systemVersion];
+//    NSString *userAgent = [NSString stringWithFormat:@"%@/%@ (iOS %@) MOBILE_APP", appName, appVersion, osVersion];
+//    [request setValue:userAgent forHTTPHeaderField:@"User-Agent"];
+    
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         completionBlock(response, data, connectionError);
     }];

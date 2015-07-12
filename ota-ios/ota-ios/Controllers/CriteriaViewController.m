@@ -89,8 +89,8 @@
     [self setNumberOfKidsButtonLabel];
     
     self.arrivalOrReturn = NO;
-    [self refreshDisplayedReturnDate];
     [self refreshDisplayedArrivalDate];
+    [self refreshDisplayedReturnDate];
     
     self.placesTableViewZeroFrame = CGRectMake(0, 106, 320, 0);
     self.placesTableViewExpandedFrame = CGRectMake(0, 106, 320, 247);
@@ -384,27 +384,40 @@
 
 -(void)refreshDisplayedArrivalDate {
     SelectionCriteria *sc = [SelectionCriteria singleton];
-    if (sc.arrivalDate == nil) {
-        sc.arrivalDate = kAddDays(3, [NSDate date]);
+    if (sc.arrivalDate == nil
+            || [kTimelessDate([NSDate date]) compare:kTimelessDate(sc.arrivalDate)] == NSOrderedDescending) {
+        sc.arrivalDate = [NSDate date];
     }
     
     [_arrivalDateOutlet setTitle:[kPrettyDateFormatter() stringFromDate:sc.arrivalDate] forState:UIControlStateNormal];
     
-    NSDate *arrivalDatePlus28 = kAddDays(28, sc.arrivalDate);
+    NSDate *tla = kTimelessDate(sc.arrivalDate);
+    NSDate *arrivalDatePlus28 = kTimelessDate(kAddDays(28, sc.arrivalDate));
     
     if (nil == sc.returnDate
-            || [sc.arrivalDate compare:sc.returnDate] == NSOrderedDescending
-            || [sc.arrivalDate compare:sc.returnDate] == NSOrderedSame
-            || [sc.returnDate compare:arrivalDatePlus28] == NSOrderedDescending) {
+            || [tla compare:kTimelessDate(sc.returnDate)] == NSOrderedDescending
+            || [tla compare:kTimelessDate(sc.returnDate)] == NSOrderedSame
+            || [kTimelessDate(sc.returnDate) compare:arrivalDatePlus28] == NSOrderedDescending) {
+        
         sc.returnDate = kAddDays(1, sc.arrivalDate);
-        [self refreshDisplayedReturnDate];
+        [_returnDateOutlet setTitle:[kPrettyDateFormatter() stringFromDate:sc.returnDate] forState:UIControlStateNormal];
     }
 }
 
 -(void)refreshDisplayedReturnDate {
     SelectionCriteria *sc = [SelectionCriteria singleton];
-    if (sc.returnDate == nil) {
-        sc.returnDate = kAddDays(3, sc.arrivalDate);
+    NSDate *tlc = kTimelessDate([NSDate date]);
+    if (nil == sc.returnDate
+        || [tlc compare:kTimelessDate(sc.returnDate)] == NSOrderedDescending
+        || [tlc compare:kTimelessDate(sc.returnDate)] == NSOrderedSame) {
+        
+        if (nil == sc.arrivalDate
+            || [tlc compare:kTimelessDate(sc.arrivalDate)] == NSOrderedDescending) {
+            sc.arrivalDate = [NSDate date];
+            [_arrivalDateOutlet setTitle:[kPrettyDateFormatter() stringFromDate:sc.arrivalDate] forState:UIControlStateNormal];
+        }
+        
+        sc.returnDate = kAddDays(1, sc.arrivalDate);
     }
     
     [_returnDateOutlet setTitle:[kPrettyDateFormatter() stringFromDate:sc.returnDate] forState:UIControlStateNormal];

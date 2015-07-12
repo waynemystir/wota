@@ -12,6 +12,8 @@
 //#import "MainViewController.h"
 #import "CriteriaViewController.h"
 
+static NSString *_externalIP = nil;
+
 @interface AppDelegate () <CLLocationManagerDelegate>
 
 @property (nonatomic) Class spinnerClass;
@@ -20,88 +22,10 @@
 
 @implementation AppDelegate
 
-- (void)loadDaSpinner {
-    // We're not going to fire off multiple spinners
-    if (nil != _spinnerClass) {
-        return;
-    }
-    
-    // Curtesy of http://stackoverflow.com/questions/1451342/objective-c-find-caller-of-method
-    NSString *sourceString = [[NSThread callStackSymbols] objectAtIndex:1];
-    NSCharacterSet *separatorSet = [NSCharacterSet characterSetWithCharactersInString:@" -[]+?.,"];
-    NSMutableArray *array = [NSMutableArray arrayWithArray:[sourceString  componentsSeparatedByCharactersInSet:separatorSet]];
-    [array removeObject:@""];
-    
-    NSLog(@"%@.%@:Class caller = %@, class = %@", self.class, NSStringFromSelector(_cmd), [array objectAtIndex:3], [[array objectAtIndex:3] class]);
-    _spinnerClass = NSClassFromString([array objectAtIndex:3]);
-    
-    UIView *dWayne = [[UIView alloc] initWithFrame:CGRectMake(0, 64, 320, 504)];
-    dWayne.tag = 91919191;
-    dWayne.backgroundColor = [UIColor blackColor];
-    dWayne.alpha = 0.0f;
-    dWayne.userInteractionEnabled = YES;
-    [_window addSubview:dWayne];
-    [_window bringSubviewToFront:dWayne];
-    
-    UIActivityIndicatorView *theSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:
-                   UIActivityIndicatorViewStyleWhiteLarge];
-    theSpinner.tag = 71717171;
-    theSpinner.center = _window.center;
-    theSpinner.alpha = 0.0f;
-    
-    [_window addSubview:theSpinner];
-    [_window bringSubviewToFront:theSpinner];
-    [theSpinner startAnimating];
-    
-    __weak UIActivityIndicatorView *sp = theSpinner;
-    __weak UIView *ol = dWayne;
-    
-    [UIView animateWithDuration:0.3 animations:^{
-        sp.alpha = 1.0f;
-        ol.alpha = 0.8f;
-    } completion:^(BOOL finished) {
-        ;
-    }];
-}
-
-- (void)dropDaSpinnerAlreadyWithForce:(BOOL)force {
-//    if (nil == _spinnerClass) {
-//        return;
-//    }
-    
-    NSString *sourceString = [[NSThread callStackSymbols] objectAtIndex:1];
-    NSCharacterSet *separatorSet = [NSCharacterSet characterSetWithCharactersInString:@" -[]+?.,"];
-    NSMutableArray *array = [NSMutableArray arrayWithArray:[sourceString  componentsSeparatedByCharactersInSet:separatorSet]];
-    [array removeObject:@""];
-    
-    NSLog(@"%@.%@:Class caller = %@, class = %@", self.class, NSStringFromSelector(_cmd), [array objectAtIndex:3], [[array objectAtIndex:3] class]);
-    
-    Class callingClass = NSClassFromString([array objectAtIndex:3]);
-    
-    UINavigationController *nc = (UINavigationController *) _window.rootViewController;
-    Class tvcClass = [[nc topViewController] class];
-    
-    // We're not going to kill a spinner for a different view controller
-    if (!force && callingClass != _spinnerClass && callingClass != tvcClass) {
-        return;
-    }
-    _spinnerClass = nil;
-    
-    __weak UIActivityIndicatorView *sp = (UIActivityIndicatorView *) [_window viewWithTag:71717171];
-    __weak UIView *dw = [_window viewWithTag:91919191];
-    dw.userInteractionEnabled = NO;
-    
-    [UIView animateWithDuration:0.6 animations:^{
-        sp.alpha = 0.0f;
-        dw.alpha = 0.0f;
-    } completion:^(BOOL finished) {
-        [sp stopAnimating];
-        [sp removeFromSuperview];
-        [dw removeFromSuperview];
-    }];
-}
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    [[self class] acquireExternalIP];
+    
     CriteriaViewController *mvc = [CriteriaViewController new];
     UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:mvc];
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
@@ -148,6 +72,109 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+#pragma mark Spinner stuff
+
+- (void)loadDaSpinner {
+    // We're not going to fire off multiple spinners
+    if (nil != _spinnerClass) {
+        return;
+    }
+    
+    // Curtesy of http://stackoverflow.com/questions/1451342/objective-c-find-caller-of-method
+    NSString *sourceString = [[NSThread callStackSymbols] objectAtIndex:1];
+    NSCharacterSet *separatorSet = [NSCharacterSet characterSetWithCharactersInString:@" -[]+?.,"];
+    NSMutableArray *array = [NSMutableArray arrayWithArray:[sourceString  componentsSeparatedByCharactersInSet:separatorSet]];
+    [array removeObject:@""];
+    
+    NSLog(@"%@.%@:Class caller = %@, class = %@", self.class, NSStringFromSelector(_cmd), [array objectAtIndex:3], [[array objectAtIndex:3] class]);
+    _spinnerClass = NSClassFromString([array objectAtIndex:3]);
+    
+    UIView *dWayne = [[UIView alloc] initWithFrame:CGRectMake(0, 64, 320, 504)];
+    dWayne.tag = 91919191;
+    dWayne.backgroundColor = [UIColor blackColor];
+    dWayne.alpha = 0.0f;
+    dWayne.userInteractionEnabled = YES;
+    [_window addSubview:dWayne];
+    [_window bringSubviewToFront:dWayne];
+    
+    UIActivityIndicatorView *theSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:
+                                           UIActivityIndicatorViewStyleWhiteLarge];
+    theSpinner.tag = 71717171;
+    theSpinner.center = _window.center;
+    theSpinner.alpha = 0.0f;
+    
+    [_window addSubview:theSpinner];
+    [_window bringSubviewToFront:theSpinner];
+    [theSpinner startAnimating];
+    
+    __weak UIActivityIndicatorView *sp = theSpinner;
+    __weak UIView *ol = dWayne;
+    
+    [UIView animateWithDuration:0.3 animations:^{
+        sp.alpha = 1.0f;
+        ol.alpha = 0.8f;
+    } completion:^(BOOL finished) {
+        ;
+    }];
+}
+
+- (void)dropDaSpinnerAlreadyWithForce:(BOOL)force {
+    //    if (nil == _spinnerClass) {
+    //        return;
+    //    }
+    
+    NSString *sourceString = [[NSThread callStackSymbols] objectAtIndex:1];
+    NSCharacterSet *separatorSet = [NSCharacterSet characterSetWithCharactersInString:@" -[]+?.,"];
+    NSMutableArray *array = [NSMutableArray arrayWithArray:[sourceString  componentsSeparatedByCharactersInSet:separatorSet]];
+    [array removeObject:@""];
+    
+    NSLog(@"%@.%@:Class caller = %@, class = %@", self.class, NSStringFromSelector(_cmd), [array objectAtIndex:3], [[array objectAtIndex:3] class]);
+    
+    Class callingClass = NSClassFromString([array objectAtIndex:3]);
+    
+    UINavigationController *nc = (UINavigationController *) _window.rootViewController;
+    Class tvcClass = [[nc topViewController] class];
+    
+    // We're not going to kill a spinner for a different view controller
+    if (!force && callingClass != _spinnerClass && callingClass != tvcClass) {
+        return;
+    }
+    _spinnerClass = nil;
+    
+    __weak UIActivityIndicatorView *sp = (UIActivityIndicatorView *) [_window viewWithTag:71717171];
+    __weak UIView *dw = [_window viewWithTag:91919191];
+    dw.userInteractionEnabled = NO;
+    
+    [UIView animateWithDuration:0.6 animations:^{
+        sp.alpha = 0.0f;
+        dw.alpha = 0.0f;
+    } completion:^(BOOL finished) {
+        [sp stopAnimating];
+        [sp removeFromSuperview];
+        [dw removeFromSuperview];
+    }];
+}
+
+#pragma mark IP stuff
+
++ (NSString *)externalIP {
+    if (!_externalIP) {
+        [self acquireExternalIP];
+    }
+    
+    return _externalIP ? : @"0.0.0.0";
+}
+
++ (void)acquireExternalIP {
+    NSURL *url = [NSURL URLWithString:@"http://ip-api.com/line/?fields=query"];
+    [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:url]
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                               NSString *wes = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                               _externalIP = [wes stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                           }];
 }
 
 @end

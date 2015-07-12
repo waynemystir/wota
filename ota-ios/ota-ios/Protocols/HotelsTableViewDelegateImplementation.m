@@ -294,6 +294,7 @@ NSString * const kNotificationHotelDataSorted = @"kNotificationHotelDataSorted";
     inHotelNameFilterMode = inPriceFilterMode = inStarFilterMode = NO;
     _filterText = @"";
     _selectStarRating = 0.0;
+    _sortType = SORT_FEATURED;
     _hotelData = hotelData;
     self.filterableData = [NSMutableArray arrayWithArray:_hotelData];
 }

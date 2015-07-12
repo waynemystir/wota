@@ -226,3 +226,10 @@ NSDate * kAddDays(int days, NSDate * toDate) {
     NSCalendar *theCalendar = [NSCalendar currentCalendar];
     return [theCalendar dateByAddingComponents:dayComponent toDate:toDate options:0];
 }
+
+NSDate * kTimelessDate(NSDate * givenDate) {
+    unsigned int flags = NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay;
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSDateComponents *components = [calendar components:flags fromDate:givenDate];
+    return [calendar dateFromComponents:components];
+}

@@ -15,5 +15,7 @@
 - (void)loadDaSpinner;
 - (void)dropDaSpinnerAlreadyWithForce:(BOOL)force;
 
++ (NSString *)externalIP;
+
 @end
 
