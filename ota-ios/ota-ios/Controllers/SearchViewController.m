@@ -254,16 +254,8 @@ static double const METERS_PER_MILE = 1609.344;
     PlaceAutoCompleteTableViewCell * cell = (PlaceAutoCompleteTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
     
     if ([self.placesTableData[indexPath.row] isKindOfClass:[GooglePlace class]]) {
-        // TODO: I'm worried that we are setting the "where to" value here but that the
-        // Google place detail values aren't set until the "loadPlaceDetails" returns.
-        // The user could potentially click "Find Hotels" before the Google place details
-        // are returned. So we could have two potential problems from this. First, the call
-        // to LoadEanData.loadHotelsWithLatitude:longitude: could return data for the wrong
-        // place. And second, we could have mismatched data in SelectionCriteria between
-        // whereTo and googlePlaceDetail.
-        
         self.loadingGooglePlaceDetails = YES;
-        self.tmpSelectedCellPlaceName = [cell.outletPlaceName.text componentsSeparatedByString:@","].firstObject;
+        self.whereToTextField.text = self.tmpSelectedCellPlaceName = [cell.outletPlaceName.text componentsSeparatedByString:@","].firstObject;
         [[LoadGooglePlacesData sharedInstance:self] loadPlaceDetails:cell.placeId];
         self.placesTableData = [SelectionCriteria singleton].placesArray;
         [self.placesTableView reloadData];

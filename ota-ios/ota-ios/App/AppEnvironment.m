@@ -11,10 +11,10 @@
 NSString * const kKeyGuestInfo = @"LgAuYeEsRtCiAnKfEo";
 NSString * const kKeyPaymentDetails1 = @"pJaIyMmMeYnBtUdFeFtEaTiWlEsS1";
 
-NSString * const GOOGLE_API_KEY = @"AIzaSyBTMg_o0S630MntWlqDC4J9tuNrh_YkLIo";
-//NSString * const GOOGLE_API_KEY = @"AIzaSyDXmlmSp43YsY1QfPMaBP5Ww5UIXWNXXho";
+//NSString * const GOOGLE_API_KEY = @"AIzaSyBTMg_o0S630MntWlqDC4J9tuNrh_YkLIo";
+NSString * const GOOGLE_API_KEY = @"AIzaSyDXmlmSp43YsY1QfPMaBP5Ww5UIXWNXXho";
 
-int const URL_REQUEST_TIMEOUT = 20;
+int const URL_REQUEST_TIMEOUT = 30;
 
 BOOL stringIsEmpty(NSString * aString) {
     
