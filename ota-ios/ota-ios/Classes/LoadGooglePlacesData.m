@@ -43,7 +43,7 @@
     NSURLConnection *connection = [NSURLConnection connectionWithRequest:request delegate:self];
     self.responseData = [NSMutableData data];
     [connection start];
-    [self sendRequestStartedToDelegate:url];
+    [self sendRequestStartedToDelegate:connection];
 }
 
 - (void)loadPlaceDetails:(NSString *)placeId {
@@ -66,7 +66,7 @@
     NSURLConnection *connection = [NSURLConnection connectionWithRequest:request delegate:self];
     self.responseData = [NSMutableData data];
     [connection start];
-    [self sendRequestStartedToDelegate:url];
+    [self sendRequestStartedToDelegate:connection];
 }
 
 - (void)loadPlaceDetailsWithLatitude:(double)latitude
@@ -100,7 +100,7 @@
     NSURLConnection *connection = [NSURLConnection connectionWithRequest:request delegate:self];
     self.responseData = [NSMutableData data];
     [connection start];
-    [self sendRequestStartedToDelegate:url];
+    [self sendRequestStartedToDelegate:connection];
 }
 
 - (void)loadNearbyPlacesWithLatitude:(double)latitude
@@ -122,9 +122,9 @@
     }];
 }
 
-- (void)sendRequestStartedToDelegate:(NSURL *)url {
+- (void)sendRequestStartedToDelegate:(NSURLConnection *)connection {
     if ([self.delegate respondsToSelector:@selector(requestStarted:)]) {
-        [self.delegate requestStarted:url];
+        [self.delegate requestStarted:connection];
     }
 }
 
@@ -150,7 +150,15 @@
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-    NSLog(@"ERROR:%@", [error localizedDescription]);
+    NSLog(@"%@.%@ ERROR:%@ URL:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), [error localizedDescription], [[[connection currentRequest] URL] absoluteString]);
+    
+    if ([[error localizedDescription] containsString:@"timed out"]) {
+        [self.delegate requestTimedOut];
+    } else if ([[error localizedDescription] containsString:@"offline"]) {
+        [self.delegate requestFailedOffline];
+    } else {
+        [self.delegate requestFailedOffline];
+    }
 }
 
 @end

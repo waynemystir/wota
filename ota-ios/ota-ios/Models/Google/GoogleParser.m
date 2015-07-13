@@ -17,13 +17,14 @@
     
     if (error != nil) {
         NSLog(@"ERROR:%@", [error description]);
+        return nil;
     } else {
         NSLog(@"AUTOCOMPLETERESPONSE:%@", [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
     }
     
     id predictions = [response objectForKey:@"predictions"];
     
-    if (nil == predictions || ![predictions isKindOfClass:[NSArray class]] || [predictions count] == 0) {
+    if (nil == predictions || ![predictions isKindOfClass:[NSArray class]] /*|| [predictions count] == 0*/) {
         return nil;
     }
     
@@ -33,7 +34,7 @@
         [mutablePredictions addObject:gp];
     }
     
-    [mutablePredictions addObject:@"pwg"];
+    [mutablePredictions addObject:@"poweredByGoogle"];
     
     return [NSArray arrayWithArray:mutablePredictions];
 }

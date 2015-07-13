@@ -42,8 +42,8 @@
 
 #pragma mark LoadDataProtocol methods
 
-- (void)requestStarted:(NSURL *)url {
-    NSLog(@"%@.%@.:::%@", self.class, NSStringFromSelector(_cmd), url);
+- (void)requestStarted:(NSURLConnection *)connection {
+    NSLog(@"%@.%@.:::%@", self.class, NSStringFromSelector(_cmd), [[[connection currentRequest] URL] absoluteString]);
 }
 
 - (void)requestFinished:(NSData *)responseData dataType:(LOAD_DATA_TYPE)dataType {

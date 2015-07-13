@@ -12,4 +12,6 @@
 
 @interface HotelListingViewController : SearchViewController <LoadDataProtocol>
 
+- (id)initWithProvisionalTitle:(NSString *)provisionalTitle;
+
 @end

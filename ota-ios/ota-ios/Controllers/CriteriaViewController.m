@@ -32,6 +32,8 @@
 @property (nonatomic) BOOL arrivalOrReturn; //arrival == NO and return == YES
 @property (nonatomic, assign) BOOL nextRegionChangeIsFromUserInteraction;
 
+@property (nonatomic, strong) HotelListingViewController *hvc;
+
 - (IBAction)justPushIt:(id)sender;
 
 @end
@@ -119,6 +121,17 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
 }
 
+- (void)dropDaSpinnerAlready {
+    // just overriding an unimplemented parent method
+}
+
+- (void)requestFinished:(NSData *)responseData dataType:(LOAD_DATA_TYPE)dataType {
+    [super requestFinished:responseData dataType:dataType];
+    if (dataType == LOAD_GOOGLE_PLACES && self.hvc) {
+        [self itKeepsTheWaterOffOurHeads:NO];
+    }
+}
+
 #pragma mark Various map methods
 
 - (void)appWillResignActive:(NSNotification *)notification {
@@ -196,18 +209,33 @@
 
 #pragma mark Various events and such
 
+- (void)itKeepsTheWaterOffOurHeads:(BOOL)pushVC {
+    if (self.useMapRadiusForSearch) {
+        [SelectionCriteria singleton].zoomRadius = self.mapRadiusInMiles;
+    }
+    
+    [self letsFindHotels:self.hvc
+            searchRadius:[SelectionCriteria singleton].zoomRadius
+              withPushVC:pushVC];
+    
+    self.hvc = nil;
+}
+
 - (IBAction)justPushIt:(id)sender {
     if (sender == self.checkHotelsOutlet) {
-        HotelListingViewController *hvc = [HotelListingViewController new];
         
-        if (self.useMapRadiusForSearch) {
-            [SelectionCriteria singleton].zoomRadius = self.mapRadiusInMiles;
-//            [self letsFindHotels:hvc searchRadius:self.mapRadiusInMiles];
-        } /*else {
-            [self letsFindHotels:hvc searchRadius:[SelectionCriteria singleton].zoomRadius];
-        }*/
-        
-        [self letsFindHotels:hvc searchRadius:[SelectionCriteria singleton].zoomRadius];
+        if (!self.loadingGooglePlaceDetails) {
+            
+            self.hvc = [[HotelListingViewController alloc] initWithProvisionalTitle:[SelectionCriteria singleton].whereToFirst];
+            [self itKeepsTheWaterOffOurHeads:YES];
+            
+        } else {
+            
+            NSString *wes = !stringIsEmpty(self.tmpSelectedCellPlaceName) ? self.tmpSelectedCellPlaceName : self.whereToTextField.text;
+            self.hvc = [[HotelListingViewController alloc] initWithProvisionalTitle:wes];
+            [self.navigationController pushViewController:self.hvc animated:YES];
+            
+        }
         
     } else if (sender == self.arrivalDateOutlet) {
         self.arrivalOrReturn = NO;
@@ -379,8 +407,6 @@
     returnDatePicker.arrivalOrDepartureString = @"Check-out Date";
     [returnDatePicker setDateHasItemsCallback:nil];
 }
-
-
 
 -(void)refreshDisplayedArrivalDate {
     SelectionCriteria *sc = [SelectionCriteria singleton];

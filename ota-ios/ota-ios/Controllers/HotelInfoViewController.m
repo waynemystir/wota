@@ -23,6 +23,7 @@
 #import "WotaTappableView.h"
 #import "LoadGooglePlacesData.h"
 #import <MapKit/MapKit.h>
+#import "NetworkProblemResponder.h"
 
 #define degreesToRadians(x) (M_PI * x / 180.0)
 #define METERS_PER_MILE 1609.344
@@ -90,6 +91,8 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 @implementation HotelInfoViewController {
     CGRect mapRectInScroller;
 }
+
+#pragma mark Lifecycle
 
 - (id)init {
     self = [super initWithNibName:@"HotelInfoView" bundle:nil];
@@ -276,6 +279,8 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
 }
 
+#pragma mark NavigationDelegate methods
+
 - (void)clickBack {
     [self dropTheSpinnerAlready:YES];
     [self.navigationController popViewControllerAnimated:YES];
@@ -289,8 +294,10 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     
 }
 
-- (void)requestStarted:(NSURL *)url {
-    NSLog(@"%@.%@ URL:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), [url absoluteString]);
+#pragma mark LoadDataProtocol methods
+
+- (void)requestStarted:(NSURLConnection *)connection {
+    NSLog(@"%@.%@ URL:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), [[[connection currentRequest] URL] absoluteString]);
 }
 
 - (void)requestFinished:(NSData *)responseData dataType:(LOAD_DATA_TYPE)dataType {
@@ -300,6 +307,24 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     
 //    [self prepareTheSelectRoomViewController];
 }
+
+- (void)requestTimedOut {
+    [self dropTheSpinnerAlready:YES];
+    __weak typeof(self) wes = self;
+    [NetworkProblemResponder launchWithSuperView:self.view headerTitle:nil messageString:nil completionCallback:^{
+        [wes.navigationController popViewControllerAnimated:YES];
+    }];
+}
+
+- (void)requestFailedOffline {
+    [self dropTheSpinnerAlready:YES];
+    __weak typeof(self) wes = self;
+    [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"Network Error" messageString:@"The network could not be reached. Please check your connection and try again." completionCallback:^{
+        [wes.navigationController popViewControllerAnimated:YES];
+    }];
+}
+
+#pragma mark Various
 
 - (UIImageView *)currentImageView {
     NSInteger cp = _currentPageNumber - 1;
@@ -469,8 +494,10 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 
 - (void)appendPaymentTypesToPoliciesLabel {
     if (_paymentTypesReturned && _policiesLabelIsSet) {
-        NSString *pta = [_policiesLabel.text stringByAppendingString:_paymentTypesBulletted];
-        _policiesLabel.text = pta;
+        if (_paymentTypesBulletted) {
+            NSString *pta = [_policiesLabel.text stringByAppendingString:_paymentTypesBulletted];
+            _policiesLabel.text = pta;
+        }
 //        [_policiesLabel sizeToFit];
         CGRect plf = _policiesLabel.frame;
         CGSize size = [_policiesLabel sizeThatFits:CGSizeMake(plf.size.width, CGFLOAT_MAX)];

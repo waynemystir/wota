@@ -111,6 +111,10 @@
 		B0BD381F1AF9812100EF5E4F /* NightlyRateTableViewDelegateImplementation.m in Sources */ = {isa = PBXBuildFile; fileRef = B0BD381E1AF9812100EF5E4F /* NightlyRateTableViewDelegateImplementation.m */; };
 		B0BD38211AF990F600EF5E4F /* NightRateTableCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0BD38201AF990F600EF5E4F /* NightRateTableCellView.xib */; };
 		B0BD38241AF9914600EF5E4F /* NightRateTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0BD38231AF9914600EF5E4F /* NightRateTableCellView.m */; };
+		B0C04AD31B5210C8002C89F2 /* NetworkProblemResponder.m in Sources */ = {isa = PBXBuildFile; fileRef = B0C04AD21B5210C8002C89F2 /* NetworkProblemResponder.m */; };
+		B0C04AD51B5212AD002C89F2 /* NetworkProblemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0C04AD41B5212AD002C89F2 /* NetworkProblemView.xib */; };
+		B0C04AD81B523569002C89F2 /* NetworkProblemView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0C04AD71B523569002C89F2 /* NetworkProblemView.m */; };
+		B0C04ADC1B534FDD002C89F2 /* NoPredictionsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0C04ADB1B534FDD002C89F2 /* NoPredictionsCell.xib */; };
 		B0CBC7D91B483C2E00F61CA9 /* FilterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0CBC7D81B483C2D00F61CA9 /* FilterView.xib */; };
 		B0CBC8521B48AF9200F61CA9 /* RangeSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CBC84F1B48AF9200F61CA9 /* RangeSlider.swift */; };
 		B0CBC8531B48AF9200F61CA9 /* RangeSliderThumbLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CBC8501B48AF9200F61CA9 /* RangeSliderThumbLayer.swift */; };
@@ -356,6 +360,12 @@
 		B0BD38201AF990F600EF5E4F /* NightRateTableCellView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NightRateTableCellView.xib; sourceTree = "<group>"; };
 		B0BD38221AF9914600EF5E4F /* NightRateTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NightRateTableCellView.h; sourceTree = "<group>"; };
 		B0BD38231AF9914600EF5E4F /* NightRateTableCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NightRateTableCellView.m; sourceTree = "<group>"; };
+		B0C04AD11B5210C8002C89F2 /* NetworkProblemResponder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkProblemResponder.h; sourceTree = "<group>"; };
+		B0C04AD21B5210C8002C89F2 /* NetworkProblemResponder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkProblemResponder.m; sourceTree = "<group>"; };
+		B0C04AD41B5212AD002C89F2 /* NetworkProblemView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NetworkProblemView.xib; sourceTree = "<group>"; };
+		B0C04AD61B523569002C89F2 /* NetworkProblemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkProblemView.h; sourceTree = "<group>"; };
+		B0C04AD71B523569002C89F2 /* NetworkProblemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkProblemView.m; sourceTree = "<group>"; };
+		B0C04ADB1B534FDD002C89F2 /* NoPredictionsCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NoPredictionsCell.xib; sourceTree = "<group>"; };
 		B0CBC7D81B483C2D00F61CA9 /* FilterView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FilterView.xib; sourceTree = "<group>"; };
 		B0CBC84E1B48AF9200F61CA9 /* ota-ios-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ota-ios-Bridging-Header.h"; sourceTree = "<group>"; };
 		B0CBC84F1B48AF9200F61CA9 /* RangeSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RangeSlider.swift; sourceTree = "<group>"; };
@@ -619,6 +629,7 @@
 				B032F6541AC193DB00809395 /* CriteriaView.xib */,
 				B05BD6311AC1FF54002C2882 /* PlaceAutoCompleteTableViewCell.xib */,
 				B0508C6D1B34DCA8009CC56F /* PowerebByGoogleCell.xib */,
+				B0C04ADB1B534FDD002C89F2 /* NoPredictionsCell.xib */,
 				B09797CD1AC2518D0014FC7C /* MapView.xib */,
 				B09797E61AC34DB70014FC7C /* HotelListingView.xib */,
 				B03DA0061B46D5930039B9C6 /* FilterTableView.xib */,
@@ -649,6 +660,9 @@
 				B097457D1B28FF9100E4A9AD /* WotaMapAnnotatioin.m */,
 				B09745851B29226800E4A9AD /* WotaMKPinAnnotationView.h */,
 				B09745861B29226800E4A9AD /* WotaMKPinAnnotationView.m */,
+				B0C04AD41B5212AD002C89F2 /* NetworkProblemView.xib */,
+				B0C04AD61B523569002C89F2 /* NetworkProblemView.h */,
+				B0C04AD71B523569002C89F2 /* NetworkProblemView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -750,6 +764,8 @@
 				B0CBC8501B48AF9200F61CA9 /* RangeSliderThumbLayer.swift */,
 				B0CBC8511B48AF9200F61CA9 /* RangeSliderTrackLayer.swift */,
 				B0CBC84E1B48AF9200F61CA9 /* ota-ios-Bridging-Header.h */,
+				B0C04AD11B5210C8002C89F2 /* NetworkProblemResponder.h */,
+				B0C04AD21B5210C8002C89F2 /* NetworkProblemResponder.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1063,6 +1079,7 @@
 				B06C98BA1B0951E500DBE09D /* InternationalCallingCodes.plist in Resources */,
 				B0DF52391ADC77F100136661 /* PostResultsTableViewCell.xib in Resources */,
 				B0D02FF91AE6123000B1E75F /* placeholder.png in Resources */,
+				B0C04ADC1B534FDD002C89F2 /* NoPredictionsCell.xib in Resources */,
 				B0D02FFF1AE6123000B1E75F /* textfield@2x.png in Resources */,
 				B09797FB1AC3BC690014FC7C /* THDatePickerViewController.xib in Resources */,
 				B09277E51B4F70CC0094159B /* NoHotelsView.xib in Resources */,
@@ -1070,6 +1087,7 @@
 				B0FE0F491AC6ED0000DAF635 /* BookView.xib in Resources */,
 				B032F6551AC193DB00809395 /* CriteriaView.xib in Resources */,
 				B010E3841B4CCE7300CA8374 /* SortView.xib in Resources */,
+				B0C04AD51B5212AD002C89F2 /* NetworkProblemView.xib in Resources */,
 				B0D02FFE1AE6123000B1E75F /* textfield.png in Resources */,
 				B05BD6321AC1FF54002C2882 /* PlaceAutoCompleteTableViewCell.xib in Resources */,
 				B018C0421AD96A7600DDCE2E /* GuestDetailsView.xib in Resources */,
@@ -1132,8 +1150,10 @@
 				B032F6301AC18F6700809395 /* MainViewController.m in Sources */,
 				B09797D11AC321F90014FC7C /* GooglePlaceDetail.m in Sources */,
 				B05BD6301AC1FEE3002C2882 /* GooglePlace.m in Sources */,
+				B0C04AD31B5210C8002C89F2 /* NetworkProblemResponder.m in Sources */,
 				B07958E91AF451C000422182 /* EanNightlyRate.m in Sources */,
 				B0CBC8521B48AF9200F61CA9 /* RangeSlider.swift in Sources */,
+				B0C04AD81B523569002C89F2 /* NetworkProblemView.m in Sources */,
 				B0D02FE81AE6123000B1E75F /* PTKTextField.m in Sources */,
 				B0122E471AD088F800E44319 /* EanAvailabilityHotelRoomResponse.m in Sources */,
 				B09E41801AEA8C11000A718D /* EanBedType.m in Sources */,

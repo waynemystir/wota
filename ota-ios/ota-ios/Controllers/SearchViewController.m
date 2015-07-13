@@ -15,12 +15,15 @@
 #import "LoadEanData.h"
 #import "HotelListingViewController.h"
 #import "AppDelegate.h"
+#import "NetworkProblemResponder.h"
 
 static int const kAutoCompleteMinimumNumberOfCharacters = 4;
 double const DEFAULT_RADIUS = 5.0;
 static double const METERS_PER_MILE = 1609.344;
 
 @interface SearchViewController () <UITableViewDataSource, UITableViewDelegate>
+
+@property (nonatomic, strong) NSMutableArray *openConnections;
 
 @end
 
@@ -45,6 +48,8 @@ static double const METERS_PER_MILE = 1609.344;
     [self resetWhereToTfAppearance];
     self.whereToTextField.text = @"";//[SelectionCriteria singleton].whereToFirst;
     self.whereToSecondLevel.text = @"";//[SelectionCriteria singleton].whereToSecond;
+    
+    self.openConnections = [NSMutableArray array];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -76,6 +81,12 @@ static double const METERS_PER_MILE = 1609.344;
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     NSString *autoCompleteText = [textField.text stringByReplacingCharactersInRange:range withString:string];
     if ([autoCompleteText length] >= kAutoCompleteMinimumNumberOfCharacters) {
+        if (self.placesTableData == [SelectionCriteria singleton].placesArray) {
+            self.placesTableData = [NSMutableArray array];
+            [self.placesTableView reloadData];
+        }
+        [self.openConnections makeObjectsPerformSelector:@selector(cancel)];
+        [self.openConnections removeAllObjects];
         [[LoadGooglePlacesData sharedInstance:self] autoCompleteSomePlaces:autoCompleteText];
     } else {
         return [self textFieldShouldClear:textField];
@@ -98,6 +109,8 @@ static double const METERS_PER_MILE = 1609.344;
         self.placesTableData = [SelectionCriteria singleton].placesArray;
         [self.placesTableView reloadData];
     }
+    [self.openConnections makeObjectsPerformSelector:@selector(cancel)];
+    [self.openConnections removeAllObjects];
     return YES;
 }
 
@@ -107,19 +120,26 @@ static double const METERS_PER_MILE = 1609.344;
 
 #pragma mark LoadDataProtocol methods
 
-- (void)requestStarted:(NSURL *)url {
-    NSLog(@"%@.%@ loading URL:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), [url absoluteString]);
+- (void)requestStarted:(NSURLConnection *)connection {
+    [self.openConnections addObject:connection];
+    NSLog(@"%@.%@ loading URL:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), [[[connection currentRequest] URL] absoluteString]);
 }
 
 - (void)requestFinished:(NSData *)responseData dataType:(LOAD_DATA_TYPE)dataType {
     switch (dataType) {
         case LOAD_GOOGLE_AUTOCOMPLETE: {
-            self.placesTableData = [NSMutableArray arrayWithArray:[GoogleParser parseAutoCompleteResponse:responseData]];
-            [self.placesTableView reloadData];
+            NSArray *wes = [GoogleParser parseAutoCompleteResponse:responseData];
+            if (wes) {
+                self.placesTableData = [NSMutableArray arrayWithArray:wes];
+                [self.placesTableView reloadData];
+            } else {
+//                self.placesTableData = [NSMutableArray arrayWithObject:self.whereToTextField.text];
+            }
             break;
         }
             
         case LOAD_GOOGLE_PLACES: {
+            self.loadingGooglePlaceDetails = NO;
             [SelectionCriteria singleton].googlePlaceDetail = [GooglePlaceDetail placeDetailFromData:responseData];
             self.useMapRadiusForSearch = NO;
 //            [[SelectionCriteria singleton] savePlace:[GooglePlaceDetail placeDetailFromData:responseData]];
@@ -139,6 +159,26 @@ static double const METERS_PER_MILE = 1609.344;
     }
 }
 
+- (void)requestTimedOut {
+    self.loadingGooglePlaceDetails = NO;
+    [self dropDaSpinnerAlready];
+    __weak typeof(self) wes = self;
+    [NetworkProblemResponder launchWithSuperView:self.view headerTitle:nil messageString:nil completionCallback:^{
+        [wes.navigationController popViewControllerAnimated:YES];
+        [wes animateTableViewCompression];
+    }];
+}
+
+- (void)requestFailedOffline {
+    self.loadingGooglePlaceDetails = NO;
+    [self dropDaSpinnerAlready];
+    __weak typeof(self) wes = self;
+    [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"Network Error" messageString:@"The network could not be reached. Please check your connection and try again." completionCallback:^{
+        [wes.navigationController popViewControllerAnimated:YES];
+        [wes animateTableViewCompression];
+    }];
+}
+
 #pragma mark UITableViewDataSource methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -152,9 +192,18 @@ static double const METERS_PER_MILE = 1609.344;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if ([self.placesTableData[indexPath.row] isKindOfClass:[NSString class]]) {
-        NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"PowerebByGoogleCell" owner:self options:nil];
-        UITableViewCell *poweredByGoogleCell = views.firstObject;
-        return poweredByGoogleCell;
+        if ([self.placesTableData[indexPath.row] isEqualToString:@"poweredByGoogle"]) {
+            NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"PowerebByGoogleCell" owner:self options:nil];
+            UITableViewCell *poweredByGoogleCell = views.firstObject;
+            return poweredByGoogleCell;
+        } else if (!stringIsEmpty(self.placesTableData[indexPath.row])) {
+            NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"NoPredictionsCell" owner:self options:nil];
+            UITableViewCell *bsCell = views.firstObject;
+            UIView *lc = [bsCell.contentView viewWithTag:987123];
+            UILabel *wes = (UILabel *)[lc viewWithTag:123987];
+            wes.text = self.placesTableData[indexPath.row];
+            return bsCell;
+        }
     }
     
     NSString *CellIdentifier = @"placeAutoCompleteCell";
@@ -212,6 +261,9 @@ static double const METERS_PER_MILE = 1609.344;
         // to LoadEanData.loadHotelsWithLatitude:longitude: could return data for the wrong
         // place. And second, we could have mismatched data in SelectionCriteria between
         // whereTo and googlePlaceDetail.
+        
+        self.loadingGooglePlaceDetails = YES;
+        self.tmpSelectedCellPlaceName = [cell.outletPlaceName.text componentsSeparatedByString:@","].firstObject;
         [[LoadGooglePlacesData sharedInstance:self] loadPlaceDetails:cell.placeId];
         self.placesTableData = [SelectionCriteria singleton].placesArray;
         [self.placesTableView reloadData];
@@ -278,13 +330,16 @@ static double const METERS_PER_MILE = 1609.344;
     return zoomLocation;
 }
 
-- (void)letsFindHotels:(HotelListingViewController *)hvc searchRadius:(double)searchRadius {
-    SelectionCriteria *sc = [SelectionCriteria singleton];
+- (void)letsFindHotels:(HotelListingViewController *)hvc
+          searchRadius:(double)searchRadius
+            withPushVC:(BOOL)pushVC {
     
     searchRadius = searchRadius * 0.92;
     searchRadius = fmax(searchRadius, 1);
     searchRadius = fmin(searchRadius, 50);
     int sri = ceil(searchRadius);
+    
+    SelectionCriteria *sc = [SelectionCriteria singleton];
     
     [[LoadEanData sharedInstance:hvc] loadHotelsWithLatitude:sc.latitude
                                                    longitude:sc.longitude
@@ -301,7 +356,9 @@ static double const METERS_PER_MILE = 1609.344;
     [self.placesTableView reloadData];
     
     if (hvc != self) {
-        [self.navigationController pushViewController:hvc animated:YES];
+        if (pushVC) {
+            [self.navigationController pushViewController:hvc animated:YES];
+        }
     } else {
         AppDelegate *ad = [[UIApplication sharedApplication] delegate];
         [ad loadDaSpinner];
@@ -341,6 +398,12 @@ static double const METERS_PER_MILE = 1609.344;
     self.whereToTextField.layer.cornerRadius = 6.0f;
     self.whereToTextField.layer.borderColor = UIColorFromRGB(0xbbbbbb).CGColor;
     self.whereToTextField.layer.borderWidth = 0.7f;
+}
+
+#pragma mark Overrides
+
+- (void)dropDaSpinnerAlready {
+    [self doesNotRecognizeSelector:_cmd];
 }
 
 @end

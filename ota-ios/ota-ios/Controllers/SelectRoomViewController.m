@@ -35,6 +35,7 @@
 #import "NightlyRateTableViewDelegateImplementation.h"
 #import "NavigationView.h"
 #import "CountryPicker.h"
+#import "NetworkProblemResponder.h"
 
 NSUInteger const kLoadDropRoomDetailsAnimationCurve = UIViewAnimationOptionCurveEaseInOut;
 NSTimeInterval const kSrAnimationDuration = 0.58f;
@@ -423,6 +424,19 @@ NSUInteger const kCardSecurityTag = 171736;
         default:
             break;
     }
+}
+
+- (void)requestTimedOut {
+    __weak typeof(self) wes = self;
+    if (wes.navigationController.visibleViewController == self) {
+        _preparedToDropSpinner = YES;
+        [self dropDaSpinner];
+        [NetworkProblemResponder launchWithSuperView:self.view headerTitle:nil messageString:nil completionCallback:^{
+            [wes.navigationController popViewControllerAnimated:YES];
+        }];
+    }
+    
+    // TODO: else NetworkProblemResponder launchWithSuperView: when the user finally gets to this screen?
 }
 
 #pragma mark Table View Data Source methods

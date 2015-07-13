@@ -243,7 +243,7 @@ NSString * kURLeanBookReservation() {
     
     NSLog(@"%@.%@:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), [url absoluteString]);
     if ([self.delegate respondsToSelector:@selector(requestStarted:)]) {
-        [self.delegate requestStarted:url];
+        [self.delegate requestStarted:connection];
     }
 }
 
@@ -511,6 +511,14 @@ NSString * kURLeanBookReservation() {
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     NSLog(@"%@.%@ ERROR:%@ URL:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), [error localizedDescription], [[[connection currentRequest] URL] absoluteString]);
+    
+    if ([[error localizedDescription] containsString:@"timed out"]) {
+        [self.delegate requestTimedOut];
+    } else if ([[error localizedDescription] containsString:@"offline"]) {
+        [self.delegate requestFailedOffline];
+    } else {
+        [self.delegate requestFailedOffline];
+    }
 }
 
 @end

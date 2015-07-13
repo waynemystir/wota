@@ -44,6 +44,7 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
 @property (nonatomic) double listMaxLatitudeDelta;
 @property (nonatomic) double listMaxLongitudeDelta;
 @property (weak, nonatomic) IBOutlet UIView *overlay;
+@property (nonatomic, strong) NSString *provisionalTitle;
 
 - (IBAction)clickSearchMap:(id)sender;
 
@@ -52,13 +53,19 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
 @implementation HotelListingViewController {
     BOOL tableOrMap;
     BOOL filterViewUp;
+    BOOL waitToFindHotelsUntilGooglePlaceDetailsReturn;
 }
 
 #pragma mark Lifecycle
 
 - (id)init {
+    return [self initWithProvisionalTitle:@""];
+}
+
+- (id)initWithProvisionalTitle:(NSString *)provisionalTitle {
     if (self = [super initWithNibName:@"HotelListingView" bundle:nil]) {
         self.animationDuraton = kSearchModeAnimationDuration;
+        self.provisionalTitle = provisionalTitle;
     }
     return self;
 }
@@ -71,6 +78,7 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     [super loadView];
     
     NavigationView *nv = [[NavigationView alloc] initWithDelegate:self];
+    nv.whereToLabel.text = !stringIsEmpty(self.provisionalTitle) ? self.provisionalTitle : @"";
     [self.view addSubview:nv];
     
     [nv rightViewAddSearch];
@@ -297,7 +305,11 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
     _alreadyDroppedSpinner = NO;
     
     if (search) {
-        [self letsFindHotels:self searchRadius:[SelectionCriteria singleton].zoomRadius];
+        if (!self.loadingGooglePlaceDetails) {
+            [self letsFindHotels:self searchRadius:[SelectionCriteria singleton].zoomRadius withPushVC:NO];
+        } else {
+            waitToFindHotelsUntilGooglePlaceDetailsReturn = YES;
+        }
     }
     
     [self animateTableViewCompression];
@@ -327,13 +339,20 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
 
 #pragma mark LoadDataProtocol methods
 
-- (void)requestStarted:(NSURL *)url {
-    NSLog(@"%@.%@ finding hotels with URL:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), [url absoluteString]);
+- (void)requestStarted:(NSURLConnection *)connection {
+    NSLog(@"%@.%@ finding hotels with URL:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), [[[connection currentRequest] URL] absoluteString]);
 }
 
 - (void)requestFinished:(NSData *)responseData dataType:(LOAD_DATA_TYPE)dataType {
-    if (dataType == LOAD_GOOGLE_AUTOCOMPLETE || dataType == LOAD_GOOGLE_PLACES) {
+    if (dataType == LOAD_GOOGLE_AUTOCOMPLETE) {
         return [super requestFinished:responseData dataType:dataType];
+    } else if (dataType == LOAD_GOOGLE_PLACES) {
+        [super requestFinished:responseData dataType:dataType];
+        if (waitToFindHotelsUntilGooglePlaceDetailsReturn) {
+            [self letsFindHotels:self searchRadius:[SelectionCriteria singleton].zoomRadius withPushVC:NO];
+            waitToFindHotelsUntilGooglePlaceDetailsReturn = NO;
+        }
+        return;
     } else if (dataType != LOAD_EAN_HOTELS_LIST) {
         return;
     }
@@ -417,20 +436,28 @@ NSTimeInterval const kSearchModeAnimationDuration = 0.36;
 }
 
 - (IBAction)clickSearchMap:(id)sender {
+    [self exitSearchModeWithSearch:NO];
     [self reverseGeoCodingDawg];
 }
 
 - (void)reverseGeoCodingDawg {
-//    __weak NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
     __weak typeof(self) wes = self;
-    [[LoadGooglePlacesData sharedInstance] loadPlaceDetailsWithLatitude:self.mkMapView.region.center.latitude longitude:self.mkMapView.region.center.longitude completionBlock:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+    AppDelegate *ad = [[UIApplication sharedApplication] delegate];
+    [ad loadDaSpinner];
+    
+    [[LoadGooglePlacesData sharedInstance] loadPlaceDetailsWithLatitude:self.mkMapView.region.center.latitude
+                                                              longitude:self.mkMapView.region.center.longitude
+                                                        completionBlock:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+        
         [SelectionCriteria singleton].googlePlaceDetail = [GooglePlaceDetail placeDetailFromGeoCodeData:data];
         [SelectionCriteria singleton].googlePlaceDetail.zoomRadius = self.mapRadiusInMiles;
+                                                            
         dispatch_async(dispatch_get_main_queue(), ^{
             wes.alreadyDroppedSpinner = NO;
-            [wes letsFindHotels:wes searchRadius:self.mapRadiusInMiles];
-//            nv.whereToLabel.text = [SelectionCriteria singleton].whereToFirst;
+            [wes letsFindHotels:wes searchRadius:self.mapRadiusInMiles withPushVC:NO];
+            
         });
+                                                            
     }];
 }
 
