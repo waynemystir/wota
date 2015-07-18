@@ -10,11 +10,12 @@
 #import "AppEnvironment.h"
 #import "JNKeychain.h"
 //#import "MainViewController.h"
-#import "CriteriaViewController.h"
+//#import "CriteriaViewController.h"
+#import "TrotterViewController.h"
 
 static NSString *_externalIP = nil;
 
-@interface AppDelegate () <CLLocationManagerDelegate>
+@interface AppDelegate ()
 
 @property (nonatomic) Class spinnerClass;
 
@@ -26,7 +27,7 @@ static NSString *_externalIP = nil;
     
     [[self class] acquireExternalIP];
     
-    CriteriaViewController *mvc = [CriteriaViewController new];
+    TrotterViewController *mvc = [TrotterViewController new];
     UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:mvc];
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = nc;

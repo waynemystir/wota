@@ -78,6 +78,7 @@
 		B09277E11B4F30450094159B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B09277E01B4F30450094159B /* CoreGraphics.framework */; };
 		B09277E31B4F30940094159B /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B09277E21B4F30940094159B /* ImageIO.framework */; };
 		B09277E51B4F70CC0094159B /* NoHotelsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B09277E41B4F70CC0094159B /* NoHotelsView.xib */; };
+		B09431E51B58A39300E69A71 /* TrotterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B09431E41B58A39300E69A71 /* TrotterView.xib */; };
 		B0963CB91AC786E3002FD859 /* SelectionCriteria.m in Sources */ = {isa = PBXBuildFile; fileRef = B0963CB81AC786E3002FD859 /* SelectionCriteria.m */; };
 		B0963CBC1AC89445002FD859 /* ChildViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B0963CBB1AC89445002FD859 /* ChildViewController.m */; };
 		B0963CBE1AC89459002FD859 /* ChildView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0963CBD1AC89459002FD859 /* ChildView.xib */; };
@@ -108,6 +109,8 @@
 		B0B50AD11B251FF300685384 /* GoogleNearbyPlace.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B50AD01B251FF300685384 /* GoogleNearbyPlace.m */; };
 		B0B50AD41B25285B00685384 /* GoogleNearbyPlaces.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B50AD31B25285B00685384 /* GoogleNearbyPlaces.m */; };
 		B0B50ADD1B255F2600685384 /* GoogleMarkerView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B50ADC1B255F2600685384 /* GoogleMarkerView.m */; };
+		B0BB3F431B59632100DCCFE7 /* TrotterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B0BB3F421B59632100DCCFE7 /* TrotterViewController.m */; };
+		B0BB3F451B59DD3500DCCFE7 /* HotelNameFilterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0BB3F441B59DD3500DCCFE7 /* HotelNameFilterView.xib */; };
 		B0BD381F1AF9812100EF5E4F /* NightlyRateTableViewDelegateImplementation.m in Sources */ = {isa = PBXBuildFile; fileRef = B0BD381E1AF9812100EF5E4F /* NightlyRateTableViewDelegateImplementation.m */; };
 		B0BD38211AF990F600EF5E4F /* NightRateTableCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0BD38201AF990F600EF5E4F /* NightRateTableCellView.xib */; };
 		B0BD38241AF9914600EF5E4F /* NightRateTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0BD38231AF9914600EF5E4F /* NightRateTableCellView.m */; };
@@ -300,6 +303,7 @@
 		B09277E01B4F30450094159B /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		B09277E21B4F30940094159B /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		B09277E41B4F70CC0094159B /* NoHotelsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NoHotelsView.xib; sourceTree = "<group>"; };
+		B09431E41B58A39300E69A71 /* TrotterView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TrotterView.xib; sourceTree = "<group>"; };
 		B0963CB71AC786E3002FD859 /* SelectionCriteria.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectionCriteria.h; sourceTree = "<group>"; };
 		B0963CB81AC786E3002FD859 /* SelectionCriteria.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectionCriteria.m; sourceTree = "<group>"; };
 		B0963CBA1AC89445002FD859 /* ChildViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChildViewController.h; sourceTree = "<group>"; };
@@ -355,6 +359,9 @@
 		B0B50AD31B25285B00685384 /* GoogleNearbyPlaces.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleNearbyPlaces.m; sourceTree = "<group>"; };
 		B0B50ADB1B255F2600685384 /* GoogleMarkerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleMarkerView.h; sourceTree = "<group>"; };
 		B0B50ADC1B255F2600685384 /* GoogleMarkerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleMarkerView.m; sourceTree = "<group>"; };
+		B0BB3F411B59632100DCCFE7 /* TrotterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrotterViewController.h; sourceTree = "<group>"; };
+		B0BB3F421B59632100DCCFE7 /* TrotterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrotterViewController.m; sourceTree = "<group>"; };
+		B0BB3F441B59DD3500DCCFE7 /* HotelNameFilterView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HotelNameFilterView.xib; sourceTree = "<group>"; };
 		B0BD381D1AF9812100EF5E4F /* NightlyRateTableViewDelegateImplementation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NightlyRateTableViewDelegateImplementation.h; sourceTree = "<group>"; };
 		B0BD381E1AF9812100EF5E4F /* NightlyRateTableViewDelegateImplementation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NightlyRateTableViewDelegateImplementation.m; sourceTree = "<group>"; };
 		B0BD38201AF990F600EF5E4F /* NightRateTableCellView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NightRateTableCellView.xib; sourceTree = "<group>"; };
@@ -624,7 +631,8 @@
 		B032F64D1AC191FB00809395 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				B0D01EBF1B07ED830001C558 /* Navigation */,
+				B09431E41B58A39300E69A71 /* TrotterView.xib */,
+				B0BB3F441B59DD3500DCCFE7 /* HotelNameFilterView.xib */,
 				B032F64F1AC1935000809395 /* MainView.xib */,
 				B032F6541AC193DB00809395 /* CriteriaView.xib */,
 				B05BD6311AC1FF54002C2882 /* PlaceAutoCompleteTableViewCell.xib */,
@@ -663,6 +671,7 @@
 				B0C04AD41B5212AD002C89F2 /* NetworkProblemView.xib */,
 				B0C04AD61B523569002C89F2 /* NetworkProblemView.h */,
 				B0C04AD71B523569002C89F2 /* NetworkProblemView.m */,
+				B0D01EBF1B07ED830001C558 /* Navigation */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -670,6 +679,8 @@
 		B032F64E1AC1922400809395 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				B0BB3F411B59632100DCCFE7 /* TrotterViewController.h */,
+				B0BB3F421B59632100DCCFE7 /* TrotterViewController.m */,
 				B032F62E1AC18F6700809395 /* MainViewController.h */,
 				B032F62F1AC18F6700809395 /* MainViewController.m */,
 				B061FE791B38FC77005773B3 /* SearchViewController.h */,
@@ -1082,10 +1093,12 @@
 				B0C04ADC1B534FDD002C89F2 /* NoPredictionsCell.xib in Resources */,
 				B0D02FFF1AE6123000B1E75F /* textfield@2x.png in Resources */,
 				B09797FB1AC3BC690014FC7C /* THDatePickerViewController.xib in Resources */,
+				B09431E51B58A39300E69A71 /* TrotterView.xib in Resources */,
 				B09277E51B4F70CC0094159B /* NoHotelsView.xib in Resources */,
 				B0D02FF71AE6123000B1E75F /* mastercard.png in Resources */,
 				B0FE0F491AC6ED0000DAF635 /* BookView.xib in Resources */,
 				B032F6551AC193DB00809395 /* CriteriaView.xib in Resources */,
+				B0BB3F451B59DD3500DCCFE7 /* HotelNameFilterView.xib in Resources */,
 				B010E3841B4CCE7300CA8374 /* SortView.xib in Resources */,
 				B0C04AD51B5212AD002C89F2 /* NetworkProblemView.xib in Resources */,
 				B0D02FFE1AE6123000B1E75F /* textfield.png in Resources */,
@@ -1172,6 +1185,7 @@
 				B01E25861AFDD33E001D02B1 /* EanHotelFee.m in Sources */,
 				B00E771C1B234A5A00C27331 /* GTMNSString+HTML.m in Sources */,
 				B00872D61AED4A9100CB2B9D /* EanAbstractResponse.m in Sources */,
+				B0BB3F431B59632100DCCFE7 /* TrotterViewController.m in Sources */,
 				B0BD381F1AF9812100EF5E4F /* NightlyRateTableViewDelegateImplementation.m in Sources */,
 				B0D01EC21B07EFE30001C558 /* NavTitleView.m in Sources */,
 				B0A87D681AD4B2B3001505A6 /* EanHotelRoomReservationResponse.m in Sources */,

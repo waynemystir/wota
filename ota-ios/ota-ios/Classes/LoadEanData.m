@@ -20,14 +20,17 @@ typedef NS_ENUM(NSUInteger, HTTP_METHOD) {
 #pragma mark EAN stuff
 
 NSString * const EAN_API_EXPERIENCE = @"PARTNER_MOBILE_APP";
-NSString * const EAN_MINOR_REV = @"29";
+NSString * const EAN_MINOR_REV = @"30";
 //http://developer.ean.com/docs/getting-started/api-access/
 //NSString * const EAN_CID = @"55505";
-NSString * const EAN_CID = @"482231";
+//NSString * const EAN_CID = @"482231";
+NSString * const EAN_CID = @"493255";
 //NSString * const EAN_API_KEY = @"ds5gqba7fbetw3wwgq7nnjku";
-NSString * const EAN_API_KEY = @"5fo5tmsoq7oul81bdon0ju59nu";
+//NSString * const EAN_API_KEY = @"5fo5tmsoq7oul81bdon0ju59nu";
+NSString * const EAN_API_KEY = @"4d2vn0lkhdapmsp9ao25k6otu2";
 //NSString * const EAN_SHARED_SECRET = @"QzrgJ6Vc";
-NSString * const EAN_SHARED_SECRET = @"ifpa7qqkuiu1";
+//NSString * const EAN_SHARED_SECRET = @"ifpa7qqkuiu1";
+NSString * const EAN_SHARED_SECRET = @"dkd9878sllepe";
 NSString * const EAN_GEN_REQ_BASE_URL = @"http://api.ean.com";
 NSString * const EAN_BOK_REQ_BASE_URL = @"https://book.api.ean.com";
 NSString * const EAN_URL_EXT = @"ean-services/rs";
@@ -110,7 +113,7 @@ NSString * kEanGenerateSigMD5() {
     
     NSString *stringToHash = [NSString stringWithFormat:@"%@%@%@", EAN_API_KEY, EAN_SHARED_SECRET, unixTimeStamp];
     const char *cstr = [stringToHash UTF8String];
-    unsigned char result[16];
+    unsigned char result[CC_MD5_DIGEST_LENGTH];
     CC_MD5(cstr, (CC_LONG)strlen(cstr), result);
     
     return [[NSString stringWithFormat:
