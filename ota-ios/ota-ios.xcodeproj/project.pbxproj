@@ -161,6 +161,9 @@
 		B0DF52341ADC74D400136661 /* GooglePlaceTableViewDelegateImplementation.m in Sources */ = {isa = PBXBuildFile; fileRef = B0DF52331ADC74D400136661 /* GooglePlaceTableViewDelegateImplementation.m */; };
 		B0DF52371ADC77BA00136661 /* PostalResultsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B0DF52361ADC77BA00136661 /* PostalResultsTableViewCell.m */; };
 		B0DF52391ADC77F100136661 /* PostResultsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0DF52381ADC77F100136661 /* PostResultsTableViewCell.xib */; };
+		B0F242111B5C7E7D0050B173 /* TravelersView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0F242101B5C7E7D0050B173 /* TravelersView.xib */; };
+		B0F242141B5CB94D0050B173 /* EanCredentials.m in Sources */ = {isa = PBXBuildFile; fileRef = B0F242131B5CB94D0050B173 /* EanCredentials.m */; };
+		B0F242171B5E08510050B173 /* EanWsError.m in Sources */ = {isa = PBXBuildFile; fileRef = B0F242161B5E08510050B173 /* EanWsError.m */; };
 		B0F554931B13798200E9B805 /* EanRoomRateDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = B0F554921B13798200E9B805 /* EanRoomRateDetails.m */; };
 		B0F5549A1B13B9E500E9B805 /* EanPaymentType.m in Sources */ = {isa = PBXBuildFile; fileRef = B0F554991B13B9E500E9B805 /* EanPaymentType.m */; };
 		B0F5549D1B13BB2300E9B805 /* EanPaymentTypeResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = B0F5549C1B13BB2300E9B805 /* EanPaymentTypeResponse.m */; };
@@ -435,6 +438,11 @@
 		B0DF52351ADC77BA00136661 /* PostalResultsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostalResultsTableViewCell.h; sourceTree = "<group>"; };
 		B0DF52361ADC77BA00136661 /* PostalResultsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostalResultsTableViewCell.m; sourceTree = "<group>"; };
 		B0DF52381ADC77F100136661 /* PostResultsTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PostResultsTableViewCell.xib; sourceTree = "<group>"; };
+		B0F242101B5C7E7D0050B173 /* TravelersView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TravelersView.xib; sourceTree = "<group>"; };
+		B0F242121B5CB94D0050B173 /* EanCredentials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanCredentials.h; sourceTree = "<group>"; };
+		B0F242131B5CB94D0050B173 /* EanCredentials.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanCredentials.m; sourceTree = "<group>"; };
+		B0F242151B5E08510050B173 /* EanWsError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanWsError.h; sourceTree = "<group>"; };
+		B0F242161B5E08510050B173 /* EanWsError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanWsError.m; sourceTree = "<group>"; };
 		B0F554911B13798200E9B805 /* EanRoomRateDetails.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanRoomRateDetails.h; sourceTree = "<group>"; };
 		B0F554921B13798200E9B805 /* EanRoomRateDetails.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanRoomRateDetails.m; sourceTree = "<group>"; };
 		B0F554981B13B9E500E9B805 /* EanPaymentType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanPaymentType.h; sourceTree = "<group>"; };
@@ -492,6 +500,10 @@
 				B00872D51AED4A9100CB2B9D /* EanAbstractResponse.m */,
 				B03B42FB1ADDFE1A0083A6EA /* EanPlace.h */,
 				B03B42FC1ADDFE1B0083A6EA /* EanPlace.m */,
+				B0F242121B5CB94D0050B173 /* EanCredentials.h */,
+				B0F242131B5CB94D0050B173 /* EanCredentials.m */,
+				B0F242151B5E08510050B173 /* EanWsError.h */,
+				B0F242161B5E08510050B173 /* EanWsError.m */,
 				B09C5EA01AD191DD00A3D7E8 /* HotelListResponse */,
 				B0122E511AD16E4400E44319 /* HotelInfoResponse */,
 				B0F554971B13B97F00E9B805 /* PaymentType */,
@@ -633,6 +645,7 @@
 			children = (
 				B09431E41B58A39300E69A71 /* TrotterView.xib */,
 				B0BB3F441B59DD3500DCCFE7 /* HotelNameFilterView.xib */,
+				B0F242101B5C7E7D0050B173 /* TravelersView.xib */,
 				B032F64F1AC1935000809395 /* MainView.xib */,
 				B032F6541AC193DB00809395 /* CriteriaView.xib */,
 				B05BD6311AC1FF54002C2882 /* PlaceAutoCompleteTableViewCell.xib */,
@@ -1117,6 +1130,7 @@
 				B09797E71AC34DB70014FC7C /* HotelListingView.xib in Resources */,
 				B06C98BC1B09585300DBE09D /* CountryPicker.bundle in Resources */,
 				B0D02FFB1AE6123000B1E75F /* visa.png in Resources */,
+				B0F242111B5C7E7D0050B173 /* TravelersView.xib in Resources */,
 				B0508C6E1B34DCA8009CC56F /* PowerebByGoogleCell.xib in Resources */,
 				B0FE0F4E1AC70A2500DAF635 /* SelectRoomView.xib in Resources */,
 			);
@@ -1153,6 +1167,7 @@
 				B0963CC61AC8E034002FD859 /* ChildSubView.m in Sources */,
 				B0963CBC1AC89445002FD859 /* ChildViewController.m in Sources */,
 				B03C2BAA1AED74E700C13AC5 /* EanRateInfo.m in Sources */,
+				B0F242171B5E08510050B173 /* EanWsError.m in Sources */,
 				B0FE0F4C1AC70A0700DAF635 /* SelectRoomViewController.m in Sources */,
 				B058A4941AE8B52C00E42594 /* WotaButton.m in Sources */,
 				B09E41831AEB2D9B000A718D /* SelectBedTypeDelegateImplementation.m in Sources */,
@@ -1203,6 +1218,7 @@
 				B09797FA1AC3BC690014FC7C /* THDatePickerViewController.m in Sources */,
 				B00872D31AECE5FB00CB2B9D /* EanRoomGroup.m in Sources */,
 				B0D030021AE7380F00B1E75F /* PaymentDetails.m in Sources */,
+				B0F242141B5CB94D0050B173 /* EanCredentials.m in Sources */,
 				B07958E61AF44A5800422182 /* EanChargeableRateInfo.m in Sources */,
 				B05BD6241AC1E9FB002C2882 /* AppEnvironment.m in Sources */,
 				B09797C91AC23C1F0014FC7C /* GoogleParser.m in Sources */,

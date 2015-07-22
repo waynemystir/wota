@@ -11,6 +11,7 @@
 #import "AppEnvironment.h"
 #import <CommonCrypto/CommonDigest.h>
 #import "ChildTraveler.h"
+#import "EanCredentials.h"
 
 typedef NS_ENUM(NSUInteger, HTTP_METHOD) {
     HTTP_GET = 0,
@@ -23,14 +24,11 @@ NSString * const EAN_API_EXPERIENCE = @"PARTNER_MOBILE_APP";
 NSString * const EAN_MINOR_REV = @"30";
 //http://developer.ean.com/docs/getting-started/api-access/
 //NSString * const EAN_CID = @"55505";
-//NSString * const EAN_CID = @"482231";
-NSString * const EAN_CID = @"493255";
+//NSString * const EAN_CID = @"493255";
 //NSString * const EAN_API_KEY = @"ds5gqba7fbetw3wwgq7nnjku";
-//NSString * const EAN_API_KEY = @"5fo5tmsoq7oul81bdon0ju59nu";
-NSString * const EAN_API_KEY = @"4d2vn0lkhdapmsp9ao25k6otu2";
+//NSString * const EAN_API_KEY = @"4d2vn0lkhdapmsp9ao25k6otu2";
 //NSString * const EAN_SHARED_SECRET = @"QzrgJ6Vc";
-//NSString * const EAN_SHARED_SECRET = @"ifpa7qqkuiu1";
-NSString * const EAN_SHARED_SECRET = @"dkd9878sllepe";
+//NSString * const EAN_SHARED_SECRET = @"dkd9878sllepe";
 NSString * const EAN_GEN_REQ_BASE_URL = @"http://api.ean.com";
 NSString * const EAN_BOK_REQ_BASE_URL = @"https://book.api.ean.com";
 NSString * const EAN_URL_EXT = @"ean-services/rs";
@@ -111,7 +109,7 @@ NSString * kEanGenerateSigMD5() {
     NSUInteger utsInt = uts;
     NSString *unixTimeStamp = [NSString stringWithFormat:@"%lu", (unsigned long)utsInt];
     
-    NSString *stringToHash = [NSString stringWithFormat:@"%@%@%@", EAN_API_KEY, EAN_SHARED_SECRET, unixTimeStamp];
+    NSString *stringToHash = [NSString stringWithFormat:@"%@%@%@", [EanCredentials apiKey], [EanCredentials sharedSecret], unixTimeStamp];
     const char *cstr = [stringToHash UTF8String];
     unsigned char result[CC_MD5_DIGEST_LENGTH];
     CC_MD5(cstr, (CC_LONG)strlen(cstr), result);
@@ -148,8 +146,8 @@ NSString * kEanCustomerUserAgent() {
 NSString * kEanCommonParameters() {
     return [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@",
             EAN_PK_API_EXPERIENCE, EAN_API_EXPERIENCE,
-            EAN_PK_CID, EAN_CID,
-            EAN_PK_API_KEY, EAN_API_KEY,
+            EAN_PK_CID, [EanCredentials CID],
+            EAN_PK_API_KEY, [EanCredentials apiKey],
             EAN_PK_SIG, kEanGenerateSigMD5(),
             EAN_PK_MINOR_REV, EAN_MINOR_REV,
             EAN_PK_LOCALE, [[NSLocale currentLocale] objectForKey:NSLocaleIdentifier],
@@ -276,13 +274,28 @@ NSString * kURLeanBookReservation() {
                     returnDate:(NSString *)returnDate
                   searchRadius:(NSNumber *)searchRadius
                  withProximity:(BOOL)withProximity {
-    NSURL *url = [NSURL URLWithString:[self URLhotelListWithLatitude:latitude
-                                                           longitude:longitude
-                                                         arrivalDate:arrivalDate
-                                                          returnDate:returnDate
-                                                        searchRadius:searchRadius
-                                                       withProximity:withProximity]];
-    [self fireOffConnectionWithURL:url httpMethod:HTTP_GET];
+    
+    __weak typeof(self) wes = self;
+    
+    [EanCredentials waitForEnabledCredentialIterations:^(BOOL success) {
+        if (success) {
+            NSURL *url = [NSURL URLWithString:[wes URLhotelListWithLatitude:latitude
+                                                                   longitude:longitude
+                                                                 arrivalDate:arrivalDate
+                                                                  returnDate:returnDate
+                                                                searchRadius:searchRadius
+                                                               withProximity:withProximity]];
+            [wes fireOffConnectionWithURL:url httpMethod:HTTP_GET];
+        } else {
+            [wes performSelector:@selector(performRequestFailedCredentials) withObject:nil afterDelay:0.25];
+        }
+    }];
+}
+
+- (void)performRequestFailedCredentials {
+    if ([self.delegate respondsToSelector:@selector(requestFailedCredentials)]) {
+        [self.delegate requestFailedCredentials];
+    }
 }
 
 - (NSString *)URLhotelListWithLatitude:(double)latitude

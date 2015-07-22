@@ -31,6 +31,10 @@
         return nil;
     }
     
+    if ([self checkForEanError:idHlr]) {
+        return nil;
+    }
+    
     EanHotelListResponse *hlr = [[EanHotelListResponse alloc] init];
     
     hlr.customerSessionId = [idHlr objectForKey:@"customerSessionId"];

@@ -26,6 +26,9 @@
 #import "EanHotelListHotelSummary.h"
 #import "WotaMapAnnotatioin.h"
 #import "BackCancelView.h"
+#import "WotaMKPinAnnotationView.h"
+#import <SDWebImage/UIImageView+WebCache.h>
+#import "HotelInfoViewController.h"
 
 typedef NS_ENUM(NSUInteger, VIEW_STATE) {
     VIEW_STATE_PRE_HOTEL,
@@ -58,6 +61,8 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 @property (nonatomic) BOOL loadingGooglePlaceDetails;
 @property (nonatomic, strong) NSString *tmpSelectedCellPlaceName;
 @property (nonatomic, strong) NSMutableArray *openConnections;
+@property (nonatomic, strong) UIView *containerViewSpinnerContainer;
+@property (nonatomic) BOOL  spinnerIsSwirling;
 
 @property (nonatomic) BOOL arrivalOrReturn; //arrival == NO and return == YES
 @property (nonatomic) BOOL criteriaOrHotelSearchMode;
@@ -91,6 +96,10 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 @property (weak, nonatomic) IBOutlet UIView *footerContainer;
 @property (weak, nonatomic) IBOutlet UIView *overlay;
 @property (weak, nonatomic) IBOutlet UIView *filterContainer;
+@property (weak, nonatomic) IBOutlet UIView *sortContainer;
+@property (weak, nonatomic) IBOutlet UIButton *arrivalDateFooter;
+@property (weak, nonatomic) IBOutlet UIButton *returnDateFooter;
+@property (weak, nonatomic) IBOutlet UIView *travelersContainer;
 
 - (IBAction)justPushIt:(id)sender;
 
@@ -134,6 +143,20 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     
     self.mkMapView.delegate = self;
     
+    self.containerViewSpinnerContainer = [[UIView alloc] initWithFrame:self.view.bounds];
+    self.containerViewSpinnerContainer.backgroundColor = [UIColor blackColor];
+    self.containerViewSpinnerContainer.alpha = 0.0f;
+    [self.view addSubview:self.containerViewSpinnerContainer];
+    [self.view sendSubviewToBack:self.containerViewSpinnerContainer];
+    
+    UIActivityIndicatorView *theSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:
+                                           UIActivityIndicatorViewStyleWhiteLarge];
+    theSpinner.tag = 717171;
+    theSpinner.center = self.containerViewSpinnerContainer.center;
+    theSpinner.alpha = 0.0f;
+    [self.containerViewSpinnerContainer addSubview:theSpinner];
+    [self.containerViewSpinnerContainer bringSubviewToFront:theSpinner];
+    
     self.placesTableView = [[UITableView alloc] initWithFrame:self.placesTableViewZeroFrame];
     self.placesTableView.backgroundColor = [UIColor whiteColor];
     self.placesTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -141,8 +164,6 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     self.placesTableView.dataSource = self;
     self.placesTableView.delegate = self;
     self.placesTableView.sectionHeaderHeight = 0.0f;
-//    self.placesTableViewZeroFrame = CGRectMake(0, 98, 320, 0);
-//    self.placesTableViewExpandedFrame = CGRectMake(0, 98, 320, 247);
     [self.view addSubview:self.placesTableView];
     
     self.placesTableData = [SelectionCriteria singleton].placesArray;
@@ -179,6 +200,13 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     self.filterContainer.userInteractionEnabled = YES;
     [self.filterContainer addGestureRecognizer:fgr];
     
+    UITapGestureRecognizer *sgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickSortButton)];
+    sgr.numberOfTapsRequired = 1;
+    sgr.numberOfTouchesRequired = 1;
+    sgr.cancelsTouchesInView = NO;
+    self.sortContainer.userInteractionEnabled = YES;
+    [self.sortContainer addGestureRecognizer:sgr];
+    
     UITapGestureRecognizer *bgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickBack:)];
     bgr.numberOfTapsRequired = 1;
     bgr.numberOfTouchesRequired = 1;
@@ -201,6 +229,11 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     _overlay.userInteractionEnabled = YES;
     [_overlay addGestureRecognizer:ogr];
     _overlay.alpha = 0.0f;
+    
+    UITapGestureRecognizer *tcgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickTravelersContainer)];
+    tcgr.numberOfTapsRequired = 1;
+    tcgr.numberOfTouchesRequired = 1;
+    [self.travelersContainer addGestureRecognizer:tcgr];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onHotelDataFiltered) name:kNotificationHotelDataFiltered object:nil];
     
@@ -233,10 +266,6 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
-}
-
-- (void)dropDaSpinnerAlready {
-    // just overriding an unimplemented parent method
 }
 
 //- (void)requestFinished:(NSData *)responseData dataType:(LOAD_DATA_TYPE)dataType {
@@ -343,7 +372,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
                 self.placesTableData = [NSMutableArray arrayWithArray:wes];
                 [self.placesTableView reloadData];
             } else {
-                //                self.placesTableData = [NSMutableArray arrayWithObject:self.whereToTextField.text];
+//                self.placesTableData = [NSMutableArray arrayWithObject:self.whereToTextField.text];
             }
             break;
         }
@@ -352,15 +381,22 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
             self.loadingGooglePlaceDetails = NO;
             [SelectionCriteria singleton].googlePlaceDetail = [GooglePlaceDetail placeDetailFromData:responseData];
             self.useMapRadiusForSearch = NO;
-            //            [[SelectionCriteria singleton] savePlace:[GooglePlaceDetail placeDetailFromData:responseData]];
+//            [[SelectionCriteria singleton] savePlace:[GooglePlaceDetail placeDetailFromData:responseData]];
             self.placesTableData = [SelectionCriteria singleton].placesArray;
             [self.placesTableView reloadData];
-            //            [self.placesTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
+//            [self.placesTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
             self.whereToTextField.text = [SelectionCriteria singleton].whereToFirst;
             self.whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
             if (self.redrawMapOnSelection) {
                 [self redrawMapViewAnimated:YES radius:[SelectionCriteria singleton].googlePlaceDetail.zoomRadius];
             }
+            
+            if (self.criteriaOrHotelSearchMode) {
+                [self itKeepsTheWaterOffOurHeads];
+            } else {
+                [self dropDaSpinnerAlready];
+            }
+            
             break;
         }
             
@@ -385,10 +421,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
             
             [self redrawMapAnnotationsAndRegion:YES];
             [self setupTheFilterView];
-//            [self setupTheSortView];
-            
-//            __weak NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
-//            nv.whereToLabel.text = [SelectionCriteria singleton].whereToFirst;
+            [self setupTheSortView];
             
             [self dropDaSpinnerAlready];
         }
@@ -403,7 +436,6 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     [self dropDaSpinnerAlready];
     __weak typeof(self) wes = self;
     [NetworkProblemResponder launchWithSuperView:self.view headerTitle:nil messageString:nil completionCallback:^{
-        [wes.navigationController popViewControllerAnimated:YES];
         [wes animateTableViewCompression];
     }];
 }
@@ -413,7 +445,15 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     [self dropDaSpinnerAlready];
     __weak typeof(self) wes = self;
     [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"Network Error" messageString:@"The network could not be reached. Please check your connection and try again." completionCallback:^{
-        [wes.navigationController popViewControllerAnimated:YES];
+        [wes animateTableViewCompression];
+    }];
+}
+
+- (void)requestFailedCredentials {
+    self.loadingGooglePlaceDetails = NO;
+    [self dropDaSpinnerAlready];
+    __weak typeof(self) wes = self;
+    [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"System Error" messageString:@"Sorry for the inconvenience. We are experiencing a technical issue. Please try again shortly." completionCallback:^{
         [wes animateTableViewCompression];
     }];
 }
@@ -496,6 +536,11 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         self.loadingGooglePlaceDetails = YES;
         self.whereToTextField.text = self.tmpSelectedCellPlaceName = [cell.outletPlaceName.text componentsSeparatedByString:@","].firstObject;
         [[LoadGooglePlacesData sharedInstance:self] loadPlaceDetails:cell.placeId];
+        
+        if (self.criteriaOrHotelSearchMode) {
+            [self loadDaSpinner];
+        }
+        
         self.placesTableData = [SelectionCriteria singleton].placesArray;
         [self.placesTableView reloadData];
         [self.whereToTextField resignFirstResponder];
@@ -514,6 +559,10 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
             [self redrawMapViewAnimated:YES radius:[SelectionCriteria singleton].selectedPlace.zoomRadius];
         }
         self.useMapRadiusForSearch = NO;
+        
+        if (self.criteriaOrHotelSearchMode) {
+            [self itKeepsTheWaterOffOurHeads];
+        }
     }
 }
 
@@ -591,11 +640,9 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 
 - (void)transitionToHotelSearchMode {
     self.criteriaOrHotelSearchMode = YES;
-//    self.placesTableViewZeroFrame = CGRectMake(0, 58, 320, 0);
-//    self.placesTableViewExpandedFrame = CGRectMake(0, 58, 320, 247);
     
     [UIView animateWithDuration:kTrvFlipAnimationDuration animations:^{
-        self.whereToContainer.frame = CGRectMake(0, 28, 320, 40);
+        self.whereToContainer.frame = CGRectMake(0, 34, 320, 35);
         self.whereToTextField.frame = CGRectMake(32, 0, 243, 30);
         self.whereToSecondLevel.frame = CGRectMake(39, 1, 232, 21);
         self.backContainer.frame = CGRectMake(0, -3, 33, 33);
@@ -697,13 +744,44 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     
     self.placesTableData = [SelectionCriteria singleton].placesArray;
     [self.placesTableView reloadData];
-    
-    if (self.viewState == VIEW_STATE_PRE_HOTEL) {
-        // do something here to slide criteria cupholder off screen and hotel listing on screen
-    } else {
-        AppDelegate *ad = [[UIApplication sharedApplication] delegate];
-        [ad loadDaSpinner];
+}
+
+- (void)loadDaSpinner {
+    if (self.spinnerIsSwirling) {
+        return;
     }
+    
+    self.spinnerIsSwirling = YES;
+    [self.view bringSubviewToFront:self.containerViewSpinnerContainer];
+    __weak UIView *sc = self.containerViewSpinnerContainer;
+    __weak UIActivityIndicatorView *sp = (UIActivityIndicatorView *)[self.containerViewSpinnerContainer viewWithTag:717171];
+    [sp startAnimating];
+    
+    [UIView animateWithDuration:0.2 animations:^{
+        sc.alpha = 0.8f;
+        sp.alpha = 1.0f;
+    } completion:^(BOOL finished) {
+        ;
+    }];
+}
+
+- (void)dropDaSpinnerAlready {
+    if (!self.spinnerIsSwirling) {
+        return;
+    }
+    
+    self.spinnerIsSwirling = NO;
+    __weak UIView *sc = self.containerViewSpinnerContainer;
+    __weak UIActivityIndicatorView *sp = (UIActivityIndicatorView *)[self.containerViewSpinnerContainer viewWithTag:717171];
+    __weak typeof(self) wes = self;
+    
+    [UIView animateWithDuration:0.2 animations:^{
+        sc.alpha = 0.0f;
+        sp.alpha = 0.0f;
+    } completion:^(BOOL finished) {
+        [wes.view sendSubviewToBack:sc];
+        [sp stopAnimating];
+    }];
 }
 
 - (CLLocationDistance)mapRadiusInMeters {
@@ -738,7 +816,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 }
 
 - (CGRect)placesTableViewExpandedFrame {
-    return self.criteriaOrHotelSearchMode ? CGRectMake(0, 58, 320, 294) : CGRectMake(0, 98, 320, 254);
+    return self.criteriaOrHotelSearchMode ? CGRectMake(0, 64, 320, 288) : CGRectMake(0, 98, 320, 254);
 }
 
 #pragma mark Various events and such
@@ -746,6 +824,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 - (void)clickBack:(id)sender {
     [self transitionToCriteriaMode];
     [self transiTionToCriteriaView];
+    [self.view endEditing:YES];
 }
 
 - (void)loadMapOrCriteriaView {
@@ -774,14 +853,13 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     }
 }
 
-- (void)itKeepsTheWaterOffOurHeads:(BOOL)pushVC {
+- (void)itKeepsTheWaterOffOurHeads {
     if (self.useMapRadiusForSearch) {
         [SelectionCriteria singleton].zoomRadius = self.mapRadiusInMiles;
     }
     
+    [self loadDaSpinner];
     [self letsFindHotelsWithSearchRadius:[SelectionCriteria singleton].zoomRadius];
-    
-//    self.hvc = nil;
 }
 
 - (IBAction)justPushIt:(id)sender {
@@ -791,22 +869,21 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         [self transitionToTableView];
         
         if (!self.loadingGooglePlaceDetails) {
-            
-//            self.hvc = [[HotelListingViewController alloc] initWithProvisionalTitle:[SelectionCriteria singleton].whereToFirst];
-            [self itKeepsTheWaterOffOurHeads:YES];
-            
+            [self itKeepsTheWaterOffOurHeads];
         } else {
-            
-            NSString *wes = !stringIsEmpty(self.tmpSelectedCellPlaceName) ? self.tmpSelectedCellPlaceName : self.whereToTextField.text;
-//            self.hvc = [[HotelListingViewController alloc] initWithProvisionalTitle:wes];
-//            [self.navigationController pushViewController:self.hvc animated:YES];
-            
+            [self loadDaSpinner];
         }
         
     } else if (sender == self.arrivalDateOutlet) {
         self.arrivalOrReturn = NO;
         [self presentTheDatePicker];
+    } else if (sender == self.arrivalDateFooter) {
+        self.arrivalOrReturn = NO;
+        [self presentTheDatePicker];
     } else if (sender == self.returnDateOutlet) {
+        self.arrivalOrReturn = YES;
+        [self presentTheDatePicker];
+    } else if (sender == self.returnDateFooter) {
         self.arrivalOrReturn = YES;
         [self presentTheDatePicker];
     } else if (sender == self.minusAdultOutlet) {
@@ -868,18 +945,14 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     [self redrawMapAnnotationsAndRegion:NO];
 }
 
-//- (void)letsSortYo:(UITapGestureRecognizer *)tgr {
-//    [self.hotelTableViewDelegate letsSortYo:tgr];
-//    [self dropSortView];
-//}
+- (void)letsSortYo:(UITapGestureRecognizer *)tgr {
+    [self.hotelTableViewDelegate letsSortYo:tgr];
+    [self dropSortView];
+}
 
 - (void)onHotelDataSorted {
     [_hotelsTableView reloadData];
     [self redrawMapAnnotationsAndRegion:NO];
-}
-
-- (void)dropFilterOrSortView {
-    
 }
 
 #pragma mark Various Date Picker methods
@@ -906,7 +979,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     
     [self presentSemiViewController:dp withOptions:@{
                                                      KNSemiModalOptionKeys.pushParentBack    : @(NO),
-                                                     KNSemiModalOptionKeys.animationDuration : @(0.4),
+                                                     KNSemiModalOptionKeys.animationDuration : @(0.32),
                                                      KNSemiModalOptionKeys.shadowOpacity     : @(0.3),
                                                      }];
 }
@@ -957,6 +1030,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     }
     
     [_arrivalDateOutlet setTitle:[kPrettyDateFormatter() stringFromDate:sc.arrivalDate] forState:UIControlStateNormal];
+    [_arrivalDateFooter setTitle:[kShortDateFormatter() stringFromDate:sc.arrivalDate] forState:UIControlStateNormal];
     
     NSDate *tla = kTimelessDate(sc.arrivalDate);
     NSDate *arrivalDatePlus28 = kTimelessDate(kAddDays(28, sc.arrivalDate));
@@ -968,6 +1042,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         
         sc.returnDate = kAddDays(1, sc.arrivalDate);
         [_returnDateOutlet setTitle:[kPrettyDateFormatter() stringFromDate:sc.returnDate] forState:UIControlStateNormal];
+        [_returnDateFooter setTitle:[kShortDateFormatter() stringFromDate:sc.returnDate] forState:UIControlStateNormal];
     }
 }
 
@@ -982,12 +1057,14 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
             || [tlc compare:kTimelessDate(sc.arrivalDate)] == NSOrderedDescending) {
             sc.arrivalDate = [NSDate date];
             [_arrivalDateOutlet setTitle:[kPrettyDateFormatter() stringFromDate:sc.arrivalDate] forState:UIControlStateNormal];
+            [_arrivalDateFooter setTitle:[kShortDateFormatter() stringFromDate:sc.arrivalDate] forState:UIControlStateNormal];
         }
         
         sc.returnDate = kAddDays(1, sc.arrivalDate);
     }
     
     [_returnDateOutlet setTitle:[kPrettyDateFormatter() stringFromDate:sc.returnDate] forState:UIControlStateNormal];
+    [_returnDateFooter setTitle:[kShortDateFormatter() stringFromDate:sc.returnDate] forState:UIControlStateNormal];
 }
 
 #pragma mark THDatePickerDelegate methods
@@ -1092,16 +1169,6 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     ivc.backgroundColor = [UIColor clearColor];
     [ivc addSubview:iv];
     
-//    UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickFilterButton)];
-//    tgr.numberOfTapsRequired = 1;
-//    tgr.numberOfTouchesRequired = 1;
-//    tgr.cancelsTouchesInView = NO;
-//    WotaTappableView *filterContainer = (WotaTappableView *) [filterView viewWithTag:1239871];
-//    filterContainer.tapColor = kWotaColorOne();
-//    filterContainer.untapColor = [UIColor clearColor];
-//    filterContainer.userInteractionEnabled = YES;
-//    [filterContainer addGestureRecognizer:tgr];
-    
     UIView *separator = [[UILabel alloc] initWithFrame:CGRectMake(0, 43.5f, 320, 0.5f)];
     separator.backgroundColor = [UIColor blackColor];
     [filterView addSubview:separator];
@@ -1185,9 +1252,77 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     [self updateFilterViewNumbers:fv];
 }
 
+- (void)setupTheSortView {
+    UIView *sv = [self.view viewWithTag:414377];
+    
+    if (!sv) {
+        NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"SortView" owner:self options:nil];
+        sv = views.firstObject;
+        sv.frame = CGRectMake(0, 600, 320, 300);
+        [self.view addSubview:sv];
+        
+        UIButton *db = (WotaButton *) [sv viewWithTag:36373839];
+        [db addTarget:self action:@selector(dropSortView) forControlEvents:UIControlEventTouchUpInside];
+        
+        UITapGestureRecognizer *tgr1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(letsSortYo:)];
+        tgr1.numberOfTapsRequired = 1;
+        tgr1.numberOfTouchesRequired = 1;
+        [[sv viewWithTag:5101] addGestureRecognizer:tgr1];
+        
+        UITapGestureRecognizer *tgr2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(letsSortYo:)];
+        tgr2.numberOfTapsRequired = 1;
+        tgr2.numberOfTouchesRequired = 1;
+        [[sv viewWithTag:5102] addGestureRecognizer:tgr2];
+        
+        UITapGestureRecognizer *tgr3 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(letsSortYo:)];
+        tgr3.numberOfTapsRequired = 1;
+        tgr3.numberOfTouchesRequired = 1;
+        [[sv viewWithTag:5103] addGestureRecognizer:tgr3];
+        
+        UITapGestureRecognizer *tgr4 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(letsSortYo:)];
+        tgr4.numberOfTapsRequired = 1;
+        tgr4.numberOfTouchesRequired = 1;
+        [[sv viewWithTag:5104] addGestureRecognizer:tgr4];
+    }
+    
+    ((WotaTappableView *)[sv viewWithTag:5101]).borderColor = kWotaColorOne();
+    ((WotaTappableView *)[sv viewWithTag:5102]).borderColor = [UIColor clearColor];
+    ((WotaTappableView *)[sv viewWithTag:5103]).borderColor = [UIColor clearColor];
+    ((WotaTappableView *)[sv viewWithTag:5104]).borderColor = [UIColor clearColor];
+}
+
 - (void)clickFilterButton {
     [self loadFilterView];
     [self.view endEditing:YES];
+}
+
+- (void)clickSortButton {
+    [self loadSortView];
+    [self.view endEditing:YES];
+}
+
+- (void)clickTravelersContainer {
+    UIView *travelersView = [self.view viewWithTag:434147];
+    
+    if (!travelersView) {
+        NSArray *wes = [[NSBundle mainBundle] loadNibNamed:@"TravelersView" owner:self options:nil];
+        travelersView = wes.firstObject;
+        travelersView.frame = CGRectMake(0, 569, 320, 320);
+        [self.view addSubview:travelersView];
+        
+        WotaButton *db = (WotaButton *)[travelersView viewWithTag:4728197];
+        [db addTarget:self action:@selector(dropTravelersView) forControlEvents:UIControlEventTouchUpInside];
+    }
+    
+    [self.view endEditing:YES];
+    [self.view bringSubviewToFront:_overlay];
+    [self.view bringSubviewToFront:travelersView];
+    [UIView animateWithDuration:0.28 animations:^{
+        _overlay.alpha = 0.7f;
+        travelersView.frame = CGRectMake(0, 248, 320, 320);
+    } completion:^(BOOL finished) {
+        ;
+    }];
 }
 
 - (void)loadFilterView {
@@ -1222,7 +1357,49 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     RangeSlider *ps = (RangeSlider *) [fv viewWithTag:39383736];
     [self.hotelTableViewDelegate priceSliderChanged:ps];
 }
-    
+
+- (void)loadSortView {
+    __weak UIView *sv = [self.view viewWithTag:414377];
+    [self.view bringSubviewToFront:_overlay];
+    [self.view bringSubviewToFront:sv];
+    [UIView animateWithDuration:kTrvSearchModeAnimationDuration animations:^{
+        _overlay.alpha = 0.7f;
+        sv.frame = CGRectMake(0, 268, 320, 300);
+    } completion:^(BOOL finished) {
+        ;
+    }];
+}
+
+- (void)dropSortView {
+    __weak UIView *sv = [self.view viewWithTag:414377];
+    [UIView animateWithDuration:kTrvSearchModeAnimationDuration animations:^{
+        _overlay.alpha = 0.0f;
+        sv.frame = CGRectMake(0, 600, 320, 300);
+    } completion:^(BOOL finished) {
+        [self.view sendSubviewToBack:_overlay];
+        [self.view sendSubviewToBack:sv];
+    }];
+}
+
+- (void)dropFilterOrSortView {
+    if ([self.view viewWithTag:434147].frame.origin.y == 248) {
+        [self dropTravelersView];
+    } else if (self.viewState == VIEW_STATE_MAP || filterViewUp) {
+        [self dropFilterView];
+    } else {
+        [self dropSortView];
+    }
+}
+
+- (void)dropTravelersView {
+    __weak UIView *tv = [self.view viewWithTag:434147];
+    [UIView animateWithDuration:0.28 animations:^{
+        _overlay.alpha = 0.0f;
+        tv.frame = CGRectMake(0, 569, 320, 320);
+    } completion:^(BOOL finished) {
+        ;
+    }];
+}
 
 - (void)resetWhereToTfAppearance {
     self.whereToTextField.layer.cornerRadius = 6.0f;
@@ -1255,7 +1432,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         self.mkMapView.showsUserLocation = YES;
     }
     
-    //    [manager startUpdatingLocation];
+//    [manager startUpdatingLocation];
 }
 
 #pragma mark MKMapViewDelegate methods
@@ -1269,7 +1446,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
             [self redrawMapViewAnimated:YES radius:[SelectionCriteria singleton].zoomRadius];
         }
         
-        //        mapView.showsUserLocation = NO;
+//        mapView.showsUserLocation = NO;
     }
     
     _userLocationHasUpdated = YES;
@@ -1297,6 +1474,38 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         self.useMapRadiusForSearch = YES;
         [self reverseGeoCodingDawg];
     }
+}
+
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
+    if ([annotation isKindOfClass:[MKUserLocation class]]) {
+        return nil;
+    }
+    
+    WotaMapAnnotatioin *wa = (WotaMapAnnotatioin *)annotation;
+    WotaMKPinAnnotationView *annotationView = [[WotaMKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"WotaPinReuse"];
+    UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
+    
+    [iv setImageWithURL:[NSURL URLWithString:wa.imageUrl] placeholderImage:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+        // TODO: placeholder image
+        // TODO: if nothing comes back, replace hotel.thumbNailUrlEnhanced with hotel.thumbNailUrl and try again
+        ;
+    }];
+    
+    annotationView.leftCalloutAccessoryView = iv;
+    annotationView.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+    annotationView.rowNUmber = wa.rowNUmber;
+    annotationView.enabled = YES;
+    annotationView.canShowCallout = YES;
+    
+    return annotationView;
+}
+
+- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control {
+    WotaMKPinAnnotationView *wp = (WotaMKPinAnnotationView *)view;
+    EanHotelListHotelSummary *hotel = [_hotelTableViewDelegate.currentHotelData objectAtIndex:wp.rowNUmber];
+    HotelInfoViewController *hvc = [[HotelInfoViewController alloc] initWithHotel:hotel];
+    [[LoadEanData sharedInstance:hvc] loadHotelDetailsWithId:[hotel.hotelId stringValue]];
+    [self.navigationController pushViewController:hvc animated:YES];
 }
 
 @end

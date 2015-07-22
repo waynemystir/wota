@@ -260,7 +260,7 @@ const struct KNSemiModalOptionKeys KNSemiModalOptionKeys = {
 		}
 		NSTimeInterval duration = [[self ym_optionOrDefaultForKey:KNSemiModalOptionKeys.animationDuration] doubleValue];
         [UIView animateWithDuration:duration animations:^{
-            ss.alpha = [[self ym_optionOrDefaultForKey:KNSemiModalOptionKeys.parentAlpha] floatValue];
+            ss.alpha = 0.3f;//[[self ym_optionOrDefaultForKey:KNSemiModalOptionKeys.parentAlpha] floatValue];
         }];
         
         // Present view animated

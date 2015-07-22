@@ -8,6 +8,7 @@
             <connections>
                 <outlet property="addAdultOutlet" destination="3iZ-t4-vjg" id="iSQ-mf-ZAG"/>
                 <outlet property="adultsLabel" destination="fb6-vD-e9a" id="HeD-dv-vAi"/>
+                <outlet property="arrivalDateFooter" destination="12k-OI-MGd" id="GP0-1Y-zdp"/>
                 <outlet property="arrivalDateOutlet" destination="Jeb-lJ-Fgs" id="AS8-4E-OlT"/>
                 <outlet property="backContainer" destination="UXA-lQ-TiK" id="isC-fG-h2M"/>
                 <outlet property="checkHotelsOutlet" destination="bRx-l8-agm" id="UeD-Uz-Xbe"/>
@@ -21,7 +22,10 @@
                 <outlet property="minusAdultOutlet" destination="X2B-0S-NLb" id="hlb-dQ-5w6"/>
                 <outlet property="mkMapView" destination="0nh-5L-AFC" id="4l3-29-JPE"/>
                 <outlet property="overlay" destination="CW6-MR-37n" id="tZx-LM-H0W"/>
+                <outlet property="returnDateFooter" destination="TAe-Hb-AFZ" id="EHh-bt-2aD"/>
                 <outlet property="returnDateOutlet" destination="dgm-BA-HLi" id="ctQ-Qh-Vgb"/>
+                <outlet property="sortContainer" destination="I5I-4O-1of" id="grH-qw-vRh"/>
+                <outlet property="travelersContainer" destination="Phz-Ys-HVE" id="EFC-WK-1Je"/>
                 <outlet property="view" destination="iN0-l3-epB" id="LC9-F7-sBy"/>
                 <outlet property="whereToContainer" destination="Lv8-Kp-Ehb" id="yw7-6U-CnV"/>
                 <outlet property="whereToSecondLevel" destination="Gte-1q-M3W" id="AQ0-wj-Q38"/>
@@ -162,75 +166,68 @@
                     <rect key="frame" x="0.0" y="524" width="320" height="44"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <subviews>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="12k-OI-MGd" customClass="WotaButton">
-                            <rect key="frame" x="29" y="6" width="30" height="30"/>
+                        <view contentMode="scaleToFill" id="vso-Fw-PZA">
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="1"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <state key="normal" title="29">
+                            <color key="backgroundColor" red="0.69803921568627447" green="0.69803921568627447" blue="0.69999999999999996" alpha="1" colorSpace="calibratedRGB"/>
+                        </view>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="12k-OI-MGd" userLabel="arrivalDateFooter">
+                            <rect key="frame" x="2" y="0.0" width="72" height="44"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <state key="normal" title="Aug 29">
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
+                            <connections>
+                                <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="rKB-TR-Rvf"/>
+                            </connections>
                         </button>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="TAe-Hb-AFZ">
-                            <rect key="frame" x="82" y="6" width="30" height="30"/>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="TAe-Hb-AFZ" userLabel="returnDateFooter">
+                            <rect key="frame" x="74" y="0.0" width="72" height="44"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <state key="normal" title="30">
+                            <state key="normal" title="Aug 30">
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
-                        </button>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="→" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="NFj-Ix-Uun">
-                            <rect key="frame" x="12" y="12" width="21" height="21"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                            <nil key="highlightedColor"/>
-                        </label>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="←" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Avn-EO-cPM">
-                            <rect key="frame" x="68" y="12" width="21" height="21"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                            <nil key="highlightedColor"/>
-                        </label>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user_silhouette" id="QBd-FO-mbn">
-                            <rect key="frame" x="121" y="13" width="17" height="17"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        </imageView>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="udv-jl-M3T">
-                            <rect key="frame" x="133" y="6" width="30" height="30"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <state key="normal" title="2">
-                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                            </state>
-                        </button>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user_silhouette" id="9v6-6Q-BOU">
-                            <rect key="frame" x="168" y="13" width="17" height="17"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        </imageView>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="PZw-Au-Vnh">
-                            <rect key="frame" x="180" y="6" width="30" height="30"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <state key="normal" title="2">
-                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                            </state>
+                            <connections>
+                                <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="SC6-eC-Uyf"/>
+                            </connections>
                         </button>
                         <view contentMode="scaleToFill" id="YjX-A4-fsR" userLabel="filterContainer">
-                            <rect key="frame" x="219" y="0.0" width="44" height="44"/>
+                            <rect key="frame" x="207" y="0.0" width="54" height="44"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="filter" id="LLb-Qz-D7o">
-                                    <rect key="frame" x="11" y="11" width="22" height="22"/>
+                                    <rect key="frame" x="16" y="11" width="22" height="22"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 </imageView>
                             </subviews>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         </view>
-                        <view contentMode="scaleToFill" id="I5I-4O-1of">
-                            <rect key="frame" x="269" y="0.0" width="44" height="44"/>
+                        <view contentMode="scaleToFill" id="I5I-4O-1of" userLabel="sortContainer">
+                            <rect key="frame" x="265" y="0.0" width="54" height="44"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sort" id="8EI-fp-WLW">
-                                    <rect key="frame" x="6" y="6" width="33" height="32"/>
+                                    <rect key="frame" x="9" y="6" width="33" height="32"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 </imageView>
+                            </subviews>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        </view>
+                        <view contentMode="scaleToFill" id="Phz-Ys-HVE" userLabel="travelersContainer">
+                            <rect key="frame" x="146" y="0.0" width="61" height="44"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <subviews>
+                                <imageView userInteractionEnabled="NO" tag="1290348" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user_silhouette" id="QBd-FO-mbn" userLabel="userSilhouette">
+                                    <rect key="frame" x="14" y="13" width="17" height="17"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                </imageView>
+                                <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="udv-jl-M3T">
+                                    <rect key="frame" x="26" y="7" width="30" height="30"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <state key="normal" title="22">
+                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                    </state>
+                                </button>
                             </subviews>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         </view>

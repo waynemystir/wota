@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "EanWsError.h"
 
 /**
  * See the word 'Abstract' in the class name? It's
@@ -17,5 +18,6 @@
 
 + (instancetype)eanObjectFromApiResponseData:(NSData *)data;
 + (instancetype)eanObjectFromApiJsonResponse:(id)jsonResponse;
++ (EanWsError *)checkForEanError:(id)jsonResponse;
 
 @end

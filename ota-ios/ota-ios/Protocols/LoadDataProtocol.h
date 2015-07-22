@@ -29,5 +29,6 @@ typedef NS_ENUM(NSUInteger, LOAD_DATA_TYPE) {
 @optional
 
 - (void)requestStarted:(NSURLConnection *)connection;
+- (void)requestFailedCredentials;
 
 @end

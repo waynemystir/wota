@@ -37,4 +37,14 @@
     return nil;
 }
 
++ (EanWsError *)checkForEanError:(id)jsonResponse {
+    id idEwe = [EanWsError eanErrorFromApiJsonResponse:jsonResponse];
+    
+    if (nil != idEwe && [idEwe isKindOfClass:[EanWsError class]]) {
+        return idEwe;
+    } else {
+        return nil;
+    }
+}
+
 @end
