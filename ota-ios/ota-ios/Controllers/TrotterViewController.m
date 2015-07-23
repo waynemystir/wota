@@ -42,7 +42,7 @@ static double const TRV_METERS_PER_MILE = 1609.344;
 NSTimeInterval const kTrvFlipAnimationDuration = 0.75;
 NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 
-@interface TrotterViewController () <CLLocationManagerDelegate, LoadDataProtocol, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, THDatePickerDelegate, MKMapViewDelegate>
+@interface TrotterViewController () <CLLocationManagerDelegate, LoadDataProtocol, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, THDatePickerDelegate, MKMapViewDelegate, ChildViewDelegate>
 
 @property (nonatomic) VIEW_STATE viewState;
 @property (nonatomic, strong) NSMutableArray *placesTableData;
@@ -100,8 +100,13 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 @property (weak, nonatomic) IBOutlet UIButton *arrivalDateFooter;
 @property (weak, nonatomic) IBOutlet UIButton *returnDateFooter;
 @property (weak, nonatomic) IBOutlet UIView *travelersContainer;
+@property (weak, nonatomic) IBOutlet UILabel *tcAdultsLabel;
+@property (weak, nonatomic) IBOutlet UIView *openingWhereTo;
+@property (weak, nonatomic) IBOutlet UILabel *labelWhereYouGoing;
+@property (weak, nonatomic) IBOutlet UIImageView *imageViewOpeningSearch;
 
 - (IBAction)justPushIt:(id)sender;
+- (IBAction)clickKidsButton:(id)sender;
 
 @end
 
@@ -186,6 +191,8 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     
     self.openConnections = [NSMutableArray array];
     
+    [self setupDaTravelersView];
+    
     [self setNumberOfAdultsLabel:0];
     [self setNumberOfKidsButtonLabel];
     
@@ -210,7 +217,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     UITapGestureRecognizer *bgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickBack:)];
     bgr.numberOfTapsRequired = 1;
     bgr.numberOfTouchesRequired = 1;
-    self.backContainer.userInteractionEnabled = YES;
+    self.backContainer.userInteractionEnabled = NO;
     [self.backContainer addGestureRecognizer:bgr];
     
     BackCancelView *bcv = [[BackCancelView alloc] initWithFrame:CGRectMake(0, 0, 28, 36)];
@@ -245,6 +252,13 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     [self redrawMapViewAnimated:YES radius:[SelectionCriteria singleton].zoomRadius];
     
     self.footerContainer.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
+    
+    UITapGestureRecognizer *wtgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(restoreWhereTo)];
+    wtgr.numberOfTapsRequired = 1;
+    wtgr.numberOfTouchesRequired = 1;
+    [self.openingWhereTo addGestureRecognizer:wtgr];
+    
+    [self highlightWhereTo];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -268,16 +282,36 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
 }
 
-//- (void)requestFinished:(NSData *)responseData dataType:(LOAD_DATA_TYPE)dataType {
-//    [super requestFinished:responseData dataType:dataType];
-//    if (dataType == LOAD_GOOGLE_PLACES && self.hvc) {
-//        [self itKeepsTheWaterOffOurHeads:NO];
-//    }
-//}
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+#pragma mark Highlight/Restore Where To
+
+- (void)highlightWhereTo {
+    self.whereToTextField.hidden = YES;
+    self.openingWhereTo.layer.cornerRadius = WOTA_CORNER_RADIUS;
+    self.openingWhereTo.layer.borderColor = kWotaColorOne().CGColor;
+    self.openingWhereTo.layer.borderWidth = 1.5f;
+    self.wmapContainer.frame = CGRectMake(282, 9, 30, 30);
+}
+
+- (void)restoreWhereTo {
+    
+    typeof(self) wes = self;
+    
+    [UIView animateWithDuration:0.23 animations:^{
+        wes.openingWhereTo.frame = CGRectMake(6, 0, 270, 30);
+        wes.imageViewOpeningSearch.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
+//        wes.openingWhereTo.alpha = 0.4f;
+        wes.labelWhereYouGoing.frame = CGRectMake(5, 0, 270, 30);
+        wes.wmapContainer.frame = CGRectMake(282, 0, 30, 30);
+    } completion:^(BOOL finished) {
+        wes.whereToTextField.hidden = NO;
+        wes.openingWhereTo.hidden = YES;
+        [wes.whereToTextField becomeFirstResponder];
+    }];
 }
 
 #pragma mark Various map methods
@@ -604,64 +638,79 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 //        
 //    }
     
-    UIView *cv = [self currentViewFromState];
+    typeof(self) wes = self;
+    
+    __weak UIView *cv = [self currentViewFromState];
     [UIView transitionFromView:cv
-                        toView:self.mkMapView
+                        toView:wes.mkMapView
                       duration:kTrvFlipAnimationDuration
                        options:UIViewAnimationOptionTransitionFlipFromLeft|UIViewAnimationOptionShowHideTransitionViews|UIViewAnimationOptionAllowAnimatedContent
                     completion:^(BOOL finished) {
-                        self.viewState = VIEW_STATE_MAP;
+                        wes.viewState = VIEW_STATE_MAP;
                     }];
-
 }
 
 - (void)transiTionToCriteriaView {
-    UIView *cv = [self currentViewFromState];
+    
+    typeof(self) wes = self;
+    __weak UIView *cv = [self currentViewFromState];
+    
     [UIView transitionFromView:cv
-                        toView:self.cupHolder
+                        toView:wes.cupHolder
                       duration:kTrvFlipAnimationDuration
                        options:UIViewAnimationOptionTransitionFlipFromLeft|UIViewAnimationOptionShowHideTransitionViews|UIViewAnimationOptionAllowAnimatedContent
                     completion:^(BOOL finished) {
-                        self.viewState = VIEW_STATE_PRE_HOTEL;
+                        wes.viewState = VIEW_STATE_PRE_HOTEL;
                     }];
 }
 
 - (void)transitionToTableView {
-    UIView *cv = [self currentViewFromState];
+    
+    typeof(self) wes = self;
+    __weak UIView *cv = [self currentViewFromState];
     [self.containerView bringSubviewToFront:self.hotelsTableViewContainer];
+    
     [UIView transitionFromView:cv
-                        toView:self.hotelsTableViewContainer
+                        toView:wes.hotelsTableViewContainer
                       duration:kTrvFlipAnimationDuration
                        options:UIViewAnimationOptionTransitionFlipFromLeft|UIViewAnimationOptionShowHideTransitionViews|UIViewAnimationOptionAllowAnimatedContent
                     completion:^(BOOL finished) {
-                        self.viewState = VIEW_STATE_HOTELS;
+                        wes.viewState = VIEW_STATE_HOTELS;
                     }];
 }
 
 - (void)transitionToHotelSearchMode {
+    
+    typeof(self) wes = self;
     self.criteriaOrHotelSearchMode = YES;
+    self.backContainer.userInteractionEnabled = YES;
     
     [UIView animateWithDuration:kTrvFlipAnimationDuration animations:^{
-        self.whereToContainer.frame = CGRectMake(0, 34, 320, 35);
-        self.whereToTextField.frame = CGRectMake(32, 0, 243, 30);
-        self.whereToSecondLevel.frame = CGRectMake(39, 1, 232, 21);
-        self.backContainer.frame = CGRectMake(0, -3, 33, 33);
-        self.footerContainer.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+        wes.containerView.frame = wes.containerViewFrame;
+        wes.whereToContainer.frame = CGRectMake(0, 34, 320, 35);
+        wes.whereToTextField.frame = CGRectMake(32, 0, 243, 30);
+        wes.whereToSecondLevel.frame = CGRectMake(39, 1, 232, 21);
+        wes.backContainer.frame = CGRectMake(0, -3, 33, 33);
+        wes.footerContainer.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
     } completion:^(BOOL finished) {
         ;
     }];
 }
 
 - (void)transitionToCriteriaMode {
+    
+    typeof(self) wes = self;
     self.criteriaOrHotelSearchMode = NO;
     [self animateTableViewCompression];
+    self.backContainer.userInteractionEnabled = NO;
     
     [UIView animateWithDuration:kTrvFlipAnimationDuration animations:^{
-        self.whereToContainer.frame = CGRectMake(0, 68, 320, 50);
-        self.whereToTextField.frame = CGRectMake(6, 0, 270, 30);
-        self.whereToSecondLevel.frame = CGRectMake(13, 29, 295, 21);
-        self.backContainer.frame = CGRectMake(2, -3, 33, 33);
-        self.footerContainer.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
+        wes.containerView.frame = wes.containerViewFrame;
+        wes.whereToContainer.frame = CGRectMake(0, 68, 320, 50);
+        wes.whereToTextField.frame = CGRectMake(6, 0, 270, 30);
+        wes.whereToSecondLevel.frame = CGRectMake(13, 29, 295, 21);
+        wes.backContainer.frame = CGRectMake(2, -3, 33, 33);
+        wes.footerContainer.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
     } completion:^(BOOL finished) {
         ;
     }];
@@ -811,6 +860,10 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     return _animationDuraton;
 }
 
+- (CGRect)containerViewFrame {
+    return self.criteriaOrHotelSearchMode ? CGRectMake(0, 74, 320, 450) : CGRectMake(0, 118, 320, 450);
+}
+
 - (CGRect)placesTableViewZeroFrame {
     return self.criteriaOrHotelSearchMode ? CGRectMake(0, 58, 320, 0) : CGRectMake(0, 98, 320, 0);
 }
@@ -886,15 +939,21 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     } else if (sender == self.returnDateFooter) {
         self.arrivalOrReturn = YES;
         [self presentTheDatePicker];
-    } else if (sender == self.minusAdultOutlet) {
-        [self setNumberOfAdultsLabel:-1];
-    } else if (sender == self.addAdultOutlet) {
-        [self setNumberOfAdultsLabel:1];
-    } else if (sender == self.kidsButton) {
-        [self presentKidsSelector];
     } else {
         NSLog(@"Dude we've got a problem");
     }
+}
+
+- (IBAction)clickKidsButton:(id)sender {
+    [self presentKidsSelector];
+}
+
+- (IBAction)clickMinusBtn:(id)sender {
+    [self setNumberOfAdultsLabel:-1];
+}
+
+- (IBAction)clickPlusBtn:(id)sender {
+    [self setNumberOfAdultsLabel:1];
 }
 
 - (void)setNumberOfAdultsLabel:(NSInteger)change {
@@ -904,10 +963,13 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         sc.numberOfAdults += change;
     }
     
+    UIView *travelersView = [self.view viewWithTag:434147];
+    WotaButton *tcMinusBtn = (WotaButton *)[travelersView viewWithTag:191901];
+    
     if (sc.numberOfAdults <= 1) {
-        _minusAdultOutlet.enabled = NO;
+        _minusAdultOutlet.enabled = tcMinusBtn.enabled = NO;
     } else if (sc.numberOfAdults > 1) {
-        _minusAdultOutlet.enabled = YES;
+        _minusAdultOutlet.enabled = tcMinusBtn.enabled = YES;
     }
     
     if (sc.numberOfAdults > 10) {
@@ -915,11 +977,18 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     }
     
     NSString *plural = sc.numberOfAdults == 1 ? @"" : @"s";
-    _adultsLabel.text = [NSString stringWithFormat:@"%lu Adult%@", (unsigned long)sc.numberOfAdults, plural];
+    NSString *wes = [NSString stringWithFormat:@"%lu Adult%@", (unsigned long)sc.numberOfAdults, plural];
+    _adultsLabel.text = wes;
+    _tcAdultsLabel.text = [NSString stringWithFormat:@"%lu", ((unsigned long)sc.numberOfAdults + (unsigned long)[ChildTraveler numberOfKids])];
+    
+    UILabel *tvAdultsLabel = (UILabel *)[travelersView viewWithTag:191902];
+    tvAdultsLabel.text = wes;
 }
 
 - (void)presentKidsSelector {
     ChildViewController *kids = [ChildViewController new];
+    kids.childViewDelegate = self;
+    
     [self presentSemiViewController:kids withOptions:@{
                                                        KNSemiModalOptionKeys.pushParentBack    : @(NO),
                                                        KNSemiModalOptionKeys.animationDuration : @(0.4),
@@ -938,6 +1007,12 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     id numbKids = numberOfKids == 0 ? @"Add" : [NSString stringWithFormat:@"%lu", (unsigned long) numberOfKids];
     NSString *buttonText = [NSString stringWithFormat:@"%@ %@", numbKids, plural];
     [self.kidsButton setTitle:buttonText forState:UIControlStateNormal];
+    
+    UIView *travelersView = [self.view viewWithTag:434147];
+    WotaButton *akb = (WotaButton *)[travelersView viewWithTag:191904];
+    [akb setTitle:buttonText forState:UIControlStateNormal];
+    
+    _tcAdultsLabel.text = [NSString stringWithFormat:@"%lu", ((unsigned long)[SelectionCriteria singleton].numberOfAdults + (unsigned long)[ChildTraveler numberOfKids])];
 }
 
 - (void)onHotelDataFiltered {
@@ -1089,6 +1164,12 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 
 - (void)datePicker:(THDatePickerViewController *)datePicker selectedDate:(NSDate *)selectedDate {
     NSLog(@"Date selected: %@",[kPrettyDateFormatter() stringFromDate:selectedDate]);
+}
+
+#pragma mark ChildViewDelegate methods
+
+- (void)childViewDonePressed {
+    [self dismissSemiModalView];
 }
 
 #pragma mark No hotels
@@ -1291,6 +1372,27 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     ((WotaTappableView *)[sv viewWithTag:5104]).borderColor = [UIColor clearColor];
 }
 
+- (void)setupDaTravelersView {
+    UIView *travelersView = [self.view viewWithTag:434147];
+    
+    if (!travelersView) {
+        NSArray *wes = [[NSBundle mainBundle] loadNibNamed:@"TravelersView" owner:self options:nil];
+        travelersView = wes.firstObject;
+        travelersView.frame = CGRectMake(0, 569, 320, 320);
+        [self.view addSubview:travelersView];
+        
+        WotaButton *db = (WotaButton *)[travelersView viewWithTag:4728197];
+        [db addTarget:self action:@selector(dropTravelersView) forControlEvents:UIControlEventTouchUpInside];
+        
+        WotaButton *minusBtn = (WotaButton *)[travelersView viewWithTag:191901];
+        [minusBtn addTarget:self action:@selector(clickMinusBtn:) forControlEvents:UIControlEventTouchUpInside];
+        WotaButton *plusBtn = (WotaButton *)[travelersView viewWithTag:191903];
+        [plusBtn addTarget:self action:@selector(clickPlusBtn:) forControlEvents:UIControlEventTouchUpInside];
+        WotaButton *addKidsBtn = (WotaButton *)[travelersView viewWithTag:191904];
+        [addKidsBtn addTarget:self action:@selector(clickKidsButton:) forControlEvents:UIControlEventTouchUpInside];
+    }
+}
+
 - (void)clickFilterButton {
     [self loadFilterView];
     [self.view endEditing:YES];
@@ -1302,17 +1404,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 }
 
 - (void)clickTravelersContainer {
-    UIView *travelersView = [self.view viewWithTag:434147];
-    
-    if (!travelersView) {
-        NSArray *wes = [[NSBundle mainBundle] loadNibNamed:@"TravelersView" owner:self options:nil];
-        travelersView = wes.firstObject;
-        travelersView.frame = CGRectMake(0, 569, 320, 320);
-        [self.view addSubview:travelersView];
-        
-        WotaButton *db = (WotaButton *)[travelersView viewWithTag:4728197];
-        [db addTarget:self action:@selector(dropTravelersView) forControlEvents:UIControlEventTouchUpInside];
-    }
+    __weak UIView *travelersView = [self.view viewWithTag:434147];
     
     [self.view endEditing:YES];
     [self.view bringSubviewToFront:_overlay];
@@ -1397,7 +1489,8 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         _overlay.alpha = 0.0f;
         tv.frame = CGRectMake(0, 569, 320, 320);
     } completion:^(BOOL finished) {
-        ;
+        [self.view sendSubviewToBack:_overlay];
+        [self.view sendSubviewToBack:tv];
     }];
 }
 

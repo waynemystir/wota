@@ -18,6 +18,7 @@ NSTimeInterval const kCvAnimationDuration = 0.6;
 
 @interface ChildViewController () <UIPickerViewDataSource, UIPickerViewDelegate>
 
+@property (weak, nonatomic) IBOutlet WotaButton *daRealDoneButton;
 @property (weak, nonatomic) IBOutlet UILabel *numberKidsLabelOutlet;
 @property (weak, nonatomic) IBOutlet UIButton *minusChildButtonOutlet;
 @property (weak, nonatomic) IBOutlet UIButton *addChildButtonOutlet;
@@ -161,7 +162,9 @@ NSTimeInterval const kCvAnimationDuration = 0.6;
 }
 
 - (IBAction)justPushIt:(id)sender {
-    if (sender == self.doneButton) {
+    if (sender == self.daRealDoneButton) {
+        [self.childViewDelegate childViewDonePressed];
+    } else if (sender == self.doneButton) {
         [self modifyChildTraveler];
     } else if (sender == self.minusChildButtonOutlet) {
         [self removeChildTraveler];

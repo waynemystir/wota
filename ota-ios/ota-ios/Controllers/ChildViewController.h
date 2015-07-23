@@ -8,6 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol ChildViewDelegate <NSObject>
+
+@required
+
+- (void)childViewDonePressed;
+
+@end
+
 @interface ChildViewController : UIViewController
+
+@property (nonatomic, weak) id<ChildViewDelegate> childViewDelegate;
 
 @end

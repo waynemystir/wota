@@ -22,13 +22,6 @@ typedef NS_ENUM(NSUInteger, HTTP_METHOD) {
 
 NSString * const EAN_API_EXPERIENCE = @"PARTNER_MOBILE_APP";
 NSString * const EAN_MINOR_REV = @"30";
-//http://developer.ean.com/docs/getting-started/api-access/
-//NSString * const EAN_CID = @"55505";
-//NSString * const EAN_CID = @"493255";
-//NSString * const EAN_API_KEY = @"ds5gqba7fbetw3wwgq7nnjku";
-//NSString * const EAN_API_KEY = @"4d2vn0lkhdapmsp9ao25k6otu2";
-//NSString * const EAN_SHARED_SECRET = @"QzrgJ6Vc";
-//NSString * const EAN_SHARED_SECRET = @"dkd9878sllepe";
 NSString * const EAN_GEN_REQ_BASE_URL = @"http://api.ean.com";
 NSString * const EAN_BOK_REQ_BASE_URL = @"https://book.api.ean.com";
 NSString * const EAN_URL_EXT = @"ean-services/rs";

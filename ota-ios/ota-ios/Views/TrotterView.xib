@@ -18,13 +18,17 @@
                 <outlet property="footerContainer" destination="ntd-4D-0KW" id="COa-Pm-6Rr"/>
                 <outlet property="hotelsTableView" destination="saN-6E-DoG" id="rWk-pL-Mdc"/>
                 <outlet property="hotelsTableViewContainer" destination="Csv-iy-e8e" id="cad-oE-nSD"/>
+                <outlet property="imageViewOpeningSearch" destination="lD4-0d-u5I" id="na6-Tu-Whw"/>
                 <outlet property="kidsButton" destination="02D-4E-Rli" id="mCI-ZG-GKP"/>
+                <outlet property="labelWhereYouGoing" destination="Jeo-Z7-A8G" id="y8r-lj-2d0"/>
                 <outlet property="minusAdultOutlet" destination="X2B-0S-NLb" id="hlb-dQ-5w6"/>
                 <outlet property="mkMapView" destination="0nh-5L-AFC" id="4l3-29-JPE"/>
+                <outlet property="openingWhereTo" destination="LRm-TY-5fT" id="VjA-gf-rsO"/>
                 <outlet property="overlay" destination="CW6-MR-37n" id="tZx-LM-H0W"/>
                 <outlet property="returnDateFooter" destination="TAe-Hb-AFZ" id="EHh-bt-2aD"/>
                 <outlet property="returnDateOutlet" destination="dgm-BA-HLi" id="ctQ-Qh-Vgb"/>
                 <outlet property="sortContainer" destination="I5I-4O-1of" id="grH-qw-vRh"/>
+                <outlet property="tcAdultsLabel" destination="SNd-Xc-At9" id="29I-AD-ebk"/>
                 <outlet property="travelersContainer" destination="Phz-Ys-HVE" id="EFC-WK-1Je"/>
                 <outlet property="view" destination="iN0-l3-epB" id="LC9-F7-sBy"/>
                 <outlet property="whereToContainer" destination="Lv8-Kp-Ehb" id="yw7-6U-CnV"/>
@@ -44,7 +48,7 @@
                     <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
                 <view contentMode="scaleToFill" id="ps6-RY-0OP" userLabel="containerView">
-                    <rect key="frame" x="0.0" y="74" width="320" height="450"/>
+                    <rect key="frame" x="0.0" y="118" width="320" height="450"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <subviews>
                         <view contentMode="scaleToFill" id="Csv-iy-e8e" userLabel="hotelsTableViewContainer">
@@ -70,7 +74,7 @@
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         </mapView>
                         <view contentMode="scaleToFill" id="9F4-2D-Fvc" userLabel="cupHolder">
-                            <rect key="frame" x="0.0" y="39" width="320" height="450"/>
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="450"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Jeb-lJ-Fgs" userLabel="arrivalDateButton" customClass="WotaButton">
@@ -109,7 +113,7 @@
                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                     </state>
                                     <connections>
-                                        <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="o7k-hm-T75"/>
+                                        <action selector="clickMinusBtn:" destination="-1" eventType="touchUpInside" id="kN6-3h-Cyk"/>
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="3iZ-t4-vjg" userLabel="addAdultButton" customClass="WotaButton">
@@ -121,7 +125,7 @@
                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                     </state>
                                     <connections>
-                                        <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="b3Q-6g-CIP"/>
+                                        <action selector="clickPlusBtn:" destination="-1" eventType="touchUpInside" id="Ppy-he-f3v"/>
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="02D-4E-Rli" userLabel="kidsButton" customClass="WotaButton">
@@ -130,6 +134,9 @@
                                     <state key="normal" title="Add Children">
                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                     </state>
+                                    <connections>
+                                        <action selector="clickKidsButton:" destination="-1" eventType="touchUpInside" id="Mtr-bi-QUt"/>
+                                    </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="bRx-l8-agm" userLabel="checkHotelsButton" customClass="WotaButton">
                                     <rect key="frame" x="78" y="291" width="164" height="49"/>
@@ -221,13 +228,13 @@
                                     <rect key="frame" x="14" y="13" width="17" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 </imageView>
-                                <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="udv-jl-M3T">
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="22" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="SNd-Xc-At9" userLabel="tcAdultsLabels">
                                     <rect key="frame" x="26" y="7" width="30" height="30"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <state key="normal" title="22">
-                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                    </state>
-                                </button>
+                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                    <color key="textColor" red="0.0" green="0.47843137254901957" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
                             </subviews>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         </view>
@@ -261,12 +268,30 @@
                             </subviews>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </view>
-                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Where to?" minimumFontSize="11" clearButtonMode="whileEditing" id="mMR-BB-0zI" userLabel="whereToTextField">
+                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Where are you going?" minimumFontSize="11" clearButtonMode="whileEditing" id="mMR-BB-0zI" userLabel="whereToTextField">
                             <rect key="frame" x="6" y="0.0" width="270" height="30"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="search"/>
                         </textField>
+                        <view clipsSubviews="YES" contentMode="scaleToFill" id="LRm-TY-5fT" userLabel="openingWhereTo">
+                            <rect key="frame" x="5" y="0.0" width="272" height="49"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <subviews>
+                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="search" id="lD4-0d-u5I" userLabel="imageViewOpeningSearch">
+                                    <rect key="frame" x="13" y="12" width="27" height="27"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                </imageView>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Where are you going?" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Jeo-Z7-A8G" userLabel="labelWhereYouGoing">
+                                    <rect key="frame" x="50" y="9" width="203" height="30.5"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                                    <color key="textColor" red="0.0" green="0.47843137254901957" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </view>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
@@ -281,6 +306,7 @@
     </objects>
     <resources>
         <image name="filter" width="32" height="32"/>
+        <image name="search" width="32" height="32"/>
         <image name="sort" width="32" height="32"/>
         <image name="user_silhouette" width="16" height="16"/>
         <image name="wmap" width="32" height="32"/>

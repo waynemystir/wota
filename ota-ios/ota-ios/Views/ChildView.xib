@@ -11,6 +11,7 @@
                 <outlet property="childOneOutlet" destination="ukn-cJ-Ykz" id="pHA-ds-LHL"/>
                 <outlet property="childThreeOutlet" destination="1vG-yo-bwR" id="Yjl-2y-JjW"/>
                 <outlet property="childTwoOutlet" destination="Gxd-hN-X5o" id="gBj-NJ-oFk"/>
+                <outlet property="daRealDoneButton" destination="37V-IW-9uK" id="7fJ-Nl-XAg"/>
                 <outlet property="minusChildButtonOutlet" destination="lLK-UB-pjn" id="Fdx-q0-Zas"/>
                 <outlet property="numberKidsLabelOutlet" destination="Baa-fx-cLJ" id="Qix-G5-euu"/>
                 <outlet property="view" destination="iN0-l3-epB" id="jwE-eY-XCx"/>
@@ -22,13 +23,13 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Abc Children" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Baa-fx-cLJ" userLabel="numberKidsLabel">
-                    <rect key="frame" x="88" y="29" width="145.5" height="21"/>
+                    <rect key="frame" x="98" y="75" width="126" height="21"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8Gq-Rz-Oo1" userLabel="addChildButton" customClass="WotaButton">
-                    <rect key="frame" x="244" y="23" width="46" height="30"/>
+                    <rect key="frame" x="234" y="69" width="46" height="30"/>
                     <fontDescription key="fontDescription" type="boldSystem" pointSize="27"/>
                     <inset key="contentEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="4"/>
                     <state key="normal" title="+">
@@ -39,7 +40,7 @@
                     </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lLK-UB-pjn" userLabel="minusChildButton" customClass="WotaButton">
-                    <rect key="frame" x="30" y="23" width="46" height="30"/>
+                    <rect key="frame" x="40" y="69" width="46" height="30"/>
                     <fontDescription key="fontDescription" type="boldSystem" pointSize="27"/>
                     <inset key="contentEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="3"/>
                     <state key="normal" title="-">
@@ -50,19 +51,28 @@
                     </connections>
                 </button>
                 <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ukn-cJ-Ykz" userLabel="childOneView" customClass="ChildSubView">
-                    <rect key="frame" x="12" y="86" width="140" height="100"/>
+                    <rect key="frame" x="12" y="133" width="140" height="77"/>
                 </view>
                 <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Gxd-hN-X5o" userLabel="childTwoView" customClass="ChildSubView">
-                    <rect key="frame" x="168" y="86" width="140" height="100"/>
+                    <rect key="frame" x="168" y="133" width="140" height="77"/>
                 </view>
                 <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1vG-yo-bwR" userLabel="childThreeView" customClass="ChildSubView">
-                    <rect key="frame" x="12" y="203" width="140" height="100"/>
+                    <rect key="frame" x="12" y="223" width="140" height="77"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
                 <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TFr-ob-fDM" userLabel="childFourView" customClass="ChildSubView">
-                    <rect key="frame" x="168" y="203" width="140" height="100"/>
+                    <rect key="frame" x="168" y="223" width="140" height="77"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
+                <button opaque="NO" tag="4728197" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="37V-IW-9uK" customClass="WotaButton">
+                    <rect key="frame" x="255" y="5" width="60" height="32"/>
+                    <state key="normal" title="Done">
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="Rsi-bu-CX4"/>
+                    </connections>
+                </button>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <nil key="simulatedStatusBarMetrics"/>
