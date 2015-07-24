@@ -31,7 +31,7 @@
 #import "HotelInfoViewController.h"
 
 typedef NS_ENUM(NSUInteger, VIEW_STATE) {
-    VIEW_STATE_PRE_HOTEL,
+    VIEW_STATE_CRITERIA,
     VIEW_STATE_HOTELS,
     VIEW_STATE_MAP
 };
@@ -74,6 +74,8 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 @property (nonatomic) double listMaxLatitudeDelta;
 @property (nonatomic) double listMaxLongitudeDelta;
 
+@property (nonatomic, weak) UIView *currentWmapView;
+
 // Outlets
 
 @property (weak, nonatomic) IBOutlet UIView *whereToContainer;
@@ -104,6 +106,10 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 @property (weak, nonatomic) IBOutlet UIView *openingWhereTo;
 @property (weak, nonatomic) IBOutlet UILabel *labelWhereYouGoing;
 @property (weak, nonatomic) IBOutlet UIImageView *imageViewOpeningSearch;
+@property (weak, nonatomic) IBOutlet UIView *openingWmapContainer;
+@property (weak, nonatomic) IBOutlet UIImageView *wmapMap;
+@property (weak, nonatomic) IBOutlet BackCancelView *wmapCancel;
+@property (weak, nonatomic) IBOutlet UIImageView *wmapHamburger;
 
 - (IBAction)justPushIt:(id)sender;
 - (IBAction)clickKidsButton:(id)sender;
@@ -115,6 +121,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     THDatePickerViewController *arrivalDatePicker;
     THDatePickerViewController *returnDatePicker;
     BOOL filterViewUp;
+    BOOL restoringWhereTo;
 }
 
 #pragma mark Lifecycle methods
@@ -136,7 +143,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.viewState = VIEW_STATE_PRE_HOTEL;
+    self.viewState = VIEW_STATE_CRITERIA;
     
     //**********************************************************************
     // This is needed so that this view controller (or it's nav controller?)
@@ -224,7 +231,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     bcv.transform = CGAffineTransformMakeScale(0.7f, 0.7f);
     [self.backContainer addSubview:bcv];
     
-    UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(loadMapOrCriteriaView)];
+    UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickWmapContainer)];
     tgr.numberOfTapsRequired = 1;
     tgr.numberOfTouchesRequired = 1;
     self.wmapContainer.userInteractionEnabled = YES;
@@ -253,10 +260,28 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     
     self.footerContainer.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
     
-    UITapGestureRecognizer *wtgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(restoreWhereTo)];
+    UITapGestureRecognizer *wtgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(restoreWhereTo:)];
     wtgr.numberOfTapsRequired = 1;
     wtgr.numberOfTouchesRequired = 1;
     [self.openingWhereTo addGestureRecognizer:wtgr];
+    
+    UITapGestureRecognizer *wmgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(restoreWhereTo:)];
+    wmgr.numberOfTouchesRequired = 1;
+    wmgr.numberOfTapsRequired = 1;
+    [self.openingWmapContainer addGestureRecognizer:wmgr];
+    
+//    UIImage *waynemystir = [[UIImage imageNamed:@"hamburger.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+//    self.wmapHamburger.image = waynemystir;
+    
+    BackCancelView *wmapBcv = [[BackCancelView alloc] initWithFrame:CGRectMake(2, -2, 26, 34)];
+    self.wmapCancel = wmapBcv;
+    [self.wmapCancel animateToCancel:0.001];
+    self.wmapCancel.transform = CGAffineTransformMakeScale(0.7f, 0.7f);
+    self.wmapCancel.hidden = YES;
+    [self.wmapContainer addSubview:self.wmapCancel];
+    
+    self.wmapHamburger.hidden = YES;
+    self.currentWmapView = self.wmapMap;
     
     [self highlightWhereTo];
 }
@@ -294,23 +319,37 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     self.openingWhereTo.layer.cornerRadius = WOTA_CORNER_RADIUS;
     self.openingWhereTo.layer.borderColor = kWotaColorOne().CGColor;
     self.openingWhereTo.layer.borderWidth = 1.5f;
-    self.wmapContainer.frame = CGRectMake(282, 9, 30, 30);
+    self.openingWmapContainer.layer.cornerRadius = WOTA_CORNER_RADIUS;
+    self.openingWmapContainer.layer.borderColor = kWotaColorOne().CGColor;
+    self.openingWmapContainer.layer.borderWidth = 1.5f;
 }
 
-- (void)restoreWhereTo {
+- (void)restoreWhereTo:(UITapGestureRecognizer *)tgr {
     
+    restoringWhereTo = YES;
     typeof(self) wes = self;
+    
+    if (tgr.view == self.openingWhereTo) {
+        [wes.whereToTextField performSelector:@selector(becomeFirstResponder) withObject:nil afterDelay:0.001];
+        [wes transitionToWmapCancel];
+    } else if (tgr.view == self.openingWmapContainer) {
+        [wes transitionToMapView];
+        [wes transitionToWmapHamburger];
+    }
     
     [UIView animateWithDuration:0.23 animations:^{
         wes.openingWhereTo.frame = CGRectMake(6, 0, 270, 30);
         wes.imageViewOpeningSearch.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
-//        wes.openingWhereTo.alpha = 0.4f;
-        wes.labelWhereYouGoing.frame = CGRectMake(5, 0, 270, 30);
-        wes.wmapContainer.frame = CGRectMake(282, 0, 30, 30);
+        wes.labelWhereYouGoing.frame = CGRectMake(6, 0, 270, 30);
+        wes.labelWhereYouGoing.textColor = [UIColor lightGrayColor];
+        wes.labelWhereYouGoing.font = [UIFont systemFontOfSize:17.0f];
+        
+        wes.openingWmapContainer.frame = CGRectMake(282, 0, 30, 30);
     } completion:^(BOOL finished) {
+        restoringWhereTo = NO;
         wes.whereToTextField.hidden = NO;
         wes.openingWhereTo.hidden = YES;
-        [wes.whereToTextField becomeFirstResponder];
+        wes.openingWmapContainer.hidden = YES;
     }];
 }
 
@@ -613,6 +652,12 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 - (void)animateTableViewExpansion {
     __weak UIView *actv = self.placesTableView;
     [self.view bringSubviewToFront:actv];
+    if (restoringWhereTo) {
+        [self.view bringSubviewToFront:self.whereToContainer];
+    }
+    
+    [self transitionToWmapCancel];
+    
     self.isPlacesTableViewExpanded = YES;
     [UIView animateWithDuration:self.animationDuraton animations:^{
         actv.frame = self.placesTableViewExpandedFrame;
@@ -621,8 +666,30 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 }
 
 - (void)animateTableViewCompression {
+    
+    switch (self.viewState) {
+        case VIEW_STATE_CRITERIA: {
+            [self transitionToWmapMap];
+            break;
+        }
+            
+        case VIEW_STATE_MAP: {
+            [self transitionToWmapHamburger];
+            break;
+        }
+            
+        case VIEW_STATE_HOTELS: {
+            [self transitionToWmapMap];
+            break;
+        }
+            
+        default:
+            break;
+    }
+    
     __weak UIView *actv = self.placesTableView;
     self.isPlacesTableViewExpanded = NO;
+    
     [UIView animateWithDuration:self.animationDuraton animations:^{
         actv.frame = self.placesTableViewZeroFrame;
     } completion:^(BOOL finished) {
@@ -660,7 +727,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
                       duration:kTrvFlipAnimationDuration
                        options:UIViewAnimationOptionTransitionFlipFromLeft|UIViewAnimationOptionShowHideTransitionViews|UIViewAnimationOptionAllowAnimatedContent
                     completion:^(BOOL finished) {
-                        wes.viewState = VIEW_STATE_PRE_HOTEL;
+                        wes.viewState = VIEW_STATE_CRITERIA;
                     }];
 }
 
@@ -714,6 +781,57 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     } completion:^(BOOL finished) {
         ;
     }];
+}
+
+- (void)transitionToWmapHamburger {
+    
+    if (self.currentWmapView == self.wmapHamburger) {
+        return;
+    }
+    
+    typeof(self) wes = self;
+    
+    [UIView transitionFromView:wes.currentWmapView
+                        toView:wes.wmapHamburger
+                      duration:kTrvFlipAnimationDuration
+                       options:UIViewAnimationOptionTransitionFlipFromLeft|UIViewAnimationOptionShowHideTransitionViews|UIViewAnimationOptionAllowAnimatedContent
+                    completion:^(BOOL finished) {
+                        wes.currentWmapView = wes.wmapHamburger;
+                    }];
+}
+
+- (void)transitionToWmapCancel {
+    
+    if (self.currentWmapView == self.wmapCancel) {
+        return;
+    }
+    
+    typeof(self) wes = self;
+    
+    [UIView transitionFromView:wes.currentWmapView
+                        toView:wes.wmapCancel
+                      duration:kTrvFlipAnimationDuration
+                       options:UIViewAnimationOptionTransitionFlipFromLeft|UIViewAnimationOptionShowHideTransitionViews|UIViewAnimationOptionAllowAnimatedContent
+                    completion:^(BOOL finished) {
+                        wes.currentWmapView = wes.wmapCancel;
+                    }];
+}
+
+- (void)transitionToWmapMap {
+    
+    if (self.currentWmapView == self.wmapMap) {
+        return;
+    }
+    
+    typeof(self) wes = self;
+    
+    [UIView transitionFromView:wes.currentWmapView
+                        toView:wes.wmapMap
+                      duration:kTrvFlipAnimationDuration
+                       options:UIViewAnimationOptionTransitionFlipFromLeft|UIViewAnimationOptionShowHideTransitionViews|UIViewAnimationOptionAllowAnimatedContent
+                    completion:^(BOOL finished) {
+                        wes.currentWmapView = wes.wmapMap;
+                    }];
 }
 
 #pragma mark Various methods likely called by sublclasses
@@ -865,7 +983,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 }
 
 - (CGRect)placesTableViewZeroFrame {
-    return self.criteriaOrHotelSearchMode ? CGRectMake(0, 58, 320, 0) : CGRectMake(0, 98, 320, 0);
+    return self.criteriaOrHotelSearchMode ? CGRectMake(0, 64, 320, 0) : CGRectMake(0, 98, 320, 0);
 }
 
 - (CGRect)placesTableViewExpandedFrame {
@@ -875,15 +993,30 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 #pragma mark Various events and such
 
 - (void)clickBack:(id)sender {
-    [self transitionToCriteriaMode];
     [self transiTionToCriteriaView];
+    self.viewState = VIEW_STATE_CRITERIA;
+    [self transitionToCriteriaMode];
     [self.view endEditing:YES];
 }
 
-- (void)loadMapOrCriteriaView {
+- (void)clickWmapContainer {
+    if (self.isPlacesTableViewExpanded) {
+        [self.view endEditing:YES];
+        [self animateTableViewCompression];
+        self.whereToTextField.text = [SelectionCriteria singleton].whereToFirst;
+        if (self.placesTableData != [SelectionCriteria singleton].placesArray) {
+            self.placesTableData = [SelectionCriteria singleton].placesArray;
+            [self.placesTableView reloadData];
+        }
+        [self.openConnections makeObjectsPerformSelector:@selector(cancel)];
+        [self.openConnections removeAllObjects];
+        return;
+    }
+    
     switch (self.viewState) {
-        case VIEW_STATE_PRE_HOTEL: {
+        case VIEW_STATE_CRITERIA: {
             [self transitionToMapView];
+            [self transitionToWmapHamburger];
             break;
         }
             
@@ -893,11 +1026,13 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
             } else {
                 [self transiTionToCriteriaView];
             }
+            [self transitionToWmapMap];
             break;
         }
             
         case VIEW_STATE_HOTELS: {
             [self transitionToMapView];
+            [self transitionToWmapHamburger];
             break;
         }
             
@@ -1251,7 +1386,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     [ivc addSubview:iv];
     
     UIView *separator = [[UILabel alloc] initWithFrame:CGRectMake(0, 43.5f, 320, 0.5f)];
-    separator.backgroundColor = [UIColor blackColor];
+    separator.backgroundColor = kNavBorderColor();
     [filterView addSubview:separator];
     
     [tf setLeftViewMode:UITextFieldViewModeAlways];
@@ -1502,7 +1637,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 
 - (UIView *)currentViewFromState {
     switch (self.viewState) {
-        case VIEW_STATE_PRE_HOTEL:
+        case VIEW_STATE_CRITERIA:
             return self.cupHolder;
             
         case VIEW_STATE_HOTELS:

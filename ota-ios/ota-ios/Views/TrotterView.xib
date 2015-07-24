@@ -24,6 +24,7 @@
                 <outlet property="minusAdultOutlet" destination="X2B-0S-NLb" id="hlb-dQ-5w6"/>
                 <outlet property="mkMapView" destination="0nh-5L-AFC" id="4l3-29-JPE"/>
                 <outlet property="openingWhereTo" destination="LRm-TY-5fT" id="VjA-gf-rsO"/>
+                <outlet property="openingWmapContainer" destination="7RY-Pg-9ng" id="pKB-Hf-hsW"/>
                 <outlet property="overlay" destination="CW6-MR-37n" id="tZx-LM-H0W"/>
                 <outlet property="returnDateFooter" destination="TAe-Hb-AFZ" id="EHh-bt-2aD"/>
                 <outlet property="returnDateOutlet" destination="dgm-BA-HLi" id="ctQ-Qh-Vgb"/>
@@ -35,6 +36,8 @@
                 <outlet property="whereToSecondLevel" destination="Gte-1q-M3W" id="AQ0-wj-Q38"/>
                 <outlet property="whereToTextField" destination="mMR-BB-0zI" id="T9R-Gh-fK6"/>
                 <outlet property="wmapContainer" destination="4hC-Cq-aU5" id="VR6-oY-iWS"/>
+                <outlet property="wmapHamburger" destination="teQ-ev-gsu" id="3S7-7F-zqy"/>
+                <outlet property="wmapMap" destination="AAA-zz-z7q" id="SFc-Eq-PJp"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
@@ -63,7 +66,7 @@
                                 <view contentMode="scaleToFill" id="xsc-dd-9qk" userLabel="topBorder">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="0.5"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="backgroundColor" red="0.69803921568627447" green="0.69803921568627447" blue="0.69999999999999996" alpha="1" colorSpace="calibratedRGB"/>
                                 </view>
                             </subviews>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -261,7 +264,11 @@
                             <rect key="frame" x="282" y="0.0" width="30" height="30"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
-                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="wmap" id="AAA-zz-z7q">
+                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="hamburger" id="teQ-ev-gsu" userLabel="wmapHamburger">
+                                    <rect key="frame" x="5" y="5" width="20" height="20"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                </imageView>
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="wmap" id="AAA-zz-z7q" userLabel="wmapMap">
                                     <rect key="frame" x="4" y="4" width="22" height="22"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 </imageView>
@@ -275,25 +282,36 @@
                             <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="search"/>
                         </textField>
                         <view clipsSubviews="YES" contentMode="scaleToFill" id="LRm-TY-5fT" userLabel="openingWhereTo">
-                            <rect key="frame" x="5" y="0.0" width="272" height="49"/>
+                            <rect key="frame" x="5" y="0.0" width="253" height="49"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="search" id="lD4-0d-u5I" userLabel="imageViewOpeningSearch">
-                                    <rect key="frame" x="13" y="12" width="27" height="27"/>
+                                    <rect key="frame" x="11" y="12" width="24" height="24"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 </imageView>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Where are you going?" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Jeo-Z7-A8G" userLabel="labelWhereYouGoing">
-                                    <rect key="frame" x="50" y="9" width="203" height="30.5"/>
+                                    <rect key="frame" x="44" y="9" width="203" height="30.5"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                     <color key="textColor" red="0.0" green="0.47843137254901957" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                             </subviews>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </view>
+                        <view contentMode="scaleToFill" id="7RY-Pg-9ng" userLabel="openingWmapCont">
+                            <rect key="frame" x="264" y="0.0" width="50" height="49"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <subviews>
+                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="wmap" id="klC-SY-dkA">
+                                    <rect key="frame" x="6" y="6" width="38" height="37"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                </imageView>
+                            </subviews>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </view>
                     </subviews>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                 </view>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -306,6 +324,7 @@
     </objects>
     <resources>
         <image name="filter" width="32" height="32"/>
+        <image name="hamburger" width="24" height="24"/>
         <image name="search" width="32" height="32"/>
         <image name="sort" width="32" height="32"/>
         <image name="user_silhouette" width="16" height="16"/>
