@@ -144,6 +144,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     [super viewDidLoad];
     
     self.viewState = VIEW_STATE_CRITERIA;
+    self.redrawMapOnSelection = YES;
     
     //**********************************************************************
     // This is needed so that this view controller (or it's nav controller?)
@@ -335,6 +336,8 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     } else if (tgr.view == self.openingWmapContainer) {
         [wes transitionToMapView];
         [wes transitionToWmapHamburger];
+    } else {
+        [wes transitionToWmapMap];
     }
     
     [UIView animateWithDuration:0.23 animations:^{
@@ -413,7 +416,29 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     self.whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
     [self animateTableViewCompression];
     
-    return [self textFieldShouldClear:textField];
+    [self.openConnections makeObjectsPerformSelector:@selector(cancel)];
+    [self.openConnections removeAllObjects];
+    
+    if (self.criteriaOrHotelSearchMode) {
+        if (self.placesTableData == [SelectionCriteria singleton].placesArray) {
+            if (self.placesTableData.count >= 2) {
+                [self trotterDidSelectRowAtIndexPathRow:1];
+            } else if (self.placesTableData.count >= 1) {
+                [self trotterDidSelectRowAtIndexPathRow:0];
+            } else {
+                // TODO: this might be an issue if the user doesn't allow location tracking
+            }
+        } else {
+            [self trotterDidSelectRowAtIndexPathRow:0];
+        }
+    }
+    
+    if (self.placesTableData != [SelectionCriteria singleton].placesArray) {
+        self.placesTableData = [SelectionCriteria singleton].placesArray;
+        [self.placesTableView reloadData];
+    }
+    
+    return YES;
 }
 
 - (BOOL)textFieldShouldClear:(UITextField *)textField {
@@ -599,16 +624,19 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if ([self.placesTableData[indexPath.row] isKindOfClass:[NSString class]]) {
+    [self trotterDidSelectRowAtIndexPathRow:indexPath.row];
+}
+
+- (void)trotterDidSelectRowAtIndexPathRow:(NSInteger)indexPathRow {
+    if ([self.placesTableData[indexPathRow] isKindOfClass:[NSString class]]) {
         return;
     }
     
-    PlaceAutoCompleteTableViewCell * cell = (PlaceAutoCompleteTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
-    
-    if ([self.placesTableData[indexPath.row] isKindOfClass:[GooglePlace class]]) {
+    if ([self.placesTableData[indexPathRow] isKindOfClass:[GooglePlace class]]) {
+        GooglePlace *gp = self.placesTableData[indexPathRow];
         self.loadingGooglePlaceDetails = YES;
-        self.whereToTextField.text = self.tmpSelectedCellPlaceName = [cell.outletPlaceName.text componentsSeparatedByString:@","].firstObject;
-        [[LoadGooglePlacesData sharedInstance:self] loadPlaceDetails:cell.placeId];
+        self.whereToTextField.text = self.tmpSelectedCellPlaceName = [gp.placeName componentsSeparatedByString:@","].firstObject;
+        [[LoadGooglePlacesData sharedInstance:self] loadPlaceDetails:gp.placeId];
         
         if (self.criteriaOrHotelSearchMode) {
             [self loadDaSpinner];
@@ -619,12 +647,12 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         [self.whereToTextField resignFirstResponder];
         [self animateTableViewCompression];
         self.useMapRadiusForSearch = NO;
-    } else if ([self.placesTableData[indexPath.row] isKindOfClass:[WotaPlace class]]) {
+    } else if ([self.placesTableData[indexPathRow] isKindOfClass:[WotaPlace class]]) {
         self.placesTableData = [SelectionCriteria singleton].placesArray;
         [self.placesTableView reloadData];
         [self.whereToTextField resignFirstResponder];
         [SelectionCriteria singleton].googlePlaceDetail = nil;
-        [SelectionCriteria singleton].selectedPlace = self.placesTableData[indexPath.row];
+        [SelectionCriteria singleton].selectedPlace = self.placesTableData[indexPathRow];
         self.whereToTextField.text = [SelectionCriteria singleton].whereToFirst;
         self.whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
         [self animateTableViewCompression];
@@ -698,16 +726,9 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 
 - (void)transitionToMapView {
     
-//    if (self.isPlacesTableViewExpanded) {
-//        
-//        [self.whereToTextField endEditing:YES];
-//        [self animateTableViewCompression];
-//        
-//    }
-    
     typeof(self) wes = self;
-    
     __weak UIView *cv = [self currentViewFromState];
+    
     [UIView transitionFromView:cv
                         toView:wes.mkMapView
                       duration:kTrvFlipAnimationDuration
@@ -768,7 +789,6 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     
     typeof(self) wes = self;
     self.criteriaOrHotelSearchMode = NO;
-    [self animateTableViewCompression];
     self.backContainer.userInteractionEnabled = NO;
     
     [UIView animateWithDuration:kTrvFlipAnimationDuration animations:^{
@@ -785,52 +805,58 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 
 - (void)transitionToWmapHamburger {
     
-    if (self.currentWmapView == self.wmapHamburger) {
+    UIView *wayne = self.currentWmapView;
+    self.currentWmapView = self.wmapHamburger;
+    
+    if (wayne == self.wmapHamburger) {
         return;
     }
     
     typeof(self) wes = self;
     
-    [UIView transitionFromView:wes.currentWmapView
+    [UIView transitionFromView:wayne
                         toView:wes.wmapHamburger
                       duration:kTrvFlipAnimationDuration
                        options:UIViewAnimationOptionTransitionFlipFromLeft|UIViewAnimationOptionShowHideTransitionViews|UIViewAnimationOptionAllowAnimatedContent
                     completion:^(BOOL finished) {
-                        wes.currentWmapView = wes.wmapHamburger;
                     }];
 }
 
 - (void)transitionToWmapCancel {
     
-    if (self.currentWmapView == self.wmapCancel) {
+    UIView *wayne = self.currentWmapView;
+    self.currentWmapView = self.wmapCancel;
+    
+    if (wayne == self.wmapCancel) {
         return;
     }
     
     typeof(self) wes = self;
     
-    [UIView transitionFromView:wes.currentWmapView
+    [UIView transitionFromView:wayne
                         toView:wes.wmapCancel
                       duration:kTrvFlipAnimationDuration
                        options:UIViewAnimationOptionTransitionFlipFromLeft|UIViewAnimationOptionShowHideTransitionViews|UIViewAnimationOptionAllowAnimatedContent
                     completion:^(BOOL finished) {
-                        wes.currentWmapView = wes.wmapCancel;
                     }];
 }
 
 - (void)transitionToWmapMap {
     
-    if (self.currentWmapView == self.wmapMap) {
+    UIView *wayne = self.currentWmapView;
+    self.currentWmapView = self.wmapMap;
+    
+    if (wayne == self.wmapMap) {
         return;
     }
     
     typeof(self) wes = self;
     
-    [UIView transitionFromView:wes.currentWmapView
+    [UIView transitionFromView:wayne
                         toView:wes.wmapMap
                       duration:kTrvFlipAnimationDuration
                        options:UIViewAnimationOptionTransitionFlipFromLeft|UIViewAnimationOptionShowHideTransitionViews|UIViewAnimationOptionAllowAnimatedContent
                     completion:^(BOOL finished) {
-                        wes.currentWmapView = wes.wmapMap;
                     }];
 }
 
@@ -996,7 +1022,17 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     [self transiTionToCriteriaView];
     self.viewState = VIEW_STATE_CRITERIA;
     [self transitionToCriteriaMode];
+    
     [self.view endEditing:YES];
+    [self animateTableViewCompression];
+    self.whereToTextField.text = [SelectionCriteria singleton].whereToFirst;
+    self.whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
+    if (self.placesTableData != [SelectionCriteria singleton].placesArray) {
+        self.placesTableData = [SelectionCriteria singleton].placesArray;
+        [self.placesTableView reloadData];
+    }
+    [self.openConnections makeObjectsPerformSelector:@selector(cancel)];
+    [self.openConnections removeAllObjects];
 }
 
 - (void)clickWmapContainer {
@@ -1004,6 +1040,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         [self.view endEditing:YES];
         [self animateTableViewCompression];
         self.whereToTextField.text = [SelectionCriteria singleton].whereToFirst;
+        self.whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
         if (self.placesTableData != [SelectionCriteria singleton].placesArray) {
             self.placesTableData = [SelectionCriteria singleton].placesArray;
             [self.placesTableView reloadData];
