@@ -118,6 +118,10 @@
 		B0C04AD51B5212AD002C89F2 /* NetworkProblemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0C04AD41B5212AD002C89F2 /* NetworkProblemView.xib */; };
 		B0C04AD81B523569002C89F2 /* NetworkProblemView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0C04AD71B523569002C89F2 /* NetworkProblemView.m */; };
 		B0C04ADC1B534FDD002C89F2 /* NoPredictionsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0C04ADB1B534FDD002C89F2 /* NoPredictionsCell.xib */; };
+		B0C420791B64F7550001E9CB /* TrotterCalendarPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = B0C420781B64F7550001E9CB /* TrotterCalendarPicker.m */; };
+		B0C4207B1B64F7C20001E9CB /* TrotterCalendarPicker.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0C4207A1B64F7C20001E9CB /* TrotterCalendarPicker.xib */; };
+		B0C420801B6551520001E9CB /* TrotterCalendarDay.m in Sources */ = {isa = PBXBuildFile; fileRef = B0C4207F1B6551520001E9CB /* TrotterCalendarDay.m */; };
+		B0C420821B6560040001E9CB /* TrotterCalendarDay.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0C420811B6560040001E9CB /* TrotterCalendarDay.xib */; };
 		B0CBC7D91B483C2E00F61CA9 /* FilterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0CBC7D81B483C2D00F61CA9 /* FilterView.xib */; };
 		B0CBC8521B48AF9200F61CA9 /* RangeSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CBC84F1B48AF9200F61CA9 /* RangeSlider.swift */; };
 		B0CBC8531B48AF9200F61CA9 /* RangeSliderThumbLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CBC8501B48AF9200F61CA9 /* RangeSliderThumbLayer.swift */; };
@@ -376,6 +380,12 @@
 		B0C04AD61B523569002C89F2 /* NetworkProblemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkProblemView.h; sourceTree = "<group>"; };
 		B0C04AD71B523569002C89F2 /* NetworkProblemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkProblemView.m; sourceTree = "<group>"; };
 		B0C04ADB1B534FDD002C89F2 /* NoPredictionsCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NoPredictionsCell.xib; sourceTree = "<group>"; };
+		B0C420771B64F7550001E9CB /* TrotterCalendarPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrotterCalendarPicker.h; sourceTree = "<group>"; };
+		B0C420781B64F7550001E9CB /* TrotterCalendarPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrotterCalendarPicker.m; sourceTree = "<group>"; };
+		B0C4207A1B64F7C20001E9CB /* TrotterCalendarPicker.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TrotterCalendarPicker.xib; sourceTree = "<group>"; };
+		B0C4207E1B6551520001E9CB /* TrotterCalendarDay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrotterCalendarDay.h; sourceTree = "<group>"; };
+		B0C4207F1B6551520001E9CB /* TrotterCalendarDay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrotterCalendarDay.m; sourceTree = "<group>"; };
+		B0C420811B6560040001E9CB /* TrotterCalendarDay.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TrotterCalendarDay.xib; sourceTree = "<group>"; };
 		B0CBC7D81B483C2D00F61CA9 /* FilterView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FilterView.xib; sourceTree = "<group>"; };
 		B0CBC84E1B48AF9200F61CA9 /* ota-ios-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ota-ios-Bridging-Header.h"; sourceTree = "<group>"; };
 		B0CBC84F1B48AF9200F61CA9 /* RangeSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RangeSlider.swift; sourceTree = "<group>"; };
@@ -646,6 +656,12 @@
 				B09431E41B58A39300E69A71 /* TrotterView.xib */,
 				B0BB3F441B59DD3500DCCFE7 /* HotelNameFilterView.xib */,
 				B0F242101B5C7E7D0050B173 /* TravelersView.xib */,
+				B0C420771B64F7550001E9CB /* TrotterCalendarPicker.h */,
+				B0C420781B64F7550001E9CB /* TrotterCalendarPicker.m */,
+				B0C4207A1B64F7C20001E9CB /* TrotterCalendarPicker.xib */,
+				B0C4207E1B6551520001E9CB /* TrotterCalendarDay.h */,
+				B0C4207F1B6551520001E9CB /* TrotterCalendarDay.m */,
+				B0C420811B6560040001E9CB /* TrotterCalendarDay.xib */,
 				B032F64F1AC1935000809395 /* MainView.xib */,
 				B032F6541AC193DB00809395 /* CriteriaView.xib */,
 				B05BD6311AC1FF54002C2882 /* PlaceAutoCompleteTableViewCell.xib */,
@@ -1082,6 +1098,7 @@
 				B0D02FF81AE6123000B1E75F /* mastercard@2x.png in Resources */,
 				B091B8971AD22FEF00BB6CB0 /* AvailableRoomTableViewCell.xib in Resources */,
 				B03B527E1AF99425007E2EA7 /* PriceDetailsPopupView.xib in Resources */,
+				B0C420821B6560040001E9CB /* TrotterCalendarDay.xib in Resources */,
 				B0D02FF01AE6123000B1E75F /* cvc@2x.png in Resources */,
 				B0D02FFC1AE6123000B1E75F /* visa@2x.png in Resources */,
 				B032F6351AC18F6700809395 /* Images.xcassets in Resources */,
@@ -1132,6 +1149,7 @@
 				B0D02FFB1AE6123000B1E75F /* visa.png in Resources */,
 				B0F242111B5C7E7D0050B173 /* TravelersView.xib in Resources */,
 				B0508C6E1B34DCA8009CC56F /* PowerebByGoogleCell.xib in Resources */,
+				B0C4207B1B64F7C20001E9CB /* TrotterCalendarPicker.xib in Resources */,
 				B0FE0F4E1AC70A2500DAF635 /* SelectRoomView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1167,6 +1185,7 @@
 				B0963CC61AC8E034002FD859 /* ChildSubView.m in Sources */,
 				B0963CBC1AC89445002FD859 /* ChildViewController.m in Sources */,
 				B03C2BAA1AED74E700C13AC5 /* EanRateInfo.m in Sources */,
+				B0C420791B64F7550001E9CB /* TrotterCalendarPicker.m in Sources */,
 				B0F242171B5E08510050B173 /* EanWsError.m in Sources */,
 				B0FE0F4C1AC70A0700DAF635 /* SelectRoomViewController.m in Sources */,
 				B058A4941AE8B52C00E42594 /* WotaButton.m in Sources */,
@@ -1200,6 +1219,7 @@
 				B01E25861AFDD33E001D02B1 /* EanHotelFee.m in Sources */,
 				B00E771C1B234A5A00C27331 /* GTMNSString+HTML.m in Sources */,
 				B00872D61AED4A9100CB2B9D /* EanAbstractResponse.m in Sources */,
+				B0C420801B6551520001E9CB /* TrotterCalendarDay.m in Sources */,
 				B0BB3F431B59632100DCCFE7 /* TrotterViewController.m in Sources */,
 				B0BD381F1AF9812100EF5E4F /* NightlyRateTableViewDelegateImplementation.m in Sources */,
 				B0D01EC21B07EFE30001C558 /* NavTitleView.m in Sources */,

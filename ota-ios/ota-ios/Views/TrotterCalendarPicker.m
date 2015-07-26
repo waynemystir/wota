@@ -1,66 +1,68 @@
 //
-//  THDatePickerViewController.m
-//  THCalendarDatePicker
+//  TrotterCalendarPicker.m
+//  ota-ios
 //
-//  Created by chase wasden on 2/10/13.
-//  Adapted by Hannes Tribus on 31/07/14.
-//  Copyright (c) 2014 3Bus. All rights reserved.
+//  Created by WAYNE SMALL on 7/26/15.
+//  Copyright (c) 2015 Irwin. All rights reserved.
 //
 
-#import "THDatePickerViewController.h"
+#import "TrotterCalendarPicker.h"
+#import "WotaButton.h"
+#import "TrotterCalendarDay.h"
 
-#ifdef DEBUG
-//static int FIRST_WEEKDAY = 2;
-#endif
-
-@interface THDatePickerViewController () {
+@interface TrotterCalendarPicker () <TrotterCalendarDayDelegate> {
     int _weeksOnCalendar;
     int _bufferDaysBeginning;
     int _daysInMonth;
     NSDate * _dateNoTime;
     NSCalendar * _calendar;
-    BOOL _allowClearDate;
-    BOOL _allowSelectionOfSelectedDate;
-    BOOL _clearAsToday;
-    BOOL _autoCloseOnSelectDate;
-    BOOL _disableHistorySelection;
-    BOOL _disableFutureSelection;
-    BOOL (^_dateHasItemsCallback)(NSDate *);
 }
+
 @property (nonatomic, strong) NSDate * firstOfCurrentMonth;
-@property (nonatomic, strong) THDateDay * currentDay;
+@property (nonatomic, strong) TrotterCalendarDay * currentDay;
 @property (nonatomic, strong) NSDate * internalDate;
 @property (weak, nonatomic) IBOutlet UILabel *monthLabel;
 @property (weak, nonatomic) IBOutlet UIButton *nextBtn;
 @property (weak, nonatomic) IBOutlet UIButton *prevBtn;
 @property (weak, nonatomic) IBOutlet UIButton *closeBtn;
 @property (weak, nonatomic) IBOutlet UIButton *clearBtn;
-@property (weak, nonatomic) IBOutlet UIButton *okBtn;
 @property (strong, nonatomic) IBOutlet UIView *calendarDaysView;
 @property (weak, nonatomic) IBOutlet UIView *weekdaysView;
 @property (weak, nonatomic) IBOutlet UILabel *arriveOrDepartLabel;
+@property (weak, nonatomic) IBOutlet WotaButton *doneBtn;
 
 - (IBAction)nextMonthPressed:(id)sender;
 - (IBAction)prevMonthPressed:(id)sender;
-- (IBAction)okPressed:(id)sender;
-- (IBAction)clearPressed:(id)sender;
-- (IBAction)closePressed:(id)sender;
-
-- (void)redraw;
+- (IBAction)donePressed:(id)sender;
 
 @end
 
-@implementation THDatePickerViewController
-@synthesize date = _date;
+@implementation TrotterCalendarPicker {
+    UIControl *overlay;
+}
+
+@synthesize dwaDate = _dwaDate;
 @synthesize selectedBackgroundColor = _selectedBackgroundColor;
 @synthesize currentDateColor = _currentDateColor;
 @synthesize currentDateColorSelected = _currentDateColorSelected;
 @synthesize autoCloseCancelDelay = _autoCloseCancelDelay;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
++ (TrotterCalendarPicker *)calendarFromNib {
+    NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"TrotterCalendarPicker" owner:self options:nil];
+    if ([views count] != 1) {
+        return nil;
+    }
+    
+    return views.firstObject;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    if (self = [super initWithCoder:aDecoder]) {
+        self.frame = CGRectMake(0, 569, 320, 320);
+        overlay = [[UIControl alloc] initWithFrame:CGRectMake(0, 0, 320, 568)];
+        overlay.backgroundColor = [UIColor blackColor];
+        overlay.alpha = 0.0f;
+        [overlay addTarget:self action:@selector(overlayClicked) forControlEvents:UIControlEventTouchUpInside];
         _calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
         _allowClearDate = NO;
         _allowSelectionOfSelectedDate = NO;
@@ -72,138 +74,42 @@
     return self;
 }
 
-+(THDatePickerViewController *)datePicker {
-    return [[THDatePickerViewController alloc] initWithNibName:@"THDatePickerViewController" bundle:nil];
+- (void)setArrivalOrDepartureString:(NSString *)arrivalOrDepartureString {
+    _arriveOrDepartLabel.text = _arrivalOrDepartureString = arrivalOrDepartureString;
 }
 
-- (void)setAllowClearDate:(BOOL)allow {
-    _allowClearDate = allow;
-}
-
-- (void)setAllowSelectionOfSelectedDate:(BOOL)allow {
-    _allowSelectionOfSelectedDate = allow;
-}
-
-- (void)setClearAsToday:(BOOL)beTodayButton {
-    if (beTodayButton) {
-        [self setAllowClearDate:beTodayButton];
-    }
-    _clearAsToday = beTodayButton;
-}
-
-- (void)setAutoCloseOnSelectDate:(BOOL)autoClose {
-    if (!_allowClearDate)
-        [self setAllowClearDate:!autoClose];
-    _autoCloseOnSelectDate = autoClose;
-}
-
-- (void)setDisableHistorySelection:(BOOL)disableHistorySelection {
-    _disableHistorySelection = disableHistorySelection;
-}
-
-- (void)setDisableFutureSelection:(BOOL)disableFutureSelection {
-    _disableFutureSelection = disableFutureSelection;
-}
-
-#pragma mark - View Management
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kSemiModalDidHideNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(semiModalDidHide:)
-                                                 name:kSemiModalDidHideNotification
-                                               object:nil];
-    [self configureButtonAppearances];
+- (void)loadDatePicker {
+    __weak typeof(self) tcp = self;
+    __weak typeof(UIView) *sv = self.superview;
     
-    _arriveOrDepartLabel.text = _arrivalOrDepartureString;
+    [sv addSubview:overlay];
+    [sv bringSubviewToFront:overlay];
+    [sv bringSubviewToFront:tcp];
     
-    if(_allowClearDate)
-        [self showClearButton];
-    else
-        [self hideClearButton];
-    [self addSwipeGestures];
-    self.okBtn.enabled = [self shouldOkBeEnabled];
-//    [self.okBtn setImage:[UIImage imageNamed:(_autoCloseOnSelectDate ? @"dialog_clear" : @"dialog_ok")] forState:UIControlStateNormal];
-    [self redraw];
+    [UIView animateWithDuration:0.33 animations:^{
+        overlay.alpha = 0.7;
+        tcp.frame = CGRectMake(0, 248, 320, 320);
+    } completion:^(BOOL finished) {
+        ;
+    }];
 }
 
-- (void)addSwipeGestures{
-    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeGesture:)];
-    swipeGesture.direction = UISwipeGestureRecognizerDirectionUp;
-    [self.calendarDaysView addGestureRecognizer:swipeGesture];
+- (void)dropDatePicker {
+    __weak typeof(self) tcp = self;
+    __weak typeof(UIView) *sv = self.superview;
     
-    UISwipeGestureRecognizer *swipeGesture2 = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeGesture:)];
-    swipeGesture2.direction = UISwipeGestureRecognizerDirectionDown;
-    [self.calendarDaysView addGestureRecognizer:swipeGesture2];
+    [UIView animateWithDuration:0.33 animations:^{
+        overlay.alpha = 0.0f;
+        tcp.frame = CGRectMake(0, 569, 320, 320);
+    } completion:^(BOOL finished) {
+        [sv sendSubviewToBack:overlay];
+        [overlay removeFromSuperview];
+        [sv sendSubviewToBack:tcp];
+        [tcp.calendarDelegate calendarPickerDidHide];
+    }];
 }
 
-- (void)handleSwipeGesture:(UISwipeGestureRecognizer *)sender{
-    //Gesture detect - swipe up/down , can be recognized direction
-    if(sender.direction == UISwipeGestureRecognizerDirectionUp){
-        [self incrementMonth:1];
-        [self slideTransitionViewInDirection:1];
-    }
-    else if(sender.direction == UISwipeGestureRecognizerDirectionDown){
-        [self incrementMonth:-1];
-        [self slideTransitionViewInDirection:-1];
-    }
-}
-
-- (void)configureButtonAppearances {
-//    [super viewDidLoad];
-    [[self.nextBtn imageView] setContentMode: UIViewContentModeScaleAspectFit];
-    [[self.prevBtn imageView] setContentMode: UIViewContentModeScaleAspectFit];
-    [[self.clearBtn imageView] setContentMode: UIViewContentModeScaleAspectFit];
-    [[self.closeBtn imageView] setContentMode: UIViewContentModeScaleAspectFit];
-//    [[self.okBtn imageView] setContentMode: UIViewContentModeScaleAspectFit];
-    
-    UIImage * img = [self imageOfColor:[UIColor colorWithWhite:.8 alpha:1]];
-    [self.clearBtn setBackgroundImage:img forState:UIControlStateHighlighted];
-    [self.closeBtn setBackgroundImage:img forState:UIControlStateHighlighted];
-//    [self.okBtn setBackgroundImage:img forState:UIControlStateHighlighted];
-    
-//    img = [self imageOfColor:[UIColor colorWithWhite:.94 alpha:1]];
-//    [self.nextBtn setBackgroundImage:img forState:UIControlStateHighlighted];
-//    [self.prevBtn setBackgroundImage:img forState:UIControlStateHighlighted];
-    
-    UIImage *leftArrow = [[UIImage imageNamed:@"arrow_left"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    [_prevBtn setImage:leftArrow forState:UIControlStateNormal];
-    _prevBtn.tintColor = self.view.tintColor;
-    
-    UIImage *rightArrow = [[UIImage imageNamed:@"arrow_right"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    [_nextBtn setImage:rightArrow forState:UIControlStateNormal];
-    _nextBtn.tintColor = self.view.tintColor;
-}
-
-- (UIImage *)imageOfColor:(UIColor *)color {
-    CGRect rect = CGRectMake(0, 0, 1, 1);
-    UIGraphicsBeginImageContext(rect.size);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetFillColorWithColor(context,[color CGColor]);
-    CGContextFillRect(context, rect);
-    UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return img;
-}
-
-- (void)setDateHasItemsCallback:(BOOL (^)(NSDate * date))callback {
-    _dateHasItemsCallback = callback;
-}
-
-#pragma mark - Callbacks
-
-- (void)semiModalDidHide:(NSNotification *)notification {
-    if ([self.delegate respondsToSelector:@selector(datePickerDidHide:)]) {
-        [self.delegate datePickerDidHide:self];
-    }
-}
-
-#pragma mark - Redraw Dates
-
-- (void)forceRedraw {
-    [self redraw];
-}
+#pragma Redraw
 
 - (void)redraw {
     if(!self.firstOfCurrentMonth) [self setDisplayedMonthFromDate:[NSDate date]];
@@ -240,7 +146,7 @@
             curY += cellHeight;
         }
         
-        THDateDay * day = [[[NSBundle mainBundle] loadNibNamed:@"THDateDay" owner:self options:nil] objectAtIndex:0];
+        TrotterCalendarDay * day = [[NSBundle mainBundle] loadNibNamed:@"TrotterCalendarDay" owner:self options:nil].firstObject;
         day.frame = CGRectMake(curX, curY, cellWidth, cellHeight);
         day.delegate = self;
         day.date = [date dateByAddingTimeInterval:0];
@@ -252,9 +158,9 @@
             [day setSelectedBackgroundColor:self.selectedBackgroundColor];
         
         [day setLightText:![self dateInCurrentMonth:date]];
-//        [day setEnabled:![self dateInFutureAndShouldBeDisabled:date]];
+        //        [day setEnabled:![self dateInFutureAndShouldBeDisabled:date]];
         [day setEnabled:[self dateIsWithinAcceptableRange:date]];
-        [day indicateDayHasItems:(_dateHasItemsCallback && _dateHasItemsCallback(date))];
+        [day indicateDayHasItems:NO];
         
         NSDateComponents *comps = [_calendar components:NSCalendarUnitDay fromDate:date];
         [day.dateButton setTitle:[NSString stringWithFormat:@"%ld",(long)[comps day]]
@@ -308,25 +214,38 @@
 
 #pragma mark - Date Set, etc.
 
-- (void)setDate:(NSDate *)date {
-    _date = date;
+- (void)setDwaDate:(NSDate *)date {
+    _dwaDate = date;
     _dateNoTime = !date ? nil : [self dateWithOutTime:date];
     self.internalDate = [_dateNoTime dateByAddingTimeInterval:0];
 }
 
-- (NSDate *)date {
+- (NSDate *)dwaDate {
     if(!self.internalDate) return nil;
-    else if(!_date) return self.internalDate;
+    else if(!_dwaDate) return self.internalDate;
     else {
         int ymd = NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay;
         NSDateComponents* internalComps = [_calendar components:ymd fromDate:self.internalDate];
         int time = NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond|NSCalendarUnitTimeZone;
-        NSDateComponents* origComps = [_calendar components:time fromDate:_date];
+        NSDateComponents* origComps = [_calendar components:time fromDate:_dwaDate];
         [origComps setDay:[internalComps day]];
         [origComps setMonth:[internalComps month]];
         [origComps setYear:[internalComps year]];
         return [_calendar dateFromComponents:origComps];
     }
+}
+
+- (void)setClearAsToday:(BOOL)clearAsToday {
+    if (clearAsToday) {
+        [self setAllowClearDate:clearAsToday];
+    }
+    _clearAsToday = clearAsToday;
+}
+
+- (void)setAutoCloseOnSelectDate:(BOOL)autoCloseOnSelectDate {
+    if (!_allowClearDate)
+        [self setAllowClearDate:!autoCloseOnSelectDate];
+    _autoCloseOnSelectDate = autoCloseOnSelectDate;
 }
 
 - (BOOL)shouldOkBeEnabled {
@@ -340,7 +259,7 @@
 - (void)setInternalDate:(NSDate *)internalDate{
     _internalDate = internalDate;
     self.clearBtn.enabled = !!internalDate;
-    self.okBtn.enabled = [self shouldOkBeEnabled];
+    self.doneBtn.enabled = [self shouldOkBeEnabled];
     if(internalDate){
         [self setDisplayedMonthFromDate:internalDate];
     } else {
@@ -394,7 +313,24 @@
 
 #pragma mark - User Events
 
-- (void)dateDayTapped:(THDateDay *)dateDay {
+- (void)calendarDayClicked:(TrotterCalendarDay *)calendarDay {
+    if (!_internalDate || [_internalDate timeIntervalSinceDate:calendarDay.date] || _allowSelectionOfSelectedDate) { // new date selected
+        [self.currentDay setSelected:NO];
+        [calendarDay setSelected:YES];
+        BOOL dateInDifferentMonth = ![self dateInCurrentMonth:calendarDay.date];
+        [self setInternalDate:calendarDay.date];
+        [self setCurrentDay:calendarDay];
+        if (dateInDifferentMonth) {
+            [self slideTransitionViewInDirection:[calendarDay.date timeIntervalSinceDate:self.firstOfCurrentMonth]];
+        }
+        [self.calendarDelegate calendarPickerDidSelectDate:calendarDay.date];
+        if (_autoCloseOnSelectDate) {
+            [self dropDatePicker];
+        }
+    }
+}
+
+- (void)dateDayTapped:(TrotterCalendarDay *)dateDay {
     if (!_internalDate || [_internalDate timeIntervalSinceDate:dateDay.date] || _allowSelectionOfSelectedDate) { // new date selected
         [self.currentDay setSelected:NO];
         [dateDay setSelected:YES];
@@ -404,11 +340,9 @@
         if (dateInDifferentMonth) {
             [self slideTransitionViewInDirection:[dateDay.date timeIntervalSinceDate:self.firstOfCurrentMonth]];
         }
-        if ([self.delegate respondsToSelector:@selector(datePicker:selectedDate:)]) {
-            [self.delegate datePicker:self selectedDate:dateDay.date];
-        }
+        [self.calendarDelegate calendarPickerDidSelectDate:dateDay.date];
         if (_autoCloseOnSelectDate) {
-            [self.delegate datePickerDonePressed:self];
+            [self dropDatePicker];
         }
     }
 }
@@ -446,22 +380,28 @@
     [self slideTransitionViewInDirection:-1];
 }
 
-- (IBAction)okPressed:(id)sender {
-    if(self.okBtn.enabled) {
-        [self.delegate datePickerDonePressed:self];
+- (IBAction)donePressed:(id)sender {
+    if(self.doneBtn.enabled) {
+        [self.calendarDelegate calendarPickerDonePressed];
+        [self dropDatePicker];
     }
+}
+
+- (void)overlayClicked {
+    [self.calendarDelegate calendarPickerCancelled];
+    [self dropDatePicker];
 }
 
 - (IBAction)clearPressed:(id)sender {
     if(self.clearBtn.enabled){
         if (_clearAsToday) {
-            [self setDate:[NSDate date]];
+            [self setDwaDate:[NSDate date]];
             [self redraw];
             if (_autoCloseOnSelectDate) {
-                [self.okBtn setUserInteractionEnabled:NO];
+                [self.doneBtn setUserInteractionEnabled:NO];
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.autoCloseCancelDelay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    [self.delegate datePickerDonePressed:self];
-                    [self.okBtn setUserInteractionEnabled:YES];
+                    [self.calendarDelegate calendarPickerDonePressed];
+                    [self.doneBtn setUserInteractionEnabled:YES];
                 });
             }
         } else {
@@ -473,13 +413,13 @@
 }
 
 - (IBAction)closePressed:(id)sender {
-    [self.delegate datePickerCancelPressed:self];
+    [self.calendarDelegate calendarPickerCancelled];
 }
 
 #pragma mark - Hide/Show Clear Button
 
 - (void) showClearButton {
-    int width = self.view.frame.size.width;
+    int width = self.frame.size.width;
     int buttonHeight = 37;
     int buttonWidth = (width-20)/3;
     int curX = (width - buttonWidth*3 - 10)/2;
@@ -487,7 +427,7 @@
     curX+=buttonWidth+5;
     self.clearBtn.frame = CGRectMake(curX, 5, buttonWidth, buttonHeight);
     curX+=buttonWidth+5;
-//    self.okBtn.frame = CGRectMake(curX, 5, buttonWidth, buttonHeight);
+    //    self.okBtn.frame = CGRectMake(curX, 5, buttonWidth, buttonHeight);
     if (_clearAsToday) {
         [self.clearBtn setImage:nil forState:UIControlStateNormal];
         [self.clearBtn setTitle:NSLocalizedString(@"TODAY", @"Customize this for your language") forState:UIControlStateNormal];
@@ -498,14 +438,14 @@
 }
 
 - (void) hideClearButton {
-    int width = self.view.frame.size.width;
+    int width = self.frame.size.width;
     int buttonHeight = 37;
     self.clearBtn.hidden = YES;
     int buttonWidth = (width-15)/2;
     int curX = (width - buttonWidth*2 - 5)/2;
     self.closeBtn.frame = CGRectMake(curX, 5, buttonWidth, buttonHeight);
     curX+=buttonWidth+5;
-//    self.okBtn.frame = CGRectMake(curX, 5, buttonWidth, buttonHeight);
+    //    self.okBtn.frame = CGRectMake(curX, 5, buttonWidth, buttonHeight);
 }
 
 #pragma mark - Date Utils
@@ -535,15 +475,28 @@
     return [[NSCalendar currentCalendar] dateFromComponents:comps];
 }
 
-#pragma mark - Cleanup
+#pragma mark swipe gestures
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
+- (void)addSwipeGestures{
+    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeGesture:)];
+    swipeGesture.direction = UISwipeGestureRecognizerDirectionUp;
+    [self.calendarDaysView addGestureRecognizer:swipeGesture];
+    
+    UISwipeGestureRecognizer *swipeGesture2 = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeGesture:)];
+    swipeGesture2.direction = UISwipeGestureRecognizerDirectionDown;
+    [self.calendarDaysView addGestureRecognizer:swipeGesture2];
 }
 
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kSemiModalDidHideNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+- (void)handleSwipeGesture:(UISwipeGestureRecognizer *)sender{
+    //Gesture detect - swipe up/down , can be recognized direction
+    if(sender.direction == UISwipeGestureRecognizerDirectionUp){
+        [self incrementMonth:1];
+        [self slideTransitionViewInDirection:1];
+    }
+    else if(sender.direction == UISwipeGestureRecognizerDirectionDown){
+        [self incrementMonth:-1];
+        [self slideTransitionViewInDirection:-1];
+    }
 }
 
 @end

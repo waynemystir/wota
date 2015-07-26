@@ -366,8 +366,12 @@ const struct KNSemiModalOptionKeys KNSemiModalOptionKeys = {
             dismissBlock();
         }
         
-        objc_setAssociatedObject(self, kSemiModalDismissBlock, nil, OBJC_ASSOCIATION_COPY_NONATOMIC);
-        objc_setAssociatedObject(self, kSemiModalViewController, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        // TODO: I can't believe how awful this library is. If you call two of these VC's back-to-
+        // back, the dismissBlock will be nil the second time. Good stuff. As a stopgap, I commented
+        // out the following line. But the best solution is to write your own date picker.
+//        objc_setAssociatedObject(self, kSemiModalDismissBlock, nil, OBJC_ASSOCIATION_COPY_NONATOMIC);
+        // TODO: Even more exciting is that if I don't comment out the following line, the method pushVC from TrotterVC doesn't work!!! Great job KN!
+//        objc_setAssociatedObject(self, kSemiModalViewController, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         
         [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
     }];

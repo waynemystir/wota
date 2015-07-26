@@ -83,7 +83,8 @@ NSString * const kNotificationHotelDataSorted = @"kNotificationHotelDataSorted";
     [[LoadEanData sharedInstance:hvc] loadHotelDetailsWithId:[hotel.hotelId stringValue]];
     
     AppDelegate *ad = [[UIApplication sharedApplication] delegate];
-    [((UINavigationController *) ad.window.rootViewController) pushViewController:hvc animated:YES];
+    UINavigationController *nc = (UINavigationController *) ad.window.rootViewController;
+    [nc pushViewController:hvc animated:YES];
     [tableView endEditing:YES];
 }
 

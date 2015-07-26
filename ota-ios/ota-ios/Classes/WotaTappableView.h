@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface WotaTappableView : UIView
+@interface WotaTappableView : UIControl
 
 @property (nonatomic, strong) UIColor *tapColor;
 @property (nonatomic, strong) UIColor *untapColor;

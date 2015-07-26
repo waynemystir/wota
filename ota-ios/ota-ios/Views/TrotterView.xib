@@ -8,7 +8,6 @@
             <connections>
                 <outlet property="addAdultOutlet" destination="3iZ-t4-vjg" id="iSQ-mf-ZAG"/>
                 <outlet property="adultsLabel" destination="fb6-vD-e9a" id="HeD-dv-vAi"/>
-                <outlet property="arrivalDateFooter" destination="12k-OI-MGd" id="GP0-1Y-zdp"/>
                 <outlet property="arrivalDateOutlet" destination="Jeb-lJ-Fgs" id="AS8-4E-OlT"/>
                 <outlet property="backContainer" destination="UXA-lQ-TiK" id="isC-fG-h2M"/>
                 <outlet property="checkHotelsOutlet" destination="bRx-l8-agm" id="UeD-Uz-Xbe"/>
@@ -16,6 +15,7 @@
                 <outlet property="cupHolder" destination="9F4-2D-Fvc" id="ZQe-8t-Op2"/>
                 <outlet property="filterContainer" destination="YjX-A4-fsR" id="IQF-6p-6cf"/>
                 <outlet property="footerContainer" destination="ntd-4D-0KW" id="COa-Pm-6Rr"/>
+                <outlet property="footerDatesBtn" destination="FNX-tj-GLv" id="TRM-zR-ABD"/>
                 <outlet property="hotelsTableView" destination="saN-6E-DoG" id="rWk-pL-Mdc"/>
                 <outlet property="hotelsTableViewContainer" destination="Csv-iy-e8e" id="cad-oE-nSD"/>
                 <outlet property="imageViewOpeningSearch" destination="lD4-0d-u5I" id="na6-Tu-Whw"/>
@@ -26,7 +26,6 @@
                 <outlet property="openingWhereTo" destination="LRm-TY-5fT" id="VjA-gf-rsO"/>
                 <outlet property="openingWmapContainer" destination="7RY-Pg-9ng" id="pKB-Hf-hsW"/>
                 <outlet property="overlay" destination="CW6-MR-37n" id="tZx-LM-H0W"/>
-                <outlet property="returnDateFooter" destination="TAe-Hb-AFZ" id="EHh-bt-2aD"/>
                 <outlet property="returnDateOutlet" destination="dgm-BA-HLi" id="ctQ-Qh-Vgb"/>
                 <outlet property="sortContainer" destination="I5I-4O-1of" id="grH-qw-vRh"/>
                 <outlet property="tcAdultsLabel" destination="SNd-Xc-At9" id="29I-AD-ebk"/>
@@ -35,6 +34,7 @@
                 <outlet property="whereToContainer" destination="Lv8-Kp-Ehb" id="yw7-6U-CnV"/>
                 <outlet property="whereToSecondLevel" destination="Gte-1q-M3W" id="AQ0-wj-Q38"/>
                 <outlet property="whereToTextField" destination="mMR-BB-0zI" id="T9R-Gh-fK6"/>
+                <outlet property="wmapClicker" destination="NV9-3Q-TgG" id="FBC-qh-SaA"/>
                 <outlet property="wmapContainer" destination="4hC-Cq-aU5" id="VR6-oY-iWS"/>
                 <outlet property="wmapHamburger" destination="teQ-ev-gsu" id="3S7-7F-zqy"/>
                 <outlet property="wmapMap" destination="AAA-zz-z7q" id="SFc-Eq-PJp"/>
@@ -181,28 +181,8 @@
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" red="0.69803921568627447" green="0.69803921568627447" blue="0.69999999999999996" alpha="1" colorSpace="calibratedRGB"/>
                         </view>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="12k-OI-MGd" userLabel="arrivalDateFooter">
-                            <rect key="frame" x="2" y="0.0" width="72" height="44"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <state key="normal" title="Aug 29">
-                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                            </state>
-                            <connections>
-                                <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="rKB-TR-Rvf"/>
-                            </connections>
-                        </button>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="TAe-Hb-AFZ" userLabel="returnDateFooter">
-                            <rect key="frame" x="74" y="0.0" width="72" height="44"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <state key="normal" title="Aug 30">
-                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                            </state>
-                            <connections>
-                                <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="SC6-eC-Uyf"/>
-                            </connections>
-                        </button>
                         <view contentMode="scaleToFill" id="YjX-A4-fsR" userLabel="filterContainer">
-                            <rect key="frame" x="207" y="0.0" width="54" height="44"/>
+                            <rect key="frame" x="198" y="0.0" width="54" height="44"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="filter" id="LLb-Qz-D7o">
@@ -224,7 +204,7 @@
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         </view>
                         <view contentMode="scaleToFill" id="Phz-Ys-HVE" userLabel="travelersContainer">
-                            <rect key="frame" x="146" y="0.0" width="61" height="44"/>
+                            <rect key="frame" x="132" y="0.0" width="61" height="44"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <imageView userInteractionEnabled="NO" tag="1290348" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user_silhouette" id="QBd-FO-mbn" userLabel="userSilhouette">
@@ -241,6 +221,16 @@
                             </subviews>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         </view>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="FNX-tj-GLv" userLabel="footerDatesBtn">
+                            <rect key="frame" x="0.0" y="0.0" width="128" height="44"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <state key="normal" title="Aug 29 - Aug 31">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="wlq-9O-8QM"/>
+                            </connections>
+                        </button>
                     </subviews>
                     <color key="backgroundColor" red="0.92941176470588238" green="0.92941176470588238" blue="0.92941176470588238" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                 </view>
@@ -261,7 +251,7 @@
                             <nil key="highlightedColor"/>
                         </label>
                         <view contentMode="scaleToFill" id="4hC-Cq-aU5" userLabel="wmapContainer" customClass="WotaTappableView">
-                            <rect key="frame" x="282" y="0.0" width="30" height="30"/>
+                            <rect key="frame" x="283" y="0.0" width="30" height="30"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="hamburger" id="teQ-ev-gsu" userLabel="wmapHamburger">
@@ -281,6 +271,11 @@
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="search"/>
                         </textField>
+                        <view contentMode="scaleToFill" id="NV9-3Q-TgG" userLabel="wmapClicker">
+                            <rect key="frame" x="278" y="-3" width="43" height="43"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        </view>
                         <view clipsSubviews="YES" contentMode="scaleToFill" id="LRm-TY-5fT" userLabel="openingWhereTo">
                             <rect key="frame" x="5" y="0.0" width="253" height="49"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -324,8 +319,8 @@
     </objects>
     <resources>
         <image name="filter" width="32" height="32"/>
-        <image name="hamburger" width="24" height="24"/>
-        <image name="search" width="32" height="32"/>
+        <image name="hamburger" width="32" height="32"/>
+        <image name="search" width="24" height="24"/>
         <image name="sort" width="32" height="32"/>
         <image name="user_silhouette" width="16" height="16"/>
         <image name="wmap" width="32" height="32"/>

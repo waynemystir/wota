@@ -17,7 +17,6 @@
 #import "NetworkProblemResponder.h"
 #import "PlaceAutoCompleteTableViewCell.h"
 #import "GooglePlace.h"
-#import "THDatePickerViewController.h"
 #import "WotaButton.h"
 #import "WotaTappableView.h"
 #import "ChildViewController.h"
@@ -29,6 +28,7 @@
 #import "WotaMKPinAnnotationView.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "HotelInfoViewController.h"
+#import "TrotterCalendarPicker.h"
 
 typedef NS_ENUM(NSUInteger, VIEW_STATE) {
     VIEW_STATE_CRITERIA,
@@ -42,7 +42,7 @@ static double const TRV_METERS_PER_MILE = 1609.344;
 NSTimeInterval const kTrvFlipAnimationDuration = 0.75;
 NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 
-@interface TrotterViewController () <CLLocationManagerDelegate, LoadDataProtocol, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, THDatePickerDelegate, MKMapViewDelegate, ChildViewDelegate>
+@interface TrotterViewController () <CLLocationManagerDelegate, LoadDataProtocol, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, MKMapViewDelegate, ChildViewDelegate, TrotterCalendarPickerDelegate>
 
 @property (nonatomic) VIEW_STATE viewState;
 @property (nonatomic, strong) NSMutableArray *placesTableData;
@@ -99,8 +99,6 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 @property (weak, nonatomic) IBOutlet UIView *overlay;
 @property (weak, nonatomic) IBOutlet UIView *filterContainer;
 @property (weak, nonatomic) IBOutlet UIView *sortContainer;
-@property (weak, nonatomic) IBOutlet UIButton *arrivalDateFooter;
-@property (weak, nonatomic) IBOutlet UIButton *returnDateFooter;
 @property (weak, nonatomic) IBOutlet UIView *travelersContainer;
 @property (weak, nonatomic) IBOutlet UILabel *tcAdultsLabel;
 @property (weak, nonatomic) IBOutlet UIView *openingWhereTo;
@@ -110,6 +108,8 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 @property (weak, nonatomic) IBOutlet UIImageView *wmapMap;
 @property (weak, nonatomic) IBOutlet BackCancelView *wmapCancel;
 @property (weak, nonatomic) IBOutlet UIImageView *wmapHamburger;
+@property (weak, nonatomic) IBOutlet UIView *wmapClicker;
+@property (weak, nonatomic) IBOutlet UIButton *footerDatesBtn;
 
 - (IBAction)justPushIt:(id)sender;
 - (IBAction)clickKidsButton:(id)sender;
@@ -118,10 +118,13 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 
 @implementation TrotterViewController {
     CLLocationManager *locationManager;
-    THDatePickerViewController *arrivalDatePicker;
-    THDatePickerViewController *returnDatePicker;
     BOOL filterViewUp;
     BOOL restoringWhereTo;
+    BOOL restoredWhereToAlready;
+    BOOL daDateChanged;
+    TrotterCalendarPicker *checkInDatePicker;
+    TrotterCalendarPicker *checkOutDatePicker;
+    BOOL datePickerUp;
 }
 
 #pragma mark Lifecycle methods
@@ -204,6 +207,8 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     [self setNumberOfAdultsLabel:0];
     [self setNumberOfKidsButtonLabel];
     
+    [self setupDaDatePickers];
+    
     self.arrivalOrReturn = NO;
     [self refreshDisplayedArrivalDate];
     [self refreshDisplayedReturnDate];
@@ -232,11 +237,11 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     bcv.transform = CGAffineTransformMakeScale(0.7f, 0.7f);
     [self.backContainer addSubview:bcv];
     
-    UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickWmapContainer)];
-    tgr.numberOfTapsRequired = 1;
-    tgr.numberOfTouchesRequired = 1;
-    self.wmapContainer.userInteractionEnabled = YES;
-    [self.wmapContainer addGestureRecognizer:tgr];
+    UITapGestureRecognizer *ttgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickWmapClicker)];
+    ttgr.numberOfTapsRequired = 1;
+    ttgr.numberOfTouchesRequired = 1;
+    self.wmapClicker.userInteractionEnabled = YES;
+    [self.wmapClicker addGestureRecognizer:ttgr];
     
     UITapGestureRecognizer *ogr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dropFilterOrSortView)];
     ogr.numberOfTapsRequired = 1;
@@ -327,6 +332,11 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 
 - (void)restoreWhereTo:(UITapGestureRecognizer *)tgr {
     
+    if (restoredWhereToAlready) {
+        return;
+    }
+    
+    restoredWhereToAlready = YES;
     restoringWhereTo = YES;
     typeof(self) wes = self;
     
@@ -336,8 +346,14 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     } else if (tgr.view == self.openingWmapContainer) {
         [wes transitionToMapView];
         [wes transitionToWmapHamburger];
-    } else {
+        wes.whereToTextField.text = [SelectionCriteria singleton].whereToFirst;
+        wes.whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
+        wes.labelWhereYouGoing.text = [SelectionCriteria singleton].whereToFirst;
+    } else if (!tgr) {
         [wes transitionToWmapMap];
+        wes.whereToTextField.text = [SelectionCriteria singleton].whereToFirst;
+        wes.whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
+        wes.labelWhereYouGoing.text = [SelectionCriteria singleton].whereToFirst;
     }
     
     [UIView animateWithDuration:0.23 animations:^{
@@ -347,7 +363,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         wes.labelWhereYouGoing.textColor = [UIColor lightGrayColor];
         wes.labelWhereYouGoing.font = [UIFont systemFontOfSize:17.0f];
         
-        wes.openingWmapContainer.frame = CGRectMake(282, 0, 30, 30);
+        wes.openingWmapContainer.frame = CGRectMake(283, 0, 30, 30);
     } completion:^(BOOL finished) {
         restoringWhereTo = NO;
         wes.whereToTextField.hidden = NO;
@@ -419,7 +435,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     [self.openConnections makeObjectsPerformSelector:@selector(cancel)];
     [self.openConnections removeAllObjects];
     
-    if (self.criteriaOrHotelSearchMode) {
+//    if (self.criteriaOrHotelSearchMode) {
         if (self.placesTableData == [SelectionCriteria singleton].placesArray) {
             if (self.placesTableData.count >= 2) {
                 [self trotterDidSelectRowAtIndexPathRow:1];
@@ -431,7 +447,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         } else {
             [self trotterDidSelectRowAtIndexPathRow:0];
         }
-    }
+//    }
     
     if (self.placesTableData != [SelectionCriteria singleton].placesArray) {
         self.placesTableData = [SelectionCriteria singleton].placesArray;
@@ -501,23 +517,20 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         case LOAD_EAN_HOTELS_LIST: {
             EanHotelListResponse *ehlr = [EanHotelListResponse eanObjectFromApiResponseData:responseData];
             
-            if (ehlr.hotelList.count == 0) {
-                [self handleNoHotels];
-                return;
-            }
-            
             _hotelTableViewDelegate.hotelData = ehlr.hotelList;
             [self showOrHideTvControls];
             [_hotelsTableView reloadData];
             [_hotelsTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
             
-            UITextField *tf = (UITextField *) [_hotelsTableView.tableHeaderView viewWithTag:41414141];
-            tf.text = @"";
-            
             _listMaxLatitudeDelta = ehlr.maxLatitudeDelta;
             _listMaxLongitudeDelta = ehlr.maxLongitudeDelta;
             
-            [self redrawMapAnnotationsAndRegion:YES];
+            if (ehlr.hotelList.count == 0) {
+                [self handleNoHotels];
+            } else {
+                [self redrawMapAnnotationsAndRegion:YES];
+            }
+            
             [self setupTheFilterView];
             [self setupTheSortView];
             
@@ -773,10 +786,12 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     self.criteriaOrHotelSearchMode = YES;
     self.backContainer.userInteractionEnabled = YES;
     
+    [self restoreWhereTo:nil];
+    
     [UIView animateWithDuration:kTrvFlipAnimationDuration animations:^{
         wes.containerView.frame = wes.containerViewFrame;
         wes.whereToContainer.frame = CGRectMake(0, 34, 320, 35);
-        wes.whereToTextField.frame = CGRectMake(32, 0, 243, 30);
+        wes.whereToTextField.frame = CGRectMake(32, 0, 244, 30);
         wes.whereToSecondLevel.frame = CGRectMake(39, 1, 232, 21);
         wes.backContainer.frame = CGRectMake(0, -3, 33, 33);
         wes.footerContainer.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
@@ -901,6 +916,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 }
 
 - (void)redrawMapViewAnimated:(BOOL)animated radius:(double)radius {
+    [self removeAllPinsButUserLocation];
     MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(self.zoomLocation, 1.6*radius*TRV_METERS_PER_MILE, 1.6*radius*TRV_METERS_PER_MILE);
     [self.mkMapView setRegion:viewRegion animated:animated];
 }
@@ -1035,7 +1051,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     [self.openConnections removeAllObjects];
 }
 
-- (void)clickWmapContainer {
+- (void)clickWmapClicker {
     if (self.isPlacesTableViewExpanded) {
         [self.view endEditing:YES];
         [self animateTableViewCompression];
@@ -1084,6 +1100,13 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     }
     
     [self loadDaSpinner];
+    
+    UITextField *tf = (UITextField *) [_hotelsTableView.tableHeaderView viewWithTag:41414141];
+    tf.text = @"";
+    
+    self.hotelTableViewDelegate.hotelData = [NSArray array];
+    [self.hotelsTableView reloadData];
+    
     [self letsFindHotelsWithSearchRadius:[SelectionCriteria singleton].zoomRadius];
 }
 
@@ -1101,16 +1124,13 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         
     } else if (sender == self.arrivalDateOutlet) {
         self.arrivalOrReturn = NO;
-        [self presentTheDatePicker];
-    } else if (sender == self.arrivalDateFooter) {
+        [self loadDatePicker];
+    } else if (sender == self.footerDatesBtn) {
         self.arrivalOrReturn = NO;
-        [self presentTheDatePicker];
+        [self loadDatePicker];
     } else if (sender == self.returnDateOutlet) {
         self.arrivalOrReturn = YES;
-        [self presentTheDatePicker];
-    } else if (sender == self.returnDateFooter) {
-        self.arrivalOrReturn = YES;
-        [self presentTheDatePicker];
+        [self loadDatePicker];
     } else {
         NSLog(@"Dude we've got a problem");
     }
@@ -1161,16 +1181,16 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     ChildViewController *kids = [ChildViewController new];
     kids.childViewDelegate = self;
     
-    [self presentSemiViewController:kids withOptions:@{
-                                                       KNSemiModalOptionKeys.pushParentBack    : @(NO),
-                                                       KNSemiModalOptionKeys.animationDuration : @(0.4),
-                                                       KNSemiModalOptionKeys.shadowOpacity     : @(0.3),
-                                                       } completion:^{
-                                                           NSLog(@"");
-                                                       } dismissBlock:^{
-                                                           NSLog(@"");
-                                                           [self setNumberOfKidsButtonLabel];
-                                                       }];
+//    [self presentSemiViewController:kids withOptions:@{
+//                                                       KNSemiModalOptionKeys.pushParentBack    : @(NO),
+//                                                       KNSemiModalOptionKeys.animationDuration : @(0.4),
+//                                                       KNSemiModalOptionKeys.shadowOpacity     : @(0.3),
+//                                                       } completion:^{
+//                                                           NSLog(@"");
+//                                                       } dismissBlock:^{
+//                                                           NSLog(@"");
+//                                                           [self setNumberOfKidsButtonLabel];
+//                                                       }];
 }
 
 - (void)setNumberOfKidsButtonLabel {
@@ -1204,69 +1224,52 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 
 #pragma mark Various Date Picker methods
 
-- (void)presentTheDatePicker {
+- (void)setupDaDatePickers {
+    checkInDatePicker = [TrotterCalendarPicker calendarFromNib];
+    checkOutDatePicker = [TrotterCalendarPicker calendarFromNib];
+    checkInDatePicker.arrivalOrDepartureString = @"Check-in Date";
+    checkOutDatePicker.arrivalOrDepartureString = @"Check-out Date";
+    [self.view addSubview:checkInDatePicker];
+    [self.view addSubview:checkOutDatePicker];
     
-    THDatePickerViewController *dp = nil;
+    checkInDatePicker.calendarDelegate = self;
+    [checkInDatePicker setAllowClearDate:NO];
+    [checkInDatePicker setClearAsToday:NO];
+    [checkInDatePicker setAutoCloseOnSelectDate:YES];
+    [checkInDatePicker setAllowSelectionOfSelectedDate:YES];
+    [checkInDatePicker setDisableHistorySelection:YES];
+    [checkInDatePicker setDisableFutureSelection:NO];
+    [checkInDatePicker setSelectedBackgroundColor:kWotaColorOne()];
+    [checkInDatePicker setCurrentDateColor:kWotaColorOne()];
+    
+    checkOutDatePicker.calendarDelegate = self;
+    [checkOutDatePicker setAllowClearDate:NO];
+    [checkOutDatePicker setClearAsToday:NO];
+    [checkOutDatePicker setAutoCloseOnSelectDate:YES];
+    [checkOutDatePicker setAllowSelectionOfSelectedDate:YES];
+    [checkOutDatePicker setDisableHistorySelection:YES];
+    [checkOutDatePicker setDisableFutureSelection:NO];
+    [checkOutDatePicker setSelectedBackgroundColor:kWotaColorOne()];
+    [checkOutDatePicker setCurrentDateColor:kWotaColorOne()];
+}
+
+- (void)loadDatePicker {
+    __weak TrotterCalendarPicker *tcp = nil;
     
     if (!_arrivalOrReturn) {
-        [self setupTheArrivalDatePicker];
-        dp = arrivalDatePicker;
-        dp.date = [SelectionCriteria singleton].arrivalDate;
-        dp.minDate = [NSDate date];
-        dp.maxDate = kAddDays(500, [NSDate date]);
+        tcp = checkInDatePicker;
+        tcp.dwaDate = [SelectionCriteria singleton].arrivalDate;
+        tcp.minDate = [NSDate date];
+        tcp.maxDate = kAddDays(500, [NSDate date]);
     } else {
-        [self setupTheReturnDatePicker];
-        dp = returnDatePicker;
-        dp.date = [SelectionCriteria singleton].returnDate;
-        dp.minDate = kAddDays(1, [SelectionCriteria singleton].arrivalDate);
-        dp.maxDate = kAddDays(28, [SelectionCriteria singleton].arrivalDate);
+        tcp = checkOutDatePicker;
+        tcp.dwaDate = [SelectionCriteria singleton].returnDate;
+        tcp.minDate = kAddDays(1, [SelectionCriteria singleton].arrivalDate);
+        tcp.maxDate = kAddDays(28, [SelectionCriteria singleton].arrivalDate);
     }
     
-    [dp forceRedraw];
-    
-    [self presentSemiViewController:dp withOptions:@{
-                                                     KNSemiModalOptionKeys.pushParentBack    : @(NO),
-                                                     KNSemiModalOptionKeys.animationDuration : @(0.32),
-                                                     KNSemiModalOptionKeys.shadowOpacity     : @(0.3),
-                                                     }];
-}
-
-- (void)setupTheArrivalDatePicker {
-    if(arrivalDatePicker)
-        return;
-    
-    arrivalDatePicker = [THDatePickerViewController datePicker];
-    arrivalDatePicker.delegate = self;
-    [arrivalDatePicker setAllowClearDate:NO];
-    [arrivalDatePicker setClearAsToday:NO];
-    [arrivalDatePicker setAutoCloseOnSelectDate:YES];
-    [arrivalDatePicker setAllowSelectionOfSelectedDate:YES];
-    [arrivalDatePicker setDisableHistorySelection:YES];
-    [arrivalDatePicker setDisableFutureSelection:NO];
-    [arrivalDatePicker setSelectedBackgroundColor:kWotaColorOne()];
-    [arrivalDatePicker setCurrentDateColor:kWotaColorOne()];
-    
-    arrivalDatePicker.arrivalOrDepartureString = @"Check-in Date";
-    [arrivalDatePicker setDateHasItemsCallback:nil];
-}
-
-- (void)setupTheReturnDatePicker {
-    if(returnDatePicker)
-        return;
-    
-    returnDatePicker = [THDatePickerViewController datePicker];
-    returnDatePicker.delegate = self;
-    [returnDatePicker setAllowClearDate:NO];
-    [returnDatePicker setClearAsToday:NO];
-    [returnDatePicker setAutoCloseOnSelectDate:YES];
-    [returnDatePicker setAllowSelectionOfSelectedDate:YES];
-    [returnDatePicker setDisableHistorySelection:YES];
-    [returnDatePicker setDisableFutureSelection:NO];
-    [returnDatePicker setSelectedBackgroundColor:kWotaColorOne()];
-    [returnDatePicker setCurrentDateColor:kWotaColorOne()];
-    
-    returnDatePicker.arrivalOrDepartureString = @"Check-out Date";
-    [returnDatePicker setDateHasItemsCallback:nil];
+    [tcp redraw];
+    [tcp loadDatePicker];
 }
 
 -(void)refreshDisplayedArrivalDate {
@@ -1277,7 +1280,6 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     }
     
     [_arrivalDateOutlet setTitle:[kPrettyDateFormatter() stringFromDate:sc.arrivalDate] forState:UIControlStateNormal];
-    [_arrivalDateFooter setTitle:[kShortDateFormatter() stringFromDate:sc.arrivalDate] forState:UIControlStateNormal];
     
     NSDate *tla = kTimelessDate(sc.arrivalDate);
     NSDate *arrivalDatePlus28 = kTimelessDate(kAddDays(28, sc.arrivalDate));
@@ -1289,8 +1291,11 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         
         sc.returnDate = kAddDays(1, sc.arrivalDate);
         [_returnDateOutlet setTitle:[kPrettyDateFormatter() stringFromDate:sc.returnDate] forState:UIControlStateNormal];
-        [_returnDateFooter setTitle:[kShortDateFormatter() stringFromDate:sc.returnDate] forState:UIControlStateNormal];
     }
+    
+    NSString *sdArr = [kShortDateFormatter() stringFromDate:sc.arrivalDate];
+    NSString *sdRet = [kShortDateFormatter() stringFromDate:sc.returnDate];
+    [_footerDatesBtn setTitle:[NSString stringWithFormat:@"%@ - %@", sdArr, sdRet] forState:UIControlStateNormal];
 }
 
 -(void)refreshDisplayedReturnDate {
@@ -1304,44 +1309,58 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
             || [tlc compare:kTimelessDate(sc.arrivalDate)] == NSOrderedDescending) {
             sc.arrivalDate = [NSDate date];
             [_arrivalDateOutlet setTitle:[kPrettyDateFormatter() stringFromDate:sc.arrivalDate] forState:UIControlStateNormal];
-            [_arrivalDateFooter setTitle:[kShortDateFormatter() stringFromDate:sc.arrivalDate] forState:UIControlStateNormal];
         }
         
         sc.returnDate = kAddDays(1, sc.arrivalDate);
     }
     
     [_returnDateOutlet setTitle:[kPrettyDateFormatter() stringFromDate:sc.returnDate] forState:UIControlStateNormal];
-    [_returnDateFooter setTitle:[kShortDateFormatter() stringFromDate:sc.returnDate] forState:UIControlStateNormal];
+    
+    NSString *sdArr = [kShortDateFormatter() stringFromDate:sc.arrivalDate];
+    NSString *sdRet = [kShortDateFormatter() stringFromDate:sc.returnDate];
+    [_footerDatesBtn setTitle:[NSString stringWithFormat:@"%@ - %@", sdArr, sdRet] forState:UIControlStateNormal];
 }
 
-#pragma mark THDatePickerDelegate methods
+#pragma mark TrotterCalendarPickerDelegate Methods
 
-- (void)datePickerDonePressed:(THDatePickerViewController *)datePicker {
+- (void)calendarPickerCancelled {
+    
+}
+
+- (void)calendarPickerDidSelectDate:(NSDate *)selectedDate {
+    daDateChanged = YES;
     if (!_arrivalOrReturn) {
-        [SelectionCriteria singleton].arrivalDate = datePicker.date;
+        [SelectionCriteria singleton].arrivalDate = selectedDate;
         [self refreshDisplayedArrivalDate];
     } else {
-        [SelectionCriteria singleton].returnDate = datePicker.date;
+        [SelectionCriteria singleton].returnDate = selectedDate;
         [self refreshDisplayedReturnDate];
     }
     
-    //[self.datePicker slideDownAndOut];
-    [self dismissSemiModalView];
-}
-
-- (void)datePickerCancelPressed:(THDatePickerViewController *)datePicker {
-    //[self.datePicker slideDownAndOut];
-    [self dismissSemiModalView];
-}
-
-- (void)datePicker:(THDatePickerViewController *)datePicker selectedDate:(NSDate *)selectedDate {
     NSLog(@"Date selected: %@",[kPrettyDateFormatter() stringFromDate:selectedDate]);
+}
+
+- (void)calendarPickerDonePressed {
+    
+}
+
+- (void)calendarPickerDidHide {
+    if (!self.criteriaOrHotelSearchMode) {
+        daDateChanged = NO;
+    } else if (!_arrivalOrReturn) {
+        _arrivalOrReturn = YES;
+        [self loadDatePicker];
+    } else if (_arrivalOrReturn && daDateChanged) {
+        daDateChanged = NO;
+        [self removeAllPinsButUserLocation];
+        [self itKeepsTheWaterOffOurHeads];
+    }
 }
 
 #pragma mark ChildViewDelegate methods
 
 - (void)childViewDonePressed {
-    [self dismissSemiModalView];
+//    [self dismissSemiModalView];
 }
 
 #pragma mark No hotels
