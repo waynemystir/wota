@@ -1,8 +1,8 @@
 //
-//  GuestsViewController.h
+//  ChildView.h
 //  ota-ios
 //
-//  Created by WAYNE SMALL on 3/29/15.
+//  Created by WAYNE SMALL on 7/26/15.
 //  Copyright (c) 2015 Irwin. All rights reserved.
 //
 
@@ -13,11 +13,16 @@
 @required
 
 - (void)childViewDonePressed;
+- (void)childViewCancelled;
+- (void)childViewDidHide;
 
 @end
 
-@interface ChildViewController : UIViewController
+@interface ChildView : UIView
 
 @property (nonatomic, weak) id<ChildViewDelegate> childViewDelegate;
+
+- (void)loadChildView;
++ (ChildView *)childViewFromNib;
 
 @end

@@ -19,7 +19,6 @@
 #import "GooglePlace.h"
 #import "WotaButton.h"
 #import "WotaTappableView.h"
-#import "ChildViewController.h"
 #import "HotelsTableViewDelegateImplementation.h"
 #import "EanHotelListResponse.h"
 #import "EanHotelListHotelSummary.h"
@@ -29,6 +28,7 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "HotelInfoViewController.h"
 #import "TrotterCalendarPicker.h"
+#import "ChildView.h"
 
 typedef NS_ENUM(NSUInteger, VIEW_STATE) {
     VIEW_STATE_CRITERIA,
@@ -125,6 +125,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     TrotterCalendarPicker *checkInDatePicker;
     TrotterCalendarPicker *checkOutDatePicker;
     BOOL datePickerUp;
+    ChildView *childView;
 }
 
 #pragma mark Lifecycle methods
@@ -1178,19 +1179,12 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 }
 
 - (void)presentKidsSelector {
-    ChildViewController *kids = [ChildViewController new];
-    kids.childViewDelegate = self;
-    
-//    [self presentSemiViewController:kids withOptions:@{
-//                                                       KNSemiModalOptionKeys.pushParentBack    : @(NO),
-//                                                       KNSemiModalOptionKeys.animationDuration : @(0.4),
-//                                                       KNSemiModalOptionKeys.shadowOpacity     : @(0.3),
-//                                                       } completion:^{
-//                                                           NSLog(@"");
-//                                                       } dismissBlock:^{
-//                                                           NSLog(@"");
-//                                                           [self setNumberOfKidsButtonLabel];
-//                                                       }];
+    if (!childView) {
+        childView = [ChildView childViewFromNib];
+        childView.childViewDelegate = self;
+        [self.view addSubview:childView];
+    }
+    [childView loadChildView];
 }
 
 - (void)setNumberOfKidsButtonLabel {
@@ -1350,7 +1344,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     } else if (!_arrivalOrReturn) {
         _arrivalOrReturn = YES;
         [self loadDatePicker];
-    } else if (_arrivalOrReturn && daDateChanged) {
+    } else if (daDateChanged) {
         daDateChanged = NO;
         [self removeAllPinsButUserLocation];
         [self itKeepsTheWaterOffOurHeads];
@@ -1359,8 +1353,16 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 
 #pragma mark ChildViewDelegate methods
 
+- (void)childViewCancelled {
+    [self setNumberOfKidsButtonLabel];
+}
+
 - (void)childViewDonePressed {
-//    [self dismissSemiModalView];
+    [self setNumberOfKidsButtonLabel];
+}
+
+- (void)childViewDidHide {
+    
 }
 
 #pragma mark No hotels

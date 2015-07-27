@@ -1,22 +1,19 @@
 //
-//  ChildViewController.m
+//  ChildView.m
 //  ota-ios
 //
-//  Created by WAYNE SMALL on 3/29/15.
+//  Created by WAYNE SMALL on 7/26/15.
 //  Copyright (c) 2015 Irwin. All rights reserved.
 //
 
-#import "ChildViewController.h"
+#import "ChildView.h"
+#import "WotaButton.h"
 #import "ChildSubView.h"
 #import "ChildTraveler.h"
-#import "ChildAgeSelectorViewController.h"
-#import "UIViewController+KNSemiModal.h"
-#import "AppEnvironment.h"
-#import "WotaButton.h"
 
 NSTimeInterval const kCvAnimationDuration = 0.6;
 
-@interface ChildViewController () <UIPickerViewDataSource, UIPickerViewDelegate>
+@interface ChildView () <UIPickerViewDataSource, UIPickerViewDelegate>
 
 @property (weak, nonatomic) IBOutlet WotaButton *daRealDoneButton;
 @property (weak, nonatomic) IBOutlet UILabel *numberKidsLabelOutlet;
@@ -36,48 +33,98 @@ NSTimeInterval const kCvAnimationDuration = 0.6;
 
 @end
 
-@implementation ChildViewController
+@implementation ChildView {
+    UIControl *overlay;
+}
 
-#pragma mark Lifecycle methods
++ (ChildView *)childViewFromNib {
+    NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"ChildView" owner:self options:nil];
+    if ([views count] != 1) {
+        return nil;
+    }
+    
+    ChildView *cv = views.firstObject;
+    
+    [cv checkIfWeCanAddKids];
+    [cv checkIfWeCanRemoveKids];
+    
+    [cv updateNumberOfKidsLabel];
+    
+    [cv setupLabelForAgeSelector];
+    [cv setupDoneButton];
+    [cv setupTheAgePickerViewAndData];
+    
+    cv.childOneOutlet.childAbcdLabelOutlet.text = @"Child One";
+    cv.childTwoOutlet.childAbcdLabelOutlet.text = @"Child Two";
+    cv.childThreeOutlet.childAbcdLabelOutlet.text = @"Child Three";
+    cv.childFourOutlet.childAbcdLabelOutlet.text = @"Child Four";
+    
+    [cv setAgeLabelsAndTapGestures];
+    
+    return cv;
+}
 
-- (id)init {
-    self = [super initWithNibName:@"ChildView" bundle:nil];
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    if (self = [super initWithCoder:aDecoder]) {
+        self.frame = CGRectMake(0, 569, 320, 320);
+        overlay = [[UIControl alloc] initWithFrame:CGRectMake(0, 0, 320, 568)];
+        overlay.backgroundColor = [UIColor blackColor];
+        overlay.alpha = 0.0f;
+        [overlay addTarget:self action:@selector(overlayClicked) forControlEvents:UIControlEventTouchUpInside];
+    }
     return self;
 }
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    [self checkIfWeCanAddKids];
-    [self checkIfWeCanRemoveKids];
+#pragma mark Load and drop
+
+- (void)loadChildView {
+    __weak typeof(self) tcp = self;
+    __weak typeof(UIView) *sv = self.superview;
     
-    [self updateNumberOfKidsLabel];
+    [sv addSubview:overlay];
+    [sv bringSubviewToFront:overlay];
+    [sv bringSubviewToFront:tcp];
     
-    [self setupLabelForAgeSelector];
-    [self setupDoneButton];
-    [self setupTheAgePickerViewAndData];
-    
-    self.childOneOutlet.childAbcdLabelOutlet.text = @"Child One";
-    self.childTwoOutlet.childAbcdLabelOutlet.text = @"Child Two";
-    self.childThreeOutlet.childAbcdLabelOutlet.text = @"Child Three";
-    self.childFourOutlet.childAbcdLabelOutlet.text = @"Child Four";
-    
-    [self setAgeLabelsAndTapGestures];
+    [UIView animateWithDuration:0.33 animations:^{
+        overlay.alpha = 0.7;
+        tcp.frame = CGRectMake(0, 248, 320, 320);
+    } completion:^(BOOL finished) {
+        ;
+    }];
 }
 
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
+- (void)dropChildView {
+    __weak typeof(self) tcp = self;
+    __weak typeof(UIView) *sv = self.superview;
     
-    // Get those kids whose ages have not been set
-    NSDictionary *kidsWithoutAges = [ChildTraveler childTravelersWithoutAges];
-    
-    // And set their ages to the arbitrary value of 10
-    // TODO: parameterize this value of 10 with a constant variable
-    for (ChildTraveler *ct in [kidsWithoutAges objectEnumerator]) {
-        ct.childAge = 10;
-    }
+    [UIView animateWithDuration:0.33 animations:^{
+        overlay.alpha = 0.0f;
+        tcp.frame = CGRectMake(0, 569, 320, 320);
+    } completion:^(BOOL finished) {
+        [sv sendSubviewToBack:overlay];
+        [overlay removeFromSuperview];
+        [sv sendSubviewToBack:tcp];
+//        [tcp.childViewDelegate childViewDonePressed];
+        
+        // Get those kids whose ages have not been set
+        NSDictionary *kidsWithoutAges = [ChildTraveler childTravelersWithoutAges];
+        
+        // And set their ages to the arbitrary value of 10
+        // TODO: parameterize this value of 10 with a constant variable
+        for (ChildTraveler *ct in [kidsWithoutAges objectEnumerator]) {
+            ct.childAge = 10;
+        }
+        
+        [self.childViewDelegate childViewDidHide];
+    }];
 }
 
-#pragma mark Various methods
+#pragma mark Various
+
+- (void)overlayClicked {
+    [self.childViewDelegate childViewCancelled];
+    [self dropChildView];
+}
 
 - (void)setAgeLabelsAndTapGestures {
     for (int j = 0; j < 4; j++) {
@@ -130,7 +177,7 @@ NSTimeInterval const kCvAnimationDuration = 0.6;
     __block CGAffineTransform toTransform = CGAffineTransformMakeTranslation(0.0f, 0.0f);
     toTransform = CGAffineTransformScale(toTransform, 1.0f, 1.0f);
     
-    [self.view addSubview:asv];
+    [self addSubview:asv];
     [UIView animateWithDuration:kCvAnimationDuration animations:^{
         asv.transform = toTransform;
     } completion:^(BOOL finished) {
@@ -164,6 +211,7 @@ NSTimeInterval const kCvAnimationDuration = 0.6;
 - (IBAction)justPushIt:(id)sender {
     if (sender == self.daRealDoneButton) {
         [self.childViewDelegate childViewDonePressed];
+        [self dropChildView];
     } else if (sender == self.doneButton) {
         [self modifyChildTraveler];
     } else if (sender == self.minusChildButtonOutlet) {
@@ -307,7 +355,7 @@ NSTimeInterval const kCvAnimationDuration = 0.6;
 }
 
 - (UIView *)childAgeSelectorView {
-    UIView *view = [[UIView alloc] initWithFrame:self.view.bounds];
+    UIView *view = [[UIView alloc] initWithFrame:self.bounds];
     view.autoresizesSubviews = YES;
     view.backgroundColor = [UIColor whiteColor];
     [view addSubview:self.selectorViewLabel];

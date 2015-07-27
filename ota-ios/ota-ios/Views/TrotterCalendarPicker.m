@@ -78,6 +78,8 @@
     _arriveOrDepartLabel.text = _arrivalOrDepartureString = arrivalOrDepartureString;
 }
 
+#pragma mark Load and drop
+
 - (void)loadDatePicker {
     __weak typeof(self) tcp = self;
     __weak typeof(UIView) *sv = self.superview;

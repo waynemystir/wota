@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 /******
- * This class really belongs on a server.
+ * The bulk of this class really belongs on a server.
  *
  * The purpose of this class to provide a fully enabled set of credentials. As
  * EAN can disable credentials, this class iterates through credential sets to

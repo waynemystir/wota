@@ -43,22 +43,22 @@
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="iTz-6u-2Op" userLabel="prevBtn" customClass="WotaButton">
-                    <rect key="frame" x="5" y="48" width="63" height="33"/>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" id="iTz-6u-2Op" userLabel="prevBtn" customClass="WotaButton">
+                    <rect key="frame" x="5" y="45" width="64" height="36"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="27"/>
-                    <state key="normal" title="☚">
+                    <inset key="contentEdgeInsets" minX="20" minY="5" maxX="20" maxY="5"/>
+                    <state key="normal" image="arrow_left">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
                         <action selector="prevMonthPressed:" destination="iN0-l3-epB" eventType="touchUpInside" id="EK3-zW-825"/>
                     </connections>
                 </button>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Oe5-Xh-fGd" userLabel="nextBtn" customClass="WotaButton">
-                    <rect key="frame" x="252" y="48" width="63" height="33"/>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" id="Oe5-Xh-fGd" userLabel="nextBtn" customClass="WotaButton">
+                    <rect key="frame" x="251" y="45" width="64" height="36"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="32"/>
-                    <state key="normal" title="☞">
+                    <inset key="imageEdgeInsets" minX="20" minY="5" maxX="20" maxY="5"/>
+                    <state key="normal" image="arrow_right">
                         <color key="titleColor" red="0.0" green="0.47843137254901957" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
@@ -86,6 +86,8 @@
         </view>
     </objects>
     <resources>
+        <image name="arrow_left" width="24" height="24"/>
+        <image name="arrow_right" width="24" height="24"/>
         <image name="calendar_ok-disabled" width="37" height="37"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

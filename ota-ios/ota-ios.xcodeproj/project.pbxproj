@@ -29,12 +29,8 @@
 		B01F0ECE1AF8669600C68BA8 /* WotaTappableView.m in Sources */ = {isa = PBXBuildFile; fileRef = B01F0ECD1AF8669600C68BA8 /* WotaTappableView.m */; };
 		B032F62A1AC18F6700809395 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B032F6291AC18F6700809395 /* main.m */; };
 		B032F62D1AC18F6700809395 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B032F62C1AC18F6700809395 /* AppDelegate.m */; };
-		B032F6301AC18F6700809395 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B032F62F1AC18F6700809395 /* MainViewController.m */; };
 		B032F6351AC18F6700809395 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B032F6341AC18F6700809395 /* Images.xcassets */; };
 		B032F6441AC18F6800809395 /* ota_iosTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B032F6431AC18F6800809395 /* ota_iosTests.m */; };
-		B032F6501AC1935000809395 /* MainView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B032F64F1AC1935000809395 /* MainView.xib */; };
-		B032F6531AC193B300809395 /* CriteriaViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B032F6521AC193B300809395 /* CriteriaViewController.m */; };
-		B032F6551AC193DB00809395 /* CriteriaView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B032F6541AC193DB00809395 /* CriteriaView.xib */; };
 		B0344C441AE5A560000BBFCE /* WotaMoneyUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = B0344C431AE5A560000BBFCE /* WotaMoneyUtils.m */; };
 		B0344C471AE5A5F8000BBFCE /* WotaForwardingTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = B0344C461AE5A5F8000BBFCE /* WotaForwardingTextField.m */; };
 		B0344C4A1AE5A696000BBFCE /* WotaCardNumberField.m in Sources */ = {isa = PBXBuildFile; fileRef = B0344C491AE5A696000BBFCE /* WotaCardNumberField.m */; };
@@ -57,7 +53,6 @@
 		B05BD6301AC1FEE3002C2882 /* GooglePlace.m in Sources */ = {isa = PBXBuildFile; fileRef = B05BD62F1AC1FEE3002C2882 /* GooglePlace.m */; };
 		B05BD6321AC1FF54002C2882 /* PlaceAutoCompleteTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B05BD6311AC1FF54002C2882 /* PlaceAutoCompleteTableViewCell.xib */; };
 		B0617ACF1AF5BE5500AEA216 /* EanCancelPolicyInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B0617ACE1AF5BE5500AEA216 /* EanCancelPolicyInfo.m */; };
-		B061FE7B1B38FC77005773B3 /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B061FE7A1B38FC77005773B3 /* SearchViewController.m */; };
 		B061FE7E1B3910D6005773B3 /* HotelsTableViewDelegateImplementation.m in Sources */ = {isa = PBXBuildFile; fileRef = B061FE7D1B3910D6005773B3 /* HotelsTableViewDelegateImplementation.m */; };
 		B06C98BA1B0951E500DBE09D /* InternationalCallingCodes.plist in Resources */ = {isa = PBXBuildFile; fileRef = B06C98B91B0951E500DBE09D /* InternationalCallingCodes.plist */; };
 		B06C98BC1B09585300DBE09D /* CountryPicker.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B06C98BB1B09585300DBE09D /* CountryPicker.bundle */; };
@@ -80,25 +75,16 @@
 		B09277E51B4F70CC0094159B /* NoHotelsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B09277E41B4F70CC0094159B /* NoHotelsView.xib */; };
 		B09431E51B58A39300E69A71 /* TrotterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B09431E41B58A39300E69A71 /* TrotterView.xib */; };
 		B0963CB91AC786E3002FD859 /* SelectionCriteria.m in Sources */ = {isa = PBXBuildFile; fileRef = B0963CB81AC786E3002FD859 /* SelectionCriteria.m */; };
-		B0963CBC1AC89445002FD859 /* ChildViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B0963CBB1AC89445002FD859 /* ChildViewController.m */; };
 		B0963CBE1AC89459002FD859 /* ChildView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0963CBD1AC89459002FD859 /* ChildView.xib */; };
 		B0963CC11AC8BDC6002FD859 /* ChildTraveler.m in Sources */ = {isa = PBXBuildFile; fileRef = B0963CC01AC8BDC6002FD859 /* ChildTraveler.m */; };
 		B0963CC31AC8DFED002FD859 /* ChildSubView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0963CC21AC8DFED002FD859 /* ChildSubView.xib */; };
 		B0963CC61AC8E034002FD859 /* ChildSubView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0963CC51AC8E034002FD859 /* ChildSubView.m */; };
-		B0963CC91AC912E5002FD859 /* ChildAgeSelectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B0963CC81AC912E5002FD859 /* ChildAgeSelectorViewController.m */; };
 		B097457E1B28FF9100E4A9AD /* WotaMapAnnotatioin.m in Sources */ = {isa = PBXBuildFile; fileRef = B097457D1B28FF9100E4A9AD /* WotaMapAnnotatioin.m */; };
 		B09745871B29226800E4A9AD /* WotaMKPinAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = B09745861B29226800E4A9AD /* WotaMKPinAnnotationView.m */; };
 		B09797C91AC23C1F0014FC7C /* GoogleParser.m in Sources */ = {isa = PBXBuildFile; fileRef = B09797C81AC23C1F0014FC7C /* GoogleParser.m */; };
 		B09797CE1AC2518D0014FC7C /* MapView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B09797CD1AC2518D0014FC7C /* MapView.xib */; };
 		B09797D11AC321F90014FC7C /* GooglePlaceDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = B09797D01AC321F90014FC7C /* GooglePlaceDetail.m */; };
-		B09797E21AC343DD0014FC7C /* HotelListingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B09797E01AC343DD0014FC7C /* HotelListingViewController.m */; };
 		B09797E51AC344340014FC7C /* LoadEanData.m in Sources */ = {isa = PBXBuildFile; fileRef = B09797E41AC344340014FC7C /* LoadEanData.m */; };
-		B09797E71AC34DB70014FC7C /* HotelListingView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B09797E61AC34DB70014FC7C /* HotelListingView.xib */; };
-		B09797F81AC3BC690014FC7C /* THDateDay.m in Sources */ = {isa = PBXBuildFile; fileRef = B09797EF1AC3BC690014FC7C /* THDateDay.m */; };
-		B09797F91AC3BC690014FC7C /* THDateDay.xib in Resources */ = {isa = PBXBuildFile; fileRef = B09797F01AC3BC690014FC7C /* THDateDay.xib */; };
-		B09797FA1AC3BC690014FC7C /* THDatePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B09797F21AC3BC690014FC7C /* THDatePickerViewController.m */; };
-		B09797FB1AC3BC690014FC7C /* THDatePickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B09797F31AC3BC690014FC7C /* THDatePickerViewController.xib */; };
-		B09797FC1AC3BC690014FC7C /* UIViewController+KNSemiModal.m in Sources */ = {isa = PBXBuildFile; fileRef = B09797F51AC3BC690014FC7C /* UIViewController+KNSemiModal.m */; };
 		B09C5E9F1AD1735500A3D7E8 /* EanHotelInfoImage.m in Sources */ = {isa = PBXBuildFile; fileRef = B09C5E9E1AD1735500A3D7E8 /* EanHotelInfoImage.m */; };
 		B09C5EA31AD1930600A3D7E8 /* EanHotelListResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = B09C5EA21AD1930600A3D7E8 /* EanHotelListResponse.m */; };
 		B09C5EA61AD1A16E00A3D7E8 /* EanHotelListHotelSummary.m in Sources */ = {isa = PBXBuildFile; fileRef = B09C5EA51AD1A16E00A3D7E8 /* EanHotelListHotelSummary.m */; };
@@ -165,6 +151,7 @@
 		B0DF52341ADC74D400136661 /* GooglePlaceTableViewDelegateImplementation.m in Sources */ = {isa = PBXBuildFile; fileRef = B0DF52331ADC74D400136661 /* GooglePlaceTableViewDelegateImplementation.m */; };
 		B0DF52371ADC77BA00136661 /* PostalResultsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B0DF52361ADC77BA00136661 /* PostalResultsTableViewCell.m */; };
 		B0DF52391ADC77F100136661 /* PostResultsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0DF52381ADC77F100136661 /* PostResultsTableViewCell.xib */; };
+		B0E811081B65B51C00DE6D1A /* ChildView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0E811071B65B51C00DE6D1A /* ChildView.m */; };
 		B0F242111B5C7E7D0050B173 /* TravelersView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0F242101B5C7E7D0050B173 /* TravelersView.xib */; };
 		B0F242141B5CB94D0050B173 /* EanCredentials.m in Sources */ = {isa = PBXBuildFile; fileRef = B0F242131B5CB94D0050B173 /* EanCredentials.m */; };
 		B0F242171B5E08510050B173 /* EanWsError.m in Sources */ = {isa = PBXBuildFile; fileRef = B0F242161B5E08510050B173 /* EanWsError.m */; };
@@ -230,16 +217,10 @@
 		B032F6291AC18F6700809395 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		B032F62B1AC18F6700809395 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		B032F62C1AC18F6700809395 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		B032F62E1AC18F6700809395 /* MainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
-		B032F62F1AC18F6700809395 /* MainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		B032F6341AC18F6700809395 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		B032F63D1AC18F6700809395 /* ota-iosTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ota-iosTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B032F6421AC18F6800809395 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B032F6431AC18F6800809395 /* ota_iosTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ota_iosTests.m; sourceTree = "<group>"; };
-		B032F64F1AC1935000809395 /* MainView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainView.xib; sourceTree = "<group>"; };
-		B032F6511AC193B300809395 /* CriteriaViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CriteriaViewController.h; sourceTree = "<group>"; };
-		B032F6521AC193B300809395 /* CriteriaViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CriteriaViewController.m; sourceTree = "<group>"; };
-		B032F6541AC193DB00809395 /* CriteriaView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CriteriaView.xib; sourceTree = "<group>"; };
 		B0344C421AE5A560000BBFCE /* WotaMoneyUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WotaMoneyUtils.h; sourceTree = "<group>"; };
 		B0344C431AE5A560000BBFCE /* WotaMoneyUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WotaMoneyUtils.m; sourceTree = "<group>"; };
 		B0344C451AE5A5F8000BBFCE /* WotaForwardingTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WotaForwardingTextField.h; sourceTree = "<group>"; };
@@ -278,8 +259,6 @@
 		B05BD6311AC1FF54002C2882 /* PlaceAutoCompleteTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlaceAutoCompleteTableViewCell.xib; sourceTree = "<group>"; };
 		B0617ACD1AF5BE5500AEA216 /* EanCancelPolicyInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanCancelPolicyInfo.h; sourceTree = "<group>"; };
 		B0617ACE1AF5BE5500AEA216 /* EanCancelPolicyInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanCancelPolicyInfo.m; sourceTree = "<group>"; };
-		B061FE791B38FC77005773B3 /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchViewController.h; sourceTree = "<group>"; };
-		B061FE7A1B38FC77005773B3 /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchViewController.m; sourceTree = "<group>"; };
 		B061FE7C1B3910D6005773B3 /* HotelsTableViewDelegateImplementation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotelsTableViewDelegateImplementation.h; sourceTree = "<group>"; };
 		B061FE7D1B3910D6005773B3 /* HotelsTableViewDelegateImplementation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotelsTableViewDelegateImplementation.m; sourceTree = "<group>"; };
 		B06C98B91B0951E500DBE09D /* InternationalCallingCodes.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = InternationalCallingCodes.plist; sourceTree = "<group>"; };
@@ -313,16 +292,12 @@
 		B09431E41B58A39300E69A71 /* TrotterView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TrotterView.xib; sourceTree = "<group>"; };
 		B0963CB71AC786E3002FD859 /* SelectionCriteria.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectionCriteria.h; sourceTree = "<group>"; };
 		B0963CB81AC786E3002FD859 /* SelectionCriteria.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectionCriteria.m; sourceTree = "<group>"; };
-		B0963CBA1AC89445002FD859 /* ChildViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChildViewController.h; sourceTree = "<group>"; };
-		B0963CBB1AC89445002FD859 /* ChildViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChildViewController.m; sourceTree = "<group>"; };
 		B0963CBD1AC89459002FD859 /* ChildView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChildView.xib; sourceTree = "<group>"; };
 		B0963CBF1AC8BDC6002FD859 /* ChildTraveler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChildTraveler.h; sourceTree = "<group>"; };
 		B0963CC01AC8BDC6002FD859 /* ChildTraveler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChildTraveler.m; sourceTree = "<group>"; };
 		B0963CC21AC8DFED002FD859 /* ChildSubView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChildSubView.xib; sourceTree = "<group>"; };
 		B0963CC41AC8E034002FD859 /* ChildSubView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChildSubView.h; sourceTree = "<group>"; };
 		B0963CC51AC8E034002FD859 /* ChildSubView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChildSubView.m; sourceTree = "<group>"; };
-		B0963CC71AC912E5002FD859 /* ChildAgeSelectorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChildAgeSelectorViewController.h; sourceTree = "<group>"; };
-		B0963CC81AC912E5002FD859 /* ChildAgeSelectorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChildAgeSelectorViewController.m; sourceTree = "<group>"; };
 		B097457C1B28FF9100E4A9AD /* WotaMapAnnotatioin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WotaMapAnnotatioin.h; sourceTree = "<group>"; };
 		B097457D1B28FF9100E4A9AD /* WotaMapAnnotatioin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WotaMapAnnotatioin.m; sourceTree = "<group>"; };
 		B09745851B29226800E4A9AD /* WotaMKPinAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WotaMKPinAnnotationView.h; sourceTree = "<group>"; };
@@ -332,21 +307,8 @@
 		B09797CD1AC2518D0014FC7C /* MapView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MapView.xib; sourceTree = "<group>"; };
 		B09797CF1AC321F90014FC7C /* GooglePlaceDetail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GooglePlaceDetail.h; sourceTree = "<group>"; };
 		B09797D01AC321F90014FC7C /* GooglePlaceDetail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GooglePlaceDetail.m; sourceTree = "<group>"; };
-		B09797E01AC343DD0014FC7C /* HotelListingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotelListingViewController.m; sourceTree = "<group>"; };
-		B09797E11AC343DD0014FC7C /* HotelListingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotelListingViewController.h; sourceTree = "<group>"; };
 		B09797E31AC344340014FC7C /* LoadEanData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadEanData.h; sourceTree = "<group>"; };
 		B09797E41AC344340014FC7C /* LoadEanData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadEanData.m; sourceTree = "<group>"; };
-		B09797E61AC34DB70014FC7C /* HotelListingView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HotelListingView.xib; sourceTree = "<group>"; };
-		B09797EC1AC3BC690014FC7C /* LICENSE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = "<group>"; };
-		B09797ED1AC3BC690014FC7C /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		B09797EE1AC3BC690014FC7C /* THDateDay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THDateDay.h; sourceTree = "<group>"; };
-		B09797EF1AC3BC690014FC7C /* THDateDay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THDateDay.m; sourceTree = "<group>"; };
-		B09797F01AC3BC690014FC7C /* THDateDay.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = THDateDay.xib; sourceTree = "<group>"; };
-		B09797F11AC3BC690014FC7C /* THDatePickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = THDatePickerViewController.h; sourceTree = "<group>"; };
-		B09797F21AC3BC690014FC7C /* THDatePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = THDatePickerViewController.m; sourceTree = "<group>"; };
-		B09797F31AC3BC690014FC7C /* THDatePickerViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = THDatePickerViewController.xib; sourceTree = "<group>"; };
-		B09797F41AC3BC690014FC7C /* UIViewController+KNSemiModal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+KNSemiModal.h"; sourceTree = "<group>"; };
-		B09797F51AC3BC690014FC7C /* UIViewController+KNSemiModal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+KNSemiModal.m"; sourceTree = "<group>"; };
 		B09C5E9D1AD1735500A3D7E8 /* EanHotelInfoImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanHotelInfoImage.h; sourceTree = "<group>"; };
 		B09C5E9E1AD1735500A3D7E8 /* EanHotelInfoImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanHotelInfoImage.m; sourceTree = "<group>"; };
 		B09C5EA11AD1930600A3D7E8 /* EanHotelListResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanHotelListResponse.h; sourceTree = "<group>"; };
@@ -448,6 +410,8 @@
 		B0DF52351ADC77BA00136661 /* PostalResultsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostalResultsTableViewCell.h; sourceTree = "<group>"; };
 		B0DF52361ADC77BA00136661 /* PostalResultsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostalResultsTableViewCell.m; sourceTree = "<group>"; };
 		B0DF52381ADC77F100136661 /* PostResultsTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PostResultsTableViewCell.xib; sourceTree = "<group>"; };
+		B0E811061B65B51C00DE6D1A /* ChildView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChildView.h; sourceTree = "<group>"; };
+		B0E811071B65B51C00DE6D1A /* ChildView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChildView.m; sourceTree = "<group>"; };
 		B0F242101B5C7E7D0050B173 /* TravelersView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TravelersView.xib; sourceTree = "<group>"; };
 		B0F242121B5CB94D0050B173 /* EanCredentials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanCredentials.h; sourceTree = "<group>"; };
 		B0F242131B5CB94D0050B173 /* EanCredentials.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanCredentials.m; sourceTree = "<group>"; };
@@ -662,13 +626,10 @@
 				B0C4207E1B6551520001E9CB /* TrotterCalendarDay.h */,
 				B0C4207F1B6551520001E9CB /* TrotterCalendarDay.m */,
 				B0C420811B6560040001E9CB /* TrotterCalendarDay.xib */,
-				B032F64F1AC1935000809395 /* MainView.xib */,
-				B032F6541AC193DB00809395 /* CriteriaView.xib */,
 				B05BD6311AC1FF54002C2882 /* PlaceAutoCompleteTableViewCell.xib */,
 				B0508C6D1B34DCA8009CC56F /* PowerebByGoogleCell.xib */,
 				B0C04ADB1B534FDD002C89F2 /* NoPredictionsCell.xib */,
 				B09797CD1AC2518D0014FC7C /* MapView.xib */,
-				B09797E61AC34DB70014FC7C /* HotelListingView.xib */,
 				B03DA0061B46D5930039B9C6 /* FilterTableView.xib */,
 				B0CBC7D81B483C2D00F61CA9 /* FilterView.xib */,
 				B010E3831B4CCE7300CA8374 /* SortView.xib */,
@@ -676,6 +637,8 @@
 				B080B7C81AC505DC00075A32 /* HotelInfoView.xib */,
 				B0FE0F481AC6ED0000DAF635 /* BookView.xib */,
 				B0FE0F4D1AC70A2500DAF635 /* SelectRoomView.xib */,
+				B0E811061B65B51C00DE6D1A /* ChildView.h */,
+				B0E811071B65B51C00DE6D1A /* ChildView.m */,
 				B0963CBD1AC89459002FD859 /* ChildView.xib */,
 				B0963CC21AC8DFED002FD859 /* ChildSubView.xib */,
 				B0963CC41AC8E034002FD859 /* ChildSubView.h */,
@@ -710,24 +673,12 @@
 			children = (
 				B0BB3F411B59632100DCCFE7 /* TrotterViewController.h */,
 				B0BB3F421B59632100DCCFE7 /* TrotterViewController.m */,
-				B032F62E1AC18F6700809395 /* MainViewController.h */,
-				B032F62F1AC18F6700809395 /* MainViewController.m */,
-				B061FE791B38FC77005773B3 /* SearchViewController.h */,
-				B061FE7A1B38FC77005773B3 /* SearchViewController.m */,
-				B032F6511AC193B300809395 /* CriteriaViewController.h */,
-				B032F6521AC193B300809395 /* CriteriaViewController.m */,
-				B09797E11AC343DD0014FC7C /* HotelListingViewController.h */,
-				B09797E01AC343DD0014FC7C /* HotelListingViewController.m */,
 				B080B7C51AC5057100075A32 /* HotelInfoViewController.h */,
 				B080B7C61AC5057100075A32 /* HotelInfoViewController.m */,
 				B0FE0F451AC6EB9500DAF635 /* BookViewController.h */,
 				B0FE0F461AC6EB9500DAF635 /* BookViewController.m */,
 				B0FE0F4A1AC70A0700DAF635 /* SelectRoomViewController.h */,
 				B0FE0F4B1AC70A0700DAF635 /* SelectRoomViewController.m */,
-				B0963CBA1AC89445002FD859 /* ChildViewController.h */,
-				B0963CBB1AC89445002FD859 /* ChildViewController.m */,
-				B0963CC71AC912E5002FD859 /* ChildAgeSelectorViewController.h */,
-				B0963CC81AC912E5002FD859 /* ChildAgeSelectorViewController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -843,26 +794,8 @@
 				B0D02FB71AE6123000B1E75F /* PaymentKit */,
 				B0344C411AE5A448000BBFCE /* WotaMoneyKit */,
 				B018C0481ADA08CF00DDCE2E /* Keychain */,
-				B09797EB1AC3BC690014FC7C /* THDatePicker */,
 			);
 			path = Libraries;
-			sourceTree = "<group>";
-		};
-		B09797EB1AC3BC690014FC7C /* THDatePicker */ = {
-			isa = PBXGroup;
-			children = (
-				B09797EC1AC3BC690014FC7C /* LICENSE.md */,
-				B09797ED1AC3BC690014FC7C /* README.md */,
-				B09797EE1AC3BC690014FC7C /* THDateDay.h */,
-				B09797EF1AC3BC690014FC7C /* THDateDay.m */,
-				B09797F01AC3BC690014FC7C /* THDateDay.xib */,
-				B09797F11AC3BC690014FC7C /* THDatePickerViewController.h */,
-				B09797F21AC3BC690014FC7C /* THDatePickerViewController.m */,
-				B09797F31AC3BC690014FC7C /* THDatePickerViewController.xib */,
-				B09797F41AC3BC690014FC7C /* UIViewController+KNSemiModal.h */,
-				B09797F51AC3BC690014FC7C /* UIViewController+KNSemiModal.m */,
-			);
-			path = THDatePicker;
 			sourceTree = "<group>";
 		};
 		B09C5EA01AD191DD00A3D7E8 /* HotelListResponse */ = {
@@ -1107,7 +1040,6 @@
 				B0D02FEC1AE6123000B1E75F /* amex@2x.png in Resources */,
 				B018C0471ADA01FA00DDCE2E /* PaymentDetailsView.xib in Resources */,
 				B0D02FEF1AE6123000B1E75F /* cvc.png in Resources */,
-				B09797F91AC3BC690014FC7C /* THDateDay.xib in Resources */,
 				B0D02FFD1AE6123000B1E75F /* gradient@2x.png in Resources */,
 				B03DA0071B46D5930039B9C6 /* FilterTableView.xib in Resources */,
 				B0D02FF31AE6123000B1E75F /* discover.png in Resources */,
@@ -1122,12 +1054,10 @@
 				B0D02FF91AE6123000B1E75F /* placeholder.png in Resources */,
 				B0C04ADC1B534FDD002C89F2 /* NoPredictionsCell.xib in Resources */,
 				B0D02FFF1AE6123000B1E75F /* textfield@2x.png in Resources */,
-				B09797FB1AC3BC690014FC7C /* THDatePickerViewController.xib in Resources */,
 				B09431E51B58A39300E69A71 /* TrotterView.xib in Resources */,
 				B09277E51B4F70CC0094159B /* NoHotelsView.xib in Resources */,
 				B0D02FF71AE6123000B1E75F /* mastercard.png in Resources */,
 				B0FE0F491AC6ED0000DAF635 /* BookView.xib in Resources */,
-				B032F6551AC193DB00809395 /* CriteriaView.xib in Resources */,
 				B0BB3F451B59DD3500DCCFE7 /* HotelNameFilterView.xib in Resources */,
 				B010E3841B4CCE7300CA8374 /* SortView.xib in Resources */,
 				B0C04AD51B5212AD002C89F2 /* NetworkProblemView.xib in Resources */,
@@ -1141,10 +1071,8 @@
 				B09E41851AEB43DA000A718D /* WotaButton.xib in Resources */,
 				B0963CC31AC8DFED002FD859 /* ChildSubView.xib in Resources */,
 				B080B7C91AC505DC00075A32 /* HotelInfoView.xib in Resources */,
-				B032F6501AC1935000809395 /* MainView.xib in Resources */,
 				B0BD38211AF990F600EF5E4F /* NightRateTableCellView.xib in Resources */,
 				B0963CBE1AC89459002FD859 /* ChildView.xib in Resources */,
-				B09797E71AC34DB70014FC7C /* HotelListingView.xib in Resources */,
 				B06C98BC1B09585300DBE09D /* CountryPicker.bundle in Resources */,
 				B0D02FFB1AE6123000B1E75F /* visa.png in Resources */,
 				B0F242111B5C7E7D0050B173 /* TravelersView.xib in Resources */,
@@ -1173,17 +1101,16 @@
 				B0D02FE61AE6123000B1E75F /* PTKCardNumber.m in Sources */,
 				B09745871B29226800E4A9AD /* WotaMKPinAnnotationView.m in Sources */,
 				B080B7C71AC5057100075A32 /* HotelInfoViewController.m in Sources */,
+				B0E811081B65B51C00DE6D1A /* ChildView.m in Sources */,
 				B0D01EB81B0590260001C558 /* BackCancelView.m in Sources */,
 				B0DF52341ADC74D400136661 /* GooglePlaceTableViewDelegateImplementation.m in Sources */,
 				B0344C471AE5A5F8000BBFCE /* WotaForwardingTextField.m in Sources */,
 				B09C5EA31AD1930600A3D7E8 /* EanHotelListResponse.m in Sources */,
 				B0D01DE51B02D4880001C558 /* NavigationView.m in Sources */,
 				B0D02FE31AE6123000B1E75F /* PTKCard.m in Sources */,
-				B0963CC91AC912E5002FD859 /* ChildAgeSelectorViewController.m in Sources */,
 				B00E77221B236A3B00C27331 /* HLTableViewCell.m in Sources */,
 				B0F5549D1B13BB2300E9B805 /* EanPaymentTypeResponse.m in Sources */,
 				B0963CC61AC8E034002FD859 /* ChildSubView.m in Sources */,
-				B0963CBC1AC89445002FD859 /* ChildViewController.m in Sources */,
 				B03C2BAA1AED74E700C13AC5 /* EanRateInfo.m in Sources */,
 				B0C420791B64F7550001E9CB /* TrotterCalendarPicker.m in Sources */,
 				B0F242171B5E08510050B173 /* EanWsError.m in Sources */,
@@ -1194,7 +1121,6 @@
 				B09C5EA61AD1A16E00A3D7E8 /* EanHotelListHotelSummary.m in Sources */,
 				B0D01EBB1B0657010001C558 /* CheckMarkView.m in Sources */,
 				B018C04B1ADA08CF00DDCE2E /* JNKeychain.m in Sources */,
-				B032F6301AC18F6700809395 /* MainViewController.m in Sources */,
 				B09797D11AC321F90014FC7C /* GooglePlaceDetail.m in Sources */,
 				B05BD6301AC1FEE3002C2882 /* GooglePlace.m in Sources */,
 				B0C04AD31B5210C8002C89F2 /* NetworkProblemResponder.m in Sources */,
@@ -1234,8 +1160,6 @@
 				B00872CD1AEC1D4900CB2B9D /* SelectSmokingPreferenceDelegateImplementation.m in Sources */,
 				B0CBC8541B48AF9200F61CA9 /* RangeSliderTrackLayer.swift in Sources */,
 				B0D02FE21AE6123000B1E75F /* PTKAddressZip.m in Sources */,
-				B09797F81AC3BC690014FC7C /* THDateDay.m in Sources */,
-				B09797FA1AC3BC690014FC7C /* THDatePickerViewController.m in Sources */,
 				B00872D31AECE5FB00CB2B9D /* EanRoomGroup.m in Sources */,
 				B0D030021AE7380F00B1E75F /* PaymentDetails.m in Sources */,
 				B0F242141B5CB94D0050B173 /* EanCredentials.m in Sources */,
@@ -1252,25 +1176,21 @@
 				B018C0451AD9BEC800DDCE2E /* GuestInfo.m in Sources */,
 				B06C98BF1B09586B00DBE09D /* CountryPicker.m in Sources */,
 				B0D02FE41AE6123000B1E75F /* PTKCardCVC.m in Sources */,
-				B09797E21AC343DD0014FC7C /* HotelListingViewController.m in Sources */,
 				B0BD38241AF9914600EF5E4F /* NightRateTableCellView.m in Sources */,
 				B0344C501AE5A7BD000BBFCE /* WotaCardPatternInfo.m in Sources */,
 				B0344C441AE5A560000BBFCE /* WotaMoneyUtils.m in Sources */,
 				B0D02FE91AE6123000B1E75F /* PTKUSAddressZip.m in Sources */,
 				B075AB0C1ADB73560028C613 /* GooglePlaces.m in Sources */,
 				B0F5549A1B13B9E500E9B805 /* EanPaymentType.m in Sources */,
-				B061FE7B1B38FC77005773B3 /* SearchViewController.m in Sources */,
 				B0122E441AD0885D00E44319 /* EanHotelRoomAvailabilityResponse.m in Sources */,
 				B0D02FB61AE5F92500B1E75F /* Luhn.m in Sources */,
 				B0122E4D1AD0A88500E44319 /* EanHotelDetails.m in Sources */,
 				B0D02FE71AE6123000B1E75F /* PTKComponent.m in Sources */,
 				B05BD62C1AC1FE53002C2882 /* PlaceAutoCompleteTableViewCell.m in Sources */,
 				B0122E501AD0E8C700E44319 /* EanHotelInformationSummary.m in Sources */,
-				B032F6531AC193B300809395 /* CriteriaViewController.m in Sources */,
 				B01F0ECE1AF8669600C68BA8 /* WotaTappableView.m in Sources */,
 				B080B7CC1AC506B500075A32 /* EanHotelInformationResponse.m in Sources */,
 				B0344C4D1AE5A6E0000BBFCE /* WotaCardNumberFormatter.m in Sources */,
-				B09797FC1AC3BC690014FC7C /* UIViewController+KNSemiModal.m in Sources */,
 				B0B50AD41B25285B00685384 /* GoogleNearbyPlaces.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

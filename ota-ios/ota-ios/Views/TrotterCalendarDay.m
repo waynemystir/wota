@@ -54,8 +54,8 @@
         [self setBackgroundColor:[UIColor whiteColor]];
         [self.dateButton setSelected:NO];
         [self.dateButton setTitleColor:self.tintColor forState:UIControlStateNormal];
+        [self setCurrentColors];
     }
-    [self setCurrentColors];
 }
 
 - (void)setCurrentColors {

@@ -4,21 +4,9 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ChildViewController">
-            <connections>
-                <outlet property="addChildButtonOutlet" destination="8Gq-Rz-Oo1" id="Me6-5C-0ko"/>
-                <outlet property="childFourOutlet" destination="TFr-ob-fDM" id="GgT-tX-827"/>
-                <outlet property="childOneOutlet" destination="ukn-cJ-Ykz" id="pHA-ds-LHL"/>
-                <outlet property="childThreeOutlet" destination="1vG-yo-bwR" id="Yjl-2y-JjW"/>
-                <outlet property="childTwoOutlet" destination="Gxd-hN-X5o" id="gBj-NJ-oFk"/>
-                <outlet property="daRealDoneButton" destination="37V-IW-9uK" id="7fJ-Nl-XAg"/>
-                <outlet property="minusChildButtonOutlet" destination="lLK-UB-pjn" id="Fdx-q0-Zas"/>
-                <outlet property="numberKidsLabelOutlet" destination="Baa-fx-cLJ" id="Qix-G5-euu"/>
-                <outlet property="view" destination="iN0-l3-epB" id="jwE-eY-XCx"/>
-            </connections>
-        </placeholder>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view contentMode="scaleToFill" id="iN0-l3-epB">
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="ChildView">
             <rect key="frame" x="0.0" y="0.0" width="320" height="320"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
@@ -36,7 +24,7 @@
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
-                        <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="ug3-n9-B5M"/>
+                        <action selector="justPushIt:" destination="iN0-l3-epB" eventType="touchUpInside" id="W4j-4m-0lP"/>
                     </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lLK-UB-pjn" userLabel="minusChildButton" customClass="WotaButton">
@@ -47,7 +35,7 @@
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
-                        <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="yBN-aZ-BUw"/>
+                        <action selector="justPushIt:" destination="iN0-l3-epB" eventType="touchUpInside" id="esa-SY-nqc"/>
                     </connections>
                 </button>
                 <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ukn-cJ-Ykz" userLabel="childOneView" customClass="ChildSubView">
@@ -70,13 +58,23 @@
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
-                        <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="Rsi-bu-CX4"/>
+                        <action selector="justPushIt:" destination="iN0-l3-epB" eventType="touchUpInside" id="7Vs-Hs-GaB"/>
                     </connections>
                 </button>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="addChildButtonOutlet" destination="8Gq-Rz-Oo1" id="g2N-E5-4DF"/>
+                <outlet property="childFourOutlet" destination="TFr-ob-fDM" id="Or6-iO-Zng"/>
+                <outlet property="childOneOutlet" destination="ukn-cJ-Ykz" id="cyb-Xp-lOk"/>
+                <outlet property="childThreeOutlet" destination="1vG-yo-bwR" id="CSR-rk-djQ"/>
+                <outlet property="childTwoOutlet" destination="Gxd-hN-X5o" id="duV-1t-icD"/>
+                <outlet property="daRealDoneButton" destination="37V-IW-9uK" id="bZT-r8-feZ"/>
+                <outlet property="minusChildButtonOutlet" destination="lLK-UB-pjn" id="ZQI-bK-EoZ"/>
+                <outlet property="numberKidsLabelOutlet" destination="Baa-fx-cLJ" id="qUm-99-4U6"/>
+            </connections>
             <point key="canvasLocation" x="271" y="318"/>
         </view>
     </objects>

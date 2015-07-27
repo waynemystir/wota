@@ -102,6 +102,17 @@ CGFloat const endScale = 1.626f;
     expand.timingFunction = [CAMediaTimingFunction functionWithName:[[self class] mediaTimingFunction]];
     [[upBar layer] addAnimation:expand forKey:@"shrink"];
     [[downBar layer] addAnimation:expand forKey:@"shrink"];
+    
+    CABasicAnimation *thickness = [CABasicAnimation animationWithKeyPath:@"transform.scale.y"];
+    thickness.fromValue = [NSNumber numberWithFloat:1.0f];
+    thickness.toValue = [NSNumber numberWithFloat:1.3f];
+    thickness.duration = animationDuration;
+    thickness.delegate = self;
+    [thickness setFillMode:kCAFillModeForwards];
+    [thickness setRemovedOnCompletion:NO];
+    thickness.timingFunction = [CAMediaTimingFunction functionWithName:[[self class] mediaTimingFunction]];
+    [[upBar layer] addAnimation:thickness forKey:@"thicker"];
+    [[downBar layer] addAnimation:thickness forKey:@"thicker"];
 }
 
 - (void)animateToBack:(NSTimeInterval)animationDuration {
@@ -128,6 +139,17 @@ CGFloat const endScale = 1.626f;
     shrink.timingFunction = [CAMediaTimingFunction functionWithName:[[self class] mediaTimingFunction]];
     [[upBar layer] addAnimation:shrink forKey:@"shrink"];
     [[downBar layer] addAnimation:shrink forKey:@"shrink"];
+    
+    CABasicAnimation *thickness = [CABasicAnimation animationWithKeyPath:@"transform.scale.y"];
+    thickness.fromValue = [NSNumber numberWithFloat:1.3f];
+    thickness.toValue = [NSNumber numberWithFloat:1.0f];
+    thickness.duration = animationDuration;
+    thickness.delegate = self;
+    [thickness setFillMode:kCAFillModeForwards];
+    [thickness setRemovedOnCompletion:NO];
+    thickness.timingFunction = [CAMediaTimingFunction functionWithName:[[self class] mediaTimingFunction]];
+    [[upBar layer] addAnimation:thickness forKey:@"thicker"];
+    [[downBar layer] addAnimation:thickness forKey:@"thicker"];
 }
 
 - (void)grayIt {
