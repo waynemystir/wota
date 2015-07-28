@@ -3,17 +3,16 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "search.png"
+      "filename" : "search_small.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "search@2x.png"
+      "filename" : "search_small@2x.png"
     },
     {
       "idiom" : "universal",
-      "scale" : "3x",
-      "filename" : "search@3x.png"
+      "scale" : "3x"
     }
   ],
   "info" : {

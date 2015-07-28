@@ -295,7 +295,7 @@ NSUInteger const kRightCheckMarkView = 4921743;
     ivr.hidden = YES;
     [_rightView addSubview:ivr];
     
-    UIImage *im = [UIImage imageNamed:@"search.png"];
+    UIImage *im = [UIImage imageNamed:@"search_mid.png"];
     UIImageView *iv = [[UIImageView alloc] initWithImage:im];
     iv.tag = 93837363;
     iv.frame = CGRectMake(8, 12, 26, 26);

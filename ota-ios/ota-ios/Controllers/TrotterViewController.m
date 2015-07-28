@@ -241,7 +241,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     UITapGestureRecognizer *ttgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickWmapClicker)];
     ttgr.numberOfTapsRequired = 1;
     ttgr.numberOfTouchesRequired = 1;
-    self.wmapClicker.userInteractionEnabled = YES;
+    self.wmapClicker.userInteractionEnabled = NO;
     [self.wmapClicker addGestureRecognizer:ttgr];
     
     UITapGestureRecognizer *ogr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dropFilterOrSortView)];
@@ -340,6 +340,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     restoredWhereToAlready = YES;
     restoringWhereTo = YES;
     typeof(self) wes = self;
+    wes.wmapClicker.userInteractionEnabled = YES;
     
     if (tgr.view == self.openingWhereTo) {
         [wes.whereToTextField performSelector:@selector(becomeFirstResponder) withObject:nil afterDelay:0.001];
@@ -358,13 +359,13 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     }
     
     [UIView animateWithDuration:0.23 animations:^{
-        wes.openingWhereTo.frame = CGRectMake(6, 0, 270, 30);
+        wes.openingWhereTo.frame = CGRectMake(6, 16, 270, 30);
         wes.imageViewOpeningSearch.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
         wes.labelWhereYouGoing.frame = CGRectMake(6, 0, 270, 30);
         wes.labelWhereYouGoing.textColor = [UIColor lightGrayColor];
         wes.labelWhereYouGoing.font = [UIFont systemFontOfSize:17.0f];
         
-        wes.openingWmapContainer.frame = CGRectMake(283, 0, 30, 30);
+        wes.openingWmapContainer.frame = CGRectMake(283, 16, 30, 30);
     } completion:^(BOOL finished) {
         restoringWhereTo = NO;
         wes.whereToTextField.hidden = NO;
@@ -402,6 +403,8 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         [self animateTableViewExpansion];
     }
     
+    [self.view bringSubviewToFront:self.wmapClicker];
+    
     self.whereToTextField.text = @"";
     self.whereToSecondLevel.text = @"";
     
@@ -411,6 +414,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    [self.view bringSubviewToFront:self.wmapClicker];
     NSString *autoCompleteText = [textField.text stringByReplacingCharactersInRange:range withString:string];
     if ([autoCompleteText length] >= kTrvAutoCompleteMinimumNumberOfCharacters) {
         if (self.placesTableData == [SelectionCriteria singleton].placesArray) {
@@ -428,6 +432,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [self.view bringSubviewToFront:self.wmapClicker];
     [self.whereToTextField resignFirstResponder];
     self.whereToTextField.text = [SelectionCriteria singleton].whereToFirst;
     self.whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
@@ -459,6 +464,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 }
 
 - (BOOL)textFieldShouldClear:(UITextField *)textField {
+    [self.view bringSubviewToFront:self.wmapClicker];
     if (self.placesTableData != [SelectionCriteria singleton].placesArray) {
         self.placesTableData = [SelectionCriteria singleton].placesArray;
         [self.placesTableView reloadData];
@@ -469,6 +475,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
+    [self.view bringSubviewToFront:self.wmapClicker];
     [self resetWhereToTfAppearance];
 }
 
@@ -694,9 +701,9 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 - (void)animateTableViewExpansion {
     __weak UIView *actv = self.placesTableView;
     [self.view bringSubviewToFront:actv];
-    if (restoringWhereTo) {
+//    if (restoringWhereTo) {
         [self.view bringSubviewToFront:self.whereToContainer];
-    }
+//    }
     
     [self transitionToWmapCancel];
     
@@ -729,16 +736,20 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
             break;
     }
     
+    __weak typeof(self) wes = self;
     __weak UIView *actv = self.placesTableView;
     self.isPlacesTableViewExpanded = NO;
     
     [UIView animateWithDuration:self.animationDuraton animations:^{
         actv.frame = self.placesTableViewZeroFrame;
     } completion:^(BOOL finished) {
+        [wes.view sendSubviewToBack:actv];
     }];
 }
 
 - (void)transitionToMapView {
+    
+    [self.view endEditing:YES];
     
     typeof(self) wes = self;
     __weak UIView *cv = [self currentViewFromState];
@@ -791,13 +802,15 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     
     [UIView animateWithDuration:kTrvFlipAnimationDuration animations:^{
         wes.containerView.frame = wes.containerViewFrame;
-        wes.whereToContainer.frame = CGRectMake(0, 34, 320, 35);
-        wes.whereToTextField.frame = CGRectMake(32, 0, 244, 30);
-        wes.whereToSecondLevel.frame = CGRectMake(39, 1, 232, 21);
-        wes.backContainer.frame = CGRectMake(0, -3, 33, 33);
+        wes.whereToContainer.frame = CGRectMake(0, 20, 320, 49);
+        wes.whereToTextField.frame = CGRectMake(32, 14, 244, 30);
+        wes.whereToSecondLevel.frame = CGRectMake(39, 15, 232, 21);
+        wes.wmapContainer.frame = CGRectMake(283, 14, 30, 30);
+        wes.wmapClicker.frame = CGRectMake(273, 20, 48, 66);
+        wes.backContainer.frame = CGRectMake(0, 11, 33, 33);
         wes.footerContainer.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
     } completion:^(BOOL finished) {
-        ;
+        [wes.view bringSubviewToFront:wes.wmapClicker];
     }];
 }
 
@@ -809,12 +822,15 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     
     [UIView animateWithDuration:kTrvFlipAnimationDuration animations:^{
         wes.containerView.frame = wes.containerViewFrame;
-        wes.whereToContainer.frame = CGRectMake(0, 68, 320, 50);
-        wes.whereToTextField.frame = CGRectMake(6, 0, 270, 30);
-        wes.whereToSecondLevel.frame = CGRectMake(13, 29, 295, 21);
-        wes.backContainer.frame = CGRectMake(2, -3, 33, 33);
+        wes.whereToContainer.frame = CGRectMake(0, 52, 320, 66);
+        wes.whereToTextField.frame = CGRectMake(6, 16, 270, 30);
+        wes.whereToSecondLevel.frame = CGRectMake(13, 45, 295, 21);
+        wes.wmapContainer.frame = CGRectMake(283, 16, 30, 30);
+        wes.wmapClicker.frame = CGRectMake(273, 52, 48, 66);
+        wes.backContainer.frame = CGRectMake(2, 13, 33, 33);
         wes.footerContainer.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
     } completion:^(BOOL finished) {
+        [wes.view bringSubviewToFront:wes.wmapClicker];
         ;
     }];
 }
@@ -835,6 +851,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
                       duration:kTrvFlipAnimationDuration
                        options:UIViewAnimationOptionTransitionFlipFromLeft|UIViewAnimationOptionShowHideTransitionViews|UIViewAnimationOptionAllowAnimatedContent
                     completion:^(BOOL finished) {
+                        [wes.whereToContainer bringSubviewToFront:wes.wmapClicker];
                     }];
 }
 
@@ -854,6 +871,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
                       duration:kTrvFlipAnimationDuration
                        options:UIViewAnimationOptionTransitionFlipFromLeft|UIViewAnimationOptionShowHideTransitionViews|UIViewAnimationOptionAllowAnimatedContent
                     completion:^(BOOL finished) {
+                        [wes.whereToContainer bringSubviewToFront:wes.wmapClicker];
                     }];
 }
 
@@ -873,6 +891,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
                       duration:kTrvFlipAnimationDuration
                        options:UIViewAnimationOptionTransitionFlipFromLeft|UIViewAnimationOptionShowHideTransitionViews|UIViewAnimationOptionAllowAnimatedContent
                     completion:^(BOOL finished) {
+                        [wes.whereToContainer bringSubviewToFront:wes.wmapClicker];
                     }];
 }
 
@@ -1203,6 +1222,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 
 - (void)onHotelDataFiltered {
     [_hotelsTableView reloadData];
+    [_hotelsTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
     [self redrawMapAnnotationsAndRegion:NO];
 }
 
@@ -1213,6 +1233,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 
 - (void)onHotelDataSorted {
     [_hotelsTableView reloadData];
+    [_hotelsTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
     [self redrawMapAnnotationsAndRegion:NO];
 }
 
@@ -1412,16 +1433,16 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 - (void)showOrHideTvControls {
     if (self.hotelTableViewDelegate.hotelData.count == 0) {
         self.hotelsTableView.tableHeaderView.hidden = YES;
-//        self.wmapIvContainer.hidden = YES;
-//        self.searchMapBtn.hidden = YES;
-//        self.pricesAvgLabel.hidden = YES;
-//        self.sortFilterContainer.hidden = YES;
+        self.filterContainer.alpha = 0.2f;
+        self.filterContainer.userInteractionEnabled = NO;
+        self.sortContainer.alpha = 0.2f;
+        self.sortContainer.userInteractionEnabled = NO;
     } else {
         self.hotelsTableView.tableHeaderView.hidden = NO;
-//        self.wmapIvContainer.hidden = NO;
-//        self.searchMapBtn.hidden = NO;
-//        self.pricesAvgLabel.hidden = NO;
-//        self.sortFilterContainer.hidden = NO;
+        self.filterContainer.alpha = 1.0f;
+        self.filterContainer.userInteractionEnabled = YES;
+        self.sortContainer.alpha = 1.0f;
+        self.sortContainer.userInteractionEnabled = YES;
     }
 }
 
@@ -1433,7 +1454,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     UITextField *tf = (UITextField *) [filterView viewWithTag:41414141];
     tf.delegate = _hotelTableViewDelegate;
     
-    UIImage *im = [[UIImage imageNamed:@"search.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    UIImage *im = [[UIImage imageNamed:@"search_small.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     UIImageView *iv = [[UIImageView alloc] initWithImage:im];
     iv.tintColor = [UIColor blackColor];
     iv.contentMode = UIViewContentModeScaleAspectFit;
