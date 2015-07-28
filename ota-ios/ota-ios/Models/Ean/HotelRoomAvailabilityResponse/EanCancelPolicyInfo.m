@@ -3,7 +3,7 @@
 //  ota-ios
 //
 //  Created by WAYNE SMALL on 5/2/15.
-//  Copyright (c) 2015 Irwin. All rights reserved.
+//  Copyright (c) 2015 Trotter. All rights reserved.
 //
 
 #import "EanCancelPolicyInfo.h"

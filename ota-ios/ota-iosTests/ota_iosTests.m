@@ -3,7 +3,7 @@
 //  ota-iosTests
 //
 //  Created by WAYNE SMALL on 3/24/15.
-//  Copyright (c) 2015 Irwin. All rights reserved.
+//  Copyright (c) 2015 Trotter. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
