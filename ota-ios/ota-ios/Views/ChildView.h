@@ -8,13 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+@class ChildView;
+
 @protocol ChildViewDelegate <NSObject>
 
 @required
 
 - (void)childViewDonePressed;
 - (void)childViewCancelled;
-- (void)childViewDidHide;
+- (void)didHideChildView:(ChildView *)childView;
 
 @end
 

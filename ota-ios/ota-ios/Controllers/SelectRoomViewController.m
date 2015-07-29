@@ -800,52 +800,52 @@ NSUInteger const kCardSecurityTag = 171736;
 
 - (IBAction)justPushIt:(id)sender {
     if (sender == self.bookButtonOutlet) {
-        [self bookIt];
+//        [self bookIt];
     }
 }
 
 - (void)bookIt {
-    if (nil == self.expandedIndexPath) {
-        return;
-    }
-    
-    self.selectedRoom = [self.tableData objectAtIndex:self.expandedIndexPath.row];
-    SelectionCriteria *sc = [SelectionCriteria singleton];
-    GuestInfo *gi = [GuestInfo singleton];
-    PaymentDetails *pd = [PaymentDetails card1];
-    BookViewController *bvc = [BookViewController new];
-    
-    [[LoadEanData sharedInstance:bvc] bookHotelRoomWithHotelId:self.eanHrar.hotelId
-                                                   arrivalDate:sc.arrivalDateEanString
-                                                 departureDate:sc.returnDateEanString
-                                                  supplierType:self.selectedRoom.supplierType
-                                                       rateKey:self.selectedRoom.rateInfo.roomGroup.rateKey
-                                                  roomTypeCode:self.selectedRoom.roomType.roomCode
-                                                      rateCode:self.selectedRoom.rateCode
-                                                chargeableRate:[self.selectedRoom.rateInfo.chargeableRateInfo.total floatValue]
-                                                numberOfAdults:sc.numberOfAdults
-                                                childTravelers:[ChildTraveler childTravelers]
-                                                room1FirstName:gi.firstName
-                                                 room1LastName:gi.lastName
-                                                room1BedTypeId:self.selectedRoom.selectedBedType.bedTypeId
-                                        room1SmokingPreference:self.selectedRoom.selectedSmokingPreference
-                                       affiliateConfirmationId:[NSUUID UUID]
-                                                         email:gi.email
-                                                     firstName:pd.cardHolderFirstName
-                                                      lastName:pd.cardHolderLastName
-                                                     homePhone:gi.apiPhoneNumber
-                                                creditCardType:pd.eanCardType
-                                              creditCardNumber:@"5401999999999999"/*pd.cardNumber*/
-                                          creditCardIdentifier:@"123"
-                                     creditCardExpirationMonth:pd.expirationMonth
-                                      creditCardExpirationYear:pd.expirationYear
-                                                      address1:pd.billingAddress.apiAddress1
-                                                          city:pd.billingAddress.apiCity
-                                             stateProvinceCode:nil/*pd.billingAddress.apiStateProvCode*/
-                                                   countryCode:pd.billingAddress.apiCountryCode
-                                                    postalCode:pd.billingAddress.apiPostalCode];
-    
-    [self.navigationController pushViewController:bvc animated:YES];
+//    if (nil == self.expandedIndexPath) {
+//        return;
+//    }
+//    
+//    self.selectedRoom = [self.tableData objectAtIndex:self.expandedIndexPath.row];
+//    SelectionCriteria *sc = [SelectionCriteria singleton];
+//    GuestInfo *gi = [GuestInfo singleton];
+//    PaymentDetails *pd = [PaymentDetails card1];
+//    BookViewController *bvc = [BookViewController new];
+//    
+//    [[LoadEanData sharedInstance:bvc] bookHotelRoomWithHotelId:self.eanHrar.hotelId
+//                                                   arrivalDate:sc.arrivalDateEanString
+//                                                 departureDate:sc.returnDateEanString
+//                                                  supplierType:self.selectedRoom.supplierType
+//                                                       rateKey:self.selectedRoom.rateInfo.roomGroup.rateKey
+//                                                  roomTypeCode:self.selectedRoom.roomType.roomCode
+//                                                      rateCode:self.selectedRoom.rateCode
+//                                                chargeableRate:[self.selectedRoom.rateInfo.chargeableRateInfo.total floatValue]
+//                                                numberOfAdults:sc.numberOfAdults
+//                                                childTravelers:[ChildTraveler childTravelers]
+//                                                room1FirstName:gi.firstName
+//                                                 room1LastName:gi.lastName
+//                                                room1BedTypeId:self.selectedRoom.selectedBedType.bedTypeId
+//                                        room1SmokingPreference:self.selectedRoom.selectedSmokingPreference
+//                                       affiliateConfirmationId:[NSUUID UUID]
+//                                                         email:gi.email
+//                                                     firstName:pd.cardHolderFirstName
+//                                                      lastName:pd.cardHolderLastName
+//                                                     homePhone:gi.apiPhoneNumber
+//                                                creditCardType:pd.eanCardType
+//                                              creditCardNumber:@"5401999999999999"/*pd.cardNumber*/
+//                                          creditCardIdentifier:@"123"
+//                                     creditCardExpirationMonth:pd.expirationMonth
+//                                      creditCardExpirationYear:pd.expirationYear
+//                                                      address1:pd.billingAddress.apiAddress1
+//                                                          city:pd.billingAddress.apiCity
+//                                             stateProvinceCode:nil/*pd.billingAddress.apiStateProvCode*/
+//                                                   countryCode:pd.billingAddress.apiCountryCode
+//                                                    postalCode:pd.billingAddress.apiPostalCode];
+//    
+//    [self.navigationController pushViewController:bvc animated:YES];
 }
 
 - (void)saveDaExpiration {

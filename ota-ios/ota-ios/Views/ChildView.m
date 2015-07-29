@@ -115,7 +115,7 @@ NSTimeInterval const kCvAnimationDuration = 0.6;
             ct.childAge = 10;
         }
         
-        [self.childViewDelegate childViewDidHide];
+        [self.childViewDelegate didHideChildView:self];
     }];
 }
 
@@ -213,7 +213,7 @@ NSTimeInterval const kCvAnimationDuration = 0.6;
         [self.childViewDelegate childViewDonePressed];
         [self dropChildView];
     } else if (sender == self.doneButton) {
-        [self modifyChildTraveler];
+        [self modifyChildTravelerWithDrop:YES];
     } else if (sender == self.minusChildButtonOutlet) {
         [self removeChildTraveler];
         [self checkIfWeCanRemoveKids];
@@ -227,7 +227,7 @@ NSTimeInterval const kCvAnimationDuration = 0.6;
     }
 }
 
-- (void)modifyChildTraveler {
+- (void)modifyChildTravelerWithDrop:(BOOL)dropAgeSelectorView {
     // Update the child's age
     NSInteger selectedAgeRow = [self.pickerView selectedRowInComponent:0] - 1;
     if (selectedAgeRow >= 0) {
@@ -241,6 +241,10 @@ NSTimeInterval const kCvAnimationDuration = 0.6;
         
         // Update the label with the child's age
         [self setChildsAgeLabel:self.selectedChildOutlet];
+    }
+    
+    if (!dropAgeSelectorView) {
+        return;
     }
     
     // Remove the child age selector view
@@ -405,6 +409,10 @@ NSTimeInterval const kCvAnimationDuration = 0.6;
 
 - (NSString*)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
     return _pickerData[row];
+}
+
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+    [self modifyChildTravelerWithDrop:NO];
 }
 
 @end

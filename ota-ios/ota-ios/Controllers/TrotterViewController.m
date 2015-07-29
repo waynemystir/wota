@@ -125,7 +125,6 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     TrotterCalendarPicker *checkInDatePicker;
     TrotterCalendarPicker *checkOutDatePicker;
     BOOL datePickerUp;
-    ChildView *childView;
 }
 
 #pragma mark Lifecycle methods
@@ -174,7 +173,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     [self.containerViewSpinnerContainer addSubview:theSpinner];
     [self.containerViewSpinnerContainer bringSubviewToFront:theSpinner];
     
-    self.placesTableView = [[UITableView alloc] initWithFrame:self.placesTableViewZeroFrame];
+    self.placesTableView = [[UITableView alloc] initWithFrame:self.placesTableViewZeroFrame style:UITableViewStylePlain];
     self.placesTableView.backgroundColor = [UIColor whiteColor];
     self.placesTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.placesTableView.separatorColor = [UIColor clearColor];
@@ -689,11 +688,16 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 1.0f;
+    return 0.5f;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    return [[UIView alloc] initWithFrame:CGRectZero];
+//    return [[UIView alloc] initWithFrame:CGRectZero];
+    
+    UIView *topSeparator = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 0.5f)];
+    topSeparator.backgroundColor = UIColorFromRGB(0xbbbbbb);
+    [self.placesTableView addSubview:topSeparator];
+    return topSeparator;
 }
 
 #pragma mark Some animation methods
@@ -1198,12 +1202,17 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 }
 
 - (void)presentKidsSelector {
-    if (!childView) {
-        childView = [ChildView childViewFromNib];
-        childView.childViewDelegate = self;
-        [self.view addSubview:childView];
-    }
-    [childView loadChildView];
+//    if (!childView) {
+//        childView = [ChildView childViewFromNib];
+//        childView.childViewDelegate = self;
+//        [self.view addSubview:childView];
+//    }
+//    [childView loadChildView];
+    
+    ChildView *cv = [ChildView childViewFromNib];
+    cv.childViewDelegate = self;
+    [self.view addSubview:cv];
+    [cv loadChildView];
 }
 
 - (void)setNumberOfKidsButtonLabel {
@@ -1382,8 +1391,8 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     [self setNumberOfKidsButtonLabel];
 }
 
-- (void)childViewDidHide {
-    
+- (void)didHideChildView:(ChildView *)childView {
+    [childView removeFromSuperview];
 }
 
 #pragma mark No hotels

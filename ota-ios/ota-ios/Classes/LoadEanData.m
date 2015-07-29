@@ -471,7 +471,7 @@ NSString * kURLeanBookReservation() {
     NSLog(@"BOOKING:%@", urlString);
     
     NSURL *url = [NSURL URLWithString:urlString];
-    [self fireOffConnectionWithURL:url httpMethod:HTTP_POST];
+//    [self fireOffConnectionWithURL:url httpMethod:HTTP_POST];
 }
 
 #pragma mark NSURLConnectionDataDelegate methods
