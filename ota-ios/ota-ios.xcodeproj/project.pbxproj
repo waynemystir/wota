@@ -41,6 +41,7 @@
 		B03C2BAA1AED74E700C13AC5 /* EanRateInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B03C2BA91AED74E700C13AC5 /* EanRateInfo.m */; };
 		B03C2BAD1AED8FAD00C13AC5 /* EanRoomImage.m in Sources */ = {isa = PBXBuildFile; fileRef = B03C2BAC1AED8FAD00C13AC5 /* EanRoomImage.m */; };
 		B03DA0071B46D5930039B9C6 /* FilterTableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B03DA0061B46D5930039B9C6 /* FilterTableView.xib */; };
+		B04686481B6B06EC00D74B19 /* BackCancelViewSmaller.m in Sources */ = {isa = PBXBuildFile; fileRef = B04686471B6B06EC00D74B19 /* BackCancelViewSmaller.m */; };
 		B049D2071AC19B2300E2E18C /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B049D1FC1AC19B2300E2E18C /* CoreLocation.framework */; };
 		B049D20F1AC19B2300E2E18C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B049D2041AC19B2300E2E18C /* QuartzCore.framework */; };
 		B049D2101AC19B2300E2E18C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B049D2051AC19B2300E2E18C /* SystemConfiguration.framework */; };
@@ -239,6 +240,8 @@
 		B03C2BAB1AED8FAD00C13AC5 /* EanRoomImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanRoomImage.h; sourceTree = "<group>"; };
 		B03C2BAC1AED8FAD00C13AC5 /* EanRoomImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanRoomImage.m; sourceTree = "<group>"; };
 		B03DA0061B46D5930039B9C6 /* FilterTableView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FilterTableView.xib; sourceTree = "<group>"; };
+		B04686461B6B06EC00D74B19 /* BackCancelViewSmaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackCancelViewSmaller.h; sourceTree = "<group>"; };
+		B04686471B6B06EC00D74B19 /* BackCancelViewSmaller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BackCancelViewSmaller.m; sourceTree = "<group>"; };
 		B049D1FC1AC19B2300E2E18C /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		B049D2041AC19B2300E2E18C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		B049D2051AC19B2300E2E18C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -864,6 +867,8 @@
 				B0D01EBA1B0657010001C558 /* CheckMarkView.m */,
 				B0D01EC01B07EFE30001C558 /* NavTitleView.h */,
 				B0D01EC11B07EFE30001C558 /* NavTitleView.m */,
+				B04686461B6B06EC00D74B19 /* BackCancelViewSmaller.h */,
+				B04686471B6B06EC00D74B19 /* BackCancelViewSmaller.m */,
 			);
 			path = Navigation;
 			sourceTree = "<group>";
@@ -1173,6 +1178,7 @@
 				B0963CC11AC8BDC6002FD859 /* ChildTraveler.m in Sources */,
 				B00038661B10286E0000319A /* EanPropertyAmenity.m in Sources */,
 				B0B50ADD1B255F2600685384 /* GoogleMarkerView.m in Sources */,
+				B04686481B6B06EC00D74B19 /* BackCancelViewSmaller.m in Sources */,
 				B018C0451AD9BEC800DDCE2E /* GuestInfo.m in Sources */,
 				B06C98BF1B09586B00DBE09D /* CountryPicker.m in Sources */,
 				B0D02FE41AE6123000B1E75F /* PTKCardCVC.m in Sources */,

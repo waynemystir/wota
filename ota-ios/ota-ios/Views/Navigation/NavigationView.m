@@ -10,7 +10,7 @@
 #import "AppEnvironment.h"
 #import "SelectionCriteria.h"
 #import "ChildTraveler.h"
-#import "BackCancelView.h"
+#import "BackCancelViewSmaller.h"
 #import "CheckMarkView.h"
 
 NSTimeInterval const kNvAnimationDuration = 0.7;
@@ -62,7 +62,7 @@ NSUInteger const kRightCheckMarkView = 4921743;
 }
 
 - (void)animateToCancel {
-    BackCancelView *bcv = (BackCancelView *) [_leftView viewWithTag:kBackCancelTag];
+    BackCancelViewSmaller *bcv = (BackCancelViewSmaller *) [_leftView viewWithTag:kBackCancelTag];
     UIButton *b = (UIButton *) bcv.superview;
     
     [b removeTarget:_navDelegate action:@selector(clickBack) forControlEvents:UIControlEventTouchUpInside];
@@ -74,7 +74,7 @@ NSUInteger const kRightCheckMarkView = 4921743;
 }
 
 - (void)animateToBack {
-    BackCancelView *bcv = (BackCancelView *) [_leftView viewWithTag:kBackCancelTag];
+    BackCancelViewSmaller *bcv = (BackCancelViewSmaller *) [_leftView viewWithTag:kBackCancelTag];
     UIButton *b = (UIButton *) bcv.superview;
     [b removeTarget:_navDelegate action:@selector(clickCancel) forControlEvents:UIControlEventTouchUpInside];
     [b addTarget:_navDelegate action:@selector(clickBack) forControlEvents:UIControlEventTouchUpInside];
@@ -125,7 +125,8 @@ NSUInteger const kRightCheckMarkView = 4921743;
 //    [lb addSubview:cv2];
     lb.tag = kDefaultBackButtonTag;
     [lb addTarget:_navDelegate action:@selector(clickBack) forControlEvents:UIControlEventTouchUpInside];
-    BackCancelView *bcv = [[BackCancelView alloc] initWithFrame:CGRectMake(10, 11, 28, 36)];
+    BackCancelViewSmaller *bcv = [[BackCancelViewSmaller alloc] initWithFrame:CGRectMake(0, 6, 40, 42)];
+//    bcv.backgroundColor = [UIColor redColor];
     bcv.tag = kBackCancelTag;
     [lb addSubview:bcv];
     return lb;
@@ -266,7 +267,7 @@ NSUInteger const kRightCheckMarkView = 4921743;
 }
 
 - (void)grayAndDisableLeftView {
-    BackCancelView *bcv = (BackCancelView *) [_leftView viewWithTag:kBackCancelTag];
+    BackCancelViewSmaller *bcv = (BackCancelViewSmaller *) [_leftView viewWithTag:kBackCancelTag];
     [bcv grayIt];
     UIButton *b = (UIButton *) [_leftView viewWithTag:kDefaultBackButtonTag];
     b.enabled = NO;
@@ -280,7 +281,7 @@ NSUInteger const kRightCheckMarkView = 4921743;
 }
 
 - (void)blueAndEnableLeftView {
-    BackCancelView *bcv = (BackCancelView *) [_leftView viewWithTag:kBackCancelTag];
+    BackCancelViewSmaller *bcv = (BackCancelViewSmaller *) [_leftView viewWithTag:kBackCancelTag];
     [bcv blueIt];
     UIButton *b = (UIButton *) [_leftView viewWithTag:kDefaultBackButtonTag];
     b.enabled = YES;

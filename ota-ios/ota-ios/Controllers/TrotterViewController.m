@@ -23,7 +23,7 @@
 #import "EanHotelListResponse.h"
 #import "EanHotelListHotelSummary.h"
 #import "WotaMapAnnotatioin.h"
-#import "BackCancelView.h"
+#import "BackCancelViewSmaller.h"
 #import "WotaMKPinAnnotationView.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "HotelInfoViewController.h"
@@ -106,10 +106,11 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 @property (weak, nonatomic) IBOutlet UIImageView *imageViewOpeningSearch;
 @property (weak, nonatomic) IBOutlet UIView *openingWmapContainer;
 @property (weak, nonatomic) IBOutlet UIImageView *wmapMap;
-@property (weak, nonatomic) IBOutlet BackCancelView *wmapCancel;
+@property (weak, nonatomic) IBOutlet BackCancelViewSmaller *wmapCancel;
 @property (weak, nonatomic) IBOutlet UIImageView *wmapHamburger;
 @property (weak, nonatomic) IBOutlet UIView *wmapClicker;
 @property (weak, nonatomic) IBOutlet UIButton *footerDatesBtn;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *autoCompleteSpinner;
 
 - (IBAction)justPushIt:(id)sender;
 - (IBAction)clickKidsButton:(id)sender;
@@ -173,6 +174,8 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     [self.containerViewSpinnerContainer addSubview:theSpinner];
     [self.containerViewSpinnerContainer bringSubviewToFront:theSpinner];
     
+    self.autoCompleteSpinner.hidden = YES;
+    
     self.placesTableView = [[UITableView alloc] initWithFrame:self.placesTableViewZeroFrame style:UITableViewStylePlain];
     self.placesTableView.backgroundColor = [UIColor whiteColor];
     self.placesTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -233,8 +236,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     self.backContainer.userInteractionEnabled = NO;
     [self.backContainer addGestureRecognizer:bgr];
     
-    BackCancelView *bcv = [[BackCancelView alloc] initWithFrame:CGRectMake(0, 0, 28, 36)];
-    bcv.transform = CGAffineTransformMakeScale(0.7f, 0.7f);
+    BackCancelViewSmaller *bcv = [[BackCancelViewSmaller alloc] initWithFrame:CGRectMake(0, 0, 28, 36)];
     [self.backContainer addSubview:bcv];
     
     UITapGestureRecognizer *ttgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickWmapClicker)];
@@ -276,13 +278,9 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     wmgr.numberOfTapsRequired = 1;
     [self.openingWmapContainer addGestureRecognizer:wmgr];
     
-//    UIImage *waynemystir = [[UIImage imageNamed:@"hamburger.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-//    self.wmapHamburger.image = waynemystir;
-    
-    BackCancelView *wmapBcv = [[BackCancelView alloc] initWithFrame:CGRectMake(2, -2, 26, 34)];
+    BackCancelViewSmaller *wmapBcv = [[BackCancelViewSmaller alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
     self.wmapCancel = wmapBcv;
     [self.wmapCancel animateToCancel:0.001];
-    self.wmapCancel.transform = CGAffineTransformMakeScale(0.7f, 0.7f);
     self.wmapCancel.hidden = YES;
     [self.wmapContainer addSubview:self.wmapCancel];
     
@@ -423,7 +421,11 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         [self.openConnections makeObjectsPerformSelector:@selector(cancel)];
         [self.openConnections removeAllObjects];
         [[LoadGooglePlacesData sharedInstance:self] autoCompleteSomePlaces:autoCompleteText];
+        self.autoCompleteSpinner.hidden = NO;
+        [self.autoCompleteSpinner startAnimating];
     } else {
+        self.autoCompleteSpinner.hidden = YES;
+        [self.autoCompleteSpinner stopAnimating];
         return [self textFieldShouldClear:textField];
     }
     
@@ -439,6 +441,8 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     
     [self.openConnections makeObjectsPerformSelector:@selector(cancel)];
     [self.openConnections removeAllObjects];
+    self.autoCompleteSpinner.hidden = YES;
+    [self.autoCompleteSpinner stopAnimating];
     
 //    if (self.criteriaOrHotelSearchMode) {
         if (self.placesTableData == [SelectionCriteria singleton].placesArray) {
@@ -470,6 +474,8 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     }
     [self.openConnections makeObjectsPerformSelector:@selector(cancel)];
     [self.openConnections removeAllObjects];
+    self.autoCompleteSpinner.hidden = YES;
+    [self.autoCompleteSpinner stopAnimating];
     return YES;
 }
 
@@ -495,6 +501,8 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
             } else {
 //                self.placesTableData = [NSMutableArray arrayWithObject:self.whereToTextField.text];
             }
+            self.autoCompleteSpinner.hidden = YES;
+            [self.autoCompleteSpinner stopAnimating];
             break;
         }
             
@@ -720,6 +728,9 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 
 - (void)animateTableViewCompression {
     
+    self.autoCompleteSpinner.hidden = YES;
+    [self.autoCompleteSpinner stopAnimating];
+    
     switch (self.viewState) {
         case VIEW_STATE_CRITERIA: {
             [self transitionToWmapMap];
@@ -742,6 +753,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     
     __weak typeof(self) wes = self;
     __weak UIView *actv = self.placesTableView;
+    [wes.view bringSubviewToFront:actv];
     self.isPlacesTableViewExpanded = NO;
     
     [UIView animateWithDuration:self.animationDuraton animations:^{
@@ -807,6 +819,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     [UIView animateWithDuration:kTrvFlipAnimationDuration animations:^{
         wes.containerView.frame = wes.containerViewFrame;
         wes.whereToContainer.frame = CGRectMake(0, 20, 320, 49);
+        wes.autoCompleteSpinner.frame = CGRectMake(224, 19, 20, 20);
         wes.whereToTextField.frame = CGRectMake(32, 14, 244, 30);
         wes.whereToSecondLevel.frame = CGRectMake(39, 15, 232, 21);
         wes.wmapContainer.frame = CGRectMake(283, 14, 30, 30);
@@ -827,6 +840,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     [UIView animateWithDuration:kTrvFlipAnimationDuration animations:^{
         wes.containerView.frame = wes.containerViewFrame;
         wes.whereToContainer.frame = CGRectMake(0, 52, 320, 66);
+        wes.autoCompleteSpinner.frame = CGRectMake(224, 21, 20, 20);
         wes.whereToTextField.frame = CGRectMake(6, 16, 270, 30);
         wes.whereToSecondLevel.frame = CGRectMake(13, 45, 295, 21);
         wes.wmapContainer.frame = CGRectMake(283, 16, 30, 30);

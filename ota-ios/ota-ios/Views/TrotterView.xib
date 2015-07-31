@@ -9,6 +9,7 @@
                 <outlet property="addAdultOutlet" destination="3iZ-t4-vjg" id="iSQ-mf-ZAG"/>
                 <outlet property="adultsLabel" destination="fb6-vD-e9a" id="HeD-dv-vAi"/>
                 <outlet property="arrivalDateOutlet" destination="Jeb-lJ-Fgs" id="AS8-4E-OlT"/>
+                <outlet property="autoCompleteSpinner" destination="iI1-iD-e7o" id="oGn-ur-1Fz"/>
                 <outlet property="backContainer" destination="UXA-lQ-TiK" id="isC-fG-h2M"/>
                 <outlet property="checkHotelsOutlet" destination="bRx-l8-agm" id="UeD-Uz-Xbe"/>
                 <outlet property="containerView" destination="ps6-RY-0OP" id="KMq-FE-zbe"/>
@@ -271,6 +272,10 @@
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="search"/>
                         </textField>
+                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" id="iI1-iD-e7o" userLabel="autoCompleteSpinner">
+                            <rect key="frame" x="224" y="21" width="20" height="20"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        </activityIndicatorView>
                         <view clipsSubviews="YES" contentMode="scaleToFill" id="LRm-TY-5fT" userLabel="openingWhereTo">
                             <rect key="frame" x="5" y="16" width="253" height="49"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
