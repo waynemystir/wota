@@ -22,13 +22,18 @@
                 <outlet property="imageViewOpeningSearch" destination="lD4-0d-u5I" id="na6-Tu-Whw"/>
                 <outlet property="kidsButton" destination="02D-4E-Rli" id="mCI-ZG-GKP"/>
                 <outlet property="labelWhereYouGoing" destination="Jeo-Z7-A8G" id="y8r-lj-2d0"/>
+                <outlet property="mapMapSearch" destination="tG7-m1-yPx" id="KaZ-XU-dmT"/>
+                <outlet property="mapSpinner" destination="K9Y-Go-cm2" id="sne-hA-KY5"/>
+                <outlet property="mapViewContainer" destination="lmT-rW-gec" id="TaJ-B9-HFc"/>
                 <outlet property="minusAdultOutlet" destination="X2B-0S-NLb" id="hlb-dQ-5w6"/>
                 <outlet property="mkMapView" destination="0nh-5L-AFC" id="4l3-29-JPE"/>
                 <outlet property="openingWhereTo" destination="LRm-TY-5fT" id="VjA-gf-rsO"/>
                 <outlet property="openingWmapContainer" destination="7RY-Pg-9ng" id="pKB-Hf-hsW"/>
                 <outlet property="overlay" destination="CW6-MR-37n" id="tZx-LM-H0W"/>
                 <outlet property="returnDateOutlet" destination="dgm-BA-HLi" id="ctQ-Qh-Vgb"/>
-                <outlet property="sortContainer" destination="I5I-4O-1of" id="grH-qw-vRh"/>
+                <outlet property="sortImageView" destination="8EI-fp-WLW" id="HrQ-0b-YAh"/>
+                <outlet property="sortMapSearch" destination="KxK-XP-Xmu" id="c0I-y7-q4m"/>
+                <outlet property="sortMapSearchContainer" destination="I5I-4O-1of" id="DM4-V8-EoK"/>
                 <outlet property="tcAdultsLabel" destination="SNd-Xc-At9" id="29I-AD-ebk"/>
                 <outlet property="travelersContainer" destination="Phz-Ys-HVE" id="EFC-WK-1Je"/>
                 <outlet property="view" destination="iN0-l3-epB" id="LC9-F7-sBy"/>
@@ -72,11 +77,35 @@
                             </subviews>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </view>
-                        <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" id="0nh-5L-AFC" userLabel="mkMapView">
+                        <view contentMode="scaleToFill" id="lmT-rW-gec" userLabel="mapViewContainer">
                             <rect key="frame" x="0.0" y="0.0" width="320" height="450"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <subviews>
+                                <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" id="0nh-5L-AFC" userLabel="mkMapView">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="450"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </mapView>
+                                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" id="K9Y-Go-cm2" userLabel="mapSpinner">
+                                    <rect key="frame" x="5" y="5" width="37" height="37"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                </activityIndicatorView>
+                                <view contentMode="scaleToFill" id="tG7-m1-yPx" userLabel="mapMapSearch">
+                                    <rect key="frame" x="260" y="390" width="60" height="60"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <subviews>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="search_big" id="kmY-QC-0f8" userLabel="mapMapSearchImageView">
+                                            <rect key="frame" x="5" y="5" width="50" height="50"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </imageView>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                            </subviews>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                        </mapView>
+                        </view>
                         <view contentMode="scaleToFill" id="9F4-2D-Fvc" userLabel="cupHolder">
                             <rect key="frame" x="0.0" y="0.0" width="320" height="450"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -177,35 +206,39 @@
                     <rect key="frame" x="0.0" y="524" width="320" height="44"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <subviews>
-                        <view contentMode="scaleToFill" id="vso-Fw-PZA">
+                        <view contentMode="scaleToFill" id="vso-Fw-PZA" userLabel="footerSeparator">
                             <rect key="frame" x="0.0" y="0.0" width="320" height="1"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" red="0.69803921568627447" green="0.69803921568627447" blue="0.69999999999999996" alpha="1" colorSpace="calibratedRGB"/>
                         </view>
                         <view contentMode="scaleToFill" id="YjX-A4-fsR" userLabel="filterContainer">
-                            <rect key="frame" x="198" y="0.0" width="54" height="44"/>
+                            <rect key="frame" x="198" y="0.0" width="58" height="44"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="filter" id="LLb-Qz-D7o">
-                                    <rect key="frame" x="16" y="11" width="22" height="22"/>
+                                    <rect key="frame" x="18" y="11" width="22" height="22"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 </imageView>
                             </subviews>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         </view>
-                        <view contentMode="scaleToFill" id="I5I-4O-1of" userLabel="sortContainer">
-                            <rect key="frame" x="265" y="0.0" width="54" height="44"/>
+                        <view contentMode="scaleToFill" id="I5I-4O-1of" userLabel="sortMapSearchContainer">
+                            <rect key="frame" x="259" y="0.0" width="59" height="44"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
-                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sort" id="8EI-fp-WLW">
-                                    <rect key="frame" x="9" y="6" width="33" height="32"/>
+                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sort" id="8EI-fp-WLW" userLabel="sortImageView">
+                                    <rect key="frame" x="10" y="6" width="33" height="32"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                </imageView>
+                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="search_mid" id="KxK-XP-Xmu" userLabel="sortMapSearch">
+                                    <rect key="frame" x="13" y="8" width="28" height="28"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 </imageView>
                             </subviews>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         </view>
                         <view contentMode="scaleToFill" id="Phz-Ys-HVE" userLabel="travelersContainer">
-                            <rect key="frame" x="132" y="0.0" width="61" height="44"/>
+                            <rect key="frame" x="136" y="0.0" width="61" height="44"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <imageView userInteractionEnabled="NO" tag="1290348" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="user_silhouette" id="QBd-FO-mbn" userLabel="userSilhouette">
@@ -223,7 +256,7 @@
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         </view>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="FNX-tj-GLv" userLabel="footerDatesBtn">
-                            <rect key="frame" x="0.0" y="0.0" width="128" height="44"/>
+                            <rect key="frame" x="0.0" y="0.0" width="134" height="44"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <state key="normal" title="Aug 29 - Aug 31">
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -281,11 +314,11 @@
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="search_big" id="lD4-0d-u5I" userLabel="imageViewOpeningSearch">
-                                    <rect key="frame" x="11" y="12" width="24" height="24"/>
+                                    <rect key="frame" x="10" y="11" width="27" height="27"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 </imageView>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Where are you going?" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Jeo-Z7-A8G" userLabel="labelWhereYouGoing">
-                                    <rect key="frame" x="44" y="9" width="203" height="30.5"/>
+                                    <rect key="frame" x="48" y="9" width="199" height="30.5"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                     <color key="textColor" red="0.0" green="0.47843137254901957" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -326,6 +359,7 @@
         <image name="filter" width="32" height="32"/>
         <image name="hamburger" width="32" height="32"/>
         <image name="search_big" width="64" height="64"/>
+        <image name="search_mid" width="32" height="32"/>
         <image name="sort" width="32" height="32"/>
         <image name="user_silhouette" width="16" height="16"/>
         <image name="wmap" width="32" height="32"/>

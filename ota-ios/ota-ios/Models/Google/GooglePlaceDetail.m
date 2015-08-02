@@ -406,7 +406,7 @@ NSString * const kKeyDisplayName = @"displayName";
         return;
     }
     
-    NSString *neighborhood = _placeName ? : _blankType ? : _neighborhoodLongName ? : _airportLongName ? : /*_establishmentLongName ? : _naturalFeatureLongName ? :*/ _pointOfInterestLongName ? : _parkLongName ? : _sublocalityLongName ? : @"";
+    NSString *neighborhood = _placeName ? : _blankType ? : _neighborhoodLongName ? : _airportLongName ? : /*_establishmentLongName ? : _naturalFeatureLongName ? : _pointOfInterestLongName ? :*/ _parkLongName ? : _sublocalityLongName ? : @"";
     
     NSString *city = _localityLongName ? : _postalTownLongName ? : _administrativeAreaLevel3LongName ? : /*_administrativeAreaLevel2LongName ? :*/ @"";
     

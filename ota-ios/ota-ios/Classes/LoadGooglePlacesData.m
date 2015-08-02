@@ -70,6 +70,24 @@
 }
 
 - (void)loadPlaceDetailsWithLatitude:(double)latitude
+                           longitude:(double)longitude {
+    
+    NSString *types = @"park|natural_feature|establishment|airport|point_of_interest";
+    
+    NSString *urlString = [[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/geocode/json?&latlng=%f,%f&result_type=%@&key=%@", latitude, longitude, types, GOOGLE_API_KEY] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setTimeoutInterval:URL_REQUEST_TIMEOUT];
+    [request setHTTPMethod:@"POST"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    NSURLConnection *connection = [NSURLConnection connectionWithRequest:request delegate:self];
+    self.responseData = [NSMutableData data];
+    [connection start];
+    [self sendRequestStartedToDelegate:connection];
+}
+
+- (void)loadPlaceDetailsWithLatitude:(double)latitude
                            longitude:(double)longitude
                      completionBlock:(void (^)(NSURLResponse *, NSData *, NSError *))completionBlock {
     
@@ -89,19 +107,19 @@
     }];
 }
 
-- (void)loadPlaceDetailsWithPostalCode:(NSString *)postalCode {
-    NSString *urlString = [[NSString stringWithFormat:@"https://maps.google.com/maps/api/geocode/json?components=postal_code:%@&key=%@&sensor=false", postalCode, GOOGLE_API_KEY] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSURL *url = [NSURL URLWithString:urlString];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    [request setTimeoutInterval:URL_REQUEST_TIMEOUT];
-    [request setHTTPMethod:@"POST"];
-    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
-    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    NSURLConnection *connection = [NSURLConnection connectionWithRequest:request delegate:self];
-    self.responseData = [NSMutableData data];
-    [connection start];
-    [self sendRequestStartedToDelegate:connection];
-}
+//- (void)loadPlaceDetailsWithPostalCode:(NSString *)postalCode {
+//    NSString *urlString = [[NSString stringWithFormat:@"https://maps.google.com/maps/api/geocode/json?components=postal_code:%@&key=%@&sensor=false", postalCode, GOOGLE_API_KEY] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+//    NSURL *url = [NSURL URLWithString:urlString];
+//    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+//    [request setTimeoutInterval:URL_REQUEST_TIMEOUT];
+//    [request setHTTPMethod:@"POST"];
+//    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+//    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+//    NSURLConnection *connection = [NSURLConnection connectionWithRequest:request delegate:self];
+//    self.responseData = [NSMutableData data];
+//    [connection start];
+//    [self sendRequestStartedToDelegate:connection];
+//}
 
 - (void)loadNearbyPlacesWithLatitude:(double)latitude
                            longitude:(double)longitude
@@ -141,9 +159,10 @@
     if ([cs containsString:@"autocomplete"]) {
         [self.delegate requestFinished:self.responseData dataType:LOAD_GOOGLE_AUTOCOMPLETE];
     } else if ([cs containsString:@"place/details"]
-               || [cs containsString:@"maps/api/geocode"]
                || [cs containsString:@"maps/api/place"]) {
         [self.delegate requestFinished:self.responseData dataType:LOAD_GOOGLE_PLACES];
+    } else if ([cs containsString:@"maps/api/geocode"]) {
+        [self.delegate requestFinished:self.responseData dataType:LOAD_GOOGLE_REVERSE_GEOCODE];
     } else {
         assert(false);
     }
