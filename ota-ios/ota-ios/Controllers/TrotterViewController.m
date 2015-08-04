@@ -71,6 +71,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 
 @property (nonatomic, strong) HotelsTableViewDelegateImplementation *hotelTableViewDelegate;
 
+@property (nonatomic) BOOL clickedSearchWhileSpinning;
 @property (nonatomic) BOOL userLocationHasUpdated;
 @property (nonatomic, assign) BOOL nextRegionChangeIsFromUserInteraction;
 @property (nonatomic) double listMaxLatitudeDelta;
@@ -453,14 +454,13 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [self.view bringSubviewToFront:self.wmapClicker];
-    [self.whereToTextField resignFirstResponder];
-    self.whereToTextField.text = [SelectionCriteria singleton].whereToFirst;
-    self.whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
     [self animateTableViewCompression];
     
-    [self nukeConnectionsAndSpinners];
-    
-//    if (self.criteriaOrHotelSearchMode) {
+    if (self.placesTableData.count > 0) {
+        [self nukeConnectionsAndSpinners];
+        self.whereToTextField.text = [SelectionCriteria singleton].whereToFirst;
+        self.whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
+        
         if (self.placesTableData == [SelectionCriteria singleton].placesArray) {
             if (self.placesTableData.count >= 2) {
                 [self trotterDidSelectRowAtIndexPathRow:1];
@@ -472,8 +472,14 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         } else {
             [self trotterDidSelectRowAtIndexPathRow:0];
         }
-//    }
+    } else {
+        self.clickedSearchWhileSpinning = !self.autoCompleteSpinner.hidden;
+        if (self.criteriaOrHotelSearchMode) {
+            [self loadDaSpinner];
+        }
+    }
     
+    [self.whereToTextField resignFirstResponder];
     if (self.placesTableData != [SelectionCriteria singleton].placesArray) {
         self.placesTableData = [SelectionCriteria singleton].placesArray;
         [self.placesTableView reloadData];
@@ -517,6 +523,10 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
             }
             self.autoCompleteSpinner.hidden = YES;
             [self.autoCompleteSpinner stopAnimating];
+            if (self.clickedSearchWhileSpinning && wes.count > 0) {
+                [self trotterDidSelectRowAtIndexPathRow:0];
+            }
+            self.clickedSearchWhileSpinning = NO;
             break;
         }
             
@@ -607,12 +617,18 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 }
 
 - (void)nukeConnectionsAndSpinners {
+    if (self.clickedSearchWhileSpinning) {
+        return;
+    }
+    
     [self dropDaSpinnerAlready];
     UIActivityIndicatorView *sp = (UIActivityIndicatorView *)[self.containerViewSpinnerContainer viewWithTag:717171];
     sp.hidden = YES;
     [sp stopAnimating];
     self.mapSpinner.hidden = YES;
     [self.mapSpinner stopAnimating];
+    self.autoCompleteSpinner.hidden = YES;
+    [self.autoCompleteSpinner stopAnimating];
     [self.openConnections makeObjectsPerformSelector:@selector(cancel)];
     [self.openConnections removeAllObjects];
 }
@@ -790,8 +806,8 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 
 - (void)animateTableViewCompression {
     
-    self.autoCompleteSpinner.hidden = YES;
-    [self.autoCompleteSpinner stopAnimating];
+//    self.autoCompleteSpinner.hidden = YES;
+//    [self.autoCompleteSpinner stopAnimating];
     
     switch (self.viewState) {
         case VIEW_STATE_CRITERIA: {
