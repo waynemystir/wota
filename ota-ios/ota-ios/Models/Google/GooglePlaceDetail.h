@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "AppEnvironment.h"
 
-@interface GooglePlaceDetail : NSObject <NSCoding>
+@interface GooglePlaceDetail : NSObject
 
 @property (nonatomic, strong) NSDictionary *googlePlaceResultDict;
 @property (nonatomic, strong) NSString *placeName;

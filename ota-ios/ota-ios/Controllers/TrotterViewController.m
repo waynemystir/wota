@@ -122,6 +122,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 
 - (IBAction)justPushIt:(id)sender;
 - (IBAction)clickKidsButton:(id)sender;
+- (IBAction)findHotelsClicked:(id)sender;
 
 @end
 
@@ -266,7 +267,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     tcgr.numberOfTouchesRequired = 1;
     [self.travelersContainer addGestureRecognizer:tcgr];
     
-    UITapGestureRecognizer *mmgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickSearchMap:)];
+    UITapGestureRecognizer *mmgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(findHotelsClicked:)];
     mmgr.numberOfTapsRequired = 1;
     mmgr.numberOfTouchesRequired = 1;
     self.mapMapSearch.userInteractionEnabled = YES;
@@ -431,6 +432,8 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     self.whereToTextField.layer.cornerRadius = WOTA_CORNER_RADIUS;
     self.whereToTextField.layer.borderColor = kWotaColorOne().CGColor;
     self.whereToTextField.layer.borderWidth = 1.0f;
+    
+    self.clickedSearchWhileSpinning = NO;
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
@@ -494,6 +497,8 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         self.placesTableData = [SelectionCriteria singleton].placesArray;
         [self.placesTableView reloadData];
     }
+    self.autoCompleteSpinner.hidden = YES;
+    [self.autoCompleteSpinner stopAnimating];
     [self nukeConnectionsAndSpinners];
     return YES;
 }
@@ -514,6 +519,11 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 - (void)requestFinished:(NSData *)responseData dataType:(LOAD_DATA_TYPE)dataType {
     switch (dataType) {
         case LOAD_GOOGLE_AUTOCOMPLETE: {
+            self.checkHotelsOutlet.enabled = NO;
+            self.mapMapSearch.userInteractionEnabled = NO;
+            self.mapMapSearch.alpha = 0.3f;
+            self.sortMapSearch.userInteractionEnabled = NO;
+            self.sortMapSearch.alpha = 0.3f;
             NSArray *wes = [GoogleParser parseAutoCompleteResponse:responseData];
             if (wes) {
                 self.placesTableData = [NSMutableArray arrayWithArray:wes];
@@ -521,12 +531,38 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
             } else {
 //                self.placesTableData = [NSMutableArray arrayWithObject:self.whereToTextField.text];
             }
-            self.autoCompleteSpinner.hidden = YES;
-            [self.autoCompleteSpinner stopAnimating];
-            if (self.clickedSearchWhileSpinning && wes.count > 0) {
-                [self trotterDidSelectRowAtIndexPathRow:0];
+            BOOL enableFindHotels = YES;
+            if (self.clickedSearchWhileSpinning) {
+                self.clickedSearchWhileSpinning = NO;
+                if (wes.count > 1) {
+                    [self trotterDidSelectRowAtIndexPathRow:0];
+                } else {
+                    [self nukeConnectionsAndSpinners];
+                    enableFindHotels = NO;
+                    self.mapMapSearch.userInteractionEnabled = NO;
+                    self.mapMapSearch.alpha = 0.3f;
+                    self.sortMapSearch.userInteractionEnabled = NO;
+                    self.sortMapSearch.alpha = 0.3f;
+                    NSString *w = [NSString stringWithFormat:@"No places were found for \"%@\". Please try again.", self.whereToTextField.text];
+                    [self loadNoWhateverView:@"No Places Found" text:w];
+                    [self dropDaSpinnerAlready];
+                }
             }
-            self.clickedSearchWhileSpinning = NO;
+            if (enableFindHotels) {
+                self.checkHotelsOutlet.enabled = YES;
+                self.mapMapSearch.userInteractionEnabled = YES;
+                self.mapMapSearch.alpha = 1.0f;
+                self.sortMapSearch.userInteractionEnabled = YES;
+                self.sortMapSearch.alpha = 1.0f;
+                self.autoCompleteSpinner.hidden = YES;
+                [self.autoCompleteSpinner stopAnimating];
+            } else {
+                self.checkHotelsOutlet.enabled = NO;
+                self.mapMapSearch.userInteractionEnabled = NO;
+                self.mapMapSearch.alpha = 0.3f;
+                self.sortMapSearch.userInteractionEnabled = NO;
+                self.sortMapSearch.alpha = 0.3f;
+            }
             break;
         }
             
@@ -627,8 +663,6 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     [sp stopAnimating];
     self.mapSpinner.hidden = YES;
     [self.mapSpinner stopAnimating];
-    self.autoCompleteSpinner.hidden = YES;
-    [self.autoCompleteSpinner stopAnimating];
     [self.openConnections makeObjectsPerformSelector:@selector(cancel)];
     [self.openConnections removeAllObjects];
 }
@@ -1032,6 +1066,41 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
                     }];
 }
 
+- (void)loadNoWhateverView:(NSString *)title text:(NSString *)text {
+    NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"NoHotelsView" owner:self options:nil];
+    __block UIView *nhv = views.firstObject;
+    nhv.frame = CGRectMake(15, 210, 290, 165);
+    nhv.layer.cornerRadius = WOTA_CORNER_RADIUS;
+    nhv.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
+    
+    WotaButton *ok = (WotaButton *)[nhv viewWithTag:471395];
+    [ok addTarget:self action:@selector(okToNoHotels:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:nhv];
+    
+    UILabel *tt = (UILabel *)[nhv viewWithTag:428642];
+    UILabel *tx = (UILabel *)[nhv viewWithTag:971379];
+    tt.text = title ? : tt.text;
+    tx.text = text ? : tx.text;
+    
+    UIView *ov = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 568)];
+    ov.tag = 14942484;
+    ov.backgroundColor = [UIColor blackColor];
+    ov.alpha = 0.0;
+    ov.userInteractionEnabled = YES;
+    [self.view addSubview:ov];
+    
+    [self.view bringSubviewToFront:ov];
+    [self.view bringSubviewToFront:nhv];
+    __weak typeof(self) wes = self;
+    [UIView animateWithDuration:0.2 animations:^{
+        nhv.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+        ov.alpha = 0.7f;
+    } completion:^(BOOL finished) {
+        [wes performSelector:@selector(dropDaSpinnerAlready) withObject:nil afterDelay:0.1];
+        [wes performSelector:@selector(dropDaSpinnerAlready) withObject:nil afterDelay:0.2];
+    }];
+}
+
 #pragma mark Various methods likely called by sublclasses
 
 //- (void)redrawMapAnnotationsAndRegion:(BOOL)redrawRegion {
@@ -1239,6 +1308,8 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     if (self.isPlacesTableViewExpanded) {
         [self.view endEditing:YES];
         [self animateTableViewCompression];
+        self.autoCompleteSpinner.hidden = YES;
+        [self.autoCompleteSpinner stopAnimating];
         self.whereToTextField.text = [SelectionCriteria singleton].whereToFirst;
         self.whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
         if (self.placesTableData != [SelectionCriteria singleton].placesArray) {
@@ -1277,13 +1348,15 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     }
 }
 
-- (void)clickSearchMap:(UITapGestureRecognizer *)sender {
-    [self transitionToHotelSearchMode];
-    
-    if (!self.loadingGooglePlaceDetails) {
-        [self itKeepsTheWaterOffOurHeads];
-    }
-}
+//- (void)clickSearchMap:(UITapGestureRecognizer *)sender {
+//    [self transitionToHotelSearchMode];
+//    
+//    if (!self.loadingGooglePlaceDetails) {
+//        [self itKeepsTheWaterOffOurHeads];
+//    } else {
+//        [self loadDaSpinner];
+//    }
+//}
 
 - (void)itKeepsTheWaterOffOurHeads {
     if (self.useMapRadiusForSearch) {
@@ -1291,29 +1364,15 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     }
     
     [self loadDaSpinner];
-    
     UITextField *tf = (UITextField *) [_hotelsTableView.tableHeaderView viewWithTag:41414141];
     tf.text = @"";
-    
     self.hotelTableViewDelegate.hotelData = [NSArray array];
     [self.hotelsTableView reloadData];
-    
     [self letsFindHotelsWithSearchRadius:[SelectionCriteria singleton].zoomRadius];
 }
 
 - (IBAction)justPushIt:(id)sender {
-    if (sender == self.checkHotelsOutlet) {
-        
-        [self transitionToHotelSearchMode];
-        [self transitionToTableView];
-        
-        if (!self.loadingGooglePlaceDetails) {
-            [self itKeepsTheWaterOffOurHeads];
-        } else {
-            [self loadDaSpinner];
-        }
-        
-    } else if (sender == self.arrivalDateOutlet) {
+    if (sender == self.arrivalDateOutlet) {
         self.arrivalOrReturn = NO;
         [self loadDatePicker];
     } else if (sender == self.footerDatesBtn) {
@@ -1329,6 +1388,26 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 
 - (IBAction)clickKidsButton:(id)sender {
     [self presentKidsSelector];
+}
+
+- (IBAction)findHotelsClicked:(id)sender {
+    if (!self.autoCompleteSpinner.hidden) {
+        self.clickedSearchWhileSpinning = YES;
+        [self loadDaSpinner];
+        UITextField *tf = (UITextField *) [_hotelsTableView.tableHeaderView viewWithTag:41414141];
+        tf.text = @"";
+        self.hotelTableViewDelegate.hotelData = [NSArray array];
+        [self.hotelsTableView reloadData];
+    } else if (!self.loadingGooglePlaceDetails) {
+        [self itKeepsTheWaterOffOurHeads];
+    } else {
+        [self loadDaSpinner];
+    }
+    
+    [self transitionToHotelSearchMode];
+    if ([sender isKindOfClass:[WotaButton class]]) {
+        [self transitionToTableView];
+    }
 }
 
 - (IBAction)clickMinusBtn:(id)sender {
@@ -1567,34 +1646,17 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 - (void)handleNoHotels {
     [self dropDaSpinnerAlready];
     [self showOrHideTvControls];
-    
-    NSArray *vs = [[NSBundle mainBundle] loadNibNamed:@"NoHotelsView" owner:self options:nil];
-    __block UIView *nhv = vs.firstObject;
-    nhv.frame = CGRectMake(15, 210, 290, 165);
-    nhv.layer.cornerRadius = WOTA_CORNER_RADIUS;
-    nhv.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
-    WotaButton *ok = (WotaButton *)[nhv viewWithTag:471395];
-    [ok addTarget:self action:@selector(okToNoHotels:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:nhv];
-    
-    UIView *ov = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 568)];
-    ov.tag = 14942484;
-    ov.backgroundColor = [UIColor blackColor];
-    ov.alpha = 0.0;
-    ov.userInteractionEnabled = YES;
-    [self.view addSubview:ov];
-    
-    [self.view bringSubviewToFront:ov];
-    [self.view bringSubviewToFront:nhv];
-    [UIView animateWithDuration:0.2 animations:^{
-        nhv.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
-        ov.alpha = 0.7f;
-    } completion:^(BOOL finished) {
-        ;
-    }];
+    [self loadNoWhateverView:nil text:nil];
 }
 
 - (void)okToNoHotels:(WotaButton *)wb {
+    self.checkHotelsOutlet.enabled = YES;
+    self.mapMapSearch.userInteractionEnabled = YES;
+    self.mapMapSearch.alpha = 1.0f;
+    self.sortMapSearch.userInteractionEnabled = YES;
+    self.sortMapSearch.alpha = 1.0f;
+    self.autoCompleteSpinner.hidden = YES;
+    [self.autoCompleteSpinner stopAnimating];
     __weak UIView *nhv = wb.superview;
     __weak UIView *ov = [self.view viewWithTag:14942484];
     [UIView animateWithDuration:0.2 animations:^{
@@ -1604,6 +1666,16 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         [nhv removeFromSuperview];
         [ov removeFromSuperview];
     }];
+    
+    UILabel *tt = (UILabel *)[nhv viewWithTag:428642];
+    if ([tt.text isEqualToString:@"No Places Found"]) {
+        self.whereToTextField.text = [SelectionCriteria singleton].whereToFirst;
+        self.whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
+        if (self.placesTableData != [SelectionCriteria singleton].placesArray) {
+            self.placesTableData = [SelectionCriteria singleton].placesArray;
+            [self.placesTableView reloadData];
+        }
+    }
 }
 
 - (void)showOrHideTvControls {

@@ -25,43 +25,6 @@ NSString * const kKeyDisplayName = @"displayName";
 
 @implementation GooglePlaceDetail
 
-- (id)initWithCoder:(NSCoder *)aDecoder {
-    if (self = [super init]) {
-        _placeId = [aDecoder decodeObjectForKey:kKeyPlaceId];
-        _latitude = [aDecoder decodeFloatForKey:kKeyLatitude];
-        _longitude = [aDecoder decodeFloatForKey:kKeyLongitude];
-        _displayName = [aDecoder decodeObjectForKey:kKeyDisplayName];
-    }
-    return self;
-}
-
-- (void)encodeWithCoder:(NSCoder *)aCoder {
-    [aCoder encodeObject:_placeId forKey:kKeyPlaceId];
-    [aCoder encodeFloat:_latitude forKey:kKeyLatitude];
-    [aCoder encodeFloat:_longitude forKey:kKeyLongitude];
-    [aCoder encodeObject:_displayName forKey:kKeyDisplayName];
-}
-
-+ (NSString *)pathToGooglePlaceDetailForId:(NSString *)placeId {
-    return [kWotaCacheGooglePlaceDetailDirectory() stringByAppendingFormat:@"/%@", placeId];
-}
-
-- (BOOL)save {
-    BOOL saveResult = [NSKeyedArchiver archiveRootObject:self toFile:[[self class] pathToGooglePlaceDetailForId:_placeId]];
-    return saveResult;
-}
-
-+ (GooglePlaceDetail *)placeDetailFromId:(NSString *)placeId {
-    GooglePlaceDetail * _gpd = nil;
-    NSString *path = [self pathToGooglePlaceDetailForId:placeId];
-    
-    if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
-        _gpd = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
-    }
-    
-    return _gpd;
-}
-
 + (GooglePlaceDetail *)placeDetailFromData:(NSData *)data {
     if (data == nil) {
         return nil;
@@ -239,8 +202,6 @@ NSString * const kKeyDisplayName = @"displayName";
     
     [gpd setWotaDisplayName];
     
-    [gpd save];
-    
     return gpd;
 }
 
@@ -363,32 +324,12 @@ NSString * const kKeyDisplayName = @"displayName";
     }
 }
 
-- (void)setPlaceId:(NSString *)placeId {
-    _placeId = placeId;
-    [self save];
-}
-
-- (void)setLatitude:(double)latitude {
-    _latitude = latitude;
-    [self save];
-}
-
-- (void)setLongitude:(double)longitude {
-    _longitude = longitude;
-    [self save];
-}
-
 - (NSMutableArray *)getGoogleAddressComponents {
     if (nil == _googleAddressComponents) {
         _googleAddressComponents = [NSMutableArray array];
     }
     
     return _googleAddressComponents;
-}
-
-- (void)setDisplayName:(NSString *)displayName {
-    _displayName = displayName;
-    [self save];
 }
 
 - (void)setWotaDisplayName {
