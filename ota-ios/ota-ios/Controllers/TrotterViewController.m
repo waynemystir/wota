@@ -24,6 +24,7 @@
 #import "EanHotelListHotelSummary.h"
 #import "WotaMapAnnotatioin.h"
 #import "BackCancelViewSmaller.h"
+#import "BackCancelViewLarger.h"
 #import "WotaMKPinAnnotationView.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "HotelInfoViewController.h"
@@ -73,6 +74,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 
 @property (nonatomic) BOOL clickedSearchWhileSpinning;
 @property (nonatomic) BOOL userLocationHasUpdated;
+@property (nonatomic, assign) BOOL nextRegionChangeIsFromBackButton;
 @property (nonatomic, assign) BOOL nextRegionChangeIsFromUserInteraction;
 @property (nonatomic) double listMaxLatitudeDelta;
 @property (nonatomic) double listMaxLongitudeDelta;
@@ -119,6 +121,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 @property (weak, nonatomic) IBOutlet UIView *mapMapSearch;
 @property (weak, nonatomic) IBOutlet UIImageView *sortMapSearch;
 @property (weak, nonatomic) IBOutlet UIImageView *sortImageView;
+@property (weak, nonatomic) IBOutlet UIView *mapBackContainer;
 
 - (IBAction)justPushIt:(id)sender;
 - (IBAction)clickKidsButton:(id)sender;
@@ -305,6 +308,16 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     self.wmapHamburger.hidden = YES;
     self.currentWmapView = self.wmapMap;
     
+    BackCancelViewLarger *mapBack = [[BackCancelViewLarger alloc] initWithFrame:CGRectMake(5, 5, 50, 50)];
+    [self.mapBackContainer addSubview:mapBack];
+    self.mapBackContainer.hidden = YES;
+    
+    UITapGestureRecognizer *mbgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickMapBack:)];
+    mbgr.numberOfTapsRequired = 1;
+    mbgr.numberOfTouchesRequired = 1;
+    self.mapBackContainer.userInteractionEnabled = YES;
+    [self.mapBackContainer addGestureRecognizer:mbgr];
+    
     [self highlightWhereTo];
 }
 
@@ -405,14 +418,14 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 
 - (void)reverseGeoCodingDawg {
     self.loadingGooglePlaceDetails = YES;
-    if (!self.criteriaOrHotelSearchMode) {
+//    if (!self.criteriaOrHotelSearchMode) {
         [self nukeConnectionsAndSpinners];
-    }
+//    }
     [[LoadGooglePlacesData sharedInstance:self] loadPlaceDetailsWithLatitude:self.mkMapView.region.center.latitude longitude:self.mkMapView.region.center.longitude];
-    if (!self.criteriaOrHotelSearchMode) {
+//    if (!self.criteriaOrHotelSearchMode) {
         self.mapSpinner.hidden = NO;
         [self.mapSpinner startAnimating];
-    }
+//    }
 }
 
 #pragma mark UITextFieldDelegate methods
@@ -585,7 +598,9 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
             }
             
             if (self.criteriaOrHotelSearchMode) {
-                [self itKeepsTheWaterOffOurHeads];
+                if (!stringIsEmpty([SelectionCriteria singleton].whereToFirst)) {
+                    [self itKeepsTheWaterOffOurHeads];
+                }
             } else {
                 [self dropDaSpinnerAlready];
             }
@@ -600,14 +615,19 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
                 wes.loadingGooglePlaceDetails = NO;
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    wes.whereToTextField.text = [SelectionCriteria singleton].whereToFirst;
-                    wes.whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
                     wes.mapSpinner.hidden = YES;
                     [wes.mapSpinner stopAnimating];
                     
-                    if (wes.criteriaOrHotelSearchMode) {
+                    if (!self.isPlacesTableViewExpanded) {
+                        wes.whereToTextField.text = [SelectionCriteria singleton].whereToFirst;
+                        wes.whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
+                    }
+                    
+                    if (![SelectionCriteria singleton].whereToFirst) {
+                        [wes nukeConnectionsAndSpinners];
+                    } /*else if (wes.criteriaOrHotelSearchMode) {
                         [wes itKeepsTheWaterOffOurHeads];
-                    } else {
+                    }*/ else {
                         [wes nukeConnectionsAndSpinners];
                     }
                 });
@@ -770,6 +790,8 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         return;
     }
     
+    self.mapBackContainer.hidden = YES;
+    
     if ([self.placesTableData[indexPathRow] isKindOfClass:[GooglePlace class]]) {
         GooglePlace *gp = self.placesTableData[indexPathRow];
         self.loadingGooglePlaceDetails = YES;
@@ -787,11 +809,16 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         self.placesTableData = [SelectionCriteria singleton].placesArray;
         [self.placesTableView reloadData];
         [self.whereToTextField resignFirstResponder];
-        [SelectionCriteria singleton].googlePlaceDetail = nil;
-        if ([SelectionCriteria singleton].selectedPlace != self.placesTableData[indexPathRow]) {
+//        [SelectionCriteria singleton].googlePlaceDetail = nil;
+        if ([SelectionCriteria singleton].selectedPlace != self.placesTableData[indexPathRow]
+                || [SelectionCriteria singleton].googlePlaceDetail) {
+            [SelectionCriteria singleton].googlePlaceDetail = nil;
             [SelectionCriteria singleton].selectedPlace = self.placesTableData[indexPathRow];
             [self redrawMapViewAnimated:YES radius:[SelectionCriteria singleton].selectedPlace.zoomRadius];
-        } else {
+        }/*else if (self.mkMapView.region.center.latitude != [SelectionCriteria singleton].latitude
+                   || self.mkMapView.region.center.longitude != [SelectionCriteria singleton].longitude) {
+            [self redrawMapViewAnimated:YES radius:[SelectionCriteria singleton].selectedPlace.zoomRadius];
+        }*/ else {
             [self removeAllPinsButUserLocation];
         }
         
@@ -977,6 +1004,9 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         wes.mapMapSearch.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
     } completion:^(BOOL finished) {
         wes.mapMapSearch.hidden = YES;
+        if (!wes.spinnerIsSwirling) {
+            wes.wmapClicker.userInteractionEnabled = YES;
+        }
     }];
 }
 
@@ -1134,19 +1164,23 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 - (void)redrawMapAnnotationsWithCompletion:(void (^)(void))completion {
     [self removeAllPinsButUserLocation];
     
-    for (int j = 0; j < [_hotelTableViewDelegate.currentHotelData count]; j++) {
-        EanHotelListHotelSummary *hotel = [_hotelTableViewDelegate.currentHotelData objectAtIndex:j];
-        WotaMapAnnotatioin *annotation = [[WotaMapAnnotatioin alloc] init];
-        annotation.coordinate = CLLocationCoordinate2DMake(hotel.latitude, hotel.longitude);
-        NSString *imageUrlString = [@"http://images.travelnow.com" stringByAppendingString:hotel.thumbNailUrlEnhanced];
-        annotation.imageUrl = imageUrlString;
-        
-        annotation.rowNUmber = j;
-        annotation.title = hotel.hotelNameFormatted;
-        NSNumberFormatter *cf = kPriceRoundOffFormatter(hotel.rateCurrencyCode);
-        annotation.subtitle = [NSString stringWithFormat:@"From %@/night", [cf stringFromNumber:hotel.lowRate]];
-        [self.mkMapView addAnnotation:annotation];
-    }
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        for (int j = 0; j < [_hotelTableViewDelegate.currentHotelData count]; j++) {
+            EanHotelListHotelSummary *hotel = [_hotelTableViewDelegate.currentHotelData objectAtIndex:j];
+            WotaMapAnnotatioin *annotation = [[WotaMapAnnotatioin alloc] init];
+            annotation.coordinate = CLLocationCoordinate2DMake(hotel.latitude, hotel.longitude);
+            NSString *imageUrlString = [@"http://images.travelnow.com" stringByAppendingString:hotel.thumbNailUrlEnhanced];
+            annotation.imageUrl = imageUrlString;
+            
+            annotation.rowNUmber = j;
+            annotation.title = hotel.hotelNameFormatted;
+            NSNumberFormatter *cf = kPriceRoundOffFormatter(hotel.rateCurrencyCode);
+            annotation.subtitle = [NSString stringWithFormat:@"From %@/night", [cf stringFromNumber:hotel.lowRate]];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.mkMapView addAnnotation:annotation];
+            });
+        }
+    });
     
     if (!self.currentlyRedrawingMapViewRegion && completion) {
         completion();
@@ -1293,6 +1327,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     self.viewState = VIEW_STATE_CRITERIA;
     [self transitionToCriteriaMode];
     
+    self.mapBackContainer.hidden = YES;
     [self.view endEditing:YES];
     [self animateTableViewCompression];
     self.whereToTextField.text = [SelectionCriteria singleton].whereToFirst;
@@ -1348,6 +1383,26 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     }
 }
 
+- (void)clickMapBack:(UITapGestureRecognizer *)sender {
+    [self nukeConnectionsAndSpinners];
+    self.containerView.userInteractionEnabled = NO;
+    SelectionCriteria *sc = [SelectionCriteria singleton];
+    sc.googlePlaceDetail = nil;
+    self.whereToTextField.text = sc.whereToFirst;
+    self.whereToSecondLevel.text = sc.whereToSecond;
+    
+    CLLocationCoordinate2D zoomLocation;
+    zoomLocation.latitude = sc.latitude;
+    zoomLocation.longitude= sc.longitude;
+    
+    self.currentlyRedrawingMapViewRegion = YES;
+    MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(zoomLocation, 1.6*sc.zoomRadius*TRV_METERS_PER_MILE, 1.6*sc.zoomRadius*TRV_METERS_PER_MILE);
+    self.nextRegionChangeIsFromBackButton = YES;
+    [self.mkMapView setRegion:viewRegion animated:YES];
+    
+    self.mapBackContainer.hidden = YES;
+}
+
 //- (void)clickSearchMap:(UITapGestureRecognizer *)sender {
 //    [self transitionToHotelSearchMode];
 //    
@@ -1359,6 +1414,11 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 //}
 
 - (void)itKeepsTheWaterOffOurHeads {
+    if (stringIsEmpty([SelectionCriteria singleton].whereToFirst)) {
+        [self nukeConnectionsAndSpinners];
+        return;
+    }
+    
     if (self.useMapRadiusForSearch) {
         [SelectionCriteria singleton].zoomRadius = self.mapRadiusInMiles;
     }
@@ -1368,6 +1428,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     tf.text = @"";
     self.hotelTableViewDelegate.hotelData = [NSArray array];
     [self.hotelsTableView reloadData];
+    self.mapBackContainer.hidden = YES;
     [self letsFindHotelsWithSearchRadius:[SelectionCriteria singleton].zoomRadius];
 }
 
@@ -1399,7 +1460,12 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         self.hotelTableViewDelegate.hotelData = [NSArray array];
         [self.hotelsTableView reloadData];
     } else if (!self.loadingGooglePlaceDetails) {
-        [self itKeepsTheWaterOffOurHeads];
+        if (!stringIsEmpty([SelectionCriteria singleton].whereToFirst)) {
+            [self itKeepsTheWaterOffOurHeads];
+        } else {
+            self.hotelTableViewDelegate.hotelData = [NSArray array];
+            [self.hotelsTableView reloadData];
+        }
     } else {
         [self loadDaSpinner];
     }
@@ -1887,8 +1953,11 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         }
             
         case VIEW_STATE_MAP: {
-            [self loadDaSpinner];
-            [self reverseGeoCodingDawg];
+//            [self loadDaSpinner];
+//            [self reverseGeoCodingDawg];
+            [self removeAllPinsButUserLocation];
+            [self findHotelsClicked:self.sortMapSearchContainer];
+            self.mapBackContainer.hidden = YES;
             break;
         }
             
@@ -2077,19 +2146,40 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
     self.currentlyRedrawingMapViewRegion = NO;
-    if(_nextRegionChangeIsFromUserInteraction) {
+    if (self.nextRegionChangeIsFromBackButton) {
+        self.containerView.userInteractionEnabled = YES;
+        self.nextRegionChangeIsFromBackButton = NO;
+        self.useMapRadiusForSearch = YES;
+        self.mapMapSearch.userInteractionEnabled = YES;
+        self.mapMapSearch.alpha = 1.0f;
+        self.sortMapSearch.userInteractionEnabled = YES;
+        self.sortMapSearch.alpha = 1.0f;
+        self.mapBackContainer.hidden = YES;
+    } else if(_nextRegionChangeIsFromUserInteraction) {
         _nextRegionChangeIsFromUserInteraction = NO;
         self.useMapRadiusForSearch = YES;
         self.mapMapSearch.userInteractionEnabled = YES;
         self.mapMapSearch.alpha = 1.0f;
         self.sortMapSearch.userInteractionEnabled = YES;
         self.sortMapSearch.alpha = 1.0f;
-        if (!self.criteriaOrHotelSearchMode) {
+//        if (!self.criteriaOrHotelSearchMode) {
             [self reverseGeoCodingDawg];
+//        }
+
+        if (self.criteriaOrHotelSearchMode) {
+            if (mapView.region.center.latitude != [SelectionCriteria singleton].latitude
+                    || mapView.region.center.longitude != [SelectionCriteria singleton].longitude) {
+                self.mapBackContainer.hidden = NO;
+            }
         }
     } else if (self.redrawMapAnnotationCompletion) {
         self.redrawMapAnnotationCompletion();
         self.redrawMapAnnotationCompletion = nil;
+    }
+    
+    if (mapView.region.center.latitude == [SelectionCriteria singleton].latitude
+        || mapView.region.center.longitude == [SelectionCriteria singleton].longitude) {
+        self.mapBackContainer.hidden = YES;
     }
 }
 

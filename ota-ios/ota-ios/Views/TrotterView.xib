@@ -22,6 +22,7 @@
                 <outlet property="imageViewOpeningSearch" destination="lD4-0d-u5I" id="na6-Tu-Whw"/>
                 <outlet property="kidsButton" destination="02D-4E-Rli" id="mCI-ZG-GKP"/>
                 <outlet property="labelWhereYouGoing" destination="Jeo-Z7-A8G" id="y8r-lj-2d0"/>
+                <outlet property="mapBackContainer" destination="0xV-H6-fC5" id="b57-Vg-R9B"/>
                 <outlet property="mapMapSearch" destination="tG7-m1-yPx" id="KaZ-XU-dmT"/>
                 <outlet property="mapSpinner" destination="K9Y-Go-cm2" id="sne-hA-KY5"/>
                 <outlet property="mapViewContainer" destination="lmT-rW-gec" id="TaJ-B9-HFc"/>
@@ -91,6 +92,11 @@
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 </activityIndicatorView>
+                                <view contentMode="scaleToFill" id="0xV-H6-fC5" userLabel="mapBackContainer">
+                                    <rect key="frame" x="260" y="380" width="60" height="60"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
                                 <view contentMode="scaleToFill" id="tG7-m1-yPx" userLabel="mapMapSearch">
                                     <rect key="frame" x="260" y="390" width="60" height="60"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>

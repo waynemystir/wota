@@ -53,6 +53,7 @@
 		B05BD62C1AC1FE53002C2882 /* PlaceAutoCompleteTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B05BD62B1AC1FE53002C2882 /* PlaceAutoCompleteTableViewCell.m */; };
 		B05BD6301AC1FEE3002C2882 /* GooglePlace.m in Sources */ = {isa = PBXBuildFile; fileRef = B05BD62F1AC1FEE3002C2882 /* GooglePlace.m */; };
 		B05BD6321AC1FF54002C2882 /* PlaceAutoCompleteTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B05BD6311AC1FF54002C2882 /* PlaceAutoCompleteTableViewCell.xib */; };
+		B06140CB1B76636D004D3FEE /* BackCancelViewLarger.m in Sources */ = {isa = PBXBuildFile; fileRef = B06140CA1B76636D004D3FEE /* BackCancelViewLarger.m */; };
 		B0617ACF1AF5BE5500AEA216 /* EanCancelPolicyInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B0617ACE1AF5BE5500AEA216 /* EanCancelPolicyInfo.m */; };
 		B061FE7E1B3910D6005773B3 /* HotelsTableViewDelegateImplementation.m in Sources */ = {isa = PBXBuildFile; fileRef = B061FE7D1B3910D6005773B3 /* HotelsTableViewDelegateImplementation.m */; };
 		B06C98BA1B0951E500DBE09D /* InternationalCallingCodes.plist in Resources */ = {isa = PBXBuildFile; fileRef = B06C98B91B0951E500DBE09D /* InternationalCallingCodes.plist */; };
@@ -260,6 +261,8 @@
 		B05BD62E1AC1FEE3002C2882 /* GooglePlace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GooglePlace.h; sourceTree = "<group>"; };
 		B05BD62F1AC1FEE3002C2882 /* GooglePlace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GooglePlace.m; sourceTree = "<group>"; };
 		B05BD6311AC1FF54002C2882 /* PlaceAutoCompleteTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlaceAutoCompleteTableViewCell.xib; sourceTree = "<group>"; };
+		B06140C91B76636D004D3FEE /* BackCancelViewLarger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackCancelViewLarger.h; sourceTree = "<group>"; };
+		B06140CA1B76636D004D3FEE /* BackCancelViewLarger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BackCancelViewLarger.m; sourceTree = "<group>"; };
 		B0617ACD1AF5BE5500AEA216 /* EanCancelPolicyInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanCancelPolicyInfo.h; sourceTree = "<group>"; };
 		B0617ACE1AF5BE5500AEA216 /* EanCancelPolicyInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanCancelPolicyInfo.m; sourceTree = "<group>"; };
 		B061FE7C1B3910D6005773B3 /* HotelsTableViewDelegateImplementation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotelsTableViewDelegateImplementation.h; sourceTree = "<group>"; };
@@ -869,6 +872,8 @@
 				B0D01EC11B07EFE30001C558 /* NavTitleView.m */,
 				B04686461B6B06EC00D74B19 /* BackCancelViewSmaller.h */,
 				B04686471B6B06EC00D74B19 /* BackCancelViewSmaller.m */,
+				B06140C91B76636D004D3FEE /* BackCancelViewLarger.h */,
+				B06140CA1B76636D004D3FEE /* BackCancelViewLarger.m */,
 			);
 			path = Navigation;
 			sourceTree = "<group>";
@@ -1131,6 +1136,7 @@
 				B0C04AD31B5210C8002C89F2 /* NetworkProblemResponder.m in Sources */,
 				B07958E91AF451C000422182 /* EanNightlyRate.m in Sources */,
 				B0CBC8521B48AF9200F61CA9 /* RangeSlider.swift in Sources */,
+				B06140CB1B76636D004D3FEE /* BackCancelViewLarger.m in Sources */,
 				B0C04AD81B523569002C89F2 /* NetworkProblemView.m in Sources */,
 				B0D02FE81AE6123000B1E75F /* PTKTextField.m in Sources */,
 				B0122E471AD088F800E44319 /* EanAvailabilityHotelRoomResponse.m in Sources */,

@@ -66,7 +66,6 @@
 @property (nonatomic, strong, readonly) NSString *formattedWhereToFirst;
 @property (nonatomic, strong, readonly) NSString *formattedWhereToSecond;
 
-+ (GooglePlaceDetail *)placeDetailFromId:(NSString *)placeId;
 + (GooglePlaceDetail *)placeDetailFromData:(NSData *)data;
 + (GooglePlaceDetail *)placeDetailFromGeoCodeData:(NSData *)data;
 + (GooglePlaceDetail *)placeDetailFromObject:(id)object wrappedInResult:(BOOL)wrapped;

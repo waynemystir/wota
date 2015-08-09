@@ -144,9 +144,12 @@ NSString * const kKeyNumberOfAdults = @"numberOfAdults";
         return;
     }
     
+//    NSLog(@"WWWWW:%@ %@", selectedPlace.placeName, selectedPlace.placeId);
     for (int j = 0; j < [_placesArray count]; j++) {
         WotaPlace *wp = [_placesArray objectAtIndex:j];
-        if([wp.placeId isEqualToString: _selectedPlace.placeId]) {
+//        NSLog(@"WWWWW:%@ %@", wp.placeName, wp.placeId);
+        if([wp.placeName isEqualToString:_selectedPlace.placeName]
+                || [wp.placeId isEqualToString: _selectedPlace.placeId]) {
             [_placesArray removeObjectAtIndex:j];
         }
     }
