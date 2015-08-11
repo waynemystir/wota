@@ -18,6 +18,8 @@ extern NSString * const kSelectionCriteriaLocationNotificationName;
 @property (nonatomic, strong) NSMutableArray *placesArray;
 @property (nonatomic, strong) WotaPlace *selectedPlace;
 
+@property (nonatomic, assign) BOOL currentLocationIsSet;
+
 @property (nonatomic, strong, setter=setGooglePlaceDetail:) GooglePlaceDetail *googlePlaceDetail;
 @property (nonatomic, strong, setter=setArrivalDate:) NSDate *arrivalDate;
 @property (nonatomic, strong, setter=setReturnDate:) NSDate *returnDate;

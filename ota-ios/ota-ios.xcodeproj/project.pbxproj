@@ -48,6 +48,7 @@
 		B0508C6E1B34DCA8009CC56F /* PowerebByGoogleCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0508C6D1B34DCA8009CC56F /* PowerebByGoogleCell.xib */; };
 		B0508C741B351064009CC56F /* WotaPlace.m in Sources */ = {isa = PBXBuildFile; fileRef = B0508C731B351064009CC56F /* WotaPlace.m */; };
 		B058A4941AE8B52C00E42594 /* WotaButton.m in Sources */ = {isa = PBXBuildFile; fileRef = B058A4931AE8B52C00E42594 /* WotaButton.m */; };
+		B05BB27D1B77BCBE00A51842 /* LocationNotAvailableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B05BB27C1B77BCBE00A51842 /* LocationNotAvailableView.xib */; };
 		B05BD6241AC1E9FB002C2882 /* AppEnvironment.m in Sources */ = {isa = PBXBuildFile; fileRef = B05BD6231AC1E9FB002C2882 /* AppEnvironment.m */; };
 		B05BD6271AC1EA65002C2882 /* LoadGooglePlacesData.m in Sources */ = {isa = PBXBuildFile; fileRef = B05BD6251AC1EA65002C2882 /* LoadGooglePlacesData.m */; };
 		B05BD62C1AC1FE53002C2882 /* PlaceAutoCompleteTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B05BD62B1AC1FE53002C2882 /* PlaceAutoCompleteTableViewCell.m */; };
@@ -251,6 +252,7 @@
 		B0508C731B351064009CC56F /* WotaPlace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WotaPlace.m; sourceTree = "<group>"; };
 		B058A4921AE8B52C00E42594 /* WotaButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WotaButton.h; sourceTree = "<group>"; };
 		B058A4931AE8B52C00E42594 /* WotaButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WotaButton.m; sourceTree = "<group>"; };
+		B05BB27C1B77BCBE00A51842 /* LocationNotAvailableView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LocationNotAvailableView.xib; sourceTree = "<group>"; };
 		B05BD6221AC1E9FB002C2882 /* AppEnvironment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppEnvironment.h; sourceTree = "<group>"; };
 		B05BD6231AC1E9FB002C2882 /* AppEnvironment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppEnvironment.m; sourceTree = "<group>"; };
 		B05BD6251AC1EA65002C2882 /* LoadGooglePlacesData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadGooglePlacesData.m; sourceTree = "<group>"; };
@@ -640,6 +642,7 @@
 				B0CBC7D81B483C2D00F61CA9 /* FilterView.xib */,
 				B010E3831B4CCE7300CA8374 /* SortView.xib */,
 				B09277E41B4F70CC0094159B /* NoHotelsView.xib */,
+				B05BB27C1B77BCBE00A51842 /* LocationNotAvailableView.xib */,
 				B080B7C81AC505DC00075A32 /* HotelInfoView.xib */,
 				B0FE0F481AC6ED0000DAF635 /* BookView.xib */,
 				B0FE0F4D1AC70A2500DAF635 /* SelectRoomView.xib */,
@@ -1061,6 +1064,7 @@
 				B0D02FF11AE6123000B1E75F /* diners.png in Resources */,
 				B06C98BA1B0951E500DBE09D /* InternationalCallingCodes.plist in Resources */,
 				B0DF52391ADC77F100136661 /* PostResultsTableViewCell.xib in Resources */,
+				B05BB27D1B77BCBE00A51842 /* LocationNotAvailableView.xib in Resources */,
 				B0D02FF91AE6123000B1E75F /* placeholder.png in Resources */,
 				B0C04ADC1B534FDD002C89F2 /* NoPredictionsCell.xib in Resources */,
 				B0D02FFF1AE6123000B1E75F /* textfield@2x.png in Resources */,
@@ -1322,8 +1326,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Wayne Small";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Wayne Small";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1332,7 +1336,7 @@
 				INFOPLIST_FILE = "ota-ios/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = Trotter;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "e41888c6-aa8b-4c58-9339-ca509184ddae";
 				SWIFT_OBJC_BRIDGING_HEADER = "ota-ios/Classes/ota-ios-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "$(SWIFT_MODULE_NAME)-Swift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1346,8 +1350,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Wayne Small";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Wayne Small";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1356,7 +1360,7 @@
 				INFOPLIST_FILE = "ota-ios/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = Trotter;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "e41888c6-aa8b-4c58-9339-ca509184ddae";
 				SWIFT_OBJC_BRIDGING_HEADER = "ota-ios/Classes/ota-ios-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "$(SWIFT_MODULE_NAME)-Swift.h";
 				TARGETED_DEVICE_FAMILY = "1,2";

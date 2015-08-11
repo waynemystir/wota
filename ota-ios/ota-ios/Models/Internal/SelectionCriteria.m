@@ -15,6 +15,7 @@ NSUInteger const kMaximumNumberOfSavedPlaces = 20;
 
 NSString * const kKeyPlacesArray = @"kKeyPlacesArray";
 NSString * const kKeySelectedPlace = @"kKeySelectedPlaces";
+NSString * const kKeyCurrentLocationIsSet = @"kKeyCurrentLocationIsSet";
 NSString * const kKeyArrivalDate = @"arrivalDate";
 NSString * const kKeyReturnDate = @"returnDate";
 NSString * const kKeyNumberOfAdults = @"numberOfAdults";
@@ -69,6 +70,7 @@ NSString * const kKeyNumberOfAdults = @"numberOfAdults";
     if (self = [super init]) {
         _placesArray = [aDecoder decodeObjectForKey:kKeyPlacesArray];
         _selectedPlace = [aDecoder decodeObjectForKey:kKeySelectedPlace];
+        _currentLocationIsSet = [aDecoder decodeBoolForKey:kKeyCurrentLocationIsSet];
         _arrivalDate = [aDecoder decodeObjectForKey:kKeyArrivalDate];
         _returnDate = [aDecoder decodeObjectForKey:kKeyReturnDate];
         _numberOfAdults = [aDecoder decodeIntegerForKey:kKeyNumberOfAdults];
@@ -79,6 +81,7 @@ NSString * const kKeyNumberOfAdults = @"numberOfAdults";
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [aCoder encodeObject:_placesArray forKey:kKeyPlacesArray];
     [aCoder encodeObject:_selectedPlace forKey:kKeySelectedPlace];
+    [aCoder encodeBool:_currentLocationIsSet forKey:kKeyCurrentLocationIsSet];
     [aCoder encodeObject:_arrivalDate forKey:kKeyArrivalDate];
     [aCoder encodeObject:_returnDate forKey:kKeyReturnDate];
     [aCoder encodeInteger:_numberOfAdults forKey:kKeyNumberOfAdults];
@@ -128,6 +131,11 @@ NSString * const kKeyNumberOfAdults = @"numberOfAdults";
 
 #pragma mark Setters
 
+- (void)setCurrentLocationIsSet:(BOOL)currentLocationIsSet {
+    _currentLocationIsSet = currentLocationIsSet;
+    [self save];
+}
+
 - (void)setZoomRadius:(double)zoomRadius {
     if (_googlePlaceDetail) {
         _googlePlaceDetail.zoomRadius = zoomRadius;
@@ -144,11 +152,9 @@ NSString * const kKeyNumberOfAdults = @"numberOfAdults";
         return;
     }
     
-//    NSLog(@"WWWWW:%@ %@", selectedPlace.placeName, selectedPlace.placeId);
     for (int j = 0; j < [_placesArray count]; j++) {
         WotaPlace *wp = [_placesArray objectAtIndex:j];
-//        NSLog(@"WWWWW:%@ %@", wp.placeName, wp.placeId);
-        if([wp.placeName isEqualToString:_selectedPlace.placeName]
+        if([wp.displayName isEqualToString:_selectedPlace.displayName]
                 || [wp.placeId isEqualToString: _selectedPlace.placeId]) {
             [_placesArray removeObjectAtIndex:j];
         }
