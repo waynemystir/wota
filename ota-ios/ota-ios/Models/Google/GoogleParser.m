@@ -19,7 +19,7 @@
         NSLog(@"ERROR:%@", [error description]);
         return nil;
     } else {
-        NSLog(@"AUTOCOMPLETERESPONSE:%@", [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
+        TrotterLog(@"AUTOCOMPLETERESPONSE:%@", [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
     }
     
     id predictions = [response objectForKey:@"predictions"];

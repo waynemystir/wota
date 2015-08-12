@@ -235,7 +235,7 @@ NSString * kURLeanBookReservation() {
     self.responseData = [NSMutableData data];
     [connection start];
     
-    NSLog(@"%@.%@:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), [url absoluteString]);
+    TrotterLog(@"", NSStringFromClass(self.class), NSStringFromSelector(_cmd), [url absoluteString]);
     if ([self.delegate respondsToSelector:@selector(requestStarted:)]) {
         [self.delegate requestStarted:connection];
     }

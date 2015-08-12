@@ -8,6 +8,24 @@
 
 #import "AppEnvironment.h"
 
+/**
+ * General
+ */
+
+BOOL const isLogging = NO;
+
+void TrotterLog(NSString *format, ...) {
+    if (!isLogging) {
+        return;
+    }
+    
+    va_list args;
+    va_start(args, format);
+    NSString *log_msg = [[NSString alloc] initWithFormat:format arguments:args];
+    NSLog(@"%@", log_msg);
+    va_end(args);
+}
+
 NSString * const kKeyGuestInfo = @"LgAuYeEsRtCiAnKfEo";
 NSString * const kKeyPaymentDetails1 = @"pJaIyMmMeYnBtUdFeFtEaTiWlEsS1";
 

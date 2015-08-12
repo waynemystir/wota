@@ -42,7 +42,7 @@ NSString * const kKeyDisplayName = @"displayName";
     }
     
     NSString *respString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    NSLog(@"%@ PDFData:%@", NSStringFromClass(self.class), respString);
+    TrotterLog(@"%@ PDFData:%@", NSStringFromClass(self.class), respString);
     
     return [self placeDetailFromObject:jsonDictionary wrappedInResult:YES];
 }
@@ -64,7 +64,7 @@ NSString * const kKeyDisplayName = @"displayName";
     }
     
     NSString *respString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    NSLog(@"%@ PDFGeo:%@", NSStringFromClass(self.class), respString);
+    TrotterLog(@"%@ PDFGeo:%@", NSStringFromClass(self.class), respString);
     
     return [self placeDetailFromGeocodeDict:jsonDictionary];
 }

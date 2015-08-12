@@ -7,6 +7,7 @@
 //
 
 #import "EanAbstractResponse.h"
+#import "AppEnvironment.h"
 
 @implementation EanAbstractResponse
 
@@ -28,7 +29,7 @@
     }
     
     NSString *respString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    NSLog(@"%@ JSON Response String:%@", NSStringFromClass(self.class), respString);
+    TrotterLog(@"%@ JSON Response String:%@", NSStringFromClass(self.class), respString);
     return [self eanObjectFromApiJsonResponse:respDict];
 }
 

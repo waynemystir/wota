@@ -57,6 +57,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 @property (nonatomic) CLLocationDistance mapRadiusInMeters;
 @property (nonatomic) CLLocationDistance mapRadiusInMiles;
 @property (nonatomic) BOOL notMyFirstRodeo;
+@property (nonatomic) BOOL aboutToRedrawMapViewRegion;
 @property (nonatomic) BOOL currentlyRedrawingMapViewRegion;
 @property (nonatomic) BOOL useMapRadiusForSearch;
 @property (nonatomic) BOOL loadingGooglePlaceDetails;
@@ -538,7 +539,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 
 - (void)requestStarted:(NSURLConnection *)connection {
     [self.openConnections addObject:connection];
-    NSLog(@"%@.%@ loading URL:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), [[[connection currentRequest] URL] absoluteString]);
+    TrotterLog(@"%@.%@ loading URL:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), [[[connection currentRequest] URL] absoluteString]);
 }
 
 - (void)requestFinished:(NSData *)responseData dataType:(LOAD_DATA_TYPE)dataType {
@@ -547,8 +548,8 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
             self.checkHotelsOutlet.enabled = NO;
             self.mapMapSearch.userInteractionEnabled = NO;
             self.mapMapSearch.alpha = 0.3f;
-            self.sortMapSearch.userInteractionEnabled = NO;
-            self.sortMapSearch.alpha = 0.3f;
+            self.sortMapSearchContainer.alpha = 0.2f;
+            self.sortMapSearchContainer.userInteractionEnabled = NO;
             NSArray *wes = [GoogleParser parseAutoCompleteResponse:responseData];
             if (wes) {
                 self.placesTableData = [NSMutableArray arrayWithArray:wes];
@@ -566,8 +567,8 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
                     enableFindHotels = NO;
                     self.mapMapSearch.userInteractionEnabled = NO;
                     self.mapMapSearch.alpha = 0.3f;
-                    self.sortMapSearch.userInteractionEnabled = NO;
-                    self.sortMapSearch.alpha = 0.3f;
+                    self.sortMapSearchContainer.alpha = 0.2f;
+                    self.sortMapSearchContainer.userInteractionEnabled = NO;
                     NSString *w = [NSString stringWithFormat:@"No places were found for \"%@\". Please try again.", self.whereToTextField.text];
                     [self loadNoWhateverView:@"No Places Found" text:w];
                     [self dropDaSpinnerAlready];
@@ -577,16 +578,15 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
                 self.checkHotelsOutlet.enabled = YES;
                 self.mapMapSearch.userInteractionEnabled = YES;
                 self.mapMapSearch.alpha = 1.0f;
-                self.sortMapSearch.userInteractionEnabled = YES;
-                self.sortMapSearch.alpha = 1.0f;
+                [self enableOrDisableSortMapSearchContainer];
                 self.autoCompleteSpinner.hidden = YES;
                 [self.autoCompleteSpinner stopAnimating];
             } else {
                 self.checkHotelsOutlet.enabled = NO;
                 self.mapMapSearch.userInteractionEnabled = NO;
                 self.mapMapSearch.alpha = 0.3f;
-                self.sortMapSearch.userInteractionEnabled = NO;
-                self.sortMapSearch.alpha = 0.3f;
+                self.sortMapSearchContainer.alpha = 0.2f;
+                self.sortMapSearchContainer.userInteractionEnabled = NO;
             }
             break;
         }
@@ -665,17 +665,15 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
                     
                     if (ehlr.hotelList.count == 0) {
                         [wes handleNoHotels];
-                        [wes setupTheFilterView];
-                        [wes setupTheSortView];
-                        [wes dropDaSpinnerAlready];
-//                        [wes performSelector:@selector(dropDaSpinnerAlready) withObject:nil afterDelay:0.3];
+                        [wes tydieUpAfterHotelListReturned];
                     } else {
                         [wes redrawMapAnnotationsWithCompletion:^{
-                            [wes setupTheFilterView];
-                            [wes setupTheSortView];
-                            [wes dropDaSpinnerAlready];
-//                            [wes performSelector:@selector(dropDaSpinnerAlready) withObject:nil afterDelay:0.3];
+                            [wes tydieUpAfterHotelListReturned];
                         }];
+                        
+                        if (self.spinnerIsSwirling) {
+                            [wes performSelector:@selector(tydieUpAfterHotelListReturned) withObject:nil afterDelay:0.4];
+                        }
                     }
                 });
             });
@@ -685,6 +683,12 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         default:
             break;
     }
+}
+
+- (void)tydieUpAfterHotelListReturned {
+    [self setupTheFilterView];
+    [self setupTheSortView];
+    [self dropDaSpinnerAlready];
 }
 
 - (void)requestTimedOut {
@@ -732,14 +736,15 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 #pragma mark Nuke Em
 
 - (void)nukeConnectionsAndSpinners:(BOOL)withForce {
+    self.loadingGooglePlaceDetails = NO;
     if (self.clickedSearchWhileAutoCompleting && !withForce) {
         return;
     }
     
     [self dropDaSpinnerAlready];
-    UIActivityIndicatorView *sp = (UIActivityIndicatorView *)[self.containerViewSpinnerContainer viewWithTag:717171];
-    sp.hidden = YES;
-    [sp stopAnimating];
+//    UIActivityIndicatorView *sp = (UIActivityIndicatorView *)[self.containerViewSpinnerContainer viewWithTag:717171];
+//    sp.hidden = YES;
+//    [sp stopAnimating];
     self.mapSpinner.hidden = YES;
     [self.mapSpinner stopAnimating];
     [self.openConnections makeObjectsPerformSelector:@selector(cancel)];
@@ -1476,6 +1481,17 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 
 - (void)clickMapBack:(UITapGestureRecognizer *)sender {
     [self nukeConnectionsAndSpinners:YES];
+    
+    if (self.mapBackContainer.hidden && !self.aboutToRedrawMapViewRegion) {
+        return;
+    }
+    
+    self.mapBackContainer.hidden = YES;
+    self.mapMapSearch.userInteractionEnabled = NO;
+    self.mapMapSearch.alpha = 0.3f;
+    self.sortMapSearchContainer.alpha = 0.2f;
+    self.sortMapSearchContainer.userInteractionEnabled = NO;
+    
     self.containerView.userInteractionEnabled = NO;
     SelectionCriteria *sc = [SelectionCriteria singleton];
     sc.googlePlaceDetail = nil;
@@ -1490,8 +1506,6 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(zoomLocation, 1.6*sc.zoomRadius*TRV_METERS_PER_MILE, 1.6*sc.zoomRadius*TRV_METERS_PER_MILE);
     self.nextRegionChangeIsFromBackButton = YES;
     [self.mkMapView setRegion:viewRegion animated:YES];
-    
-    self.mapBackContainer.hidden = YES;
 }
 
 - (void)itKeepsTheRainOffOurHeads {
@@ -1815,8 +1829,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     self.checkHotelsOutlet.enabled = YES;
     self.mapMapSearch.userInteractionEnabled = YES;
     self.mapMapSearch.alpha = 1.0f;
-    self.sortMapSearch.userInteractionEnabled = YES;
-    self.sortMapSearch.alpha = 1.0f;
+    [self enableOrDisableSortMapSearchContainer];
     self.autoCompleteSpinner.hidden = YES;
     [self.autoCompleteSpinner stopAnimating];
     __weak UIView *nhv = wb.superview;
@@ -2049,8 +2062,6 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         }
             
         case VIEW_STATE_MAP: {
-//            [self loadDaSpinner];
-//            [self reverseGeoCodingDawg];
             [self removeAllPinsButUserLocation];
             [self findHotelsClicked:self.sortMapSearchContainer];
             self.mapBackContainer.hidden = YES;
@@ -2224,6 +2235,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 }
 
 - (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated {
+    self.aboutToRedrawMapViewRegion = YES;
     UIView* view = mapView.subviews.firstObject;
     
     // Curtesy of http://b2cloud.com.au/tutorial/mkmapview-determining-whether-region-change-is-from-user-interaction/
@@ -2236,31 +2248,29 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
             _nextRegionChangeIsFromUserInteraction = YES;
             self.mapMapSearch.userInteractionEnabled = NO;
             self.mapMapSearch.alpha = 0.3f;
-            self.sortMapSearch.userInteractionEnabled = NO;
-            self.sortMapSearch.alpha = 0.3f;
+            self.sortMapSearchContainer.alpha = 0.2f;
+            self.sortMapSearchContainer.userInteractionEnabled = NO;
             break;
         }
     }
 }
 
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
-    self.currentlyRedrawingMapViewRegion = NO;
+    self.currentlyRedrawingMapViewRegion = self.aboutToRedrawMapViewRegion = NO;
     if (self.nextRegionChangeIsFromBackButton) {
         self.containerView.userInteractionEnabled = YES;
         self.nextRegionChangeIsFromBackButton = NO;
         self.useMapRadiusForSearch = YES;
         self.mapMapSearch.userInteractionEnabled = YES;
         self.mapMapSearch.alpha = 1.0f;
-        self.sortMapSearch.userInteractionEnabled = YES;
-        self.sortMapSearch.alpha = 1.0f;
+        [self enableOrDisableSortMapSearchContainer];
         self.mapBackContainer.hidden = YES;
     } else if(_nextRegionChangeIsFromUserInteraction) {
         _nextRegionChangeIsFromUserInteraction = NO;
         self.useMapRadiusForSearch = YES;
         self.mapMapSearch.userInteractionEnabled = YES;
         self.mapMapSearch.alpha = 1.0f;
-        self.sortMapSearch.userInteractionEnabled = YES;
-        self.sortMapSearch.alpha = 1.0f;
+        [self enableOrDisableSortMapSearchContainer];
 //        if (!self.criteriaOrHotelSearchMode) {
             [self reverseGeoCodingDawg];
 //        }

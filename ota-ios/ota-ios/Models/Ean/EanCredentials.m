@@ -214,7 +214,7 @@ NSString * kURLecHotelList() {
     ec.responseData = [NSMutableData data];
     [connection start];
     
-    NSLog(@"%@.%@:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), [url absoluteString]);
+    TrotterLog(@"%@.%@:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), [url absoluteString]);
 }
 
 + (NSString *)testURL {
@@ -239,7 +239,7 @@ NSString * kURLecHotelList() {
 #pragma mark NSURLConnectionDataDelegate methods
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
-    NSLog(@"%@.%@:%@", self.class, NSStringFromSelector(_cmd), response);
+    TrotterLog(@"%@.%@:%@", self.class, NSStringFromSelector(_cmd), response);
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
@@ -253,7 +253,7 @@ NSString * kURLecHotelList() {
 #pragma mark NSURLConnectionDelegate methods
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-    NSLog(@"%@.%@:%@", self.class, NSStringFromSelector(_cmd), error.userInfo);
+    TrotterLog(@"%@.%@:%@", self.class, NSStringFromSelector(_cmd), error.userInfo);
     _stillWaitingForIterations = NO;
     _successfullyDeterminedEnabledCreds = YES;
     if (_waitingForIterations) {
@@ -273,17 +273,17 @@ NSString * kURLecHotelList() {
     NSError *error = nil;
     id respDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
     if (error != nil) {
-        NSLog(@"%@.%@ ERROR trying to deserialize JSON data:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), error);
+        TrotterLog(@"%@.%@ ERROR trying to deserialize JSON data:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), error);
         return [[self class] nextWorkingCredentialsCheck];
     }
     
     if (![NSJSONSerialization isValidJSONObject:respDict]) {
-        NSLog(@"%@.%@ ERROR: Response is not valid JSON", NSStringFromClass(self.class), NSStringFromSelector(_cmd));
+        TrotterLog(@"%@.%@ ERROR: Response is not valid JSON", NSStringFromClass(self.class), NSStringFromSelector(_cmd));
         return [[self class] nextWorkingCredentialsCheck];
     }
     
     NSString *respString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    NSLog(@"%@ JSON Response String:%@", NSStringFromClass(self.class), respString);
+    TrotterLog(@"%@ JSON Response String:%@", NSStringFromClass(self.class), respString);
     
     if (nil == respDict) {
         return [[self class] nextWorkingCredentialsCheck];
