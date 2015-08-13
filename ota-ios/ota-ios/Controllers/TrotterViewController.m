@@ -427,10 +427,10 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 }
 
 - (void)reverseGeoCodingDawg {
-    self.loadingGooglePlaceDetails = YES;
 //    if (!self.criteriaOrHotelSearchMode) {
     [self nukeConnectionsAndSpinners:NO];
 //    }
+    self.loadingGooglePlaceDetails = YES;
     [[LoadGooglePlacesData sharedInstance:self] loadPlaceDetailsWithLatitude:self.mkMapView.region.center.latitude longitude:self.mkMapView.region.center.longitude];
 //    if (!self.criteriaOrHotelSearchMode) {
         self.mapSpinner.hidden = NO;
@@ -602,6 +602,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 //            [self.placesTableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
             self.whereToTextField.text = [SelectionCriteria singleton].whereToFirst;
             self.whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
+            
             if (![sc.googlePlaceDetail.placeId isEqualToString:sc.selectedPlace.placeId]
                     || sc.googlePlaceDetail.zoomRadius != sc.selectedPlace.zoomRadius) {
                 [self redrawMapViewAnimated:YES radius:sc.googlePlaceDetail.zoomRadius];
@@ -635,13 +636,28 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
                         wes.whereToSecondLevel.text = [SelectionCriteria singleton].whereToSecond;
                     }
                     
-                    if (![SelectionCriteria singleton].whereToFirst) {
-                        [wes nukeConnectionsAndSpinners:NO];
-                    } else if (wes.clickedSearchWhileReverseGeocoding) {
+                    if (wes.clickedSearchWhileReverseGeocoding) {
                         self.clickedSearchWhileReverseGeocoding = NO;
-                        [wes itKeepsTheRainOffOurHeads];
+                        if (stringIsEmpty([SelectionCriteria singleton].whereTo)) {
+                            [wes showOrHideTvControls];
+                            self.sortMapSearchContainer.alpha = 0.2f;
+                            self.sortMapSearchContainer.userInteractionEnabled = NO;
+                            [wes nukeConnectionsAndSpinners:NO];
+                        } else {
+                            [wes itKeepsTheRainOffOurHeads];
+                        }
                     } else {
                         [wes nukeConnectionsAndSpinners:NO];
+                    }
+                    
+                    if (stringIsEmpty([SelectionCriteria singleton].whereToFirst)) {
+                        self.sortMapSearchContainer.alpha = 0.2f;
+                        self.sortMapSearchContainer.userInteractionEnabled = NO;
+                        self.mapMapSearch.hidden = YES;
+                        self.checkHotelsOutlet.enabled = self.footerDatesBtn.enabled = NO;
+                    } else {
+                        self.mapMapSearch.hidden = NO;
+                        self.checkHotelsOutlet.enabled = self.footerDatesBtn.enabled = YES;
                     }
                 });
                 
@@ -742,9 +758,6 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     }
     
     [self dropDaSpinnerAlready];
-//    UIActivityIndicatorView *sp = (UIActivityIndicatorView *)[self.containerViewSpinnerContainer viewWithTag:717171];
-//    sp.hidden = YES;
-//    [sp stopAnimating];
     self.mapSpinner.hidden = YES;
     [self.mapSpinner stopAnimating];
     [self.openConnections makeObjectsPerformSelector:@selector(cancel)];
@@ -978,8 +991,13 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
                            ;
                        }];
     
-    self.sortMapSearchContainer.alpha = 1.0f;
-    self.sortMapSearchContainer.userInteractionEnabled = YES;
+    if (stringIsEmpty([SelectionCriteria singleton].whereToFirst)) {
+        self.sortMapSearchContainer.alpha = 0.2f;
+        self.sortMapSearchContainer.userInteractionEnabled = NO;
+    } else {
+        self.sortMapSearchContainer.alpha = 1.0f;
+        self.sortMapSearchContainer.userInteractionEnabled = YES;
+    }
 }
 
 - (void)transiTionToCriteriaView {
@@ -1068,7 +1086,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     self.criteriaOrHotelSearchMode = NO;
     self.backContainer.userInteractionEnabled = NO;
     __weak typeof(self) wes = self;
-    wes.mapMapSearch.hidden = NO;
+    wes.mapMapSearch.hidden = stringIsEmpty([SelectionCriteria singleton].whereToFirst);
     wes.mapMapSearch.userInteractionEnabled = YES;
     wes.mapMapSearch.alpha = 1.0f;
     
@@ -1363,7 +1381,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     
     self.spinnerIsSwirling = NO;
     __weak UIView *sc = self.containerViewSpinnerContainer;
-    __weak UIActivityIndicatorView *sp = (UIActivityIndicatorView *)[self.containerViewSpinnerContainer viewWithTag:717171];
+    __weak UIActivityIndicatorView *sp = (UIActivityIndicatorView *)[sc viewWithTag:717171];
     __weak typeof(self) wes = self;
     wes.wmapClicker.userInteractionEnabled = YES;
     [wes.view bringSubviewToFront:wes.wmapClicker];
@@ -1830,6 +1848,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     self.mapMapSearch.userInteractionEnabled = YES;
     self.mapMapSearch.alpha = 1.0f;
     [self enableOrDisableSortMapSearchContainer];
+    self.checkHotelsOutlet.enabled = self.footerDatesBtn.enabled = YES;
     self.autoCompleteSpinner.hidden = YES;
     [self.autoCompleteSpinner stopAnimating];
     __weak UIView *nhv = wb.superview;
@@ -1863,6 +1882,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         self.filterContainer.alpha = 1.0f;
         self.filterContainer.userInteractionEnabled = YES;
     }
+    self.checkHotelsOutlet.enabled = self.footerDatesBtn.enabled = YES;
     [self enableOrDisableSortMapSearchContainer];
 }
 
@@ -2264,6 +2284,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         self.mapMapSearch.userInteractionEnabled = YES;
         self.mapMapSearch.alpha = 1.0f;
         [self enableOrDisableSortMapSearchContainer];
+        self.checkHotelsOutlet.enabled = self.footerDatesBtn.enabled = YES;
         self.mapBackContainer.hidden = YES;
     } else if(_nextRegionChangeIsFromUserInteraction) {
         _nextRegionChangeIsFromUserInteraction = NO;
