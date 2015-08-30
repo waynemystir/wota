@@ -718,6 +718,10 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     [wes animateTableViewCompression];
     [NetworkProblemResponder launchWithSuperView:self.view headerTitle:nil messageString:nil completionCallback:^{
         wes.requestAlreadyJustFailed = NO;
+        if (self.placesTableData != [SelectionCriteria singleton].placesArray) {
+            self.placesTableData = [SelectionCriteria singleton].placesArray;
+            [self.placesTableView reloadData];
+        }
     }];
 }
 
@@ -732,6 +736,10 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     [wes animateTableViewCompression];
     [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"Network Error" messageString:@"The network could not be reached. Please check your connection and try again." completionCallback:^{
         wes.requestAlreadyJustFailed = NO;
+        if (self.placesTableData != [SelectionCriteria singleton].placesArray) {
+            self.placesTableData = [SelectionCriteria singleton].placesArray;
+            [self.placesTableView reloadData];
+        }
     }];
 }
 
@@ -746,6 +754,10 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     [wes animateTableViewCompression];
     [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"System Error" messageString:@"Sorry for the inconvenience. We are experiencing a technical issue. Please try again shortly." completionCallback:^{
         wes.requestAlreadyJustFailed = NO;
+        if (self.placesTableData != [SelectionCriteria singleton].placesArray) {
+            self.placesTableData = [SelectionCriteria singleton].placesArray;
+            [self.placesTableView reloadData];
+        }
     }];
 }
 

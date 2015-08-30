@@ -29,9 +29,13 @@
 #define METERS_PER_MILE 1609.344
 
 typedef NS_ENUM(NSUInteger, HI_ORIENTATION) {
+    HI_ORIENTATION_UNKNOWN = UIDeviceOrientationUnknown,
     HI_PORTRAIT = UIDeviceOrientationPortrait,
+    HI_PORTRAIT_UPSIDE_DOWN = UIDeviceOrientationPortraitUpsideDown,
     HI_LANDSCAPE_LEFT = UIDeviceOrientationLandscapeLeft,
-    HI_LANDSCAPE_RIGHT = UIDeviceOrientationLandscapeRight
+    HI_LANDSCAPE_RIGHT = UIDeviceOrientationLandscapeRight,
+    HI_FLAT_FACE_UP = UIDeviceOrientationFaceUp,
+    HI_FLAT_FACE_DOWN = UIDeviceOrientationFaceDown
 };
 
 NSTimeInterval const kHiAnimationDuration = 0.43;
@@ -644,35 +648,34 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 
 - (void)rotateOrNot {
     NSUInteger dvo = [[UIDevice currentDevice] orientation];
-    if (dvo == _currentOrientation) {
-        NSLog(@"SAME ORIENTATION");
-        return;
-    }
+    if (dvo == _currentOrientation) return;
     
-    if (_imageScrollerOutlet.frame.origin.y == kImageScrollerStartY) {
-        return;
-    }
+    if (_imageScrollerOutlet.frame.origin.y == kImageScrollerStartY) return;
     
     switch (dvo) {
+        case HI_PORTRAIT_UPSIDE_DOWN:
         case HI_PORTRAIT: {
             _currentOrientation = HI_PORTRAIT;
             [self letsFlip];
             break;
         }
+            
         case HI_LANDSCAPE_LEFT: {
             _currentOrientation = HI_LANDSCAPE_LEFT;
             [self letsFlip];
             break;
         }
+            
         case HI_LANDSCAPE_RIGHT: {
             _currentOrientation = HI_LANDSCAPE_RIGHT;
             [self letsFlip];
             break;
         }
             
+        case HI_ORIENTATION_UNKNOWN:
+        case HI_FLAT_FACE_UP:
+        case HI_FLAT_FACE_DOWN:
         default: {
-            _currentOrientation = HI_PORTRAIT;
-            [self letsFlip];
             break;
         }
     }
