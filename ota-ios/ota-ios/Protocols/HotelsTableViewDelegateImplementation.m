@@ -56,9 +56,9 @@ NSString * const kNotificationHotelDataSorted = @"kNotificationHotelDataSorted";
     EanHotelListHotelSummary *hotel = self.currentHotelData[indexPath.row];
     HLTableViewCell *cell = [[HLTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier hotelRating:hotel.hotelRating];
     
+    UIImage *placeholderImage = [UIImage imageNamed:@"hotel_large"];
     NSString *imageUrlString = [@"http://images.travelnow.com" stringByAppendingString:hotel.thumbNailUrlEnhanced];
-    [cell.thumbImageView setImageWithURL:[NSURL URLWithString:imageUrlString] placeholderImage:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-        // TODO: placeholder image
+    [cell.thumbImageView setImageWithURL:[NSURL URLWithString:imageUrlString] placeholderImage:placeholderImage completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
         // TODO: if nothing comes back, replace hotel.thumbNailUrlEnhanced with hotel.thumbNailUrl and try again
         ;
     }];

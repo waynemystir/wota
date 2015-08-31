@@ -339,28 +339,39 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 
 - (void)loadupTheImageScroller {
     NSArray *ims = self.eanHotelInformationResponse.hotelImagesArray;
+    __block int numberOfImagesCollected = 0;
+    __block BOOL alreadyPreppedRoomViews;
     for (int j = 0; j < [ims count]; j++) {
         EanHotelInfoImage *eanInfoImage = [EanHotelInfoImage imageFromDict:ims[j]];
         UIView *ivc = [[UIView alloc] initWithFrame:CGRectMake(j * 500, 0, 500.0f, 325.0f)];
         ivc.backgroundColor = [UIColor blackColor];
         ivc.tag = kRoomImageViewContainersStartingTag + j;
         
-        UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(20, 0, 360.0f, 325.0f)];
+        UIImageView *iv = [[UIImageView alloc] initWithFrame:[self rectForOrient:HI_PORTRAIT]];
+//        UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(20, 0, 360.0f, 325.0f)];
         iv.backgroundColor = [UIColor blackColor];
+        iv.center = CGPointMake(250, 212);
+        iv.contentMode = UIViewContentModeScaleAspectFit;
         iv.clipsToBounds = YES;
         iv.tag = kRoomImageViewsStartingTag + j;
         [ivc addSubview:iv];
         __weak typeof(UIImageView) *wiv = iv;
-        CGRect wivFrame = [self rectForOrient:HI_PORTRAIT];
-        [iv setImageWithURL:[NSURL URLWithString:eanInfoImage.url] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+        __weak typeof(self) wes = self;
+        UIImage *phi = [UIImage imageNamed:@"hotel_info"];
+        [iv setImageWithURL:[NSURL URLWithString:eanInfoImage.url] placeholderImage:phi completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
             wiv.contentMode = UIViewContentModeScaleAspectFit;
-            wiv.frame = wivFrame;
-            wiv.center = CGPointMake(250, 212);
+            wiv.frame = [wes rectForOrient:wes.currentOrientation];
+            if (!wes.hideEffinStatusBar) {
+                wiv.center = CGPointMake(250, 212);
+            }
             if (j == 0) {
                 _firstImageArrived = YES;
-                [self prepareTheSelectRoomViewControllerWithPlaceholderImage:image];
-                [self dropTheSpinnerAlready:NO];
             }
+            if (!alreadyPreppedRoomViews && ++numberOfImagesCollected > (0.7f * ims.count)) {
+                alreadyPreppedRoomViews = YES;
+                [self prepareTheSelectRoomViewControllerWithPlaceholderImage:image];
+            }
+//            [self dropTheSpinnerAlready:NO];
         }];
         
         UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickTheImage:)];
@@ -550,7 +561,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 }
 
 - (void)dropTheSpinnerAlready:(BOOL)justDoIt {
-    if (!justDoIt && (!_paymentTypesReturned || !_policiesLabelIsSet || !_firstImageArrived)) {
+    if (!justDoIt && (!_paymentTypesReturned || !_policiesLabelIsSet /*|| !_firstImageArrived*/)) {
         return;
     }
     
