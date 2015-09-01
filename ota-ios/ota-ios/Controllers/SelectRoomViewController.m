@@ -85,6 +85,7 @@ NSUInteger const kCardSecurityTag = 171736;
 @property (nonatomic) BOOL preparedToDropSpinner;
 @property (nonatomic) BOOL alreadyDroppedSpinner;
 @property (nonatomic, strong) UIImage *placeholderImage;
+@property (nonatomic, strong) NSString *hotelName;
 @property (weak, nonatomic) IBOutlet UITableView *roomsTableViewOutlet;
 @property (weak, nonatomic) IBOutlet UIView *inputBookOutlet;
 @property (weak, nonatomic) IBOutlet UIButton *bookButtonOutlet;
@@ -190,9 +191,11 @@ NSUInteger const kCardSecurityTag = 171736;
     return self;
 }
 
-- (id)initWithPlaceholderImage:(UIImage *)placeholderImage {
+- (id)initWithPlaceholderImage:(UIImage *)placeholderImage
+                     hotelName:(NSString *)hotelName {
     if (self = [self init]) {
         _placeholderImage = placeholderImage;
+        _hotelName = hotelName;
     }
     
     return self;
@@ -204,6 +207,7 @@ NSUInteger const kCardSecurityTag = 171736;
     nv.animationDuration = kSrAnimationDuration;
     [self.view addSubview:nv];
     [self.view bringSubviewToFront:nv];
+    nv.whereToLabel.text = self.hotelName;
     
     [self loadDaSpinner];
 }
@@ -395,10 +399,22 @@ NSUInteger const kCardSecurityTag = 171736;
         case LOAD_ROOM: {
             _preparedToDropSpinner = YES;
             self.eanHrar = [EanHotelRoomAvailabilityResponse eanObjectFromApiResponseData:responseData];
-            NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
-            nv.whereToLabel.text = self.eanHrar.hotelNameFormatted;
-            self.tableData = self.eanHrar.hotelRoomArray;
-            [self.roomsTableViewOutlet reloadData];
+//            NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
+//            nv.whereToLabel.text = self.eanHrar.hotelNameFormatted;
+            if (self.eanHrar.hotelRoomArray.count > 0) {
+                self.tableData = self.eanHrar.hotelRoomArray;
+                [self.roomsTableViewOutlet reloadData];
+            } else {
+                UILabel *noRooms = [[UILabel alloc] initWithFrame:CGRectMake(30, 200, 260, 200)];
+                noRooms.numberOfLines = 3;
+                noRooms.lineBreakMode = NSLineBreakByWordWrapping;
+                noRooms.textAlignment = NSTextAlignmentCenter;
+                noRooms.text = @"No rooms available. Please change the dates or the number of guests and try again.";
+                noRooms.textColor = [UIColor blackColor];
+                noRooms.backgroundColor = [UIColor whiteColor];
+                [self.view addSubview:noRooms];
+                [self.view bringSubviewToFront:noRooms];
+            }
             [self dropDaSpinner];
             break;
         }
@@ -434,9 +450,34 @@ NSUInteger const kCardSecurityTag = 171736;
         [NetworkProblemResponder launchWithSuperView:self.view headerTitle:nil messageString:nil completionCallback:^{
             [wes.navigationController popViewControllerAnimated:YES];
         }];
+    } else {
+        UILabel *toh = [[UILabel alloc] initWithFrame:CGRectMake(30, 170, 260, 45)];
+        toh.numberOfLines = 1;
+        toh.textAlignment = NSTextAlignmentCenter;
+        toh.text = @"Request Timed Out";
+        toh.textColor = [UIColor blackColor];
+        toh.backgroundColor = [UIColor whiteColor];
+        [self.view addSubview:toh];
+        [self.view bringSubviewToFront:toh];
+        
+        UILabel *timeOut = [[UILabel alloc] initWithFrame:CGRectMake(30, 220, 260, 200)];
+        timeOut.numberOfLines = 3;
+        timeOut.lineBreakMode = NSLineBreakByWordWrapping;
+        timeOut.textAlignment = NSTextAlignmentCenter;
+        timeOut.text = @"We were unable to perform the request. Please check your connection and try again.";
+        timeOut.textColor = [UIColor blackColor];
+        timeOut.backgroundColor = [UIColor whiteColor];
+        [self.view addSubview:timeOut];
+        [self.view bringSubviewToFront:timeOut];
     }
-    
-    // TODO: else NetworkProblemResponder launchWithSuperView: when the user finally gets to this screen?
+}
+
+- (void)requestFailedOffline {
+    [self dropDaSpinner];
+    __weak typeof(self) wes = self;
+    [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"Network Error" messageString:@"The network could not be reached. Please check your connection and try again." completionCallback:^{
+        [wes.navigationController popViewControllerAnimated:YES];
+    }];
 }
 
 #pragma mark Table View Data Source methods

@@ -25,6 +25,7 @@
 		B018C0451AD9BEC800DDCE2E /* GuestInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B018C0441AD9BEC800DDCE2E /* GuestInfo.m */; };
 		B018C0471ADA01FA00DDCE2E /* PaymentDetailsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B018C0461ADA01FA00DDCE2E /* PaymentDetailsView.xib */; };
 		B018C04B1ADA08CF00DDCE2E /* JNKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = B018C04A1ADA08CF00DDCE2E /* JNKeychain.m */; };
+		B019E5F41B9512BA000BAC23 /* ImageViewHotelInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B019E5F31B9512BA000BAC23 /* ImageViewHotelInfo.m */; };
 		B01E25861AFDD33E001D02B1 /* EanHotelFee.m in Sources */ = {isa = PBXBuildFile; fileRef = B01E25851AFDD33E001D02B1 /* EanHotelFee.m */; };
 		B01F0ECE1AF8669600C68BA8 /* WotaTappableView.m in Sources */ = {isa = PBXBuildFile; fileRef = B01F0ECD1AF8669600C68BA8 /* WotaTappableView.m */; };
 		B032F62A1AC18F6700809395 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B032F6291AC18F6700809395 /* main.m */; };
@@ -211,6 +212,8 @@
 		B018C0461ADA01FA00DDCE2E /* PaymentDetailsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PaymentDetailsView.xib; sourceTree = "<group>"; };
 		B018C0491ADA08CF00DDCE2E /* JNKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JNKeychain.h; sourceTree = "<group>"; };
 		B018C04A1ADA08CF00DDCE2E /* JNKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JNKeychain.m; sourceTree = "<group>"; };
+		B019E5F21B9512BA000BAC23 /* ImageViewHotelInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageViewHotelInfo.h; sourceTree = "<group>"; };
+		B019E5F31B9512BA000BAC23 /* ImageViewHotelInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageViewHotelInfo.m; sourceTree = "<group>"; };
 		B01E25841AFDD33E001D02B1 /* EanHotelFee.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanHotelFee.h; sourceTree = "<group>"; };
 		B01E25851AFDD33E001D02B1 /* EanHotelFee.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanHotelFee.m; sourceTree = "<group>"; };
 		B01F0ECC1AF8669600C68BA8 /* WotaTappableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WotaTappableView.h; sourceTree = "<group>"; };
@@ -766,6 +769,8 @@
 				B0CBC84E1B48AF9200F61CA9 /* ota-ios-Bridging-Header.h */,
 				B0C04AD11B5210C8002C89F2 /* NetworkProblemResponder.h */,
 				B0C04AD21B5210C8002C89F2 /* NetworkProblemResponder.m */,
+				B019E5F21B9512BA000BAC23 /* ImageViewHotelInfo.h */,
+				B019E5F31B9512BA000BAC23 /* ImageViewHotelInfo.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1181,6 +1186,7 @@
 				B07958E61AF44A5800422182 /* EanChargeableRateInfo.m in Sources */,
 				B05BD6241AC1E9FB002C2882 /* AppEnvironment.m in Sources */,
 				B09797C91AC23C1F0014FC7C /* GoogleParser.m in Sources */,
+				B019E5F41B9512BA000BAC23 /* ImageViewHotelInfo.m in Sources */,
 				B0CBC8531B48AF9200F61CA9 /* RangeSliderThumbLayer.swift in Sources */,
 				B00872D01AEC99CB00CB2B9D /* EanAvailabilityRoomType.m in Sources */,
 				B0344C4A1AE5A696000BBFCE /* WotaCardNumberField.m in Sources */,

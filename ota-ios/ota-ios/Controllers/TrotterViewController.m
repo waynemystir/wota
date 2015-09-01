@@ -1568,7 +1568,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         self.arrivalOrReturn = YES;
         [self loadDatePicker];
     } else {
-        NSLog(@"Dude we've got a problem");
+        TrotterLog(@"Dude we've got a problem");
     }
 }
 
@@ -1807,7 +1807,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         [self refreshDisplayedReturnDate];
     }
     
-    NSLog(@"Date selected: %@",[kPrettyDateFormatter() stringFromDate:selectedDate]);
+    TrotterLog(@"Date selected: %@",[kPrettyDateFormatter() stringFromDate:selectedDate]);
 }
 
 - (void)calendarPickerDonePressed {

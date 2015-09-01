@@ -89,7 +89,7 @@ static NSString *_externalIP = nil;
     NSMutableArray *array = [NSMutableArray arrayWithArray:[sourceString  componentsSeparatedByCharactersInSet:separatorSet]];
     [array removeObject:@""];
     
-    NSLog(@"%@.%@:Class caller = %@, class = %@", self.class, NSStringFromSelector(_cmd), [array objectAtIndex:3], [[array objectAtIndex:3] class]);
+    TrotterLog(@"%@.%@:Class caller = %@, class = %@", self.class, NSStringFromSelector(_cmd), [array objectAtIndex:3], [[array objectAtIndex:3] class]);
     _spinnerClass = NSClassFromString([array objectAtIndex:3]);
     
     UIView *dWayne = [[UIView alloc] initWithFrame:CGRectMake(0, 64, 320, 504)];
@@ -131,7 +131,7 @@ static NSString *_externalIP = nil;
     NSMutableArray *array = [NSMutableArray arrayWithArray:[sourceString  componentsSeparatedByCharactersInSet:separatorSet]];
     [array removeObject:@""];
     
-    NSLog(@"%@.%@:Class caller = %@, class = %@", self.class, NSStringFromSelector(_cmd), [array objectAtIndex:3], [[array objectAtIndex:3] class]);
+    TrotterLog(@"%@.%@:Class caller = %@, class = %@", self.class, NSStringFromSelector(_cmd), [array objectAtIndex:3], [[array objectAtIndex:3] class]);
     
     Class callingClass = NSClassFromString([array objectAtIndex:3]);
     

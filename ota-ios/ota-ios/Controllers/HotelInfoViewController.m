@@ -24,6 +24,7 @@
 #import "LoadGooglePlacesData.h"
 #import <MapKit/MapKit.h>
 #import "NetworkProblemResponder.h"
+#import "ImageViewHotelInfo.h"
 
 #define degreesToRadians(x) (M_PI * x / 180.0)
 #define METERS_PER_MILE 1609.344
@@ -301,7 +302,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 #pragma mark LoadDataProtocol methods
 
 - (void)requestStarted:(NSURLConnection *)connection {
-    NSLog(@"%@.%@ URL:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), [[[connection currentRequest] URL] absoluteString]);
+    TrotterLog(@"%@.%@ URL:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), [[[connection currentRequest] URL] absoluteString]);
 }
 
 - (void)requestFinished:(NSData *)responseData dataType:(LOAD_DATA_TYPE)dataType {
@@ -339,23 +340,24 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 
 - (void)loadupTheImageScroller {
     NSArray *ims = self.eanHotelInformationResponse.hotelImagesArray;
-    __block int numberOfImagesCollected = 0;
-    __block BOOL alreadyPreppedRoomViews;
+//    __block int numberOfImagesCollected = 0;
+//    __block BOOL alreadyPreppedRoomViews = NO;
     for (int j = 0; j < [ims count]; j++) {
         EanHotelInfoImage *eanInfoImage = [EanHotelInfoImage imageFromDict:ims[j]];
         UIView *ivc = [[UIView alloc] initWithFrame:CGRectMake(j * 500, 0, 500.0f, 325.0f)];
         ivc.backgroundColor = [UIColor blackColor];
         ivc.tag = kRoomImageViewContainersStartingTag + j;
         
-        UIImageView *iv = [[UIImageView alloc] initWithFrame:[self rectForOrient:HI_PORTRAIT]];
+        ImageViewHotelInfo *iv = [[ImageViewHotelInfo alloc] initWithFrame:[self rectForOrient:HI_PORTRAIT]];
 //        UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(20, 0, 360.0f, 325.0f)];
         iv.backgroundColor = [UIColor blackColor];
         iv.center = CGPointMake(250, 212);
         iv.contentMode = UIViewContentModeScaleAspectFit;
         iv.clipsToBounds = YES;
         iv.tag = kRoomImageViewsStartingTag + j;
+        iv.containsPlaceholderImage = YES;
         [ivc addSubview:iv];
-        __weak typeof(UIImageView) *wiv = iv;
+        __weak typeof(ImageViewHotelInfo) *wiv = iv;
         __weak typeof(self) wes = self;
         UIImage *phi = [UIImage imageNamed:@"hotel_info"];
         [iv setImageWithURL:[NSURL URLWithString:eanInfoImage.url] placeholderImage:phi completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
@@ -364,14 +366,14 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
             if (!wes.hideEffinStatusBar) {
                 wiv.center = CGPointMake(250, 212);
             }
+            wiv.containsPlaceholderImage = NO;
             if (j == 0) {
                 _firstImageArrived = YES;
             }
-            if (!alreadyPreppedRoomViews && ++numberOfImagesCollected > (0.7f * ims.count)) {
-                alreadyPreppedRoomViews = YES;
-                [self prepareTheSelectRoomViewControllerWithPlaceholderImage:image];
-            }
-//            [self dropTheSpinnerAlready:NO];
+//            if (!alreadyPreppedRoomViews && ++numberOfImagesCollected > (0.7f * ims.count)) {
+//                alreadyPreppedRoomViews = YES;
+//                [self prepareTheSelectRoomViewController];
+//            }
         }];
         
         UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickTheImage:)];
@@ -574,8 +576,22 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     [ad dropDaSpinnerAlreadyWithForce:NO];
 }
 
-- (void)prepareTheSelectRoomViewControllerWithPlaceholderImage:(UIImage *)phi {
-    self.selectRoomViewController = [[SelectRoomViewController alloc] initWithPlaceholderImage:phi];
+- (void)prepareTheSelectRoomViewController {
+//    if (self.selectRoomViewController) return;
+    
+    UIImage *image = nil;
+    for (int j = 0; j < [[_imageScrollerOutlet subviews] count]; j++) {
+        UIView *ivc = [_imageScrollerOutlet viewWithTag:kRoomImageViewContainersStartingTag + j];
+        ImageViewHotelInfo *iv = (ImageViewHotelInfo *) [ivc viewWithTag:kRoomImageViewsStartingTag + j];
+        if (iv && iv.image && !iv.containsPlaceholderImage) {
+            image = iv.image;
+            break;
+        }
+    }
+    
+    if (!image) image = [UIImage imageNamed:@"hotel_info"];
+    
+    self.selectRoomViewController = [[SelectRoomViewController alloc] initWithPlaceholderImage:image hotelName:self.eanHotel.hotelNameFormatted];
     SelectionCriteria *sc = [SelectionCriteria singleton];
     [[LoadEanData sharedInstance:self.selectRoomViewController] loadAvailableRoomsWithHotelId:[_eanHotel.hotelId stringValue]
                                                          arrivalDate:sc.arrivalDateEanString
@@ -585,19 +601,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 }
 
 - (void)gotoSelectRoomVC {
-    if (nil == _selectRoomViewController) {
-        UIImage *image = nil;
-        for (int j = 0; j < [[_imageScrollerOutlet subviews] count]; j++) {
-            UIView *ivc = [_imageScrollerOutlet viewWithTag:kRoomImageViewContainersStartingTag + j];
-            UIImageView *iv = (UIImageView *) [ivc viewWithTag:kRoomImageViewsStartingTag + j];
-            if (nil != iv || nil != iv.image) {
-                image = iv.image;
-                break;
-            }
-        }
-        
-        [self prepareTheSelectRoomViewControllerWithPlaceholderImage:image];
-    }
+    [self prepareTheSelectRoomViewController];
     [self.navigationController pushViewController:self.selectRoomViewController animated:YES];
 }
 
