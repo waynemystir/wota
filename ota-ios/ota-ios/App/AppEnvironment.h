@@ -16,6 +16,7 @@
  * General
  */
 
+extern BOOL debugOrProductionMode;
 extern void TrotterLog(NSString *format, ...);
 
 /**

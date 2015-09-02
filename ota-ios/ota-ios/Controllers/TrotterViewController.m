@@ -1282,7 +1282,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 //        annotation.rowNUmber = j;
 //        annotation.title = hotel.hotelNameFormatted;
 //        NSNumberFormatter *cf = kPriceRoundOffFormatter(hotel.rateCurrencyCode);
-//        annotation.subtitle = [NSString stringWithFormat:@"From %@/night", [cf stringFromNumber:hotel.lowRate]];
+//        annotation.subtitle = [NSString stringWithFormat:@"From %@/nt", [cf stringFromNumber:hotel.lowRate]];
 //        [self.mkMapView addAnnotation:annotation];
 //    }
 //}
@@ -1301,7 +1301,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
             annotation.rowNUmber = j;
             annotation.title = hotel.hotelNameFormatted;
             NSNumberFormatter *cf = kPriceRoundOffFormatter(hotel.rateCurrencyCode);
-            annotation.subtitle = [NSString stringWithFormat:@"From %@/night", [cf stringFromNumber:hotel.lowRate]];
+            annotation.subtitle = [NSString stringWithFormat:@"From %@/nt", [cf stringFromNumber:hotel.lowRate]];
 //            dispatch_async(dispatch_get_main_queue(), ^{
                 [self.mkMapView addAnnotation:annotation];
 //            });

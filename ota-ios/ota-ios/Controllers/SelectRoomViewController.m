@@ -38,7 +38,8 @@
 #import "NetworkProblemResponder.h"
 
 NSUInteger const kLoadDropRoomDetailsAnimationCurve = UIViewAnimationOptionCurveEaseInOut;
-NSTimeInterval const kSrAnimationDuration = 0.58f;
+NSTimeInterval const kSrAnimationDuration = 0.58;
+NSTimeInterval const kSrQuickAnimationDuration = 0.36;
 
 typedef NS_ENUM(NSUInteger, LOAD_DATA) {
     LOAD_ROOM = 0,
@@ -57,6 +58,7 @@ NSUInteger const kAvailRoomCellContViewTag = 19191;
 NSUInteger const kAvailRoomBorderViewTag = 13;
 NSUInteger const kNightlyRateViewTag = 19;
 NSUInteger const kRoomImageViewTag = 171717;
+NSUInteger const kImageViewBottomCoverTag = 1717171;
 NSUInteger const kPriceGradientCoverTag = 171718;
 NSUInteger const kRoomTypeDescViewTag = 171719;
 NSUInteger const kRoomValueAddTag = 1717199;
@@ -78,6 +80,7 @@ NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
 NSUInteger const kInfoDetailPopupValueAddDetTag = 1717344;
 NSUInteger const kWhyThisInfoTag = 171735;
 NSUInteger const kCardSecurityTag = 171736;
+NSUInteger const kPickerContainerDoneButton = 171737;
 
 @interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, SelectGooglePlaceDelegate, SelectBedTypeDelegate, SelectSmokingPrefDelegate, NavigationDelegate, CountryPickerDelegate>
 
@@ -660,11 +663,16 @@ NSUInteger const kCardSecurityTag = 171736;
     borderView.tag = kAvailRoomBorderViewTag;
     [cv addSubview:borderView];
     
-    UIImageView *roomImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 316, 84)];
+    UIImageView *roomImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, -71, 316, 210)];
     roomImageView.tag = kRoomImageViewTag;
     roomImageView.clipsToBounds = YES;
     roomImageView.contentMode = UIViewContentModeScaleAspectFill;
     [borderView addSubview:roomImageView];
+    
+    UIView *imageViewBottomCover = [[UIView alloc] initWithFrame:CGRectMake(0, 84, 316, 55)];
+    imageViewBottomCover.tag = kImageViewBottomCoverTag;
+    imageViewBottomCover.backgroundColor = [UIColor whiteColor];
+    [borderView addSubview:imageViewBottomCover];
     
     UIView *priceGradientCover = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 316, 84)];
     priceGradientCover.tag = kPriceGradientCoverTag;
@@ -710,6 +718,8 @@ NSUInteger const kCardSecurityTag = 171736;
     rateLabel.textAlignment = NSTextAlignmentRight;
 //    [rateLabel setFont:[UIFont boldSystemFontOfSize:18.0f]];
     [rateLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18.0f]];
+    rateLabel.minimumScaleFactor = 0.5f;
+    rateLabel.adjustsFontSizeToFitWidth = YES;
     [borderView addSubview:rateLabel];
     
     UILabel *perNightLabel = [[UILabel alloc] initWithFrame:CGRectMake(262, 87, 50, 15)];
@@ -736,12 +746,14 @@ NSUInteger const kCardSecurityTag = 171736;
     tapper.cancelsTouchesInView = NO;
     [totalView addGestureRecognizer:tapper];
     
-    UILabel *totalLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 12, 146, 33)];
+    UILabel *totalLabel = [[UILabel alloc] initWithFrame:CGRectMake(3, 11, 144, 33)];
     totalLabel.tag = kRoomTotalAmountTag;
     totalLabel.lineBreakMode = NSLineBreakByClipping;
     totalLabel.textColor = kTheColorOfMoney();
     totalLabel.textAlignment = NSTextAlignmentRight;
     [totalLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:21.0f]];
+    totalLabel.minimumScaleFactor = 0.5f;
+    totalLabel.adjustsFontSizeToFitWidth = YES;
     [totalView addSubview:totalLabel];
 
     UILabel *totalInquiry = [[UILabel alloc] initWithFrame:CGRectMake(148, 12, 22, 33)];
@@ -841,7 +853,7 @@ NSUInteger const kCardSecurityTag = 171736;
     [self.pickerViewContainer addSubview:self.bedTypePickerView];
     [self.view bringSubviewToFront:self.pickerViewContainer];
     self.isPickerContainerShowing = YES;
-    [UIView animateWithDuration:kSrAnimationDuration animations:^{
+    [UIView animateWithDuration:kSrQuickAnimationDuration animations:^{
         self.overlayDisable.alpha = 0.8f;
         self.pickerViewContainer.frame = CGRectMake(0, 364, 320, 204);
     } completion:^(BOOL finished) {
@@ -867,7 +879,7 @@ NSUInteger const kCardSecurityTag = 171736;
     [self.pickerViewContainer addSubview:self.smokingPrefPickerView];
     [self.view bringSubviewToFront:self.pickerViewContainer];
     self.isPickerContainerShowing = YES;
-    [UIView animateWithDuration:kSrAnimationDuration animations:^{
+    [UIView animateWithDuration:kSrQuickAnimationDuration animations:^{
         self.overlayDisable.alpha = 0.8f;
         self.pickerViewContainer.frame = CGRectMake(0, 364, 320, 204);
     } completion:^(BOOL finished) {
@@ -1223,7 +1235,7 @@ NSUInteger const kCardSecurityTag = 171736;
     
     self.isPickerContainerShowing = NO;
     __weak typeof(self) weakSelf = self;
-    [UIView animateWithDuration:kSrAnimationDuration animations:^{
+    [UIView animateWithDuration:kSrQuickAnimationDuration animations:^{
         weakSelf.overlayDisable.alpha = 0.0f;
         weakSelf.pickerViewContainer.frame = CGRectMake(0, 600, 320, 204);
     } completion:^(BOOL finished) {
@@ -1231,6 +1243,8 @@ NSUInteger const kCardSecurityTag = 171736;
         if ([weakSelf.pickerViewDoneButton.titleLabel.text isEqualToString:@"Next"]) {
             [weakSelf.pickerViewDoneButton setTitle:@"Done" forState:UIControlStateNormal];
         }
+        for (UIView *v in weakSelf.pickerViewContainer.subviews)
+            if (v.tag != kPickerContainerDoneButton) [v removeFromSuperview];
     }];
 }
 
@@ -1244,6 +1258,7 @@ NSUInteger const kCardSecurityTag = 171736;
     [self.view addSubview:self.pickerViewContainer];
     
     self.pickerViewDoneButton = [[UIButton alloc] initWithFrame:CGRectMake(242, 163, 75, 38)];
+    self.pickerViewDoneButton.tag = kPickerContainerDoneButton;
     self.pickerViewDoneButton.backgroundColor = UIColorFromRGB(0xc4c4c4);
     self.pickerViewDoneButton.layer.cornerRadius = 4.0f;
     self.pickerViewDoneButton.layer.masksToBounds = NO;
@@ -1606,6 +1621,7 @@ NSUInteger const kCardSecurityTag = 171736;
     __weak UIView *cv = [tvp viewWithTag:kAvailRoomCellContViewTag];
     __weak UIView *borderView = [cv viewWithTag:kAvailRoomBorderViewTag];
     __weak UIView *riv = [borderView viewWithTag:kRoomImageViewTag];
+    __weak UIView *ivc = [borderView viewWithTag:kImageViewBottomCoverTag];
     __weak UIView *gic = [borderView viewWithTag:kPriceGradientCoverTag];
     __weak UIView *cgc = [borderView viewWithTag:kBottomGradientCoverTag];
     __weak UIView *rtd = [borderView viewWithTag:kRoomTypeDescViewTag];
@@ -1642,6 +1658,7 @@ NSUInteger const kCardSecurityTag = 171736;
         cv.frame = CGRectMake(0, 0, tvp.bounds.size.width, tvp.bounds.size.height);
         borderView.frame = CGRectMake(2.0f, 2.0f, cv.frame.size.width - 4.0f, cv.frame.size.height - 4.0f);
         riv.frame = CGRectMake(0, 0, 316, 210);
+        ivc.frame = CGRectMake(0, 210, 316, 61);
         gic.frame = CGRectMake(0, 210, 316, 30);
         cgc.frame = CGRectMake(0, 126, 316, 84);
         rtd.frame = CGRectMake(3, 188, 190, 53);
@@ -1672,6 +1689,7 @@ NSUInteger const kCardSecurityTag = 171736;
     __weak UIView *cv = [tvp viewWithTag:kAvailRoomCellContViewTag];
     __weak UIView *borderView = [cv viewWithTag:kAvailRoomBorderViewTag];
     __weak UIView *riv = [borderView viewWithTag:kRoomImageViewTag];
+    __weak UIView *ivc = [borderView viewWithTag:kImageViewBottomCoverTag];
     __weak UIView *gic = [borderView viewWithTag:kPriceGradientCoverTag];
     __weak UIView *cgc = [borderView viewWithTag:kBottomGradientCoverTag];
     __weak UIView *rtd = [borderView viewWithTag:kRoomTypeDescViewTag];
@@ -1703,7 +1721,8 @@ NSUInteger const kCardSecurityTag = 171736;
         tvp.frame = weakSelf.rectOfCellInSuperview;
         cv.frame = weakSelf.rectOfAvailRoomContView;
         borderView.frame = CGRectMake(2.0f, 2.0f, weakSelf.rectOfAvailRoomContView.size.width - 4.0f, weakSelf.rectOfAvailRoomContView.size.height - 4.0f);
-        riv.frame = CGRectMake(0, 0, 316, 84);
+        riv.frame = CGRectMake(0, -71, 316, 210);
+        ivc.frame = CGRectMake(0, 84, 316, 55);
         gic.frame = CGRectMake(0, 0, 316, 84);
 //        cgc.alpha = 0.0f;
         cgc.frame = CGRectMake(0, 0, 316, 84);

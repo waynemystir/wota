@@ -12,6 +12,7 @@
  * General
  */
 
+BOOL debugOrProductionMode = NO;
 BOOL const isLogging = NO;
 
 void TrotterLog(NSString *format, ...) {

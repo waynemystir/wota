@@ -158,7 +158,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     _fromRateContainer.userInteractionEnabled = YES;
     
     NSNumberFormatter *cf = kPriceRoundOffFormatter(_eanHotel.rateCurrencyCode);
-    NSString *price = [NSString stringWithFormat:@"From %@/night", [cf stringFromNumber:_eanHotel.lowRate]];
+    NSString *price = [NSString stringWithFormat:@"From %@/nt", [cf stringFromNumber:_eanHotel.lowRate]];
     _someLabelOutlet.text = price;
     
     UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gotoSelectRoomVC)];
@@ -216,7 +216,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     MKPointAnnotation *hotelAnnotation = [[MKPointAnnotation alloc] init];
     hotelAnnotation.coordinate = CLLocationCoordinate2DMake(_eanHotel.latitude, _eanHotel.longitude);
     hotelAnnotation.title = _eanHotel.hotelNameFormatted;
-    hotelAnnotation.subtitle = [NSString stringWithFormat:@"From %@/night", [cf stringFromNumber:_eanHotel.lowRate]];
+    hotelAnnotation.subtitle = [NSString stringWithFormat:@"From %@/nt", [cf stringFromNumber:_eanHotel.lowRate]];
     [_mapView addAnnotation:hotelAnnotation];
 }
 
