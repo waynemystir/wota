@@ -13,5 +13,6 @@
 @property (nonatomic, strong) UIColor *tapColor;
 @property (nonatomic, strong) UIColor *untapColor;
 @property (nonatomic, strong) UIColor *borderColor;
+@property (nonatomic) BOOL playClickSound;
 
 @end

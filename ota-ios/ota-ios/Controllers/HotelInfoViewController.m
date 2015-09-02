@@ -180,7 +180,6 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     [_bookRoomContainer addGestureRecognizer:tgr2b];
     
     NSURL *iu = [NSURL URLWithString:[_eanHotel tripAdvisorRatingUrl]];
-    _tripAdvisorImageView.contentMode = UIViewContentModeScaleAspectFit;
     [_tripAdvisorImageView setImageWithURL:iu placeholderImage:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
         ;
     }];
@@ -326,6 +325,11 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     __weak typeof(self) wes = self;
     [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"Network Error" messageString:@"The network could not be reached. Please check your connection and try again." completionCallback:^{
         [wes.navigationController popViewControllerAnimated:YES];
+    }];
+}
+
+- (void)requestFailedCredentials {
+    [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"System Error" messageString:@"Sorry for the inconvenience. We are experiencing a technical issue. Please try again shortly." completionCallback:^{
     }];
 }
 

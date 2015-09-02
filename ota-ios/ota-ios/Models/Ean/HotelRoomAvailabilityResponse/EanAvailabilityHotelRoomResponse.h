@@ -33,6 +33,7 @@
 @property (nonatomic, strong) NSString *deepLink;
 @property (nonatomic, strong) NSDictionary *roomImages;
 @property (nonatomic, strong) EanRoomImage *roomImage;
+@property (nonatomic, strong) NSArray *valueAddArray;
 
 + (EanAvailabilityHotelRoomResponse *)roomFromDict:(NSDictionary *)dict;
 

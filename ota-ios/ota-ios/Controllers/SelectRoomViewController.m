@@ -59,6 +59,7 @@ NSUInteger const kNightlyRateViewTag = 19;
 NSUInteger const kRoomImageViewTag = 171717;
 NSUInteger const kPriceGradientCoverTag = 171718;
 NSUInteger const kRoomTypeDescViewTag = 171719;
+NSUInteger const kRoomValueAddTag = 1717199;
 NSUInteger const kRoomRateViewTag = 171720;
 NSUInteger const kRoomPerNightTag = 171721;
 NSUInteger const kRoomNonRefundViewTag = 171722;
@@ -74,6 +75,7 @@ NSUInteger const kInfoDetailPopupRoomDetailsTag = 171731;
 NSUInteger const kInfoDetailPopupCancelPolicTag = 171732;
 NSUInteger const kInfoDetailPopupGuestDetailTag = 171733;
 NSUInteger const kInfoDetailPopupPaymeDetailTag = 171734;
+NSUInteger const kInfoDetailPopupValueAddDetTag = 1717344;
 NSUInteger const kWhyThisInfoTag = 171735;
 NSUInteger const kCardSecurityTag = 171736;
 
@@ -175,17 +177,19 @@ NSUInteger const kCardSecurityTag = 171736;
         _priceGradientColors = [NSArray arrayWithObjects:(id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.1f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.2].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.3f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.4f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.5f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.6f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.7f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.8f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.9f].CGColor, (id)[UIColor colorWithWhite:1 alpha:1.0f].CGColor, nil];
         
         NSMutableDictionary *mutInfoPopupDict = [NSMutableDictionary dictionary];
-        [mutInfoPopupDict setObject:[NSNumber numberWithInteger:kInfoDetailPopupRoomDetailsTag] forKey:[NSNumber numberWithInteger:kRoomTypeDescrLongTag]];
-        [mutInfoPopupDict setObject:[NSNumber numberWithInteger:kInfoDetailPopupCancelPolicTag] forKey:[NSNumber numberWithInteger:kRoomNonRefundLongTag]];
-        [mutInfoPopupDict setObject:[NSNumber numberWithInteger:kInfoDetailPopupGuestDetailTag] forKey:[NSNumber numberWithInteger:kWhyThisInfoTag]];
-        [mutInfoPopupDict setObject:[NSNumber numberWithInteger:kInfoDetailPopupPaymeDetailTag] forKey:[NSNumber numberWithInteger:kCardSecurityTag]];
+        [mutInfoPopupDict setObject:@(kInfoDetailPopupRoomDetailsTag) forKey:@(kRoomTypeDescrLongTag)];
+        [mutInfoPopupDict setObject:@(kInfoDetailPopupCancelPolicTag) forKey:@(kRoomNonRefundLongTag)];
+        [mutInfoPopupDict setObject:@(kInfoDetailPopupGuestDetailTag) forKey:@(kWhyThisInfoTag)];
+        [mutInfoPopupDict setObject:@(kInfoDetailPopupPaymeDetailTag) forKey:@(kCardSecurityTag)];
+        [mutInfoPopupDict setObject:@(kInfoDetailPopupValueAddDetTag) forKey:@(kRoomValueAddTag)];
         _infoPopupTagDict = [NSDictionary dictionaryWithDictionary:mutInfoPopupDict];
         
         NSMutableDictionary *mutInfoPopupHeadingDict = [NSMutableDictionary dictionary];
-        [mutInfoPopupHeadingDict setObject:@"Room Details" forKey:[NSNumber numberWithInteger:kRoomTypeDescrLongTag]];
-        [mutInfoPopupHeadingDict setObject:@"Cancellation Policy" forKey:[NSNumber numberWithInteger:kRoomNonRefundLongTag]];
-        [mutInfoPopupHeadingDict setObject:@"Guest Information" forKey:[NSNumber numberWithInteger:kWhyThisInfoTag]];
-        [mutInfoPopupHeadingDict setObject:@"Payment Information" forKey:[NSNumber numberWithInteger:kCardSecurityTag]];
+        [mutInfoPopupHeadingDict setObject:@"Room Details" forKey:@(kRoomTypeDescrLongTag)];
+        [mutInfoPopupHeadingDict setObject:@"Cancellation Policy" forKey:@(kRoomNonRefundLongTag)];
+        [mutInfoPopupHeadingDict setObject:@"Guest Information" forKey:@(kWhyThisInfoTag)];
+        [mutInfoPopupHeadingDict setObject:@"Payment Information" forKey:@(kCardSecurityTag)];
+        [mutInfoPopupHeadingDict setObject:@"Complimentary" forKey:@(kRoomValueAddTag)];
         _infoPopupHeadingDict = [NSDictionary dictionaryWithDictionary:mutInfoPopupHeadingDict];
     }
     return self;
@@ -480,6 +484,11 @@ NSUInteger const kCardSecurityTag = 171736;
     }];
 }
 
+- (void)requestFailedCredentials {
+    [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"System Error" messageString:@"Sorry for the inconvenience. We are experiencing a technical issue. Please try again shortly." completionCallback:^{
+    }];
+}
+
 #pragma mark Table View Data Source methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -516,6 +525,12 @@ NSUInteger const kCardSecurityTag = 171736;
         cell.roomTypeDescriptionOutlet.font = [UIFont boldSystemFontOfSize:18.0f];
     } else {
         cell.roomTypeDescriptionOutlet.font = [UIFont boldSystemFontOfSize:19.0f];
+    }
+    
+    if (room.valueAddArray.count > 0) {
+        cell.valueAddOutlet.hidden = NO;
+    } else {
+        cell.valueAddOutlet.hidden = YES;
     }
     
 //    NSNumberFormatter *currencyStyle = kPriceRoundOffFormatter(room.rateInfo.currencyCode);
@@ -585,6 +600,13 @@ NSUInteger const kCardSecurityTag = 171736;
         rtd.font = [UIFont boldSystemFontOfSize:18.0f];
     } else {
         rtd.font = [UIFont boldSystemFontOfSize:19.0f];
+    }
+    
+    UIImageView *valueAdd = (UIImageView *) [_tableViewPopOut viewWithTag:kRoomValueAddTag];
+    if (room.valueAddArray.count > 0) {
+        valueAdd.hidden = NO;
+    } else {
+        valueAdd.hidden = YES;
     }
     
     UILabel *rateLabel = (UILabel *) [_tableViewPopOut viewWithTag:kRoomRateViewTag];
@@ -667,6 +689,20 @@ NSUInteger const kCardSecurityTag = 171736;
     rtd.numberOfLines = 2;
     rtd.font = [UIFont boldSystemFontOfSize:19.0f];
     [borderView addSubview:rtd];
+    
+    WotaTappableView *vaContainer = [[WotaTappableView alloc] initWithFrame:CGRectMake(294, 52, 19, 19)];
+    vaContainer.playClickSound = NO;
+    [vaContainer addGestureRecognizer:[self loadInfoPopupTapGesture]];
+    vaContainer.tag = kRoomValueAddTag;
+    vaContainer.borderColor = [UIColor clearColor];
+    vaContainer.tapColor = kTheColorOfMoney();
+    vaContainer.untapColor = [UIColor clearColor];
+    UIImageView *valueAdd = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"plus"]];
+    valueAdd.frame = vaContainer.bounds;
+    valueAdd.userInteractionEnabled = NO;
+    valueAdd.backgroundColor = [UIColor clearColor];
+    [vaContainer addSubview:valueAdd];
+    [borderView addSubview:vaContainer];
     
     UILabel *rateLabel = [[UILabel alloc] initWithFrame:CGRectMake(200, 69, 112, 22)];
     rateLabel.tag = kRoomRateViewTag;
@@ -1573,6 +1609,8 @@ NSUInteger const kCardSecurityTag = 171736;
     __weak UIView *gic = [borderView viewWithTag:kPriceGradientCoverTag];
     __weak UIView *cgc = [borderView viewWithTag:kBottomGradientCoverTag];
     __weak UIView *rtd = [borderView viewWithTag:kRoomTypeDescViewTag];
+    __weak UIView *vap = [borderView viewWithTag:kRoomValueAddTag];
+    __weak UIView *vai = vap.subviews.firstObject;
     __weak UIView *rtl = [borderView viewWithTag:kRoomRateViewTag];
     __weak UIView *tal = [borderView viewWithTag:kRoomTotalViewTag];
     __weak UIView *pnt = [borderView viewWithTag:kRoomPerNightTag];
@@ -1607,6 +1645,8 @@ NSUInteger const kCardSecurityTag = 171736;
         gic.frame = CGRectMake(0, 210, 316, 30);
         cgc.frame = CGRectMake(0, 126, 316, 84);
         rtd.frame = CGRectMake(3, 188, 190, 53);
+        vap.frame = CGRectMake(284, 207, 27, 27);
+        vai.frame = vap.bounds;
         rtl.frame = CGRectMake(200, 230, 112, 22);
         rtl.alpha = 0.0f;
         tal.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 0), 1.0f, 1.0f);
@@ -1635,6 +1675,8 @@ NSUInteger const kCardSecurityTag = 171736;
     __weak UIView *gic = [borderView viewWithTag:kPriceGradientCoverTag];
     __weak UIView *cgc = [borderView viewWithTag:kBottomGradientCoverTag];
     __weak UIView *rtd = [borderView viewWithTag:kRoomTypeDescViewTag];
+    __weak UIView *vap = [borderView viewWithTag:kRoomValueAddTag];
+    __weak UIView *vai = vap.subviews.firstObject;
     __weak UIView *rtl = [borderView viewWithTag:kRoomRateViewTag];
     __weak UIView *tal = [borderView viewWithTag:kRoomTotalViewTag];
     __weak UIView *pnt = [borderView viewWithTag:kRoomPerNightTag];
@@ -1666,6 +1708,8 @@ NSUInteger const kCardSecurityTag = 171736;
 //        cgc.alpha = 0.0f;
         cgc.frame = CGRectMake(0, 0, 316, 84);
         rtd.frame = CGRectMake(3, 71, 190, 53);
+        vap.frame = CGRectMake(294, 52, 19, 19);
+        vai.frame = vap.bounds;
         rtl.frame = CGRectMake(200, 69, 112, 22);
         rtl.alpha = 1.0f;
         pnt.frame = CGRectMake(262, 87, 50, 15);
@@ -2012,6 +2056,11 @@ NSUInteger const kCardSecurityTag = 171736;
             wv.text = @"Your credit card information will be securely stored in your iPhone's Keychain for your future hotel bookings, so that you don't have to retype it. No other apps will have access to this information. And you can change or delete this information at any time.";
             break;
         }
+        case kRoomValueAddTag: {
+            EanAvailabilityHotelRoomResponse *room = [self.tableData objectAtIndex:self.expandedIndexPath.row];
+            for (int j = 0; j < room.valueAddArray.count; j++)
+                wv.text = [wv.text stringByAppendingFormat:@"%@%@", j ? @"\n" : @"", room.valueAddArray[j]];
+        }
             
         default:
             break;
@@ -2061,7 +2110,7 @@ NSUInteger const kCardSecurityTag = 171736;
 
 - (void)dropInfoDetailsPopup {
     __weak typeof(self) weakSelf = self;
-    __weak UIView *w = [self.view viewWithTag:kInfoDetailPopupRoomDetailsTag] ? : [self.view viewWithTag:kInfoDetailPopupCancelPolicTag] ? : [self.view viewWithTag:kInfoDetailPopupGuestDetailTag] ? : [self.view viewWithTag:kInfoDetailPopupPaymeDetailTag];
+    __weak UIView *w = [self.view viewWithTag:kInfoDetailPopupRoomDetailsTag] ? : [self.view viewWithTag:kInfoDetailPopupCancelPolicTag] ? : [self.view viewWithTag:kInfoDetailPopupGuestDetailTag] ? : [self.view viewWithTag:kInfoDetailPopupPaymeDetailTag] ? : [self.view viewWithTag:kInfoDetailPopupValueAddDetTag];
     
     __weak UIView *originatingView = nil;/*[self.view viewWithTag:kInfoDetailPopupRoomDetailsTag] ? [self.view viewWithTag:kRoomTypeDescrLongTag] : [self.view viewWithTag:kInfoDetailPopupCancelPolicTag] ? [self.view viewWithTag:kRoomNonRefundLongTag] : nil;*/
     

@@ -28,6 +28,7 @@
 
 - (void)setupThisView {
     _tapColor = _borderColor = kWotaColorOne();
+    _playClickSound = YES;
     self.layer.borderColor = kWotaColorOne().CGColor;
     self.layer.borderWidth = 1.0f;
     self.layer.cornerRadius = WOTA_CORNER_RADIUS;
@@ -35,7 +36,7 @@
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     [super touchesBegan:touches withEvent:event];
-    AudioServicesPlaySystemSound(0x450);
+    if (self.playClickSound) AudioServicesPlaySystemSound(0x450);
     self.backgroundColor = _tapColor;
 }
 

@@ -26,10 +26,10 @@ typedef NS_ENUM(NSUInteger, LOAD_DATA_TYPE) {
 - (void)requestFinished:(NSData *)responseData dataType:(LOAD_DATA_TYPE)dataType;
 - (void)requestTimedOut;
 - (void)requestFailedOffline;
+- (void)requestFailedCredentials;
 
 @optional
 
 - (void)requestStarted:(NSURLConnection *)connection;
-- (void)requestFailedCredentials;
 
 @end

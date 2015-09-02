@@ -18,5 +18,6 @@
 @property (weak, nonatomic) IBOutlet UIView *priceGradientOutlet;
 @property (weak, nonatomic) IBOutlet UIView *bottomGradientOutlet;
 @property (weak, nonatomic) IBOutlet UILabel *perNightOutlet;
+@property (weak, nonatomic) IBOutlet UIImageView *valueAddOutlet;
 
 @end

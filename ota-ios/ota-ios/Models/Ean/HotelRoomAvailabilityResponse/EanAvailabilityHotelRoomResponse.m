@@ -104,6 +104,31 @@
     // TODO: Again, can RoomImages contain more than one RoomImage?
     room.roomImage = [EanRoomImage roomImageFromDict:[room.roomImages objectForKey:@"RoomImage"]];
     
+    id valueAddDict = [dict objectForKey:@"ValueAdds"];
+    
+    if (valueAddDict && [valueAddDict isKindOfClass:[NSDictionary class]]) {
+        id vao = [valueAddDict objectForKey:@"ValueAdd"];
+        NSMutableArray *vama = [NSMutableArray array];
+        
+        if (!vao) {
+            ;
+        } else if ([vao isKindOfClass:[NSDictionary class]]) {
+            NSString *vad = [vao objectForKey:@"description"];
+            if (vad) [vama addObject:vad];
+        } else if ([vao isKindOfClass:[NSArray class]] && [vao count] > 0) {
+            for (int j = 0; j < [vao count]; j++) {
+                id vado = vao[j];
+                NSString *vad = [vado objectForKey:@"description"];
+                if (vad) [vama addObject:vad];
+            }
+        }
+        
+        room.valueAddArray = [NSArray arrayWithArray:vama];
+        
+    } else {
+        room.valueAddArray = @[];
+    }
+    
     return room;
 }
 
