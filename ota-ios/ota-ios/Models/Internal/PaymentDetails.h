@@ -11,7 +11,7 @@
 
 extern NSUInteger const MAX_CARDHOLDER_FIRST_NAME_LENGTH;
 
-@interface PaymentDetails : NSObject// <NSCoding>
+@interface PaymentDetails : NSObject
 
 @property (nonatomic, strong) NSString *cardNumber;
 @property (nonatomic, strong, readonly) NSString *lastFour;
@@ -22,9 +22,5 @@ extern NSUInteger const MAX_CARDHOLDER_FIRST_NAME_LENGTH;
 @property (nonatomic, strong) NSString *expirationYear;
 @property (nonatomic, strong) NSString *cardHolderFirstName;
 @property (nonatomic, strong) NSString *cardHolderLastName;
-
-+ (PaymentDetails *)card1;
-
-+ (void)deleteCard:(PaymentDetails *)card;
 
 @end

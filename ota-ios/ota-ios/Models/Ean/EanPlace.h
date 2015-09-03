@@ -18,7 +18,7 @@ typedef NS_ENUM(NSUInteger, ADDRESS_VALIDITY_REASONS) {
     VALID_ADDRESS = 6
 };
 
-@interface EanPlace : NSObject <NSCoding>
+@interface EanPlace : NSObject
 
 @property (nonatomic, strong) NSString *address1;
 @property (nonatomic, strong) NSString *city;
@@ -38,7 +38,5 @@ typedef NS_ENUM(NSUInteger, ADDRESS_VALIDITY_REASONS) {
 @property (nonatomic, strong, readonly) NSString *apiPostalCode;
 
 - (ADDRESS_VALIDITY_REASONS)isValidToSubmitToEanApiAsBillingAddress;
-
-+ (EanPlace *)eanPlaceFromGooglePlaceDetail:(GooglePlaceDetail *)gpd;
 
 @end

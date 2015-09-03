@@ -41,12 +41,6 @@ NSUInteger const kLoadDropRoomDetailsAnimationCurve = UIViewAnimationOptionCurve
 NSTimeInterval const kSrAnimationDuration = 0.58;
 NSTimeInterval const kSrQuickAnimationDuration = 0.36;
 
-typedef NS_ENUM(NSUInteger, LOAD_DATA) {
-    LOAD_ROOM = 0,
-    LOAD_AUTOOMPLETE = 1,
-    LOAD_PLACE = 2
-};
-
 typedef NS_ENUM(NSUInteger, VIEW_DETAILS_TYPE) {
     GUEST_DETAILS,
     PAYMENT_DETAILS
@@ -84,8 +78,9 @@ NSUInteger const kPickerContainerDoneButton = 171737;
 
 @interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, SelectGooglePlaceDelegate, SelectBedTypeDelegate, SelectSmokingPrefDelegate, NavigationDelegate, CountryPickerDelegate>
 
-@property (nonatomic) LOAD_DATA load_data_type;
 @property (nonatomic) VIEW_DETAILS_TYPE view_details_type;
+
+@property (nonatomic, strong) PaymentDetails *paymentDetails;
 
 @property (nonatomic) BOOL preparedToDropSpinner;
 @property (nonatomic) BOOL alreadyDroppedSpinner;
@@ -109,12 +104,14 @@ NSUInteger const kPickerContainerDoneButton = 171737;
 
 @property (weak, nonatomic) IBOutlet WotaCardNumberField *ccNumberOutlet;
 @property (weak, nonatomic) IBOutlet UITextField *addressTextFieldOutlet;
+@property (weak, nonatomic) IBOutlet UITextField *cityTextField;
+@property (weak, nonatomic) IBOutlet UITextField *countryTextField;
+@property (weak, nonatomic) IBOutlet UITextField *stateTextField;
+@property (weak, nonatomic) IBOutlet UITextField *postalTextField;
 @property (weak, nonatomic) IBOutlet UITextField *expirationOutlet;
 @property (weak, nonatomic) IBOutlet UITextField *cardholderOutlet;
 @property (nonatomic, strong) UIView *expirationInputView;
 @property (nonatomic, strong) UIPickerView *expirationPicker;
-@property (weak, nonatomic) IBOutlet UIButton *deleteCardOutlet;
-@property (weak, nonatomic) IBOutlet UIButton *cancelDeletionOutlet;
 @property (nonatomic, strong) UIButton *expirationNext;
 @property (weak, nonatomic) IBOutlet UIView *ccContainerOutlet;
 
@@ -139,11 +136,6 @@ NSUInteger const kPickerContainerDoneButton = 171737;
 @property (nonatomic, strong) UIView *countryPickerContainer;
 @property (nonatomic, strong) UIButton *countryPickerNextBtn;
 @property (nonatomic, strong) NSString *selectedInternationalCallingCountryCode;
-
-@property (nonatomic, strong) UITableView *googlePlacesTableView;
-@property (nonatomic, strong) GooglePlaceTableViewDelegateImplementation *googlePlacesTableViewDelegate;
-@property (nonatomic) BOOL showingGooglePlacesTableView;
-@property (nonatomic, strong) EanPlace *selectedBillingAddress;
 
 @property (nonatomic) BOOL isValidFirstName;
 @property (nonatomic) BOOL isValidLastName;
@@ -285,7 +277,7 @@ NSUInteger const kPickerContainerDoneButton = 171737;
 }
 
 - (void)updatePaymentDetailsButtonTitle {
-    PaymentDetails *pd = [PaymentDetails card1];
+    PaymentDetails *pd = self.paymentDetails;
     UILabel *pdLabel = (UILabel *) [self.paymentButtonOutlet viewWithTag:271493618];
     UIImageView *cdLabel = (UIImageView *) [self.paymentButtonOutlet viewWithTag:582948375];
     if ([pd.cardNumber length] > 0) {
@@ -326,31 +318,6 @@ NSUInteger const kPickerContainerDoneButton = 171737;
 //- (void)keyboardWillShow:(id)sender {
 //    [self dropGooglePlacesTableView];
 //}
-
-- (void)startEnteringCcBillAddress {
-    NSLog(@"");
-    
-    if (nil == self.googlePlacesTableView) {
-        self.googlePlacesTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 134, 320, 218)];
-        self.googlePlacesTableView.layer.borderWidth = 2.0f;
-        self.googlePlacesTableView.layer.borderColor = self.view.tintColor.CGColor;
-        if (nil == self.googlePlacesTableViewDelegate) {
-            self.googlePlacesTableViewDelegate = [[GooglePlaceTableViewDelegateImplementation alloc] init];
-            self.googlePlacesTableViewDelegate.delegate = self;
-        }
-        self.googlePlacesTableView.dataSource = self.googlePlacesTableViewDelegate;
-        self.googlePlacesTableView.delegate = self.googlePlacesTableViewDelegate;
-    }
-    
-//    [self.view endEditing:YES];
-    [self.addressTextFieldOutlet becomeFirstResponder];
-    [self loadGooglePlacesTableView];
-}
-
-- (void)autoCompleteCcBillAddress {
-    self.load_data_type = LOAD_AUTOOMPLETE;
-    [[LoadGooglePlacesData sharedInstance:self] autoCompleteSomePlaces:self.addressTextFieldOutlet.text];
-}
 
 #pragma mark NavigationDelegate methods
 
@@ -401,13 +368,10 @@ NSUInteger const kPickerContainerDoneButton = 171737;
 #pragma mark LoadDataProtocol methods
 
 - (void)requestFinished:(NSData *)responseData dataType:(LOAD_DATA_TYPE)dataType {
-    // TODO: I added the dataType parameter to requestFinished: and I need to replace self.load_data_type with this.
-    switch (self.load_data_type) {
-        case LOAD_ROOM: {
+    switch (dataType) {
+        case LOAD_EAN_AVAILABLE_ROOMS: {
             _preparedToDropSpinner = YES;
             self.eanHrar = [EanHotelRoomAvailabilityResponse eanObjectFromApiResponseData:responseData];
-//            NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
-//            nv.whereToLabel.text = self.eanHrar.hotelNameFormatted;
             if (self.eanHrar.hotelRoomArray.count > 0) {
                 self.tableData = self.eanHrar.hotelRoomArray;
                 [self.roomsTableViewOutlet reloadData];
@@ -423,24 +387,6 @@ NSUInteger const kPickerContainerDoneButton = 171737;
                 [self.view bringSubviewToFront:noRooms];
             }
             [self dropDaSpinner];
-            break;
-        }
-            
-        case LOAD_AUTOOMPLETE: {
-            self.load_data_type = LOAD_ROOM;
-            self.googlePlacesTableViewDelegate.tableData = [GoogleParser parseAutoCompleteResponse:responseData];
-            [self.googlePlacesTableView reloadData];
-            break;
-        }
-            
-        case LOAD_PLACE: {
-            self.load_data_type = LOAD_ROOM;
-            NSString *response = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
-            NSLog(@"PLACESDETAIL:%@", response);
-            GooglePlaceDetail *gpd = [GooglePlaceDetail placeDetailFromData:responseData];
-            self.selectedBillingAddress = [EanPlace eanPlaceFromGooglePlaceDetail:gpd];
-            [self validateBillingAddressWithNoGoColor:YES];
-            self.addressTextFieldOutlet.text = self.selectedBillingAddress.formattedAddress;
             break;
         }
             
@@ -563,8 +509,6 @@ NSUInteger const kPickerContainerDoneButton = 171737;
 #pragma mark UITableViewDelegate methods
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    //    [self bookIt];
-    
     CGRect rectOfCellInTableView = [tableView rectForRowAtIndexPath:indexPath];
     self.rectOfCellInSuperview = [tableView convertRect:rectOfCellInTableView toView:[tableView superview]];
     
@@ -889,52 +833,52 @@ NSUInteger const kPickerContainerDoneButton = 171737;
 
 - (IBAction)justPushIt:(id)sender {
     if (sender == self.bookButtonOutlet) {
-//        [self bookIt];
+        [self bookIt];
     }
 }
 
 - (void)bookIt {
-//    if (nil == self.expandedIndexPath) {
-//        return;
-//    }
-//    
-//    self.selectedRoom = [self.tableData objectAtIndex:self.expandedIndexPath.row];
-//    SelectionCriteria *sc = [SelectionCriteria singleton];
-//    GuestInfo *gi = [GuestInfo singleton];
-//    PaymentDetails *pd = [PaymentDetails card1];
-//    BookViewController *bvc = [BookViewController new];
-//    
-//    [[LoadEanData sharedInstance:bvc] bookHotelRoomWithHotelId:self.eanHrar.hotelId
-//                                                   arrivalDate:sc.arrivalDateEanString
-//                                                 departureDate:sc.returnDateEanString
-//                                                  supplierType:self.selectedRoom.supplierType
-//                                                       rateKey:self.selectedRoom.rateInfo.roomGroup.rateKey
-//                                                  roomTypeCode:self.selectedRoom.roomType.roomCode
-//                                                      rateCode:self.selectedRoom.rateCode
-//                                                chargeableRate:[self.selectedRoom.rateInfo.chargeableRateInfo.total floatValue]
-//                                                numberOfAdults:sc.numberOfAdults
-//                                                childTravelers:[ChildTraveler childTravelers]
-//                                                room1FirstName:gi.firstName
-//                                                 room1LastName:gi.lastName
-//                                                room1BedTypeId:self.selectedRoom.selectedBedType.bedTypeId
-//                                        room1SmokingPreference:self.selectedRoom.selectedSmokingPreference
-//                                       affiliateConfirmationId:[NSUUID UUID]
-//                                                         email:gi.email
-//                                                     firstName:pd.cardHolderFirstName
-//                                                      lastName:pd.cardHolderLastName
-//                                                     homePhone:gi.apiPhoneNumber
-//                                                creditCardType:pd.eanCardType
-//                                              creditCardNumber:@"5401999999999999"/*pd.cardNumber*/
-//                                          creditCardIdentifier:@"123"
-//                                     creditCardExpirationMonth:pd.expirationMonth
-//                                      creditCardExpirationYear:pd.expirationYear
-//                                                      address1:pd.billingAddress.apiAddress1
-//                                                          city:pd.billingAddress.apiCity
-//                                             stateProvinceCode:nil/*pd.billingAddress.apiStateProvCode*/
-//                                                   countryCode:pd.billingAddress.apiCountryCode
-//                                                    postalCode:pd.billingAddress.apiPostalCode];
-//    
-//    [self.navigationController pushViewController:bvc animated:YES];
+    if (nil == self.expandedIndexPath) {
+        return;
+    }
+    
+    self.selectedRoom = [self.tableData objectAtIndex:self.expandedIndexPath.row];
+    SelectionCriteria *sc = [SelectionCriteria singleton];
+    GuestInfo *gi = [GuestInfo singleton];
+    PaymentDetails *pd = self.paymentDetails;
+    BookViewController *bvc = [BookViewController new];
+    
+    [[LoadEanData sharedInstance:bvc] bookHotelRoomWithHotelId:self.eanHrar.hotelId
+                                                   arrivalDate:sc.arrivalDateEanString
+                                                 departureDate:sc.returnDateEanString
+                                                  supplierType:self.selectedRoom.supplierType
+                                                       rateKey:self.selectedRoom.rateInfo.roomGroup.rateKey
+                                                  roomTypeCode:self.selectedRoom.roomType.roomCode
+                                                      rateCode:self.selectedRoom.rateCode
+                                                chargeableRate:[self.selectedRoom.rateInfo.chargeableRateInfo.total floatValue]
+                                                numberOfAdults:sc.numberOfAdults
+                                                childTravelers:[ChildTraveler childTravelers]
+                                                room1FirstName:gi.firstName
+                                                 room1LastName:gi.lastName
+                                                room1BedTypeId:self.selectedRoom.selectedBedType.bedTypeId
+                                        room1SmokingPreference:self.selectedRoom.selectedSmokingPreference
+                                       affiliateConfirmationId:[NSUUID UUID]
+                                                         email:gi.email
+                                                     firstName:pd.cardHolderFirstName
+                                                      lastName:pd.cardHolderLastName
+                                                     homePhone:gi.apiPhoneNumber
+                                                creditCardType:pd.eanCardType
+                                              creditCardNumber:@"5401999999999999"/*pd.cardNumber*/
+                                          creditCardIdentifier:@"123"
+                                     creditCardExpirationMonth:pd.expirationMonth
+                                      creditCardExpirationYear:pd.expirationYear
+                                                      address1:pd.billingAddress.apiAddress1
+                                                          city:pd.billingAddress.apiCity
+                                             stateProvinceCode:nil/*pd.billingAddress.apiStateProvCode*/
+                                                   countryCode:pd.billingAddress.apiCountryCode
+                                                    postalCode:pd.billingAddress.apiPostalCode];
+    
+    [self.navigationController pushViewController:bvc animated:YES];
 }
 
 - (void)saveDaExpiration {
@@ -956,8 +900,8 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     NSDate *daDate = [dateFormatter dateFromString:expMonth];
     NSString *nExpMonth = [dateFormatter stringFromDate:daDate];
     
-    [PaymentDetails card1].expirationMonth = nExpMonth;
-    [PaymentDetails card1].expirationYear = expYear;
+    self.paymentDetails.expirationMonth = nExpMonth;
+    self.paymentDetails.expirationYear = expYear;
 }
 
 - (void)addInputAccessoryViewToCardNumber {
@@ -1020,22 +964,20 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     textField.layer.borderWidth = 1.0f;
     textField.layer.borderColor = kWotaColorOne().CGColor;
     
-    if (textField != self.addressTextFieldOutlet) {
-        [self dropGooglePlacesTableView];
-    }
-    
     if (textField == self.phoneCountryContainer) {
         [textField setInputView:self.countryPickerContainer];
     }
     
     else if (textField == self.ccNumberOutlet) {
         
-    } else if (textField == self.addressTextFieldOutlet) {
-        [self startEnteringCcBillAddress];
     } else if (textField == self.expirationOutlet) {
         [textField setInputView:self.expirationInputView];
     } else if (textField == self.cardholderOutlet) {
         
+    } else if (textField == self.addressTextFieldOutlet) {
+        
+    } else if (textField == self.countryTextField) {
+        [textField setInputView:self.countryPickerContainer];
     }
 }
 
@@ -1057,9 +999,13 @@ NSUInteger const kPickerContainerDoneButton = 171737;
             cn = [((WotaCardNumberField *) textField).cardNumber stringByAppendingString:string];
         }
         [self validateCreditCardNumber:cn];
-    } else if (textField == self.addressTextFieldOutlet) {
-        [self autoCompleteCcBillAddress];
-        [self loadGooglePlacesTableView];
+    } else if (textField == self.addressTextFieldOutlet || textField == self.cityTextField
+                || textField == self.countryTextField || textField == self.stateTextField
+                || textField == self.postalTextField) {
+        
+        [self validateBillingAddress:@""];
+        return YES;
+        
     } else if (textField == self.expirationOutlet) {
         
     } else if (textField == self.cardholderOutlet) {
@@ -1139,13 +1085,20 @@ NSUInteger const kPickerContainerDoneButton = 171737;
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     
     if (textField == self.ccNumberOutlet) {
-        [self.addressTextFieldOutlet becomeFirstResponder];
-    } else if (textField == self.addressTextFieldOutlet) {
-        [self dropGooglePlacesTableView];
         [self.expirationOutlet becomeFirstResponder];
     } else if (textField == self.expirationOutlet) {
         [self.cardholderOutlet becomeFirstResponder];
     } else if (textField == self.cardholderOutlet) {
+        [self.addressTextFieldOutlet becomeFirstResponder];
+    } else if (textField == self.addressTextFieldOutlet) {
+        [self.cityTextField becomeFirstResponder];
+    } else if (textField == self.cityTextField) {
+        [self.countryTextField becomeFirstResponder];
+    } else if (textField == self.countryTextField) {
+        [self.stateTextField becomeFirstResponder];
+    } else if (textField == self.stateTextField) {
+        [self.postalTextField becomeFirstResponder];
+    } else if (textField == self.postalTextField) {
         [self.ccNumberOutlet becomeFirstResponder];
     }
     
@@ -1181,9 +1134,6 @@ NSUInteger const kPickerContainerDoneButton = 171737;
         [self enableOrDisableRightBarButtonItemForPayment];
         self.ccNumberOutlet.backgroundColor = [UIColor whiteColor];
     } else if (textField == self.addressTextFieldOutlet) {
-        self.googlePlacesTableViewDelegate.tableData = nil;
-        [self.googlePlacesTableView reloadData];
-        [self loadGooglePlacesTableView];
         self.isValidBillingAddress = NO;
         [self enableOrDisableRightBarButtonItemForPayment];
         self.addressTextFieldOutlet.backgroundColor = [UIColor whiteColor];
@@ -1448,14 +1398,14 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     self.expirationPicker.delegate = self;
     
     NSDateComponents *components = [[NSCalendar currentCalendar] components:NSCalendarUnitMonth|NSCalendarUnitYear fromDate:[NSDate date]];
-    NSInteger savedExpMonth = [[PaymentDetails card1].expirationMonth integerValue];
+    NSInteger savedExpMonth = [self.paymentDetails.expirationMonth integerValue];
     if (savedExpMonth > 0 && savedExpMonth < 13) {
         [self.expirationPicker selectRow:savedExpMonth inComponent:0 animated:NO];
     } else {
         [self.expirationPicker selectRow:0 inComponent:0 animated:NO];
     }
     
-    NSInteger savedExpYear = [[PaymentDetails card1].expirationYear integerValue];
+    NSInteger savedExpYear = [self.paymentDetails.expirationYear integerValue];
     NSInteger layerCake = savedExpYear - [components year];
     if (layerCake >= 0 && layerCake < 1000) {
         [self.expirationPicker selectRow:(savedExpYear - [components year] + 1) inComponent:1 animated:NO];
@@ -1541,16 +1491,6 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     [self updateTextInExpirationOutlet];
 }
 
-#pragma mark SelectGooglePlaceDelegate method
-
-- (void)didSelectRow:(GooglePlace *)googlePlace {
-    self.load_data_type = LOAD_PLACE;
-    [[LoadGooglePlacesData sharedInstance:self] loadPlaceDetails:googlePlace.placeId];
-//    [self.view endEditing:YES];
-//    [self.expirationOutlet becomeFirstResponder];
-    [self dropGooglePlacesTableView];
-}
-
 #pragma mark SelectBedTypeDelegate method
 
 - (void)didSelectBedType:(EanBedType *)eanBedType {
@@ -1571,28 +1511,52 @@ NSUInteger const kPickerContainerDoneButton = 171737;
 
 - (void)countryPicker:(CountryPicker *)picker didSelectCountryWithName:(NSString *)name code:(NSString *)code {
     UIView *guestDetailsView = [self.view viewWithTag:kGuestDetailsViewTag];
-    NSString *callingCodesPath = [[NSBundle mainBundle] pathForResource:@"InternationalCallingCodes" ofType:@"plist"];
-    NSDictionary *callingCodesDict = [NSDictionary dictionaryWithContentsOfFile:callingCodesPath];
+    UIView *paymentDetailsView = [self.view viewWithTag:kPaymentDetailsViewTag];
     
-    UIImageView *flagView = (UIImageView *) [guestDetailsView viewWithTag:51974123];
-    
-    NSString *pathForImageResource = [NSString stringWithFormat:@"CountryPicker.bundle/%@", code];
-    NSString *imagePath = [[NSBundle mainBundle] pathForResource:pathForImageResource ofType:@"png"];
-    if (nil != imagePath && ![imagePath isEqualToString:@""]) {
-        UIImage *image = [UIImage imageNamed:imagePath];
-        if (nil != image) {
-            flagView.image = image;
+    if (guestDetailsView) {
+        NSString *callingCodesPath = [[NSBundle mainBundle] pathForResource:@"InternationalCallingCodes" ofType:@"plist"];
+        NSDictionary *callingCodesDict = [NSDictionary dictionaryWithContentsOfFile:callingCodesPath];
+        
+        UIImageView *flagView = (UIImageView *) [guestDetailsView viewWithTag:51974123];
+        
+        NSString *pathForImageResource = [NSString stringWithFormat:@"CountryPicker.bundle/%@", code];
+        NSString *imagePath = [[NSBundle mainBundle] pathForResource:pathForImageResource ofType:@"png"];
+        if (nil != imagePath && ![imagePath isEqualToString:@""]) {
+            UIImage *image = [UIImage imageNamed:imagePath];
+            if (nil != image) {
+                flagView.image = image;
+            }
         }
+        
+        UILabel *iccLabel = (UILabel *) [guestDetailsView viewWithTag:97145721];
+        
+        id callingCode = [callingCodesDict objectForKey:[code lowercaseString]];
+        if (nil != callingCode && [callingCode isKindOfClass:[NSString class]]) {
+            iccLabel.text = [@"+" stringByAppendingString:callingCode];
+        }
+        
+        self.selectedInternationalCallingCountryCode = code;
     }
     
-    UILabel *iccLabel = (UILabel *) [guestDetailsView viewWithTag:97145721];
-    
-    id callingCode = [callingCodesDict objectForKey:[code lowercaseString]];
-    if (nil != callingCode && [callingCode isKindOfClass:[NSString class]]) {
-        iccLabel.text = [@"+" stringByAppendingString:callingCode];
+    if (paymentDetailsView) {
+        NSString *pathForImageResource = [NSString stringWithFormat:@"CountryPicker.bundle/%@", code];
+        NSString *imagePath = [[NSBundle mainBundle] pathForResource:pathForImageResource ofType:@"png"];
+        if (nil != imagePath && ![imagePath isEqualToString:@""]) {
+            UIImage *image = [UIImage imageNamed:imagePath];
+            if (image) {
+                UIView *cv = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 37, 26)];
+                cv.backgroundColor = [UIColor clearColor];
+                UIImageView *iv = [[UIImageView alloc] initWithImage:image];
+                iv.frame = CGRectMake(5, 0, 32, 26);
+                iv.contentMode = UIViewContentModeScaleAspectFit;
+                [cv addSubview:iv];
+                [self.countryTextField setLeftViewMode:UITextFieldViewModeAlways];
+                self.countryTextField.leftView = cv;
+            }
+        }
+        
+        self.countryTextField.text = [code uppercaseString];
     }
-    
-    self.selectedInternationalCallingCountryCode = code;
 }
 
 #pragma mark Animation methods
@@ -1894,17 +1858,22 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     
     self.ccNumberOutlet.delegate = self;
     self.addressTextFieldOutlet.delegate = self;
+    self.cityTextField.delegate = self;
+    self.countryTextField.delegate = self;
+    self.stateTextField.delegate = self;
+    self.postalTextField.delegate = self;
     self.expirationOutlet.delegate = self;
     self.cardholderOutlet.delegate = self;
     
-    PaymentDetails *pd = [PaymentDetails card1];
+    PaymentDetails *pd = self.paymentDetails = self.paymentDetails ? : [PaymentDetails new];
     
     self.ccNumberOutlet.showsCardLogo = YES;
     self.ccNumberOutlet.cardNumber = pd.cardNumber;
     
-    self.selectedBillingAddress = pd.billingAddress;
-    self.addressTextFieldOutlet.text = self.selectedBillingAddress.formattedAddress;
-    
+    self.addressTextFieldOutlet.text = pd.billingAddress.address1;
+    self.cityTextField.text = pd.billingAddress.city;
+    self.stateTextField.text = pd.billingAddress.stateProvinceCode;
+    self.postalTextField.text = pd.billingAddress.postalCode;
     [self updateTextInExpirationOutlet];
     
     if (nil != pd.cardHolderFirstName && nil != pd.cardHolderLastName) {
@@ -1912,13 +1881,8 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     }
     
     [self validateCreditCardNumber:self.ccNumberOutlet.cardNumber];
-    [self validateBillingAddressWithNoGoColor:NO];
+    [self validateBillingAddress:self.addressTextFieldOutlet.text];
     [self validateCardholder:self.cardholderOutlet.text];
-    
-    if ([self isWeGoodForCredit]) {
-        self.deleteCardOutlet.hidden = NO;
-        [self.deleteCardOutlet addTarget:self action:@selector(initiateDeleteCard:) forControlEvents:UIControlEventTouchUpInside];
-    }
     
     _view_details_type = PAYMENT_DETAILS;
     __weak typeof(self) wes = self;
@@ -1933,14 +1897,17 @@ NSUInteger const kPickerContainerDoneButton = 171737;
 
 - (void)dropPaymentDetailsView:(id)sender {
     [self.view endEditing:YES];
-    PaymentDetails *pd = [PaymentDetails card1];
+    PaymentDetails *pd = self.paymentDetails;
     
     if ([sender isKindOfClass:[NSString class]] && [sender isEqualToString:@"FromRightNav"]) {
         pd.cardNumber = self.ccNumberOutlet.cardNumber;
         pd.cardImage = self.ccNumberOutlet.cardLogoImageView.image;
         [self updatePaymentDetailsButtonTitle];
         pd.eanCardType = self.ccNumberOutlet.eanType;
-        pd.billingAddress = self.selectedBillingAddress;
+        pd.billingAddress.address1 = self.addressTextFieldOutlet.text;
+        pd.billingAddress.city = self.cityTextField.text;
+        pd.billingAddress.stateProvinceCode = self.stateTextField.text;
+        pd.billingAddress.postalCode = self.postalTextField.text;
         [self saveDaExpiration];
         
         NSArray *chn = [self.cardholderOutlet.text componentsSeparatedByString:@" "];
@@ -1950,18 +1917,16 @@ NSUInteger const kPickerContainerDoneButton = 171737;
         }
     }
     
-    if (sender == self.deleteCardOutlet) {
-        self.ccNumberOutlet.cardNumber = nil;
-        self.selectedBillingAddress = nil;
-        [self.expirationPicker selectRow:0 inComponent:0 animated:NO];
-        [self.expirationPicker selectRow:0 inComponent:1 animated:NO];
-        self.expirationOutlet.text = nil;
-        self.cardholderOutlet.text = nil;
-        [PaymentDetails deleteCard:pd];
-        [self updatePaymentDetailsButtonTitle];
-    }
-    
-    [self dropGooglePlacesTableView];
+//    if (sender == self.deleteCardOutlet) {
+//        self.ccNumberOutlet.cardNumber = nil;
+//        self.selectedBillingAddress = nil;
+//        [self.expirationPicker selectRow:0 inComponent:0 animated:NO];
+//        [self.expirationPicker selectRow:0 inComponent:1 animated:NO];
+//        self.expirationOutlet.text = nil;
+//        self.cardholderOutlet.text = nil;
+//        [PaymentDetails deleteCard:pd];
+//        [self updatePaymentDetailsButtonTitle];
+//    }
     
     __weak UIView *paymentDetailsView = [self.view viewWithTag:kPaymentDetailsViewTag];
     
@@ -1981,37 +1946,6 @@ NSUInteger const kPickerContainerDoneButton = 171737;
         paymentDetailsView.transform = CGAffineTransformScale(toTransform, 0.01f, 0.01f);
     } completion:^(BOOL finished) {
         [paymentDetailsView removeFromSuperview];;
-    }];
-}
-
-- (void)loadGooglePlacesTableView {
-    if (self.showingGooglePlacesTableView) {
-        return;
-    }
-    
-    self.showingGooglePlacesTableView = YES;
-    
-    __weak UITableView *gptv = self.googlePlacesTableView;
-    gptv.transform = CGAffineTransformMakeTranslation(0.0f, 400.0f);
-    [self.view addSubview:self.googlePlacesTableView];
-    [UIView animateWithDuration:kSrAnimationDuration animations:^{
-        gptv.transform = CGAffineTransformMakeTranslation(0.0f, 0.0f);
-    } completion:^(BOOL finished) {
-    }];
-}
-
-- (void)dropGooglePlacesTableView {
-    if (nil == self.googlePlacesTableView || !self.showingGooglePlacesTableView) {
-        return;
-    }
-    
-    self.showingGooglePlacesTableView = NO;
-    
-    __weak UITableView *gptv = self.googlePlacesTableView;
-    [UIView animateWithDuration:kSrAnimationDuration animations:^{
-        gptv.transform = CGAffineTransformMakeTranslation(0.0f, 400.0f);
-    } completion:^(BOOL finished) {
-        [gptv removeFromSuperview];
     }];
 }
 
@@ -2390,26 +2324,9 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     [self enableOrDisableRightBarButtonItemForPayment];
 }
 
-- (void)validateBillingAddressWithNoGoColor:(BOOL)withNoGoColor {
-    ADDRESS_VALIDITY_REASONS avr = [self.selectedBillingAddress isValidToSubmitToEanApiAsBillingAddress];
+- (void)validateBillingAddress:(NSString *)billingAddress {
     
-    switch (avr) {
-        case VALID_ADDRESS: {
-            self.addressTextFieldOutlet.backgroundColor = kColorGoodToGo();
-            self.isValidBillingAddress = YES;
-            break;
-        }
-        default: {
-            if (withNoGoColor) {
-                self.addressTextFieldOutlet.backgroundColor = kColorNoGo();
-            } else {
-                self.addressTextFieldOutlet.backgroundColor = [UIColor whiteColor];
-            }
-            self.isValidBillingAddress = NO;
-            break;
-        }
-    }
-    
+    self.isValidBillingAddress = YES;
     [self enableOrDisableRightBarButtonItemForPayment];
 }
 
@@ -2475,76 +2392,6 @@ NSUInteger const kPickerContainerDoneButton = 171737;
 }
 
 #pragma mark Card Deletion Selectors
-
-- (void)initiateDeleteCard:(id)sender {
-    self.ccNumberOutlet.userInteractionEnabled = NO;
-    self.addressTextFieldOutlet.userInteractionEnabled = NO;
-    self.expirationOutlet.userInteractionEnabled = NO;
-    self.cardholderOutlet.userInteractionEnabled = NO;
-    
-    self.cancelDeletionOutlet.transform = CGAffineTransformMakeTranslation(300, 0);
-    self.cancelDeletionOutlet.hidden = NO;
-    [self.cancelDeletionOutlet addTarget:self action:@selector(cancelDeleteCard:) forControlEvents:UIControlEventTouchUpInside];
-    
-    [UIView animateWithDuration:0.4f animations:^{
-        self.cancelDeletionOutlet.transform = CGAffineTransformMakeTranslation(0, 0);
-    } completion:^(BOOL finished) {
-        ;
-    }];
-    
-    NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
-    [nv grayAndDisableLeftView];
-    [nv grayAndDisableRiteView];
-    
-    self.ccNumberOutlet.cardLogoImageView.alpha = 0.2f;
-    
-    self.ccNumberOutlet.backgroundColor = [UIColor grayColor];
-    self.addressTextFieldOutlet.backgroundColor = [UIColor grayColor];
-    self.expirationOutlet.backgroundColor = [UIColor grayColor];
-    self.cardholderOutlet.backgroundColor = [UIColor grayColor];
-    
-    self.ccNumberOutlet.textColor = [UIColor lightGrayColor];
-    self.addressTextFieldOutlet.textColor = [UIColor lightGrayColor];
-    self.expirationOutlet.textColor = [UIColor lightGrayColor];
-    self.cardholderOutlet.textColor = [UIColor lightGrayColor];
-    
-    [self.deleteCardOutlet setTitle:@"Confirm Deletion" forState:UIControlStateNormal];
-    [self.deleteCardOutlet removeTarget:self action:@selector(initiateDeleteCard:) forControlEvents:UIControlEventTouchUpInside];
-    [self.deleteCardOutlet addTarget:self action:@selector(dropPaymentDetailsView:) forControlEvents:UIControlEventTouchUpInside];
-}
-
-- (void)cancelDeleteCard:(id)sender {
-    self.ccNumberOutlet.userInteractionEnabled = YES;
-    self.addressTextFieldOutlet.userInteractionEnabled = YES;
-    self.expirationOutlet.userInteractionEnabled = YES;
-    self.cardholderOutlet.userInteractionEnabled = YES;
-    
-    [UIView animateWithDuration:0.4f animations:^{
-        self.cancelDeletionOutlet.transform = CGAffineTransformMakeTranslation(300, 0);
-    } completion:^(BOOL finished) {
-        self.cancelDeletionOutlet.hidden = YES;
-    }];
-    
-    NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
-    [nv blueAndEnableLeftView];
-    
-    [self validateCreditCardNumber:self.ccNumberOutlet.cardNumber];
-    [self validateBillingAddressWithNoGoColor:NO];
-    [self validateExpiration];
-    [self validateCardholder:self.cardholderOutlet.text];
-    
-    self.ccNumberOutlet.cardLogoImageView.alpha = 1.0f;
-    
-    self.ccNumberOutlet.textColor = [UIColor blackColor];
-    self.addressTextFieldOutlet.textColor = [UIColor blackColor];
-    self.expirationOutlet.textColor = [UIColor blackColor];
-    self.cardholderOutlet.textColor = [UIColor blackColor];
-    
-    self.deleteCardOutlet.hidden = NO;
-    [self.deleteCardOutlet setTitle:@"Delete This Card" forState:UIControlStateNormal];
-    [self.deleteCardOutlet removeTarget:self action:@selector(dropPaymentDetailsView:) forControlEvents:UIControlEventTouchUpInside];
-    [self.deleteCardOutlet addTarget:self action:@selector(initiateDeleteCard:) forControlEvents:UIControlEventTouchUpInside];
-}
 
 - (void)initiateDeleteUser:(id)sender {
     self.firstNameOutlet.userInteractionEnabled = NO;
