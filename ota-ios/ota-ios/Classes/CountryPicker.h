@@ -47,9 +47,7 @@
 
 #import <UIKit/UIKit.h>
 
-
 @class CountryPicker;
-
 
 @protocol CountryPickerDelegate <UIPickerViewDelegate>
 

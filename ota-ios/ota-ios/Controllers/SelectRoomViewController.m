@@ -35,6 +35,7 @@
 #import "NightlyRateTableViewDelegateImplementation.h"
 #import "NavigationView.h"
 #import "CountryPicker.h"
+#import "StatePickerView.h"
 #import "NetworkProblemResponder.h"
 
 NSUInteger const kLoadDropRoomDetailsAnimationCurve = UIViewAnimationOptionCurveEaseInOut;
@@ -76,7 +77,7 @@ NSUInteger const kWhyThisInfoTag = 171735;
 NSUInteger const kCardSecurityTag = 171736;
 NSUInteger const kPickerContainerDoneButton = 171737;
 
-@interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, SelectGooglePlaceDelegate, SelectBedTypeDelegate, SelectSmokingPrefDelegate, NavigationDelegate, CountryPickerDelegate>
+@interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, SelectBedTypeDelegate, SelectSmokingPrefDelegate, NavigationDelegate, CountryPickerDelegate, StatePickerDelegate>
 
 @property (nonatomic) VIEW_DETAILS_TYPE view_details_type;
 
@@ -115,6 +116,9 @@ NSUInteger const kPickerContainerDoneButton = 171737;
 @property (nonatomic, strong) UIButton *expirationNext;
 @property (weak, nonatomic) IBOutlet UIView *ccContainerOutlet;
 
+@property (nonatomic, strong) UIView *guestDetailsView;
+@property (nonatomic, strong) UIView *paymentDetailsView;
+
 @property (nonatomic, strong) EanHotelRoomAvailabilityResponse *eanHrar;
 @property (nonatomic, strong) EanAvailabilityHotelRoomResponse *selectedRoom;
 @property (nonatomic, strong) NSArray *tableData;
@@ -136,6 +140,9 @@ NSUInteger const kPickerContainerDoneButton = 171737;
 @property (nonatomic, strong) UIView *countryPickerContainer;
 @property (nonatomic, strong) UIButton *countryPickerNextBtn;
 @property (nonatomic, strong) NSString *selectedInternationalCallingCountryCode;
+@property (nonatomic, strong) StatePickerView *statePicker;
+@property (nonatomic, strong) UIView *statePickerContainer;
+@property (nonatomic, strong) UIButton *statePickerNextBtn;
 
 @property (nonatomic) BOOL isValidFirstName;
 @property (nonatomic) BOOL isValidLastName;
@@ -144,7 +151,11 @@ NSUInteger const kPickerContainerDoneButton = 171737;
 @property (nonatomic) BOOL isValidPhone;
 
 @property (nonatomic) BOOL isValidCreditCard;
-@property (nonatomic) BOOL isValidBillingAddress;
+@property (nonatomic, readonly) BOOL isValidBillingAddress;
+@property (nonatomic) BOOL isValidStreetAddress;
+@property (nonatomic) BOOL isValidCity;
+@property (nonatomic) BOOL isValidState;
+@property (nonatomic) BOOL isValidPostalCode;
 @property (nonatomic) BOOL isValidExpiration;
 @property (nonatomic) BOOL isValidCardHolder;
 
@@ -234,6 +245,7 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     [self initializeTheTableViewPopOut];
     [self setupExpirationPicker];
     [self setupCountryPicker];
+    [self setupStatePicker];
     [self setupPickerViewContainer];
     self.overlayDisable = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 568)];
     self.overlayDisable.backgroundColor = [UIColor blackColor];
@@ -978,6 +990,8 @@ NSUInteger const kPickerContainerDoneButton = 171737;
         
     } else if (textField == self.countryTextField) {
         [textField setInputView:self.countryPickerContainer];
+    } else if (textField == self.stateTextField) {
+        [textField setInputView:self.statePickerContainer];
     }
 }
 
@@ -999,11 +1013,32 @@ NSUInteger const kPickerContainerDoneButton = 171737;
             cn = [((WotaCardNumberField *) textField).cardNumber stringByAppendingString:string];
         }
         [self validateCreditCardNumber:cn];
-    } else if (textField == self.addressTextFieldOutlet || textField == self.cityTextField
-                || textField == self.countryTextField || textField == self.stateTextField
-                || textField == self.postalTextField) {
+    } else if (textField == self.addressTextFieldOutlet) {
         
-        [self validateBillingAddress:@""];
+        NSString *sa = [textField.text stringByReplacingCharactersInRange:range withString:string];
+        [self validateStreetAddress:sa];
+        return YES;
+        
+    } else if (textField == self.cityTextField) {
+        
+        NSString *city = [textField.text stringByReplacingCharactersInRange:range withString:string];
+        [self validateCity:city];
+        return YES;
+        
+    } else if (textField == self.countryTextField) {
+        
+        return YES;
+        
+    } else if (textField == self.stateTextField) {
+        
+        NSString *state = [textField.text stringByReplacingCharactersInRange:range withString:string];
+        [self validateState:state];
+        return YES;
+        
+    } else if (textField == self.postalTextField) {
+        
+        NSString *pc = [textField.text stringByReplacingCharactersInRange:range withString:string];
+        [self validatePostalCode:pc];
         return YES;
         
     } else if (textField == self.expirationOutlet) {
@@ -1095,7 +1130,14 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     } else if (textField == self.cityTextField) {
         [self.countryTextField becomeFirstResponder];
     } else if (textField == self.countryTextField) {
-        [self.stateTextField becomeFirstResponder];
+        
+        NSString *cc = self.countryTextField.text;
+        if ([cc isEqualToString:@"US"] || [cc isEqualToString:@"CA"] || [cc isEqualToString:@"AU"]) {
+            [self.stateTextField becomeFirstResponder];
+        } else {
+            [self.postalTextField becomeFirstResponder];
+        }
+        
     } else if (textField == self.stateTextField) {
         [self.postalTextField becomeFirstResponder];
     } else if (textField == self.postalTextField) {
@@ -1133,14 +1175,26 @@ NSUInteger const kPickerContainerDoneButton = 171737;
         self.isValidCreditCard = NO;
         [self enableOrDisableRightBarButtonItemForPayment];
         self.ccNumberOutlet.backgroundColor = [UIColor whiteColor];
-    } else if (textField == self.addressTextFieldOutlet) {
-        self.isValidBillingAddress = NO;
-        [self enableOrDisableRightBarButtonItemForPayment];
-        self.addressTextFieldOutlet.backgroundColor = [UIColor whiteColor];
     } else if (textField == self.cardholderOutlet) {
         self.isValidCardHolder = NO;
         [self enableOrDisableRightBarButtonItemForPayment];
         self.cardholderOutlet.backgroundColor = [UIColor whiteColor];
+    } else if (textField == self.addressTextFieldOutlet) {
+        self.isValidStreetAddress = NO;
+        [self enableOrDisableRightBarButtonItemForPayment];
+        self.addressTextFieldOutlet.backgroundColor = [UIColor whiteColor];
+    } else if (textField == self.cityTextField) {
+        self.isValidCity = NO;
+        [self enableOrDisableRightBarButtonItemForPayment];
+        self.cityTextField.backgroundColor = [UIColor whiteColor];
+    } else if (textField == self.stateTextField) {
+        self.isValidState = NO;
+        [self enableOrDisableRightBarButtonItemForPayment];
+        self.stateTextField.backgroundColor = [UIColor whiteColor];
+    } else if (textField == self.postalTextField) {
+        self.isValidPostalCode = NO;
+        [self enableOrDisableRightBarButtonItemForPayment];
+        self.postalTextField.backgroundColor = [UIColor whiteColor];
     }
     
     else if (textField == self.firstNameOutlet) {
@@ -1239,47 +1293,59 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     [self.cardholderOutlet becomeFirstResponder];
 }
 
+- (void)tuiStatePickerNext:(id)sender {
+    ((UIView *) sender).backgroundColor = UIColorFromRGB(0xc4c4c4);
+    [self.postalTextField becomeFirstResponder];
+}
+
 - (void)tuiCountryPickerNext:(id)sender {
     ((UIView *) sender).backgroundColor = UIColorFromRGB(0xc4c4c4);
-    [self.phoneOutlet becomeFirstResponder];
+    UIView *guestDetailsView = [self.view viewWithTag:kGuestDetailsViewTag];
+    UIView *paymentDetailsView = [self.view viewWithTag:kPaymentDetailsViewTag];
+    if (guestDetailsView) [self.phoneOutlet becomeFirstResponder];
+    if (paymentDetailsView) {
+        NSString *cc = self.countryTextField.text;
+        if ([cc isEqualToString:@"US"] || [cc isEqualToString:@"CA"] || [cc isEqualToString:@"AU"]) {
+            [self.stateTextField becomeFirstResponder];
+        } else {
+            [self.postalTextField becomeFirstResponder];
+        }
+    }
 }
 
 - (void)tuoExpirNext:(id)sender {
     ((UIView *) sender).backgroundColor = UIColorFromRGB(0xc4c4c4);
 }
 
-//- (void)clickPhoneCountry {
-//    self.countryPicker = [[CountryPicker alloc] initWithFrame:CGRectMake(0, 0, 320, 162)];
-//    self.countryPicker.backgroundColor = UIColorFromRGB(0xe3e3e3);;
-//    self.countryPicker.delegate = self;
-//    
-//    NSString *callingCodesPath = [[NSBundle mainBundle] pathForResource:@"InternationalCallingCodes" ofType:@"plist"];
-//    NSDictionary *callingCodesDict = [NSDictionary dictionaryWithContentsOfFile:callingCodesPath];
-//    //    UIView *guestDetailsView = [self.view viewWithTag:kGuestDetailsViewTag];
-//    //    UILabel *iccLabel = (UILabel *) [guestDetailsView viewWithTag:97145721];
-//    //    NSString *icc = [iccLabel.text stringByReplacingOccurrencesOfString:@"+" withString:@""];
-//    id iccCountryCode = [callingCodesDict objectForKey:[self.selectedInternationalCallingCountryCode lowercaseString]];
-//    NSString *countryCode = nil;
-//    
-//    if (nil == iccCountryCode || [iccCountryCode isEqualToString:@""]) {
-//        countryCode = [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode];
-//    } else {
-//        countryCode = [self.selectedInternationalCallingCountryCode uppercaseString];
-//    }
-//    
-//    [self.countryPicker setSelectedCountryCode:countryCode];
-//    
-//    [self.pickerViewDoneButton setTitle:@"Next" forState:UIControlStateNormal];
-//    [self.pickerViewContainer addSubview:self.countryPicker];
-//    [self.view bringSubviewToFront:self.pickerViewContainer];
-//    self.isPickerContainerShowing = YES;
-//    [self.view endEditing:YES];
-//    [UIView animateWithDuration:kSrAnimationDuration animations:^{
-//        self.pickerViewContainer.frame = CGRectMake(0, 364, 320, 204);
-//    } completion:^(BOOL finished) {
-//        ;
-//    }];
-//}
+- (void)setupStatePicker {
+    self.statePickerContainer = [[UIView alloc] initWithFrame:CGRectMake(0, 361, 320, 207)];
+    self.statePickerContainer.backgroundColor = [UIColor whiteColor];
+    
+    self.statePickerNextBtn = [[UIButton alloc] initWithFrame:CGRectMake(242, 166, 75, 38)];
+    self.statePickerNextBtn.backgroundColor = UIColorFromRGB(0xc4c4c4);
+    self.statePickerNextBtn.layer.cornerRadius = 4.0f;
+    self.statePickerNextBtn.layer.masksToBounds = NO;
+    self.statePickerNextBtn.layer.borderWidth = 0.8f;
+    self.statePickerNextBtn.layer.borderColor = UIColorFromRGB(0xb5b5b5).CGColor;
+    
+    self.statePickerNextBtn.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.statePickerNextBtn.layer.shadowOpacity = 0.8;
+    self.statePickerNextBtn.layer.shadowRadius = 1;
+    self.statePickerNextBtn.layer.shadowOffset = CGSizeMake(1.0f, 1.0f);
+    
+    [self.statePickerNextBtn setTitle:@"Next" forState:UIControlStateNormal];
+    self.statePickerNextBtn.titleLabel.font = [UIFont systemFontOfSize:17.0f];
+    [self.statePickerNextBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [self.statePickerNextBtn addTarget:self action:@selector(tdExpirNext:) forControlEvents:UIControlEventTouchDown];
+    [self.statePickerNextBtn addTarget:self action:@selector(tuiStatePickerNext:) forControlEvents:UIControlEventTouchUpInside];
+    [self.statePickerNextBtn addTarget:self action:@selector(tuoExpirNext:) forControlEvents:UIControlEventTouchUpOutside];
+    [self.statePickerContainer addSubview:self.statePickerNextBtn];
+    
+    self.statePicker = [[StatePickerView alloc] initWithFrame:CGRectMake(0, 0, 320, 162)];
+    self.statePicker.backgroundColor = UIColorFromRGB(0xe3e3e3);;
+    self.statePicker.stateDelegate = self;
+    [self.statePickerContainer addSubview:self.statePicker];
+}
 
 - (void)setupCountryPicker {
     self.countryPickerContainer = [[UIView alloc] initWithFrame:CGRectMake(0, 361, 320, 207)];
@@ -1310,28 +1376,14 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     self.countryPicker.delegate = self;
     [self.countryPickerContainer addSubview:self.countryPicker];
     
-    [self setupInternationalCallingCodes];
-    
-//    NSString *callingCodesPath = [[NSBundle mainBundle] pathForResource:@"InternationalCallingCodes" ofType:@"plist"];
-//    NSDictionary *callingCodesDict = [NSDictionary dictionaryWithContentsOfFile:callingCodesPath];
-//    self.selectedInternationalCallingCountryCode = [GuestInfo singleton].countryCode;
-//    //    UIView *guestDetailsView = [self.view viewWithTag:kGuestDetailsViewTag];
-//    //    UILabel *iccLabel = (UILabel *) [guestDetailsView viewWithTag:97145721];
-//    //    NSString *icc = [iccLabel.text stringByReplacingOccurrencesOfString:@"+" withString:@""];
-//    id iccCountryCode = [callingCodesDict objectForKey:[self.selectedInternationalCallingCountryCode lowercaseString]];
-//    NSString *countryCode = nil;
-//    
-//    if (nil == iccCountryCode || [iccCountryCode isEqualToString:@""]) {
-//        countryCode = [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode];
-//    } else {
-//        countryCode = [self.selectedInternationalCallingCountryCode uppercaseString];
+//    if (!self.guestDetailsView) {
+//        return;
 //    }
 //    
-//    [self.countryPicker setSelectedCountryCode:countryCode];
+//    [self setupInternationalCallingCodes];
 }
 
 - (void)setupInternationalCallingCodes {
-    UIView *guestDetailsView = [self.view viewWithTag:kGuestDetailsViewTag];
     self.selectedInternationalCallingCountryCode = [GuestInfo singleton].countryCode;
     NSString *callingCodesPath = [[NSBundle mainBundle] pathForResource:@"InternationalCallingCodes" ofType:@"plist"];
     NSDictionary *callingCodesDict = [NSDictionary dictionaryWithContentsOfFile:callingCodesPath];
@@ -1344,8 +1396,7 @@ NSUInteger const kPickerContainerDoneButton = 171737;
         countryCode = [self.selectedInternationalCallingCountryCode uppercaseString];
     }
     
-    UIImageView *flagView = (UIImageView *) [guestDetailsView viewWithTag:51974123];
-    //    flagView.contentMode = UIViewContentModeScaleAspectFit;
+    UIImageView *flagView = (UIImageView *) [self.phoneCountryContainer.leftView viewWithTag:51974123];
     
     NSString *pathForImageResource = [NSString stringWithFormat:@"CountryPicker.bundle/%@", countryCode];
     NSString *imagePath = [[NSBundle mainBundle] pathForResource:pathForImageResource ofType:@"png"];
@@ -1356,15 +1407,41 @@ NSUInteger const kPickerContainerDoneButton = 171737;
         }
     }
     
-    //    UILabel *cc = [[UILabel alloc] initWithFrame:CGRectMake(36, 3, 45, 24)];
-    UILabel *iccLabel = (UILabel *) [guestDetailsView viewWithTag:97145721];
-    
     id callingCode = [callingCodesDict objectForKey:[countryCode lowercaseString]];
     if (nil != callingCode && [callingCode isKindOfClass:[NSString class]]) {
-        iccLabel.text = [@"+" stringByAppendingString:callingCode];
+        self.phoneCountryContainer.text = [@"+" stringByAppendingString:callingCode];
     }
     
     [self.countryPicker setSelectedCountryCode:countryCode];
+}
+
+- (void)setupCountryCode:(NSString *)code setPicker:(BOOL)setPicker {
+    NSString *countryCode = nil;
+    
+    if (!code || [code isEqualToString:@""]) {
+        countryCode = [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode];
+    } else {
+        countryCode = [code uppercaseString];
+    }
+    
+    if ([countryCode isEqualToString:@"US"] || [countryCode isEqualToString:@"CA"] || [countryCode isEqualToString:@"AU"]) {
+        self.stateTextField.hidden = NO;
+    } else {
+        self.stateTextField.hidden = YES;
+    }
+    
+    NSString *pathForImageResource = [NSString stringWithFormat:@"CountryPicker.bundle/%@", countryCode];
+    NSString *imagePath = [[NSBundle mainBundle] pathForResource:pathForImageResource ofType:@"png"];
+    if (imagePath && ![imagePath isEqualToString:@""]) {
+        UIImage *image = [UIImage imageNamed:imagePath];
+        if (image) {
+            UIImageView *flagView = (UIImageView *) [self.countryTextField.leftView viewWithTag:51974123];
+            flagView.image = image;
+        }
+    }
+    
+    self.countryTextField.text = countryCode;
+    if (setPicker) [self.countryPicker setSelectedCountryCode:countryCode];
 }
 
 - (void)setupExpirationPicker {
@@ -1517,7 +1594,7 @@ NSUInteger const kPickerContainerDoneButton = 171737;
         NSString *callingCodesPath = [[NSBundle mainBundle] pathForResource:@"InternationalCallingCodes" ofType:@"plist"];
         NSDictionary *callingCodesDict = [NSDictionary dictionaryWithContentsOfFile:callingCodesPath];
         
-        UIImageView *flagView = (UIImageView *) [guestDetailsView viewWithTag:51974123];
+        UIImageView *flagView = (UIImageView *) [self.phoneCountryContainer.leftView viewWithTag:51974123];
         
         NSString *pathForImageResource = [NSString stringWithFormat:@"CountryPicker.bundle/%@", code];
         NSString *imagePath = [[NSBundle mainBundle] pathForResource:pathForImageResource ofType:@"png"];
@@ -1528,35 +1605,24 @@ NSUInteger const kPickerContainerDoneButton = 171737;
             }
         }
         
-        UILabel *iccLabel = (UILabel *) [guestDetailsView viewWithTag:97145721];
-        
         id callingCode = [callingCodesDict objectForKey:[code lowercaseString]];
         if (nil != callingCode && [callingCode isKindOfClass:[NSString class]]) {
-            iccLabel.text = [@"+" stringByAppendingString:callingCode];
+            self.phoneCountryContainer.text = [@"+" stringByAppendingString:callingCode];
         }
         
         self.selectedInternationalCallingCountryCode = code;
     }
     
     if (paymentDetailsView) {
-        NSString *pathForImageResource = [NSString stringWithFormat:@"CountryPicker.bundle/%@", code];
-        NSString *imagePath = [[NSBundle mainBundle] pathForResource:pathForImageResource ofType:@"png"];
-        if (nil != imagePath && ![imagePath isEqualToString:@""]) {
-            UIImage *image = [UIImage imageNamed:imagePath];
-            if (image) {
-                UIView *cv = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 37, 26)];
-                cv.backgroundColor = [UIColor clearColor];
-                UIImageView *iv = [[UIImageView alloc] initWithImage:image];
-                iv.frame = CGRectMake(5, 0, 32, 26);
-                iv.contentMode = UIViewContentModeScaleAspectFit;
-                [cv addSubview:iv];
-                [self.countryTextField setLeftViewMode:UITextFieldViewModeAlways];
-                self.countryTextField.leftView = cv;
-            }
-        }
-        
-        self.countryTextField.text = [code uppercaseString];
+        [self setupCountryCode:code setPicker:NO];
     }
+}
+
+#pragma mark StatePickerDelegate method
+
+- (void)statePicker:(StatePickerView *)picker didSelectStateWithName:(NSString *)name code:(NSString *)code {
+    self.stateTextField.text = code;
+    [self validateState:code];
 }
 
 #pragma mark Animation methods
@@ -1707,10 +1773,11 @@ NSUInteger const kPickerContainerDoneButton = 171737;
 }
 
 - (void)loadGuestDetailsView {
-    NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"GuestDetailsView" owner:self options:nil];
-    if (nil == views || [views count] != 1) {
-        return;
-    }
+    __weak UIView *guestDetailsView = self.guestDetailsView;
+    [self.view addSubview:guestDetailsView];
+    guestDetailsView.frame = CGRectMake(0, 64, 320, 568);
+    guestDetailsView.backgroundColor = kWotaColorOne();
+    [[guestDetailsView subviews] makeObjectsPerformSelector:@selector(setBackgroundColor:) withObject:(id)kWotaColorOne()];
     
     NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
     UIButton *b = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -1723,25 +1790,12 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     [nv animateToSecondCancel];
     [nv rightViewAddCheckMark];
     
-    self.firstNameOutlet.delegate = self;
-    self.lastNameOutlet.delegate = self;
-    self.emailOutlet.delegate = self;
-    self.phoneOutlet.delegate = self;
-    self.phoneCountryContainer.delegate = self;
-    
-    __weak UIView *guestDetailsView = views[0];
-    guestDetailsView.tag = kGuestDetailsViewTag;
-    guestDetailsView.frame = CGRectMake(0, 64, 320, 568);
-    guestDetailsView.backgroundColor = kWotaColorOne();
-    [[guestDetailsView subviews] makeObjectsPerformSelector:@selector(setBackgroundColor:) withObject:(id)kWotaColorOne()];
-    
     CGPoint gboCenter = [self.view convertPoint:self.guestButtonOutlet.center fromView:self.inputBookOutlet];
     CGFloat fromX = gboCenter.x - guestDetailsView.center.x;
     CGFloat fromY = gboCenter.y - guestDetailsView.center.y;
     CGAffineTransform fromTransform = CGAffineTransformMakeTranslation(fromX, fromY);
     guestDetailsView.transform = CGAffineTransformScale(fromTransform, 0.01f, 0.01f);
     
-    [self.view addSubview:guestDetailsView];
     GuestInfo *gi = [GuestInfo singleton];
     self.firstNameOutlet.text = gi.firstName;
     self.lastNameOutlet.text = gi.lastName;
@@ -1752,13 +1806,13 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     [self validateLastName:self.lastNameOutlet.text];
     [self validateEmailAddress:self.emailOutlet.text withNoGoColor:NO];
     if (self.isValidEmail) {
-        CGRect f = self.belowEmailContainerOutlet.frame;
-        self.belowEmailContainerOutlet.frame = CGRectMake(f.origin.x, f.origin.y - 35, f.size.width, f.size.height);
+        self.belowEmailContainerOutlet.frame = CGRectMake(0, 74, 316, 138);
         [guestDetailsView sendSubviewToBack:self.belowEmailContainerOutlet];
         self.isValidConfirmEmail = YES;
         [self enableOrDisableRightBarButtonItemForGuest];
         self.confirmEmailOutlet.delegate = nil;
     } else {
+        self.belowEmailContainerOutlet.frame = CGRectMake(0, 109, 316, 138);
         self.confirmEmailOutlet.delegate = self;
     }
     [self validatePhone:self.phoneOutlet.text];
@@ -1767,29 +1821,52 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     
     if ([self isWeGoodForGuest]) {
         self.deleteUserOutlet.hidden = NO;
+        [self.deleteUserOutlet removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents];
         [self.deleteUserOutlet addTarget:self action:@selector(initiateDeleteUser:) forControlEvents:UIControlEventTouchUpInside ];
+        [self.deleteUserOutlet setTitle:@"Delete This Guest" forState:UIControlStateNormal];
+    } else {
+        self.deleteUserOutlet.hidden = YES;
+        self.cancelUserDeletionOutlet.hidden = YES;
     }
     
+    self.firstNameOutlet.userInteractionEnabled = YES;
+    self.lastNameOutlet.userInteractionEnabled = YES;
+    self.emailOutlet.userInteractionEnabled = YES;
+    self.confirmEmailOutlet.userInteractionEnabled = YES;
+    self.phoneOutlet.userInteractionEnabled = YES;
+    self.phoneCountryContainer.userInteractionEnabled = YES;
+    
+    self.firstNameOutlet.textColor = [UIColor blackColor];
+    self.lastNameOutlet.textColor = [UIColor blackColor];
+    self.emailOutlet.textColor = [UIColor blackColor];
+    self.confirmEmailOutlet.textColor = [UIColor blackColor];
+    self.phoneOutlet.textColor = [UIColor blackColor];
+    self.phoneCountryContainer.textColor = [UIColor blackColor];
+    UIImageView *flagView = (UIImageView *) [self.phoneCountryContainer.leftView viewWithTag:51974123];
+    flagView.backgroundColor = [UIColor clearColor];
+    flagView.alpha = 1.0f;
+    
+    __weak typeof(self) wes = self;
     _view_details_type = GUEST_DETAILS;
     [UIView animateWithDuration:kSrAnimationDuration animations:^{
         guestDetailsView.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
         guestDetailsView.backgroundColor = [UIColor whiteColor];
         [[guestDetailsView subviews] makeObjectsPerformSelector:@selector(setBackgroundColor:) withObject:(id)[UIColor whiteColor]];
+        [[wes.belowEmailContainerOutlet subviews] makeObjectsPerformSelector:@selector(setBackgroundColor:) withObject:(id)[UIColor whiteColor]];
     } completion:^(BOOL finished) {
         [self.firstNameOutlet becomeFirstResponder];
     }];
 }
 
 - (void)dropGuestDetailsView:(id)sender {
-    __weak UIView *guestDetailsView = [self.view viewWithTag:kGuestDetailsViewTag];
+    __weak UIView *guestDetailsView = self.guestDetailsView;
     GuestInfo *gi = [GuestInfo singleton];
     if ([sender isKindOfClass:[NSString class]] && [sender isEqualToString:@"FromRightNav"]) {
         gi.firstName = self.firstNameOutlet.text;
         gi.lastName = self.lastNameOutlet.text;
         gi.email = self.emailOutlet.text;
         gi.phoneNumber = self.phoneOutlet.text;
-        UILabel *iccLabel = (UILabel *) [guestDetailsView viewWithTag:97145721];
-        NSString *icc = [iccLabel.text stringByReplacingOccurrencesOfString:@"+" withString:@""];
+        NSString *icc = [self.phoneCountryContainer.text stringByReplacingOccurrencesOfString:@"+" withString:@""];
         gi.internationalCallingCode = icc;
         gi.countryCode = self.selectedInternationalCallingCountryCode;
         [self updateGuestDetailsButtonTitle];
@@ -1800,8 +1877,10 @@ NSUInteger const kPickerContainerDoneButton = 171737;
         self.lastNameOutlet.text = nil;
         self.emailOutlet.text = nil;
         self.phoneOutlet.text = nil;
+        self.confirmEmailOutlet.text = nil;
         [GuestInfo deleteGuest:gi];
         [self updateGuestDetailsButtonTitle];
+        [self.deleteUserOutlet setTitle:@"Delete This Guest" forState:UIControlStateNormal];
     }
     
     CGPoint gboCenter = [self.view convertPoint:self.guestButtonOutlet.center fromView:self.inputBookOutlet];
@@ -1821,16 +1900,12 @@ NSUInteger const kPickerContainerDoneButton = 171737;
         guestDetailsView.backgroundColor = kWotaColorOne();
         [[guestDetailsView subviews] makeObjectsPerformSelector:@selector(setBackgroundColor:) withObject:(id)kWotaColorOne()];
     } completion:^(BOOL finished) {
-        [guestDetailsView removeFromSuperview];;
+        [guestDetailsView removeFromSuperview];
+        guestDetailsView.transform = CGAffineTransformIdentity;
     }];
 }
 
 - (void)loadPaymentDetailsView {
-    NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"PaymentDetailsView" owner:self options:nil];
-    if (nil == views || [views count] != 1) {
-        return;
-    }
-    
     NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
     UIButton *b = [UIButton buttonWithType:UIButtonTypeSystem];
     b.frame = nv.titleView.bounds;
@@ -1842,8 +1917,7 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     [nv animateToSecondCancel];
     [nv rightViewAddCheckMark];
     
-    __weak UIView *paymentDetailsView = views[0];
-    paymentDetailsView.tag = kPaymentDetailsViewTag;
+    __weak UIView *paymentDetailsView = self.paymentDetailsView;
     paymentDetailsView.frame = CGRectMake(0, 64, 320, 568);
     paymentDetailsView.backgroundColor = kWotaColorOne();
     [[paymentDetailsView subviews] makeObjectsPerformSelector:@selector(setBackgroundColor:) withObject:(id)kWotaColorOne()];
@@ -1856,24 +1930,15 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     
     [self.view addSubview:paymentDetailsView];
     
-    self.ccNumberOutlet.delegate = self;
-    self.addressTextFieldOutlet.delegate = self;
-    self.cityTextField.delegate = self;
-    self.countryTextField.delegate = self;
-    self.stateTextField.delegate = self;
-    self.postalTextField.delegate = self;
-    self.expirationOutlet.delegate = self;
-    self.cardholderOutlet.delegate = self;
-    
     PaymentDetails *pd = self.paymentDetails = self.paymentDetails ? : [PaymentDetails new];
     
     self.ccNumberOutlet.showsCardLogo = YES;
     self.ccNumberOutlet.cardNumber = pd.cardNumber;
-    
     self.addressTextFieldOutlet.text = pd.billingAddress.address1;
     self.cityTextField.text = pd.billingAddress.city;
     self.stateTextField.text = pd.billingAddress.stateProvinceCode;
     self.postalTextField.text = pd.billingAddress.postalCode;
+    [self setupCountryCode:pd.billingAddress.countryCode setPicker:YES];
     [self updateTextInExpirationOutlet];
     
     if (nil != pd.cardHolderFirstName && nil != pd.cardHolderLastName) {
@@ -1881,8 +1946,11 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     }
     
     [self validateCreditCardNumber:self.ccNumberOutlet.cardNumber];
-    [self validateBillingAddress:self.addressTextFieldOutlet.text];
     [self validateCardholder:self.cardholderOutlet.text];
+    [self validateStreetAddress:self.addressTextFieldOutlet.text];
+    [self validateCity:self.cityTextField.text];
+    [self validateState:self.stateTextField.text];
+    [self validatePostalCode:self.postalTextField.text];
     
     _view_details_type = PAYMENT_DETAILS;
     __weak typeof(self) wes = self;
@@ -1906,6 +1974,7 @@ NSUInteger const kPickerContainerDoneButton = 171737;
         pd.eanCardType = self.ccNumberOutlet.eanType;
         pd.billingAddress.address1 = self.addressTextFieldOutlet.text;
         pd.billingAddress.city = self.cityTextField.text;
+        pd.billingAddress.countryCode = self.countryTextField.text;
         pd.billingAddress.stateProvinceCode = self.stateTextField.text;
         pd.billingAddress.postalCode = self.postalTextField.text;
         [self saveDaExpiration];
@@ -1928,7 +1997,7 @@ NSUInteger const kPickerContainerDoneButton = 171737;
 //        [self updatePaymentDetailsButtonTitle];
 //    }
     
-    __weak UIView *paymentDetailsView = [self.view viewWithTag:kPaymentDetailsViewTag];
+    __weak UIView *paymentDetailsView = self.paymentDetailsView;
     
     CGPoint pboCenter = [self.view convertPoint:self.paymentButtonOutlet.center fromView:self.inputBookOutlet];
     CGFloat toX = pboCenter.x - paymentDetailsView.center.x;
@@ -1945,7 +2014,8 @@ NSUInteger const kPickerContainerDoneButton = 171737;
         [[paymentDetailsView subviews] makeObjectsPerformSelector:@selector(setBackgroundColor:) withObject:(id)kWotaColorOne()];
         paymentDetailsView.transform = CGAffineTransformScale(toTransform, 0.01f, 0.01f);
     } completion:^(BOOL finished) {
-        [paymentDetailsView removeFromSuperview];;
+        [paymentDetailsView removeFromSuperview];
+        paymentDetailsView.transform = CGAffineTransformIdentity;
     }];
 }
 
@@ -2324,12 +2394,6 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     [self enableOrDisableRightBarButtonItemForPayment];
 }
 
-- (void)validateBillingAddress:(NSString *)billingAddress {
-    
-    self.isValidBillingAddress = YES;
-    [self enableOrDisableRightBarButtonItemForPayment];
-}
-
 - (void)validateExpiration {
     if (nil == self.expirationOutlet.text || 0 == [self.expirationOutlet.text length]
             || [self.expirationOutlet.text isEqualToString:@""]) {
@@ -2391,6 +2455,34 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     [self enableOrDisableRightBarButtonItemForPayment];
 }
 
+- (void)validateStreetAddress:(NSString *)sa {
+    if (!stringIsEmpty(sa)) self.isValidStreetAddress = YES;
+    else self.isValidStreetAddress = NO;
+    [self enableOrDisableRightBarButtonItemForPayment];
+}
+
+- (void)validateCity:(NSString *)city {
+    if (!stringIsEmpty(city)) self.isValidCity = YES;
+    else self.isValidCity = NO;
+    [self enableOrDisableRightBarButtonItemForPayment];
+}
+
+- (void)validateState:(NSString *)state {
+    if (!stringIsEmpty(state)) self.isValidState = YES;
+    else self.isValidState = NO;
+    [self enableOrDisableRightBarButtonItemForPayment];
+}
+
+- (void)validatePostalCode:(NSString *)pc {
+    if (!stringIsEmpty(pc)) self.isValidPostalCode = YES;
+    else self.isValidPostalCode = NO;
+    [self enableOrDisableRightBarButtonItemForPayment];
+}
+
+- (BOOL)isValidBillingAddress {
+    return _isValidStreetAddress && _isValidCity && _isValidState && _isValidPostalCode;
+}
+
 #pragma mark Card Deletion Selectors
 
 - (void)initiateDeleteUser:(id)sender {
@@ -2421,22 +2513,19 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     self.confirmEmailOutlet.backgroundColor = [UIColor grayColor];
     self.phoneOutlet.backgroundColor = [UIColor grayColor];
     self.phoneCountryContainer.backgroundColor = [UIColor grayColor];
-    UIView *guestDetailsView = [self.view viewWithTag:kGuestDetailsViewTag];
-    UIImageView *flagView = (UIImageView *) [guestDetailsView viewWithTag:51974123];
+    UIImageView *flagView = (UIImageView *) [self.phoneCountryContainer.leftView viewWithTag:51974123];
     flagView.backgroundColor = [UIColor grayColor];
     flagView.alpha = 0.2f;
-    UILabel *iccLabel = (UILabel *) [guestDetailsView viewWithTag:97145721];
-    iccLabel.backgroundColor = [UIColor grayColor];
     
     self.firstNameOutlet.textColor = [UIColor lightGrayColor];
     self.lastNameOutlet.textColor = [UIColor lightGrayColor];
     self.emailOutlet.textColor = [UIColor lightGrayColor];
     self.confirmEmailOutlet.textColor = [UIColor lightGrayColor];
     self.phoneOutlet.textColor = [UIColor lightGrayColor];
-    iccLabel.textColor = [UIColor lightGrayColor];
+    self.phoneCountryContainer.textColor = [UIColor lightGrayColor];
     
     [self.deleteUserOutlet setTitle:@"Confirm Deletion" forState:UIControlStateNormal];
-    [self.deleteUserOutlet removeTarget:self action:@selector(initiateDeleteUser:) forControlEvents:UIControlEventTouchUpInside];
+    [self.deleteUserOutlet removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents];
     [self.deleteUserOutlet addTarget:self action:@selector(dropGuestDetailsView:) forControlEvents:UIControlEventTouchUpInside];
 }
 
@@ -2466,22 +2555,19 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     self.emailOutlet.backgroundColor = [UIColor whiteColor];
     self.phoneOutlet.backgroundColor = [UIColor whiteColor];
     self.phoneCountryContainer.backgroundColor = [UIColor whiteColor];
-    UIView *guestDetailsView = [self.view viewWithTag:kGuestDetailsViewTag];
-    UIImageView *flagView = (UIImageView *) [guestDetailsView viewWithTag:51974123];
+    UIImageView *flagView = (UIImageView *) [self.phoneCountryContainer.leftView viewWithTag:51974123];
     flagView.backgroundColor = [UIColor clearColor];
     flagView.alpha = 1.0f;
-    UILabel *iccLabel = (UILabel *) [guestDetailsView viewWithTag:97145721];
-    iccLabel.backgroundColor = [UIColor whiteColor];
     
     self.firstNameOutlet.textColor = [UIColor blackColor];
     self.lastNameOutlet.textColor = [UIColor blackColor];
     self.emailOutlet.textColor = [UIColor blackColor];
     self.phoneOutlet.textColor = [UIColor blackColor];
-    iccLabel.textColor = [UIColor blackColor];
+    self.phoneCountryContainer.textColor = [UIColor blackColor];
     
     self.deleteUserOutlet.hidden = NO;
     [self.deleteUserOutlet setTitle:@"Delete This Guest" forState:UIControlStateNormal];
-    [self.deleteUserOutlet removeTarget:self action:@selector(dropGuestDetailsView:) forControlEvents:UIControlEventTouchUpInside];
+    [self.deleteUserOutlet removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents];
     [self.deleteUserOutlet addTarget:self action:@selector(initiateDeleteUser:) forControlEvents:UIControlEventTouchUpInside];
 }
 
@@ -2525,6 +2611,77 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     cornerGradLayer.startPoint = CGPointMake(0.7f, 0.0f);
     cornerGradLayer.endPoint = CGPointMake(0.5f, 0.9f);
     [view.layer addSublayer:cornerGradLayer];
+}
+
+#pragma mark Some views
+
+- (UIView *)guestDetailsView {
+    if (_guestDetailsView) return _guestDetailsView;
+    
+    NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"GuestDetailsView" owner:self options:nil];
+    if (nil == views || [views count] != 1) {
+        return nil;
+    }
+    
+    _guestDetailsView = views[0];
+    _guestDetailsView.tag = kGuestDetailsViewTag;
+    _guestDetailsView.frame = CGRectMake(0, 64, 320, 568);
+    _guestDetailsView.backgroundColor = kWotaColorOne();
+    [[_guestDetailsView subviews] makeObjectsPerformSelector:@selector(setBackgroundColor:) withObject:(id)kWotaColorOne()];
+    
+    self.firstNameOutlet.delegate = self;
+    self.lastNameOutlet.delegate = self;
+    self.emailOutlet.delegate = self;
+    self.phoneOutlet.delegate = self;
+    self.phoneCountryContainer.delegate = self;
+    
+    UIView *cv = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 40, 26)];
+    cv.backgroundColor = [UIColor clearColor];
+    UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(5, 0, 32, 26)];
+    iv.tag = 51974123;
+    iv.contentMode = UIViewContentModeScaleAspectFit;
+    [cv addSubview:iv];
+    [self.phoneCountryContainer setLeftViewMode:UITextFieldViewModeAlways];
+    self.phoneCountryContainer.leftView = cv;
+    
+    return _guestDetailsView;
+}
+
+- (UIView *)paymentDetailsView {
+    if (_paymentDetailsView) return _paymentDetailsView;
+    
+    NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"PaymentDetailsView" owner:self options:nil];
+    if (nil == views || [views count] != 1) {
+        return nil;
+    }
+    
+    _paymentDetailsView = views[0];
+    _paymentDetailsView.tag = kPaymentDetailsViewTag;
+    _paymentDetailsView.frame = CGRectMake(0, 64, 320, 568);
+    _paymentDetailsView.backgroundColor = kWotaColorOne();
+    [[_paymentDetailsView subviews] makeObjectsPerformSelector:@selector(setBackgroundColor:) withObject:(id)kWotaColorOne()];
+    
+    self.ccNumberOutlet.delegate = self;
+    self.addressTextFieldOutlet.delegate = self;
+    self.cityTextField.delegate = self;
+    self.countryTextField.delegate = self;
+    self.stateTextField.delegate = self;
+    self.postalTextField.delegate = self;
+    self.expirationOutlet.delegate = self;
+    self.cardholderOutlet.delegate = self;
+    
+    self.stateTextField.hidden = YES;
+    
+    UIView *cv = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 40, 26)];
+    cv.backgroundColor = [UIColor clearColor];
+    UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(5, 0, 32, 26)];
+    iv.tag = 51974123;
+    iv.contentMode = UIViewContentModeScaleAspectFit;
+    [cv addSubview:iv];
+    [self.countryTextField setLeftViewMode:UITextFieldViewModeAlways];
+    self.countryTextField.leftView = cv;
+    
+    return _paymentDetailsView;
 }
 
 @end
