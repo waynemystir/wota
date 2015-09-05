@@ -89,6 +89,8 @@
 		B09797CE1AC2518D0014FC7C /* MapView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B09797CD1AC2518D0014FC7C /* MapView.xib */; };
 		B09797D11AC321F90014FC7C /* GooglePlaceDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = B09797D01AC321F90014FC7C /* GooglePlaceDetail.m */; };
 		B09797E51AC344340014FC7C /* LoadEanData.m in Sources */ = {isa = PBXBuildFile; fileRef = B09797E41AC344340014FC7C /* LoadEanData.m */; };
+		B09B95701B99CAFE006C4054 /* CAStateAbbreviations.plist in Resources */ = {isa = PBXBuildFile; fileRef = B09B956F1B99CAFE006C4054 /* CAStateAbbreviations.plist */; };
+		B09B95721B99CF7D006C4054 /* AUStateAbbreviations.plist in Resources */ = {isa = PBXBuildFile; fileRef = B09B95711B99CF7D006C4054 /* AUStateAbbreviations.plist */; };
 		B09C5E9F1AD1735500A3D7E8 /* EanHotelInfoImage.m in Sources */ = {isa = PBXBuildFile; fileRef = B09C5E9E1AD1735500A3D7E8 /* EanHotelInfoImage.m */; };
 		B09C5EA31AD1930600A3D7E8 /* EanHotelListResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = B09C5EA21AD1930600A3D7E8 /* EanHotelListResponse.m */; };
 		B09C5EA61AD1A16E00A3D7E8 /* EanHotelListHotelSummary.m in Sources */ = {isa = PBXBuildFile; fileRef = B09C5EA51AD1A16E00A3D7E8 /* EanHotelListHotelSummary.m */; };
@@ -323,6 +325,8 @@
 		B09797D01AC321F90014FC7C /* GooglePlaceDetail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GooglePlaceDetail.m; sourceTree = "<group>"; };
 		B09797E31AC344340014FC7C /* LoadEanData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadEanData.h; sourceTree = "<group>"; };
 		B09797E41AC344340014FC7C /* LoadEanData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadEanData.m; sourceTree = "<group>"; };
+		B09B956F1B99CAFE006C4054 /* CAStateAbbreviations.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = CAStateAbbreviations.plist; sourceTree = "<group>"; };
+		B09B95711B99CF7D006C4054 /* AUStateAbbreviations.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = AUStateAbbreviations.plist; sourceTree = "<group>"; };
 		B09C5E9D1AD1735500A3D7E8 /* EanHotelInfoImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanHotelInfoImage.h; sourceTree = "<group>"; };
 		B09C5E9E1AD1735500A3D7E8 /* EanHotelInfoImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanHotelInfoImage.m; sourceTree = "<group>"; };
 		B09C5EA11AD1930600A3D7E8 /* EanHotelListResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanHotelListResponse.h; sourceTree = "<group>"; };
@@ -612,6 +616,8 @@
 				B032F6291AC18F6700809395 /* main.m */,
 				B06C98BB1B09585300DBE09D /* CountryPicker.bundle */,
 				B06C98B91B0951E500DBE09D /* InternationalCallingCodes.plist */,
+				B09B95711B99CF7D006C4054 /* AUStateAbbreviations.plist */,
+				B09B956F1B99CAFE006C4054 /* CAStateAbbreviations.plist */,
 				B0CB24B21B991418006A8282 /* USStateAbbreviations.plist */,
 			);
 			path = "Supporting Files";
@@ -1098,7 +1104,9 @@
 				B05BD6321AC1FF54002C2882 /* PlaceAutoCompleteTableViewCell.xib in Resources */,
 				B018C0421AD96A7600DDCE2E /* GuestDetailsView.xib in Resources */,
 				B0CBC7D91B483C2E00F61CA9 /* FilterView.xib in Resources */,
+				B09B95721B99CF7D006C4054 /* AUStateAbbreviations.plist in Resources */,
 				B0D02FF61AE6123000B1E75F /* jcb@2x.png in Resources */,
+				B09B95701B99CAFE006C4054 /* CAStateAbbreviations.plist in Resources */,
 				B0D02FFA1AE6123000B1E75F /* placeholder@2x.png in Resources */,
 				B09797CE1AC2518D0014FC7C /* MapView.xib in Resources */,
 				B09E41851AEB43DA000A718D /* WotaButton.xib in Resources */,

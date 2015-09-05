@@ -21,6 +21,7 @@
 
 @property (nonatomic, readonly, getter = isValid) BOOL valid;
 @property (nonatomic, readonly, getter = isValidLength) BOOL validLength;
+@property (nonatomic, readonly, getter = isGreaterThanOrEqualValidLength) BOOL greaterThanOrEqualValidLength;
 @property (nonatomic, readonly, getter = isValidLuhn) BOOL validLuhn;
 @property (nonatomic, readonly, getter = isPartiallyValid) BOOL partiallyValid;
 

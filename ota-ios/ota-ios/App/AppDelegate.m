@@ -9,8 +9,6 @@
 #import "AppDelegate.h"
 #import "AppEnvironment.h"
 #import "JNKeychain.h"
-//#import "MainViewController.h"
-//#import "CriteriaViewController.h"
 #import "TrotterViewController.h"
 
 static NSString *_externalIP = nil;
@@ -43,7 +41,6 @@ static NSString *_externalIP = nil;
         
         // Delete values from keychain here
         [JNKeychain deleteValueForKey:kKeyGuestInfo];
-        [JNKeychain deleteValueForKey:kKeyPaymentDetails1];
         
         [[NSUserDefaults standardUserDefaults] setValue:@"da1stRun" forKey:@"daFirstRun"];
         [[NSUserDefaults standardUserDefaults] synchronize];

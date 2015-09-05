@@ -149,6 +149,10 @@
     return _number.length == [self lengthForCardType];
 }
 
+- (BOOL)isGreaterThanOrEqualValidLength {
+    return _number.length >= [self lengthForCardType];
+}
+
 - (BOOL)isValidLuhn
 {
     BOOL odd = true;

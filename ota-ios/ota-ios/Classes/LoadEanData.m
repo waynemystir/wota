@@ -468,10 +468,11 @@ NSString * kURLeanBookReservation() {
                      EAN_PK_CC_STATE_PROV_CODE, stateProvinceCode,
                      EAN_PK_CC_COUNTRY_CODE, countryCode,
                      EAN_PK_CC_POSTAL_CODE, postalCode] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+//    urlString = [urlString stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
     NSLog(@"BOOKING:%@", urlString);
     
     NSURL *url = [NSURL URLWithString:urlString];
-//    [self fireOffConnectionWithURL:url httpMethod:HTTP_POST];
+    [self fireOffConnectionWithURL:url httpMethod:HTTP_POST];
 }
 
 #pragma mark NSURLConnectionDataDelegate methods

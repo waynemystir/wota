@@ -19,9 +19,8 @@
 @interface StatePickerView : UIPickerView
 
 @property (nonatomic, weak) id<StatePickerDelegate> stateDelegate;
-
-- (void)setSelectedStateName:(NSString *)stateName;
-- (void)setSelectedStateAbbr:(NSString *)stateAbbr;
-- (void)setSelectedIndex:(NSUInteger)index;
+@property (nonatomic, strong) NSString *country;
+@property (nonatomic, strong) NSString *selectedStateAbbr;
+@property (nonatomic, strong) NSString *selectedStateName;
 
 @end

@@ -23,7 +23,6 @@ extern void TrotterLog(NSString *format, ...);
  * Keychain keys
  */
 extern NSString * const kKeyGuestInfo;
-extern NSString * const kKeyPaymentDetails1;
 
 /**
  * Google stuff

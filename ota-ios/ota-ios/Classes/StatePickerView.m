@@ -8,11 +8,14 @@
 
 #import "StatePickerView.h"
 
+static NSArray *_sn = nil;
+
 @interface StatePickerView () <UIPickerViewDelegate, UIPickerViewDataSource>
 
 @property (nonatomic, strong) NSDictionary *usAbbrevs;
 @property (nonatomic, strong) NSDictionary *caAbbrevs;
 @property (nonatomic, strong) NSDictionary *auAbbrevs;
+@property (nonatomic, strong) NSDictionary *designatedAbbrevs;
 @property (nonatomic, strong) NSArray *stateNames;
 
 @end
@@ -23,35 +26,62 @@
     if (self = [super initWithFrame:frame]) {
         super.dataSource = self;
         super.delegate = self;
+        
         NSString *file = @"USStateAbbreviations";
         NSString *stateAbbrPath = [[NSBundle mainBundle] pathForResource:file ofType:@"plist"];
         _usAbbrevs = [NSDictionary dictionaryWithContentsOfFile:stateAbbrPath];
+        
+        file = @"AUStateAbbreviations";
+        stateAbbrPath = [[NSBundle mainBundle] pathForResource:file ofType:@"plist"];
+        _auAbbrevs = [NSDictionary dictionaryWithContentsOfFile:stateAbbrPath];
+        
+        file = @"CAStateAbbreviations";
+        stateAbbrPath = [[NSBundle mainBundle] pathForResource:file ofType:@"plist"];
+        _caAbbrevs = [NSDictionary dictionaryWithContentsOfFile:stateAbbrPath];
     }
     return self;
 }
 
-- (NSArray *)stateNames {
-    static NSArray *_sn = nil;
-    if (!_sn) {
-        NSMutableArray *marr = [[self.usAbbrevs.allKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)] mutableCopy];
-        [marr insertObject:@"" atIndex:0];
-        _sn = [NSArray arrayWithArray:marr];
+- (void)setCountry:(NSString *)country {
+    _country = country;
+    [self setTheStateNames];
+}
+
+- (void)setTheStateNames {
+    if ([_country isEqualToString:@"US"]) {
+        _designatedAbbrevs = _usAbbrevs;
+    } else if ([_country isEqualToString:@"AU"]) {
+        _designatedAbbrevs = _auAbbrevs;
+    } else if ([_country isEqualToString:@"CA"]) {
+        _designatedAbbrevs = _caAbbrevs;
+    } else {
+        _designatedAbbrevs = nil;
     }
+    
+    NSMutableArray *marr = [[_designatedAbbrevs.allKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)] mutableCopy];
+    [marr insertObject:@"" atIndex:0];
+    _sn = [NSArray arrayWithArray:marr];
+}
+
+- (NSArray *)stateNames {
+    if (!_sn) [self setTheStateNames];
     return _sn;
+}
+
+- (void)setSelectedStateAbbr:(NSString *)stateAbbr {
+    NSString *stateName = [self.designatedAbbrevs allKeysForObject:stateAbbr].firstObject;
+    self.selectedStateName = stateName;
 }
 
 - (void)setSelectedStateName:(NSString *)stateName {
     NSUInteger index = [self.stateNames indexOfObject:stateName];
+    if (index == NSNotFound) return;
     [self selectRow:index inComponent:0 animated:NO];
 }
 
-- (void)setSelectedStateAbbr:(NSString *)stateAbbr {
-    NSString *stateName = [self.usAbbrevs allKeysForObject:stateAbbr].firstObject;
-    [self setSelectedStateName:stateName];
-}
-
-- (void)setSelectedIndex:(NSUInteger)index {
-    [self selectRow:index inComponent:0 animated:NO];
+- (void)reloadAllComponents {
+    [super reloadAllComponents];
+    [self selectRow:0 inComponent:0 animated:NO];
 }
 
 - (NSInteger)numberOfComponentsInPickerView:(__unused UIPickerView *)pickerView {
@@ -59,7 +89,7 @@
 }
 
 - (NSInteger)pickerView:(__unused UIPickerView *)pickerView numberOfRowsInComponent:(__unused NSInteger)component {
-    return (NSInteger)self.usAbbrevs.count;
+    return (NSInteger)self.stateNames.count;
 }
 
 - (UIView *)pickerView:(__unused UIPickerView *)pickerView viewForRow:(NSInteger)row
@@ -80,7 +110,7 @@
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
     NSString *stateName = self.stateNames[(NSUInteger)row];
-    NSString *code = [self.usAbbrevs objectForKey:stateName];
+    NSString *code = [self.designatedAbbrevs objectForKey:stateName];
     [self.stateDelegate statePicker:self didSelectStateWithName:stateName code:code];
 }
 

@@ -76,6 +76,7 @@ NSUInteger const kInfoDetailPopupValueAddDetTag = 1717344;
 NSUInteger const kWhyThisInfoTag = 171735;
 NSUInteger const kCardSecurityTag = 171736;
 NSUInteger const kPickerContainerDoneButton = 171737;
+NSUInteger const kFlagViewTag = 51974123;
 
 @interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, SelectBedTypeDelegate, SelectSmokingPrefDelegate, NavigationDelegate, CountryPickerDelegate, StatePickerDelegate>
 
@@ -894,15 +895,11 @@ NSUInteger const kPickerContainerDoneButton = 171737;
 }
 
 - (void)saveDaExpiration {
-    if (nil == self.expirationOutlet.text) {
-        return;
-    }
+    if (stringIsEmpty(self.expirationOutlet.text)) return;
     
     NSArray *expArr = [self.expirationOutlet.text componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" "]];
     
-    if (nil == expArr || [expArr count] != 2) {
-        return;
-    }
+    if ([expArr count] != 2) return;
     
     NSString *expMonth = expArr[0];
     NSString *expYear = expArr[1];
@@ -948,6 +945,15 @@ NSUInteger const kPickerContainerDoneButton = 171737;
 -(void)doneWithPhoneNumberPad {
     AudioServicesPlaySystemSound(0x450);
     [self textFieldShouldReturn:self.phoneOutlet];
+}
+
+- (NSArray *)parseTextFieldText:(NSString *)text {
+    // Curtesy of http://stackoverflow.com/questions/12136970/removing-multiple-spaces-in-nsstring
+    NSError *error = nil;
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"  +" options:NSRegularExpressionCaseInsensitive error:&error];
+    NSString *trimmedText = [regex stringByReplacingMatchesInString:text options:0 range:NSMakeRange(0, [text length]) withTemplate:@" "];
+    NSCharacterSet *ws = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+    return [trimmedText componentsSeparatedByCharactersInSet:ws];
 }
 
 #pragma mark UITextFieldDelegate methods
@@ -1396,7 +1402,7 @@ NSUInteger const kPickerContainerDoneButton = 171737;
         countryCode = [self.selectedInternationalCallingCountryCode uppercaseString];
     }
     
-    UIImageView *flagView = (UIImageView *) [self.phoneCountryContainer.leftView viewWithTag:51974123];
+    UIImageView *flagView = (UIImageView *) [self.phoneCountryContainer.leftView viewWithTag:kFlagViewTag];
     
     NSString *pathForImageResource = [NSString stringWithFormat:@"CountryPicker.bundle/%@", countryCode];
     NSString *imagePath = [[NSBundle mainBundle] pathForResource:pathForImageResource ofType:@"png"];
@@ -1415,7 +1421,7 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     [self.countryPicker setSelectedCountryCode:countryCode];
 }
 
-- (void)setupCountryCode:(NSString *)code setPicker:(BOOL)setPicker {
+- (void)setTheCountryCode:(NSString *)code setPicker:(BOOL)setPicker {
     NSString *countryCode = nil;
     
     if (!code || [code isEqualToString:@""]) {
@@ -1425,8 +1431,18 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     }
     
     if ([countryCode isEqualToString:@"US"] || [countryCode isEqualToString:@"CA"] || [countryCode isEqualToString:@"AU"]) {
+        self.statePicker.country = countryCode;
+        [self.statePicker reloadAllComponents];
+        
+        if ([countryCode isEqualToString:self.paymentDetails.billingAddress.countryCode]) {
+            self.statePicker.selectedStateAbbr = self.stateTextField.text = self.paymentDetails.billingAddress.stateProvinceCode;
+        } else {
+            self.stateTextField.text = nil;
+        }
+        
         self.stateTextField.hidden = NO;
     } else {
+        self.stateTextField.text = nil;
         self.stateTextField.hidden = YES;
     }
     
@@ -1435,12 +1451,13 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     if (imagePath && ![imagePath isEqualToString:@""]) {
         UIImage *image = [UIImage imageNamed:imagePath];
         if (image) {
-            UIImageView *flagView = (UIImageView *) [self.countryTextField.leftView viewWithTag:51974123];
+            UIImageView *flagView = (UIImageView *) [self.countryTextField.leftView viewWithTag:kFlagViewTag];
             flagView.image = image;
         }
     }
     
     self.countryTextField.text = countryCode;
+    [self validateState:self.stateTextField.text];
     if (setPicker) [self.countryPicker setSelectedCountryCode:countryCode];
 }
 
@@ -1474,20 +1491,37 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     self.expirationPicker.dataSource = self;
     self.expirationPicker.delegate = self;
     
-    NSDateComponents *components = [[NSCalendar currentCalendar] components:NSCalendarUnitMonth|NSCalendarUnitYear fromDate:[NSDate date]];
+//    [self setExpirationOutletTextAndPickerValues];
+}
+
+- (void)setExpirationOutletTextAndPickerValues {
+    BOOL monthIsGood = NO;
+    BOOL yearIsGood = NO;
+    
     NSInteger savedExpMonth = [self.paymentDetails.expirationMonth integerValue];
     if (savedExpMonth > 0 && savedExpMonth < 13) {
+        monthIsGood = YES;
         [self.expirationPicker selectRow:savedExpMonth inComponent:0 animated:NO];
     } else {
         [self.expirationPicker selectRow:0 inComponent:0 animated:NO];
     }
     
+    NSDateComponents *components = [[NSCalendar currentCalendar] components:NSCalendarUnitMonth|NSCalendarUnitYear fromDate:[NSDate date]];
     NSInteger savedExpYear = [self.paymentDetails.expirationYear integerValue];
     NSInteger layerCake = savedExpYear - [components year];
     if (layerCake >= 0 && layerCake < 1000) {
+        yearIsGood = YES;
         [self.expirationPicker selectRow:(savedExpYear - [components year] + 1) inComponent:1 animated:NO];
     } else {
         [self.expirationPicker selectRow:0 inComponent:1 animated:NO];
+    }
+    
+    if (self.paymentDetails.cardNumber && monthIsGood && yearIsGood) {
+        NSArray *monthSymbols = [[[NSDateFormatter alloc] init] monthSymbols];
+        NSInteger mnInt = savedExpMonth - 1;
+        self.expirationOutlet.text = [NSString stringWithFormat:@"%@ %@", monthSymbols[mnInt], self.paymentDetails.expirationYear];
+    } else {
+        self.expirationOutlet.text = nil;
     }
 }
 
@@ -1496,7 +1530,7 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     ms = [ms componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" "]][0];
     NSString *ys = [self pickerView:self.expirationPicker titleForRow:[self.expirationPicker selectedRowInComponent:1] forComponent:1];
     
-    if (nil == ms || nil == ys) {
+    if (!ms || !ys) {
         self.expirationOutlet.text = nil;
     } else {
         self.expirationOutlet.text = [NSString stringWithFormat:@"%@ %@", ms, ys];
@@ -1594,7 +1628,7 @@ NSUInteger const kPickerContainerDoneButton = 171737;
         NSString *callingCodesPath = [[NSBundle mainBundle] pathForResource:@"InternationalCallingCodes" ofType:@"plist"];
         NSDictionary *callingCodesDict = [NSDictionary dictionaryWithContentsOfFile:callingCodesPath];
         
-        UIImageView *flagView = (UIImageView *) [self.phoneCountryContainer.leftView viewWithTag:51974123];
+        UIImageView *flagView = (UIImageView *) [self.phoneCountryContainer.leftView viewWithTag:kFlagViewTag];
         
         NSString *pathForImageResource = [NSString stringWithFormat:@"CountryPicker.bundle/%@", code];
         NSString *imagePath = [[NSBundle mainBundle] pathForResource:pathForImageResource ofType:@"png"];
@@ -1614,7 +1648,7 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     }
     
     if (paymentDetailsView) {
-        [self setupCountryCode:code setPicker:NO];
+        [self setTheCountryCode:code setPicker:NO];
     }
 }
 
@@ -1842,7 +1876,7 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     self.confirmEmailOutlet.textColor = [UIColor blackColor];
     self.phoneOutlet.textColor = [UIColor blackColor];
     self.phoneCountryContainer.textColor = [UIColor blackColor];
-    UIImageView *flagView = (UIImageView *) [self.phoneCountryContainer.leftView viewWithTag:51974123];
+    UIImageView *flagView = (UIImageView *) [self.phoneCountryContainer.leftView viewWithTag:kFlagViewTag];
     flagView.backgroundColor = [UIColor clearColor];
     flagView.alpha = 1.0f;
     
@@ -1936,16 +1970,17 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     self.ccNumberOutlet.cardNumber = pd.cardNumber;
     self.addressTextFieldOutlet.text = pd.billingAddress.address1;
     self.cityTextField.text = pd.billingAddress.city;
-    self.stateTextField.text = pd.billingAddress.stateProvinceCode;
+//    self.stateTextField.text = pd.billingAddress.stateProvinceCode;
     self.postalTextField.text = pd.billingAddress.postalCode;
-    [self setupCountryCode:pd.billingAddress.countryCode setPicker:YES];
-    [self updateTextInExpirationOutlet];
+    [self setTheCountryCode:pd.billingAddress.countryCode setPicker:YES];
+    [self setExpirationOutletTextAndPickerValues];
     
     if (nil != pd.cardHolderFirstName && nil != pd.cardHolderLastName) {
         self.cardholderOutlet.text = [NSString stringWithFormat:@"%@ %@", pd.cardHolderFirstName, pd.cardHolderLastName];
     }
     
     [self validateCreditCardNumber:self.ccNumberOutlet.cardNumber];
+    [self validateExpiration];
     [self validateCardholder:self.cardholderOutlet.text];
     [self validateStreetAddress:self.addressTextFieldOutlet.text];
     [self validateCity:self.cityTextField.text];
@@ -1979,10 +2014,10 @@ NSUInteger const kPickerContainerDoneButton = 171737;
         pd.billingAddress.postalCode = self.postalTextField.text;
         [self saveDaExpiration];
         
-        NSArray *chn = [self.cardholderOutlet.text componentsSeparatedByString:@" "];
+        NSArray *chn = [self parseTextFieldText:self.cardholderOutlet.text];
         if ([chn count] >= 2) {
-            pd.cardHolderFirstName = [self.cardholderOutlet.text componentsSeparatedByString:@" "][0];
-            pd.cardHolderLastName = [self.cardholderOutlet.text componentsSeparatedByString:@" "][1];
+            pd.cardHolderFirstName = chn[0];
+            pd.cardHolderLastName = chn[1];
         }
     }
     
@@ -2076,7 +2111,7 @@ NSUInteger const kPickerContainerDoneButton = 171737;
             break;
         }
         case kCardSecurityTag: {
-            wv.text = @"Your credit card information will be securely stored in your iPhone's Keychain for your future hotel bookings, so that you don't have to retype it. No other apps will have access to this information. And you can change or delete this information at any time.";
+            wv.text = @"Your payment information will be securely transmitted for processing. Payment information is not stored or saved.";
             break;
         }
         case kRoomValueAddTag: {
@@ -2384,8 +2419,11 @@ NSUInteger const kPickerContainerDoneButton = 171737;
 
 - (void)validateCreditCardNumber:(NSString *)cardNumber {
     if ([[PTKCardNumber cardNumberWithString:cardNumber] isValid]) {
-        self.ccNumberOutlet.backgroundColor = kColorGoodToGo();
+        self.ccNumberOutlet.backgroundColor = [UIColor whiteColor];
         self.isValidCreditCard = YES;
+    } else if ([[PTKCardNumber cardNumberWithString:cardNumber] isGreaterThanOrEqualValidLength]) {
+        self.ccNumberOutlet.backgroundColor = kColorNoGo();
+        self.isValidCreditCard = NO;
     } else {
         self.ccNumberOutlet.backgroundColor = [UIColor whiteColor];
         self.isValidCreditCard = NO;
@@ -2395,8 +2433,7 @@ NSUInteger const kPickerContainerDoneButton = 171737;
 }
 
 - (void)validateExpiration {
-    if (nil == self.expirationOutlet.text || 0 == [self.expirationOutlet.text length]
-            || [self.expirationOutlet.text isEqualToString:@""]) {
+    if (stringIsEmpty(self.expirationOutlet.text)) {
         self.expirationOutlet.backgroundColor = [UIColor whiteColor];
         self.isValidExpiration = NO;
         [self enableOrDisableRightBarButtonItemForPayment];
@@ -2429,10 +2466,10 @@ NSUInteger const kPickerContainerDoneButton = 171737;
         self.expirationOutlet.backgroundColor = kColorNoGo();
         self.isValidExpiration = NO;
     } else if (intExpYear > [components year]) {
-        self.expirationOutlet.backgroundColor = kColorGoodToGo();
+        self.expirationOutlet.backgroundColor = [UIColor whiteColor];
         self.isValidExpiration = YES;
     } else if (intExpMonth >= [components month]) {
-        self.expirationOutlet.backgroundColor = kColorGoodToGo();
+        self.expirationOutlet.backgroundColor = [UIColor whiteColor];
         self.isValidExpiration = YES;
     } else {
         self.expirationOutlet.backgroundColor = kColorNoGo();
@@ -2443,12 +2480,25 @@ NSUInteger const kPickerContainerDoneButton = 171737;
 }
 
 - (void)validateCardholder:(NSString *)cardHolder {
-    NSArray *ch = [cardHolder componentsSeparatedByString:@" "];
+    NSArray *ch = [self parseTextFieldText:cardHolder];
+    
+//    if (ch.count == 0) {
+//        self.cardholderOutlet.backgroundColor = [UIColor whiteColor];
+//        self.isValidCardHolder = NO;
+//    } else if (ch.count == 1) {
+//        self.cardholderOutlet.backgroundColor = kColorNoGo();
+//        self.isValidCardHolder = NO;
+//    } else {
+//        self.cardholderOutlet.backgroundColor = [UIColor whiteColor];
+//        self.isValidCardHolder = YES;
+//    }
+    
+//    NSArray *ch = [cardHolder componentsSeparatedByString:@" "];
     if ([ch count] != 2 || [ch[0] length] < 1 || [ch[1] length] < 1) {
         self.cardholderOutlet.backgroundColor = [UIColor whiteColor];
         self.isValidCardHolder = NO;
     } else {
-        self.cardholderOutlet.backgroundColor = kColorGoodToGo();
+        self.cardholderOutlet.backgroundColor = [UIColor whiteColor];
         self.isValidCardHolder = YES;
     }
     
@@ -2469,6 +2519,7 @@ NSUInteger const kPickerContainerDoneButton = 171737;
 
 - (void)validateState:(NSString *)state {
     if (!stringIsEmpty(state)) self.isValidState = YES;
+    else if (![self.countryTextField.text isEqualToString:@"US"] && ![self.countryTextField.text isEqualToString:@"CA"] && ![self.countryTextField.text isEqualToString:@"AU"]) self.isValidState = YES;
     else self.isValidState = NO;
     [self enableOrDisableRightBarButtonItemForPayment];
 }
@@ -2513,7 +2564,7 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     self.confirmEmailOutlet.backgroundColor = [UIColor grayColor];
     self.phoneOutlet.backgroundColor = [UIColor grayColor];
     self.phoneCountryContainer.backgroundColor = [UIColor grayColor];
-    UIImageView *flagView = (UIImageView *) [self.phoneCountryContainer.leftView viewWithTag:51974123];
+    UIImageView *flagView = (UIImageView *) [self.phoneCountryContainer.leftView viewWithTag:kFlagViewTag];
     flagView.backgroundColor = [UIColor grayColor];
     flagView.alpha = 0.2f;
     
@@ -2555,7 +2606,7 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     self.emailOutlet.backgroundColor = [UIColor whiteColor];
     self.phoneOutlet.backgroundColor = [UIColor whiteColor];
     self.phoneCountryContainer.backgroundColor = [UIColor whiteColor];
-    UIImageView *flagView = (UIImageView *) [self.phoneCountryContainer.leftView viewWithTag:51974123];
+    UIImageView *flagView = (UIImageView *) [self.phoneCountryContainer.leftView viewWithTag:kFlagViewTag];
     flagView.backgroundColor = [UIColor clearColor];
     flagView.alpha = 1.0f;
     
@@ -2637,8 +2688,9 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     
     UIView *cv = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 40, 26)];
     cv.backgroundColor = [UIColor clearColor];
+    cv.userInteractionEnabled = NO;
     UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(5, 0, 32, 26)];
-    iv.tag = 51974123;
+    iv.tag = kFlagViewTag;
     iv.contentMode = UIViewContentModeScaleAspectFit;
     [cv addSubview:iv];
     [self.phoneCountryContainer setLeftViewMode:UITextFieldViewModeAlways];
@@ -2674,8 +2726,9 @@ NSUInteger const kPickerContainerDoneButton = 171737;
     
     UIView *cv = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 40, 26)];
     cv.backgroundColor = [UIColor clearColor];
+    cv.userInteractionEnabled = NO;
     UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(5, 0, 32, 26)];
-    iv.tag = 51974123;
+    iv.tag = kFlagViewTag;
     iv.contentMode = UIViewContentModeScaleAspectFit;
     [cv addSubview:iv];
     [self.countryTextField setLeftViewMode:UITextFieldViewModeAlways];
