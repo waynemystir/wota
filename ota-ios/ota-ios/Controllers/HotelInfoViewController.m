@@ -90,6 +90,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 @property (weak, nonatomic) IBOutlet UILabel *pageNumberLabel;
 @property (weak, nonatomic) IBOutlet WotaTappableView *bookRoomContainer;
 @property (nonatomic, strong) MKMapView *mapView;
+@property (nonatomic, strong) NSString *locationString;
 
 @end
 
@@ -470,6 +471,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     }
     
     NSString *alt = [NSString stringWithFormat:@"%@\n%@\n%@%@%@%@", _eanHotel.hotelNameFormatted, _eanHotel.address1Formatted, _eanHotel.city, sl, pcl, cl];
+    self.locationString = [NSString stringWithFormat:@"%@%@%@", _eanHotel.city, sl, cl];
     
     CGRect atf = _addressTitle.frame;
     CGRect alf = _addressLabelOutlet.frame;
@@ -595,7 +597,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     
     if (!image) image = [UIImage imageNamed:@"hotel_info"];
     
-    self.selectRoomViewController = [[SelectRoomViewController alloc] initWithPlaceholderImage:image hotelName:self.eanHotel.hotelNameFormatted];
+    self.selectRoomViewController = [[SelectRoomViewController alloc] initWithPlaceholderImage:image hotelName:self.eanHotel.hotelNameFormatted locationName:self.locationString];
     SelectionCriteria *sc = [SelectionCriteria singleton];
     [[LoadEanData sharedInstance:self.selectRoomViewController] loadAvailableRoomsWithHotelId:[_eanHotel.hotelId stringValue]
                                                          arrivalDate:sc.arrivalDateEanString

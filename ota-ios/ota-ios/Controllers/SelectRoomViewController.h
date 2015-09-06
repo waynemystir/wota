@@ -12,6 +12,7 @@
 @interface SelectRoomViewController : UIViewController <LoadDataProtocol>
 
 - (id)initWithPlaceholderImage:(UIImage *)placeholderImage
-                     hotelName:(NSString *)hotelName;
+                     hotelName:(NSString *)hotelName
+                  locationName:(NSString *)locationName;
 
 @end

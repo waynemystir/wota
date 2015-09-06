@@ -8,6 +8,8 @@
 
 #import "EanPlace.h"
 
+NSUInteger const MAX_ADDRESS_LENGTH = 28;
+
 @implementation EanPlace
 
 - (ADDRESS_VALIDITY_REASONS)isValidToSubmitToEanApiAsBillingAddress {
@@ -39,7 +41,7 @@
 #pragma mark EAN API Getters
 
 - (NSString *)apiAddress1 {
-    NSUInteger len = MIN(28, [self.address1 length]);
+    NSUInteger len = MIN(MAX_ADDRESS_LENGTH, [self.address1 length]);
     return [self.address1 substringToIndex:len];
 }
 

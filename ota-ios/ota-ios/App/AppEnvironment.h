@@ -16,6 +16,14 @@
  * General
  */
 
+typedef NS_ENUM(NSUInteger, ENVIRONMENT_MODE) {
+    DEVELOPMENT_MODE,
+    BETA_MODE,
+    PRODUCTION_MODE
+};
+
+extern ENVIRONMENT_MODE environmentMode;
+extern BOOL inProductionMode();
 extern BOOL debugOrProductionMode;
 extern void TrotterLog(NSString *format, ...);
 

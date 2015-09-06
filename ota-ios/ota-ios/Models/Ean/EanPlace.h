@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "GooglePlaceDetail.h"
 
+extern NSUInteger const MAX_ADDRESS_LENGTH;
+
 typedef NS_ENUM(NSUInteger, ADDRESS_VALIDITY_REASONS) {
     INVALID_STREET_ADDRESS = 1,
     INVALID_CITY = 2,

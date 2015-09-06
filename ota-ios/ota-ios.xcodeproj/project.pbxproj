@@ -114,6 +114,9 @@
 		B0C4207B1B64F7C20001E9CB /* TrotterCalendarPicker.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0C4207A1B64F7C20001E9CB /* TrotterCalendarPicker.xib */; };
 		B0C420801B6551520001E9CB /* TrotterCalendarDay.m in Sources */ = {isa = PBXBuildFile; fileRef = B0C4207F1B6551520001E9CB /* TrotterCalendarDay.m */; };
 		B0C420821B6560040001E9CB /* TrotterCalendarDay.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0C420811B6560040001E9CB /* TrotterCalendarDay.xib */; };
+		B0C443471B9B8E9700F456CE /* PreBookConfirmView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0C443461B9B8E9700F456CE /* PreBookConfirmView.m */; };
+		B0C443491B9B8EBA00F456CE /* PreBookConfirmView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0C443481B9B8EBA00F456CE /* PreBookConfirmView.xib */; };
+		B0C4434B1B9BEC5900F456CE /* CVVView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0C4434A1B9BEC5900F456CE /* CVVView.xib */; };
 		B0CB24B11B9877F8006A8282 /* CursorlessTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = B0CB24B01B9877F8006A8282 /* CursorlessTextField.m */; };
 		B0CB24B31B991418006A8282 /* USStateAbbreviations.plist in Resources */ = {isa = PBXBuildFile; fileRef = B0CB24B21B991418006A8282 /* USStateAbbreviations.plist */; };
 		B0CB24B61B9920B4006A8282 /* StatePickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0CB24B51B9920B4006A8282 /* StatePickerView.m */; };
@@ -366,6 +369,10 @@
 		B0C4207E1B6551520001E9CB /* TrotterCalendarDay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrotterCalendarDay.h; sourceTree = "<group>"; };
 		B0C4207F1B6551520001E9CB /* TrotterCalendarDay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrotterCalendarDay.m; sourceTree = "<group>"; };
 		B0C420811B6560040001E9CB /* TrotterCalendarDay.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TrotterCalendarDay.xib; sourceTree = "<group>"; };
+		B0C443451B9B8E9700F456CE /* PreBookConfirmView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreBookConfirmView.h; sourceTree = "<group>"; };
+		B0C443461B9B8E9700F456CE /* PreBookConfirmView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreBookConfirmView.m; sourceTree = "<group>"; };
+		B0C443481B9B8EBA00F456CE /* PreBookConfirmView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PreBookConfirmView.xib; sourceTree = "<group>"; };
+		B0C4434A1B9BEC5900F456CE /* CVVView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CVVView.xib; sourceTree = "<group>"; };
 		B0CB24AF1B9877F8006A8282 /* CursorlessTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CursorlessTextField.h; sourceTree = "<group>"; };
 		B0CB24B01B9877F8006A8282 /* CursorlessTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CursorlessTextField.m; sourceTree = "<group>"; };
 		B0CB24B21B991418006A8282 /* USStateAbbreviations.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = USStateAbbreviations.plist; sourceTree = "<group>"; };
@@ -690,6 +697,10 @@
 				B0C04AD41B5212AD002C89F2 /* NetworkProblemView.xib */,
 				B0C04AD61B523569002C89F2 /* NetworkProblemView.h */,
 				B0C04AD71B523569002C89F2 /* NetworkProblemView.m */,
+				B0C443451B9B8E9700F456CE /* PreBookConfirmView.h */,
+				B0C443461B9B8E9700F456CE /* PreBookConfirmView.m */,
+				B0C443481B9B8EBA00F456CE /* PreBookConfirmView.xib */,
+				B0C4434A1B9BEC5900F456CE /* CVVView.xib */,
 				B0D01EBF1B07ED830001C558 /* Navigation */,
 			);
 			path = Views;
@@ -1083,6 +1094,7 @@
 				B0D02FEB1AE6123000B1E75F /* amex.png in Resources */,
 				B0D02FF51AE6123000B1E75F /* jcb.png in Resources */,
 				B0D02FF41AE6123000B1E75F /* discover@2x.png in Resources */,
+				B0C443491B9B8EBA00F456CE /* PreBookConfirmView.xib in Resources */,
 				B0D02FED1AE6123000B1E75F /* cvc-amex.png in Resources */,
 				B0CB24B31B991418006A8282 /* USStateAbbreviations.plist in Resources */,
 				B0D02FEE1AE6123000B1E75F /* cvc-amex@2x.png in Resources */,
@@ -1095,6 +1107,7 @@
 				B0D02FFF1AE6123000B1E75F /* textfield@2x.png in Resources */,
 				B09431E51B58A39300E69A71 /* TrotterView.xib in Resources */,
 				B09277E51B4F70CC0094159B /* NoHotelsView.xib in Resources */,
+				B0C4434B1B9BEC5900F456CE /* CVVView.xib in Resources */,
 				B0D02FF71AE6123000B1E75F /* mastercard.png in Resources */,
 				B0FE0F491AC6ED0000DAF635 /* BookView.xib in Resources */,
 				B0BB3F451B59DD3500DCCFE7 /* HotelNameFilterView.xib in Resources */,
@@ -1213,6 +1226,7 @@
 				B0CBC8531B48AF9200F61CA9 /* RangeSliderThumbLayer.swift in Sources */,
 				B00872D01AEC99CB00CB2B9D /* EanAvailabilityRoomType.m in Sources */,
 				B0344C4A1AE5A696000BBFCE /* WotaCardNumberField.m in Sources */,
+				B0C443471B9B8E9700F456CE /* PreBookConfirmView.m in Sources */,
 				B0F554931B13798200E9B805 /* EanRoomRateDetails.m in Sources */,
 				B0963CC11AC8BDC6002FD859 /* ChildTraveler.m in Sources */,
 				B00038661B10286E0000319A /* EanPropertyAmenity.m in Sources */,

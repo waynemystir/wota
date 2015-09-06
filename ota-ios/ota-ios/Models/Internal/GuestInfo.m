@@ -54,6 +54,12 @@ NSString * const kKeyPhoneNumber = @"phone_number";
     }
 }
 
+- (NSString *)apiValue:(NSString *)string maxChar:(int)maxChar {
+    NSString *rs = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    if (stringIsEmpty(rs)) return nil;
+    return [rs substringToIndex:MIN(rs.length, maxChar)];
+}
+
 #pragma mark NSCoding delegate methods
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
@@ -110,10 +116,23 @@ NSString * const kKeyPhoneNumber = @"phone_number";
     [self save];
 }
 
-#pragma mark Getters
+#pragma mark API Getters
+
+- (NSString *)apiFirstName {
+    return [self apiValue:_firstName maxChar:MAX_FIRST_NAME_LENGTH];
+}
+
+- (NSString *)apiLastName {
+    return [self apiValue:_lastName maxChar:MAX_LAST_NAME_LENGTH];
+}
+
+- (NSString *)apiEmail {
+    return [self apiValue:_email maxChar:MAX_EMAIL_LENGTH];
+}
 
 - (NSString *)apiPhoneNumber {
-    return [_internationalCallingCode stringByAppendingString:_phoneNumber];
+    NSString *ic = stringIsEmpty(_internationalCallingCode) ? @"" : [NSString stringWithFormat:@"+%@-", _internationalCallingCode];
+    return [NSString stringWithFormat:@"%@%@", ic, _phoneNumber];
 }
 
 @end

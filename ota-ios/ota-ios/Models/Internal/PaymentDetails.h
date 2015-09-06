@@ -9,8 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "EanPlace.h"
 
-extern NSUInteger const MAX_CARDHOLDER_FIRST_NAME_LENGTH;
-
 @interface PaymentDetails : NSObject
 
 @property (nonatomic, strong) NSString *cardNumber;

@@ -37,6 +37,7 @@
 #import "CountryPicker.h"
 #import "StatePickerView.h"
 #import "NetworkProblemResponder.h"
+#import "PreBookConfirmView.h"
 
 NSUInteger const kLoadDropRoomDetailsAnimationCurve = UIViewAnimationOptionCurveEaseInOut;
 NSTimeInterval const kSrAnimationDuration = 0.58;
@@ -44,7 +45,8 @@ NSTimeInterval const kSrQuickAnimationDuration = 0.36;
 
 typedef NS_ENUM(NSUInteger, VIEW_DETAILS_TYPE) {
     GUEST_DETAILS,
-    PAYMENT_DETAILS
+    PAYMENT_DETAILS,
+    PREBOOK_CONFIRM
 };
 
 NSUInteger const kGuestDetailsViewTag = 51;
@@ -77,8 +79,10 @@ NSUInteger const kWhyThisInfoTag = 171735;
 NSUInteger const kCardSecurityTag = 171736;
 NSUInteger const kPickerContainerDoneButton = 171737;
 NSUInteger const kFlagViewTag = 51974123;
+NSUInteger const kCVVViewTag = 171738;
+NSUInteger const kCVVOverlayTag = 171739;
 
-@interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, SelectBedTypeDelegate, SelectSmokingPrefDelegate, NavigationDelegate, CountryPickerDelegate, StatePickerDelegate>
+@interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, SelectBedTypeDelegate, SelectSmokingPrefDelegate, NavigationDelegate, CountryPickerDelegate, StatePickerDelegate, PreBookConfirmDelegate>
 
 @property (nonatomic) VIEW_DETAILS_TYPE view_details_type;
 
@@ -88,6 +92,7 @@ NSUInteger const kFlagViewTag = 51974123;
 @property (nonatomic) BOOL alreadyDroppedSpinner;
 @property (nonatomic, strong) UIImage *placeholderImage;
 @property (nonatomic, strong) NSString *hotelName;
+@property (nonatomic, strong) NSString *locationString;
 @property (weak, nonatomic) IBOutlet UITableView *roomsTableViewOutlet;
 @property (weak, nonatomic) IBOutlet UIView *inputBookOutlet;
 @property (weak, nonatomic) IBOutlet UIButton *bookButtonOutlet;
@@ -111,7 +116,8 @@ NSUInteger const kFlagViewTag = 51974123;
 @property (weak, nonatomic) IBOutlet UITextField *stateTextField;
 @property (weak, nonatomic) IBOutlet UITextField *postalTextField;
 @property (weak, nonatomic) IBOutlet UITextField *expirationOutlet;
-@property (weak, nonatomic) IBOutlet UITextField *cardholderOutlet;
+@property (weak, nonatomic) IBOutlet UITextField *cardholderFirstOutlet;
+@property (weak, nonatomic) IBOutlet UITextField *cardholderLastOutlet;
 @property (nonatomic, strong) UIView *expirationInputView;
 @property (nonatomic, strong) UIPickerView *expirationPicker;
 @property (nonatomic, strong) UIButton *expirationNext;
@@ -158,7 +164,8 @@ NSUInteger const kFlagViewTag = 51974123;
 @property (nonatomic) BOOL isValidState;
 @property (nonatomic) BOOL isValidPostalCode;
 @property (nonatomic) BOOL isValidExpiration;
-@property (nonatomic) BOOL isValidCardHolder;
+@property (nonatomic) BOOL isValidCardHolderFirst;
+@property (nonatomic) BOOL isValidCardHolderLast;
 
 @property (nonatomic, strong) NSArray *bottomGradientColors;
 @property (nonatomic, strong) NSArray *bottomsUpGradientColors;
@@ -170,6 +177,11 @@ NSUInteger const kFlagViewTag = 51974123;
 @property (nonatomic, strong) UIView *currentFirstResponder;
 
 @property (nonatomic, strong) NightlyRateTableViewDelegateImplementation *nrtvd;
+
+@property (nonatomic, strong) PreBookConfirmView *preBookConfirmView;
+@property (weak, nonatomic) IBOutlet UITextField *cvvTextField;
+@property (weak, nonatomic) IBOutlet WotaButton *purchaseButton;
+@property (weak, nonatomic) IBOutlet WotaButton *cancelPurchaseButton;
 
 - (IBAction)justPushIt:(id)sender;
 
@@ -203,10 +215,12 @@ NSUInteger const kFlagViewTag = 51974123;
 }
 
 - (id)initWithPlaceholderImage:(UIImage *)placeholderImage
-                     hotelName:(NSString *)hotelName {
+                     hotelName:(NSString *)hotelName
+                  locationName:(NSString *)locationName {
     if (self = [self init]) {
         _placeholderImage = placeholderImage;
         _hotelName = hotelName;
+        _locationString = locationName;
     }
     
     return self;
@@ -354,6 +368,10 @@ NSUInteger const kFlagViewTag = 51974123;
             [self dropPaymentDetailsView:nil];
             break;
         }
+        case PREBOOK_CONFIRM: {
+            [self dropBookConfirmView];
+            break;
+        }
         default:
             break;
     }
@@ -375,7 +393,7 @@ NSUInteger const kFlagViewTag = 51974123;
 }
 
 - (void)clickTitle {
-    [self.navigationController popToRootViewControllerAnimated:YES];
+//    [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 #pragma mark LoadDataProtocol methods
@@ -846,20 +864,30 @@ NSUInteger const kFlagViewTag = 51974123;
 
 - (IBAction)justPushIt:(id)sender {
     if (sender == self.bookButtonOutlet) {
-        [self bookIt];
+        BOOL guestGood = [self validateGuestDetails];
+        BOOL paymtGood = [self isWeGoodForCredit];
+        if (guestGood && paymtGood) [self loadBookConfirmView];
+        else if (!guestGood && !paymtGood) {
+            [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"Missing Information" messageString:@"Please fill in the requested information for Guest Details and Payment Details." completionCallback:nil];
+        } else if (!guestGood) {
+            [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"Missing Guest Details" messageString:@"Please fill in the requested information for Guest Details." completionCallback:nil];
+        } else {
+            [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"Missing Payment Details" messageString:@"Please fill in the requested information for Payment Details." completionCallback:nil];
+        }
     }
 }
 
 - (void)bookIt {
-    if (nil == self.expandedIndexPath) {
+    if (!self.expandedIndexPath)
         return;
-    }
     
     self.selectedRoom = [self.tableData objectAtIndex:self.expandedIndexPath.row];
     SelectionCriteria *sc = [SelectionCriteria singleton];
     GuestInfo *gi = [GuestInfo singleton];
     PaymentDetails *pd = self.paymentDetails;
     BookViewController *bvc = [BookViewController new];
+    
+    NSString *creditCardNumber = inProductionMode() ? pd.cardNumber : @"5401999999999999";
     
     [[LoadEanData sharedInstance:bvc] bookHotelRoomWithHotelId:self.eanHrar.hotelId
                                                    arrivalDate:sc.arrivalDateEanString
@@ -871,23 +899,23 @@ NSUInteger const kFlagViewTag = 51974123;
                                                 chargeableRate:[self.selectedRoom.rateInfo.chargeableRateInfo.total floatValue]
                                                 numberOfAdults:sc.numberOfAdults
                                                 childTravelers:[ChildTraveler childTravelers]
-                                                room1FirstName:gi.firstName
-                                                 room1LastName:gi.lastName
+                                                room1FirstName:gi.apiFirstName
+                                                 room1LastName:gi.apiLastName
                                                 room1BedTypeId:self.selectedRoom.selectedBedType.bedTypeId
                                         room1SmokingPreference:self.selectedRoom.selectedSmokingPreference
                                        affiliateConfirmationId:[NSUUID UUID]
-                                                         email:gi.email
+                                                         email:gi.apiEmail
                                                      firstName:pd.cardHolderFirstName
                                                       lastName:pd.cardHolderLastName
                                                      homePhone:gi.apiPhoneNumber
                                                 creditCardType:pd.eanCardType
-                                              creditCardNumber:@"5401999999999999"/*pd.cardNumber*/
+                                              creditCardNumber:creditCardNumber
                                           creditCardIdentifier:@"123"
                                      creditCardExpirationMonth:pd.expirationMonth
                                       creditCardExpirationYear:pd.expirationYear
                                                       address1:pd.billingAddress.apiAddress1
                                                           city:pd.billingAddress.apiCity
-                                             stateProvinceCode:nil/*pd.billingAddress.apiStateProvCode*/
+                                             stateProvinceCode:pd.billingAddress.stateProvinceCode
                                                    countryCode:pd.billingAddress.apiCountryCode
                                                     postalCode:pd.billingAddress.apiPostalCode];
     
@@ -990,7 +1018,7 @@ NSUInteger const kFlagViewTag = 51974123;
         
     } else if (textField == self.expirationOutlet) {
         [textField setInputView:self.expirationInputView];
-    } else if (textField == self.cardholderOutlet) {
+    } else if (textField == self.cardholderFirstOutlet) {
         
     } else if (textField == self.addressTextFieldOutlet) {
         
@@ -1005,6 +1033,30 @@ NSUInteger const kFlagViewTag = 51974123;
     textField.layer.cornerRadius = 0.0f;
     textField.layer.borderWidth = 0.0f;
     textField.layer.borderColor = [UIColor clearColor].CGColor;
+}
+
+- (BOOL)checkMaxLenTextField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string maxLength:(NSUInteger)maxLength checkAlpha:(BOOL)checkAlpha successBlock:(void(^)(void))successBlock {
+    
+    if (checkAlpha) {
+        NSCharacterSet *dc = [[NSCharacterSet characterSetWithCharactersInString:@"-abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"] invertedSet];
+        if ([string rangeOfCharacterFromSet:dc].location != NSNotFound)
+            return NO;
+    }
+    
+    // http://stackoverflow.com/questions/433337/set-the-maximum-character-length-of-a-uitextfield
+    // Prevent crashing undo bug – see note below.
+    if(range.length + range.location > textField.text.length) {
+        return NO;
+    }
+    
+    NSUInteger newLength = [textField.text length] + [string length] - range.length;
+    if (newLength <= maxLength) {
+        if (successBlock) successBlock();
+        return YES;
+    } else {
+        return NO;
+    }
+    
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
@@ -1049,61 +1101,70 @@ NSUInteger const kFlagViewTag = 51974123;
         
     } else if (textField == self.expirationOutlet) {
         
-    } else if (textField == self.cardholderOutlet) {
-        NSString *ch = [textField.text stringByReplacingCharactersInRange:range withString:string];
-        [self validateCardholder:ch];
+    } else if (textField == self.cardholderFirstOutlet) {
+        
+        return [self checkMaxLenTextField:textField
+            shouldChangeCharactersInRange:range
+                        replacementString:string
+                                maxLength:MAX_FIRST_NAME_LENGTH
+                               checkAlpha:YES
+                             successBlock:^{
+                                 NSString *ch = [textField.text stringByReplacingCharactersInRange:range withString:string];
+                                 [self validateCardholder:ch];
+                             }];
+        
+    } else if (textField == self.cardholderLastOutlet) {
+        
+        return [self checkMaxLenTextField:textField
+            shouldChangeCharactersInRange:range
+                        replacementString:string
+                                maxLength:MAX_LAST_NAME_LENGTH
+                               checkAlpha:YES
+                             successBlock:^{
+                                 NSString *ch = [textField.text stringByReplacingCharactersInRange:range withString:string];
+                                 [self validateCardholderLast:ch];
+                             }];
+        
     }
     
     else if (textField == self.firstNameOutlet) {
         
-        // http://stackoverflow.com/questions/433337/set-the-maximum-character-length-of-a-uitextfield
-        // Prevent crashing undo bug – see note below.
-        if(range.length + range.location > textField.text.length) {
-            return NO;
-        }
-        
-        NSUInteger newLength = [textField.text length] + [string length] - range.length;
-        if (newLength <= MAX_FIRST_NAME_LENGTH) {
-            NSString *fn = [textField.text stringByReplacingCharactersInRange:range withString:string];
-            [self validateFirstName:fn];
-            return YES;
-        } else {
-            return NO;
-        }
+        return [self checkMaxLenTextField:textField
+            shouldChangeCharactersInRange:range
+                        replacementString:string
+                                maxLength:MAX_FIRST_NAME_LENGTH
+                               checkAlpha:YES
+                             successBlock:^{
+                                 NSString *fn = [textField.text stringByReplacingCharactersInRange:range withString:string];
+                                 [self validateFirstName:fn];
+                             }];
         
     } else if (textField == self.lastNameOutlet) {
         
-        // http://stackoverflow.com/questions/433337/set-the-maximum-character-length-of-a-uitextfield
-        // Prevent crashing undo bug – see note below.
-        if(range.length + range.location > textField.text.length) {
-            return NO;
-        }
-        
-        NSUInteger newLength = [textField.text length] + [string length] - range.length;
-        if (newLength <= MAX_LAST_NAME_LENGTH) {
-            NSString *ln = [textField.text stringByReplacingCharactersInRange:range withString:string];
-            [self validateLastName:ln];
-            return YES;
-        } else {
-            return NO;
-        }
+        return [self checkMaxLenTextField:textField
+            shouldChangeCharactersInRange:range
+                        replacementString:string
+                                maxLength:MAX_LAST_NAME_LENGTH
+                               checkAlpha:YES
+                             successBlock:^{
+                                 NSString *ln = [textField.text stringByReplacingCharactersInRange:range withString:string];
+                                 [self validateLastName:ln];
+                             }];
         
     } else if (textField == self.emailOutlet) {
         
-        // http://stackoverflow.com/questions/433337/set-the-maximum-character-length-of-a-uitextfield
-        // Prevent crashing undo bug – see note below.
-        if(range.length + range.location > textField.text.length) {
+        if ([string rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].location != NSNotFound)
             return NO;
-        }
         
-        NSUInteger newLength = [textField.text length] + [string length] - range.length;
-        if (newLength <= MAX_EMAIL_LENGTH) {
-            NSString *em = [textField.text stringByReplacingCharactersInRange:range withString:string];
-            [self validateEmailAddress:em withNoGoColor:NO];
-            return YES;
-        } else {
-            return NO;
-        }
+        return [self checkMaxLenTextField:textField
+            shouldChangeCharactersInRange:range
+                        replacementString:string
+                                maxLength:MAX_EMAIL_LENGTH
+                               checkAlpha:NO
+                             successBlock:^{
+                                 NSString *em = [textField.text stringByReplacingCharactersInRange:range withString:string];
+                                 [self validateEmailAddress:em withNoGoColor:NO];
+                             }];
         
     } else if (textField == self.confirmEmailOutlet) {
         
@@ -1128,8 +1189,10 @@ NSUInteger const kFlagViewTag = 51974123;
     if (textField == self.ccNumberOutlet) {
         [self.expirationOutlet becomeFirstResponder];
     } else if (textField == self.expirationOutlet) {
-        [self.cardholderOutlet becomeFirstResponder];
-    } else if (textField == self.cardholderOutlet) {
+        [self.cardholderFirstOutlet becomeFirstResponder];
+    } else if (textField == self.cardholderFirstOutlet) {
+        [self.cardholderLastOutlet becomeFirstResponder];
+    } else if (textField == self.cardholderLastOutlet) {
         [self.addressTextFieldOutlet becomeFirstResponder];
     } else if (textField == self.addressTextFieldOutlet) {
         [self.cityTextField becomeFirstResponder];
@@ -1181,10 +1244,14 @@ NSUInteger const kFlagViewTag = 51974123;
         self.isValidCreditCard = NO;
         [self enableOrDisableRightBarButtonItemForPayment];
         self.ccNumberOutlet.backgroundColor = [UIColor whiteColor];
-    } else if (textField == self.cardholderOutlet) {
-        self.isValidCardHolder = NO;
+    } else if (textField == self.cardholderFirstOutlet) {
+        self.isValidCardHolderFirst = NO;
         [self enableOrDisableRightBarButtonItemForPayment];
-        self.cardholderOutlet.backgroundColor = [UIColor whiteColor];
+        self.cardholderFirstOutlet.backgroundColor = [UIColor whiteColor];
+    } else if (textField == self.cardholderLastOutlet) {
+        self.isValidCardHolderLast = NO;
+        [self enableOrDisableRightBarButtonItemForPayment];
+        self.cardholderLastOutlet.backgroundColor = [UIColor whiteColor];
     } else if (textField == self.addressTextFieldOutlet) {
         self.isValidStreetAddress = NO;
         [self enableOrDisableRightBarButtonItemForPayment];
@@ -1296,7 +1363,7 @@ NSUInteger const kFlagViewTag = 51974123;
 
 - (void)tuiExpirNext:(id)sender {
     ((UIView *) sender).backgroundColor = UIColorFromRGB(0xc4c4c4);
-    [self.cardholderOutlet becomeFirstResponder];
+    [self.cardholderFirstOutlet becomeFirstResponder];
 }
 
 - (void)tuiStatePickerNext:(id)sender {
@@ -1458,6 +1525,7 @@ NSUInteger const kFlagViewTag = 51974123;
     
     self.countryTextField.text = countryCode;
     [self validateState:self.stateTextField.text];
+    [self validatePostalCode:self.postalTextField.text];
     if (setPicker) [self.countryPicker setSelectedCountryCode:countryCode];
 }
 
@@ -1657,6 +1725,16 @@ NSUInteger const kFlagViewTag = 51974123;
 - (void)statePicker:(StatePickerView *)picker didSelectStateWithName:(NSString *)name code:(NSString *)code {
     self.stateTextField.text = code;
     [self validateState:code];
+}
+
+#pragma mark PreBookConfirmDelegate methods
+
+- (void)cancelBooking {
+    [self dropBookConfirmView];
+}
+
+- (void)confirmBooking {
+    [self loadCVVView];
 }
 
 #pragma mark Animation methods
@@ -1968,6 +2046,8 @@ NSUInteger const kFlagViewTag = 51974123;
     
     self.ccNumberOutlet.showsCardLogo = YES;
     self.ccNumberOutlet.cardNumber = pd.cardNumber;
+    self.cardholderFirstOutlet.text = pd.cardHolderFirstName;
+    self.cardholderLastOutlet.text = pd.cardHolderLastName;
     self.addressTextFieldOutlet.text = pd.billingAddress.address1;
     self.cityTextField.text = pd.billingAddress.city;
 //    self.stateTextField.text = pd.billingAddress.stateProvinceCode;
@@ -1975,13 +2055,14 @@ NSUInteger const kFlagViewTag = 51974123;
     [self setTheCountryCode:pd.billingAddress.countryCode setPicker:YES];
     [self setExpirationOutletTextAndPickerValues];
     
-    if (nil != pd.cardHolderFirstName && nil != pd.cardHolderLastName) {
-        self.cardholderOutlet.text = [NSString stringWithFormat:@"%@ %@", pd.cardHolderFirstName, pd.cardHolderLastName];
-    }
+//    if (nil != pd.cardHolderFirstName && nil != pd.cardHolderLastName) {
+//        self.cardholderFirstOutlet.text = [NSString stringWithFormat:@"%@ %@", pd.cardHolderFirstName, pd.cardHolderLastName];
+//    }
     
     [self validateCreditCardNumber:self.ccNumberOutlet.cardNumber];
     [self validateExpiration];
-    [self validateCardholder:self.cardholderOutlet.text];
+    [self validateCardholder:self.cardholderFirstOutlet.text];
+    [self validateCardholderLast:self.cardholderLastOutlet.text];
     [self validateStreetAddress:self.addressTextFieldOutlet.text];
     [self validateCity:self.cityTextField.text];
     [self validateState:self.stateTextField.text];
@@ -2007,6 +2088,8 @@ NSUInteger const kFlagViewTag = 51974123;
         pd.cardImage = self.ccNumberOutlet.cardLogoImageView.image;
         [self updatePaymentDetailsButtonTitle];
         pd.eanCardType = self.ccNumberOutlet.eanType;
+        pd.cardHolderFirstName = self.cardholderFirstOutlet.text;
+        pd.cardHolderLastName = self.cardholderLastOutlet.text;
         pd.billingAddress.address1 = self.addressTextFieldOutlet.text;
         pd.billingAddress.city = self.cityTextField.text;
         pd.billingAddress.countryCode = self.countryTextField.text;
@@ -2014,11 +2097,11 @@ NSUInteger const kFlagViewTag = 51974123;
         pd.billingAddress.postalCode = self.postalTextField.text;
         [self saveDaExpiration];
         
-        NSArray *chn = [self parseTextFieldText:self.cardholderOutlet.text];
-        if ([chn count] >= 2) {
-            pd.cardHolderFirstName = chn[0];
-            pd.cardHolderLastName = chn[1];
-        }
+//        NSArray *chn = [self parseTextFieldText:self.cardholderFirstOutlet.text];
+//        if ([chn count] >= 2) {
+//            pd.cardHolderFirstName = chn[0];
+//            pd.cardHolderLastName = chn[1];
+//        }
     }
     
 //    if (sender == self.deleteCardOutlet) {
@@ -2051,6 +2134,106 @@ NSUInteger const kFlagViewTag = 51974123;
     } completion:^(BOOL finished) {
         [paymentDetailsView removeFromSuperview];
         paymentDetailsView.transform = CGAffineTransformIdentity;
+    }];
+}
+
+- (void)loadBookConfirmView {
+    NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
+    [nv animateToSecondCancel];
+    _view_details_type = PREBOOK_CONFIRM;
+    
+    if (!_preBookConfirmView) {
+        NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"PreBookConfirmView" owner:nil options:nil];
+        _preBookConfirmView = views.firstObject;
+        [_preBookConfirmView setupTheView];
+        _preBookConfirmView.preBookDelegate = self;
+        _preBookConfirmView.hotelNameLabel.text = _hotelName;
+        _preBookConfirmView.cityStateCountryLabel.text = self.locationString;
+    }
+    
+    __weak UIView *pbcv = _preBookConfirmView;
+    
+    EanAvailabilityHotelRoomResponse *room = [self.tableData objectAtIndex:self.expandedIndexPath.row];
+    _preBookConfirmView.roomDescriptionLabel.text = room.roomType.roomTypeDescrition;
+    NSNumberFormatter *twoDigit = kPriceTwoDigitFormatter(room.rateInfo.chargeableRateInfo.currencyCode);
+    NSString *totalAmt = [twoDigit stringFromNumber:room.rateInfo.totalPlusHotelFees];
+    _preBookConfirmView.totalChargesLabel.text = [NSString stringWithFormat:@"Total With Tax: %@", totalAmt];
+    _preBookConfirmView.refundableLabel.text = room.rateInfo.nonRefundableLongString;
+    
+    CGPoint pboCenter = [self.view convertPoint:self.bookButtonOutlet.center fromView:self.inputBookOutlet];
+    CGFloat fromX = pboCenter.x - _preBookConfirmView.center.x;
+    CGFloat fromY = pboCenter.y - _preBookConfirmView.center.y;
+    CGAffineTransform fromTransform = CGAffineTransformMakeTranslation(fromX, fromY);
+    _preBookConfirmView.transform = CGAffineTransformScale(fromTransform, 0.01f, 0.01f);
+    
+    [self.view addSubview:_preBookConfirmView];
+    
+    [UIView animateWithDuration:kSrAnimationDuration animations:^{
+        pbcv.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+        pbcv.backgroundColor = [UIColor whiteColor];
+    } completion:^(BOOL finished) {
+        ;
+    }];
+}
+
+- (void)dropBookConfirmView {
+    __weak UIView *pbcv = _preBookConfirmView;
+    
+    CGPoint pboCenter = [self.view convertPoint:self.bookButtonOutlet.center fromView:self.inputBookOutlet];
+    CGFloat toX = pboCenter.x - pbcv.center.x;
+    CGFloat toY = pboCenter.y - pbcv.center.y;
+    __block CGAffineTransform toTransform = CGAffineTransformMakeTranslation(toX, toY);
+    
+    NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
+    [nv animateRevertToFirstCancel];
+    [nv animateRevertToWhereToContainer:kCardSecurityTag];
+    [nv rightViewRemoveCheckMark];
+    
+    [UIView animateWithDuration:kSrAnimationDuration animations:^{
+        pbcv.transform = CGAffineTransformScale(toTransform, 0.01f, 0.01f);
+    } completion:^(BOOL finished) {
+        [pbcv removeFromSuperview];
+        pbcv.transform = CGAffineTransformIdentity;
+    }];
+}
+
+- (void)loadCVVView {
+    NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"CVVView" owner:self options:nil];
+    __weak UIView *cvvView = views.firstObject;
+    cvvView.tag = kCVVViewTag;
+    cvvView.frame = CGRectMake(20, 200, 280, 230);
+    cvvView.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
+    [_cancelPurchaseButton addTarget:self action:@selector(dropCVVView) forControlEvents:UIControlEventTouchUpInside];
+    cvvView.layer.cornerRadius = WOTA_CORNER_RADIUS;
+    
+    UIView *ol = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 568)];
+    ol.tag = kCVVOverlayTag;
+    ol.backgroundColor = [UIColor blackColor];
+    ol.alpha = 0.0f;
+    ol.userInteractionEnabled = YES;
+    
+    [self.view addSubview:ol];
+    [self.view bringSubviewToFront:ol];
+    [self.view addSubview:cvvView];
+    [self.view bringSubviewToFront:cvvView];
+    
+    [UIView animateWithDuration:kSrQuickAnimationDuration animations:^{
+        ol.alpha = 0.7f;
+        cvvView.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+    } completion:^(BOOL finished) {
+        ;
+    }];
+}
+
+- (void)dropCVVView {
+    __weak UIView *cvvView = [self.view viewWithTag:kCVVViewTag];
+    __weak UIView *ol = [self.view viewWithTag:kCVVOverlayTag];
+    [UIView animateWithDuration:kSrQuickAnimationDuration animations:^{
+        ol.alpha = 0.0f;
+        cvvView.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
+    } completion:^(BOOL finished) {
+        [ol removeFromSuperview];
+        [cvvView removeFromSuperview];
     }];
 }
 
@@ -2343,6 +2526,16 @@ NSUInteger const kFlagViewTag = 51974123;
     return self.isValidFirstName && self.isValidLastName && self.isValidEmail && self.isValidConfirmEmail && self.isValidPhone;
 }
 
+- (BOOL)validateGuestDetails {
+    GuestInfo *gi = [GuestInfo singleton];
+    [self validateFirstName:gi.firstName];
+    [self validateLastName:gi.lastName];
+    [self validateEmailAddress:gi.email withNoGoColor:NO];
+    self.isValidConfirmEmail = self.isValidEmail;
+    [self validatePhone:gi.phoneNumber];
+    return [self isWeGoodForGuest];
+}
+
 - (void)validateFirstName:(NSString *)firstName {
     if ([firstName length] > 0) {
         self.isValidFirstName = YES;
@@ -2414,7 +2607,7 @@ NSUInteger const kFlagViewTag = 51974123;
 }
 
 - (BOOL)isWeGoodForCredit {
-    return self.isValidCreditCard && self.isValidBillingAddress && self.isValidExpiration && self.isValidCardHolder;
+    return self.isValidCreditCard && self.isValidBillingAddress && self.isValidExpiration && self.isValidCardHolderFirst && self.isValidCardHolderLast;
 }
 
 - (void)validateCreditCardNumber:(NSString *)cardNumber {
@@ -2479,29 +2672,15 @@ NSUInteger const kFlagViewTag = 51974123;
     [self enableOrDisableRightBarButtonItemForPayment];
 }
 
-- (void)validateCardholder:(NSString *)cardHolder {
-    NSArray *ch = [self parseTextFieldText:cardHolder];
-    
-//    if (ch.count == 0) {
-//        self.cardholderOutlet.backgroundColor = [UIColor whiteColor];
-//        self.isValidCardHolder = NO;
-//    } else if (ch.count == 1) {
-//        self.cardholderOutlet.backgroundColor = kColorNoGo();
-//        self.isValidCardHolder = NO;
-//    } else {
-//        self.cardholderOutlet.backgroundColor = [UIColor whiteColor];
-//        self.isValidCardHolder = YES;
-//    }
-    
-//    NSArray *ch = [cardHolder componentsSeparatedByString:@" "];
-    if ([ch count] != 2 || [ch[0] length] < 1 || [ch[1] length] < 1) {
-        self.cardholderOutlet.backgroundColor = [UIColor whiteColor];
-        self.isValidCardHolder = NO;
-    } else {
-        self.cardholderOutlet.backgroundColor = [UIColor whiteColor];
-        self.isValidCardHolder = YES;
-    }
-    
+- (void)validateCardholder:(NSString *)cardHolderFirst {
+    if (!stringIsEmpty(cardHolderFirst)) self.isValidCardHolderFirst = YES;
+    else self.isValidCardHolderFirst = NO;
+    [self enableOrDisableRightBarButtonItemForPayment];
+}
+
+- (void)validateCardholderLast:(NSString *)cardHolderLast {
+    if (!stringIsEmpty(cardHolderLast)) self.isValidCardHolderLast = YES;
+    else self.isValidCardHolderLast = NO;
     [self enableOrDisableRightBarButtonItemForPayment];
 }
 
@@ -2525,8 +2704,9 @@ NSUInteger const kFlagViewTag = 51974123;
 }
 
 - (void)validatePostalCode:(NSString *)pc {
-    if (!stringIsEmpty(pc)) self.isValidPostalCode = YES;
-    else self.isValidPostalCode = NO;
+    if (stringIsEmpty(pc)) self.isValidPostalCode = NO;
+    else if ([self.countryTextField.text isEqualToString:@"US"] && pc.length < 5) self.isValidPostalCode = NO;
+    else self.isValidPostalCode = YES;
     [self enableOrDisableRightBarButtonItemForPayment];
 }
 
@@ -2720,7 +2900,8 @@ NSUInteger const kFlagViewTag = 51974123;
     self.stateTextField.delegate = self;
     self.postalTextField.delegate = self;
     self.expirationOutlet.delegate = self;
-    self.cardholderOutlet.delegate = self;
+    self.cardholderFirstOutlet.delegate = self;
+    self.cardholderLastOutlet.delegate = self;
     
     self.stateTextField.hidden = YES;
     

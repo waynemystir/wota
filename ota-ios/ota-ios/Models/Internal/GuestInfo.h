@@ -25,6 +25,9 @@ extern NSUInteger const MAX_EMAIL_LENGTH;
 + (GuestInfo *)singleton;
 + (void)deleteGuest:(GuestInfo *)guest;
 
+@property (nonatomic, strong, readonly) NSString *apiFirstName;
+@property (nonatomic, strong, readonly) NSString *apiLastName;
+@property (nonatomic, strong, readonly) NSString *apiEmail;
 @property (nonatomic, strong, readonly) NSString *apiPhoneNumber;
 
 @end

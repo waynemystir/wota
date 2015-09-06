@@ -12,7 +12,12 @@
  * General
  */
 
-BOOL debugOrProductionMode = NO;
+ENVIRONMENT_MODE environmentMode = DEVELOPMENT_MODE;
+
+BOOL inProductionMode() {
+    return environmentMode == PRODUCTION_MODE;
+}
+
 BOOL const isLogging = NO;
 
 void TrotterLog(NSString *format, ...) {
