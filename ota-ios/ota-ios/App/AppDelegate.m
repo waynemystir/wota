@@ -75,6 +75,10 @@ static NSString *_externalIP = nil;
 #pragma mark Spinner stuff
 
 - (void)loadDaSpinner {
+    [self loadDaSpinnerWithFrame:CGRectMake(0, 64, 320, 504)];
+}
+
+- (void)loadDaSpinnerWithFrame:(CGRect)frame {
     // We're not going to fire off multiple spinners
     if (nil != _spinnerClass) {
         return;
@@ -89,7 +93,7 @@ static NSString *_externalIP = nil;
     TrotterLog(@"%@.%@:Class caller = %@, class = %@", self.class, NSStringFromSelector(_cmd), [array objectAtIndex:3], [[array objectAtIndex:3] class]);
     _spinnerClass = NSClassFromString([array objectAtIndex:3]);
     
-    UIView *dWayne = [[UIView alloc] initWithFrame:CGRectMake(0, 64, 320, 504)];
+    UIView *dWayne = [[UIView alloc] initWithFrame:frame];
     dWayne.tag = 91919191;
     dWayne.backgroundColor = [UIColor blackColor];
     dWayne.alpha = 0.0f;

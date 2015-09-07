@@ -32,11 +32,34 @@
     
     EanHotelRoomReservationResponse *hrrr = [[EanHotelRoomReservationResponse alloc] init];
     
+    hrrr.eanWsError = [self checkForEanError:idHrrr];
+    if (hrrr.eanWsError) return hrrr;
+    
     hrrr.customerSessionId = [idHrrr objectForKey:@"customerSessionId"];
     hrrr.itineraryId = [[idHrrr objectForKey:@"itineraryId"] longValue];
-    hrrr.confirmationNumbers = [idHrrr objectForKey:@"confirmationNumbers"];
-    hrrr.rateInfo = [idHrrr objectForKey:@"RateInfo"];
     hrrr.processedWithConfirmation = [[idHrrr objectForKey:@"processedWithConfirmation"] boolValue];
+    
+    id idConfirmNumbs = [idHrrr objectForKey:@"confirmationNumbers"];
+    
+    if (!idConfirmNumbs) {
+        hrrr.confirmationNumbers = @[];
+    } else if ([idConfirmNumbs isKindOfClass:[NSNumber class]]) {
+        hrrr.confirmationNumbers = @[ idConfirmNumbs ];
+    } else if ([idConfirmNumbs isKindOfClass:[NSArray class]] && [idConfirmNumbs count] > 0) {
+        // This shouldn't happen because I am not yet allowing users to
+        // book more than one room at a time. But I will add something
+        // simple for the time being.
+        NSMutableArray *ma = [@[] mutableCopy];
+        for (int j = 0; j < [idConfirmNumbs count]; j++) {
+            id o = idConfirmNumbs[j];
+            if (o)  [ma addObject:o];
+        }
+        hrrr.confirmationNumbers = [NSArray arrayWithArray:ma];
+    } else {
+        hrrr.confirmationNumbers = @[];
+    }
+    
+    hrrr.rateInfo = [idHrrr objectForKey:@"RateInfo"];
     hrrr.supplierType = [idHrrr objectForKey:@"supplierType"];
     hrrr.reservationStatusCode = [idHrrr objectForKey:@"reservationStatusCode"];
     hrrr.existingItinerary = [[idHrrr objectForKey:@"existingItinerary"] boolValue];

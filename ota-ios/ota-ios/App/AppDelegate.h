@@ -13,6 +13,7 @@
 @property (strong, nonatomic) UIWindow *window;
 
 - (void)loadDaSpinner;
+- (void)loadDaSpinnerWithFrame:(CGRect)frame;
 - (void)dropDaSpinnerAlreadyWithForce:(BOOL)force;
 
 + (NSString *)externalIP;

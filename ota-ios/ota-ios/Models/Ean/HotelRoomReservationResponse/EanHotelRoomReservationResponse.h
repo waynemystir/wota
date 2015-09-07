@@ -13,9 +13,9 @@
 
 @property (nonatomic, strong) NSString *customerSessionId;
 @property (nonatomic) NSInteger itineraryId;
+@property (nonatomic) BOOL processedWithConfirmation;
 @property (nonatomic, strong) NSArray *confirmationNumbers;
 @property (nonatomic, strong) NSDictionary *rateInfo;
-@property (nonatomic) BOOL processedWithConfirmation;
 @property (nonatomic, strong) NSString *supplierType;
 @property (nonatomic, strong) NSString *reservationStatusCode;
 @property (nonatomic) BOOL existingItinerary;
@@ -35,5 +35,6 @@
 @property (nonatomic, strong) NSDictionary *cancelPolicyInfoList;
 @property (nonatomic) BOOL nonRefundable;
 @property (nonatomic) NSInteger rateOccupancyPerRoom;
+@property (nonatomic, strong) EanWsError *eanWsError;
 
 @end

@@ -878,6 +878,9 @@ NSUInteger const kCVVOverlayTag = 171739;
 }
 
 - (void)bookIt {
+    [self dropCVVView];
+    [self dropBookConfirmView];
+    
     if (!self.expandedIndexPath)
         return;
     
@@ -888,6 +891,7 @@ NSUInteger const kCVVOverlayTag = 171739;
     BookViewController *bvc = [BookViewController new];
     
     NSString *creditCardNumber = inProductionMode() ? pd.cardNumber : @"5401999999999999";
+    NSString *creditCardIdentifier = inProductionMode() ? self.cvvTextField.text : @"123";
     
     [[LoadEanData sharedInstance:bvc] bookHotelRoomWithHotelId:self.eanHrar.hotelId
                                                    arrivalDate:sc.arrivalDateEanString
@@ -910,7 +914,7 @@ NSUInteger const kCVVOverlayTag = 171739;
                                                      homePhone:gi.apiPhoneNumber
                                                 creditCardType:pd.eanCardType
                                               creditCardNumber:creditCardNumber
-                                          creditCardIdentifier:@"123"
+                                          creditCardIdentifier:creditCardIdentifier
                                      creditCardExpirationMonth:pd.expirationMonth
                                       creditCardExpirationYear:pd.expirationYear
                                                       address1:pd.billingAddress.apiAddress1
@@ -1177,8 +1181,27 @@ NSUInteger const kCVVOverlayTag = 171739;
         }
         
     } else if (textField == self.phoneOutlet) {
+        
         NSString *ph = [textField.text stringByReplacingCharactersInRange:range withString:string];
         [self validatePhone:ph];
+        
+    }
+    
+    else if (textField == self.cvvTextField) {
+        
+        if (!self.paymentDetails || !self.paymentDetails.eanCardType) return NO;
+        
+        int minLength = [self.paymentDetails.eanCardType isEqualToString:@"AX"] ? 4 : 3;
+        
+        if(range.length + range.location > textField.text.length)
+            return NO;
+        
+        NSUInteger newLength = [textField.text length] + [string length] - range.length;
+        if (newLength >= minLength) self.purchaseButton.enabled = YES;
+        else self.purchaseButton.enabled = NO;
+        
+        return YES;
+        
     }
     
     return YES;
@@ -2201,9 +2224,12 @@ NSUInteger const kCVVOverlayTag = 171739;
     NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"CVVView" owner:self options:nil];
     __weak UIView *cvvView = views.firstObject;
     cvvView.tag = kCVVViewTag;
-    cvvView.frame = CGRectMake(20, 200, 280, 230);
+    cvvView.frame = CGRectMake(20, 80, 280, 230);
     cvvView.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
+    [_purchaseButton addTarget:self action:@selector(bookIt) forControlEvents:UIControlEventTouchUpInside];
     [_cancelPurchaseButton addTarget:self action:@selector(dropCVVView) forControlEvents:UIControlEventTouchUpInside];
+    _purchaseButton.enabled = NO;
+    _cvvTextField.delegate = self;
     cvvView.layer.cornerRadius = WOTA_CORNER_RADIUS;
     
     UIView *ol = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 568)];
@@ -2221,13 +2247,14 @@ NSUInteger const kCVVOverlayTag = 171739;
         ol.alpha = 0.7f;
         cvvView.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
     } completion:^(BOOL finished) {
-        ;
+        [_cvvTextField becomeFirstResponder];
     }];
 }
 
 - (void)dropCVVView {
     __weak UIView *cvvView = [self.view viewWithTag:kCVVViewTag];
     __weak UIView *ol = [self.view viewWithTag:kCVVOverlayTag];
+    [self.view endEditing:YES];
     [UIView animateWithDuration:kSrQuickAnimationDuration animations:^{
         ol.alpha = 0.0f;
         cvvView.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
