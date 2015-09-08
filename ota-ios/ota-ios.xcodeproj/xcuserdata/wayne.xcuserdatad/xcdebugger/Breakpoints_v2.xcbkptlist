@@ -196,11 +196,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ota-ios/Controllers/HotelInfoViewController.m"
-            timestampString = "463195589.76235"
+            timestampString = "463350729.176576"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "317"
-            endingLineNumber = "317"
+            startingLineNumber = "316"
+            endingLineNumber = "316"
             landmarkName = "-requestTimedOut"
             landmarkType = "5">
          </BreakpointContent>

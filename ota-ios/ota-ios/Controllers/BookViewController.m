@@ -13,6 +13,7 @@
 #import "WotaTappableView.h"
 #import "GuestInfo.h"
 #import "EanCredentials.h"
+#import "NetworkProblemResponder.h"
 
 @interface BookViewController ()
 
@@ -120,6 +121,27 @@
     self.previousScreenView.hidden = NO;
     self.problemMessage.hidden = NO;
     [self dropDaSpinner];
+}
+
+- (void)requestTimedOut {
+    [self dropDaSpinner];
+    __weak typeof(self) wes = self;
+    [NetworkProblemResponder launchWithSuperView:self.view headerTitle:nil messageString:nil completionCallback:^{
+        [wes.navigationController popViewControllerAnimated:YES];
+    }];
+}
+
+- (void)requestFailedOffline {
+    [self dropDaSpinner];
+    __weak typeof(self) wes = self;
+    [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"Network Error" messageString:@"The network could not be reached. Please check your connection and try again." completionCallback:^{
+        [wes.navigationController popViewControllerAnimated:YES];
+    }];
+}
+
+- (void)requestFailedCredentials {
+    [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"System Error" messageString:@"Sorry for the inconvenience. We are experiencing a technical issue. Please try again shortly." completionCallback:^{
+    }];
 }
 
 #pragma mark Tap Gestures

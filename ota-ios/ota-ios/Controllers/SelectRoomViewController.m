@@ -183,6 +183,8 @@ NSUInteger const kCVVOverlayTag = 171739;
 @property (weak, nonatomic) IBOutlet WotaButton *purchaseButton;
 @property (weak, nonatomic) IBOutlet WotaButton *cancelPurchaseButton;
 
+@property (nonatomic, strong) NSTimer *selectRoomLifeTimer;
+
 - (IBAction)justPushIt:(id)sender;
 
 @end
@@ -210,8 +212,29 @@ NSUInteger const kCVVOverlayTag = 171739;
         [mutInfoPopupHeadingDict setObject:@"Payment Information" forKey:@(kCardSecurityTag)];
         [mutInfoPopupHeadingDict setObject:@"Complimentary" forKey:@(kRoomValueAddTag)];
         _infoPopupHeadingDict = [NSDictionary dictionaryWithDictionary:mutInfoPopupHeadingDict];
+        
+        _selectRoomLifeTimer = [NSTimer timerWithTimeInterval:(60 * 30) target:self selector:@selector(removeThisControllerFromNavigationStack:) userInfo:nil repeats:NO];
+        
+        [[NSRunLoop currentRunLoop] addTimer:_selectRoomLifeTimer forMode:NSDefaultRunLoopMode];
     }
     return self;
+}
+
+- (void)removeThisControllerFromNavigationStack:(id)sender {
+    if (self == self.navigationController.visibleViewController) {
+        [self.navigationController popViewControllerAnimated:YES];
+    } else {
+        NSMutableArray *controllers = [self.navigationController.viewControllers mutableCopy];
+        [controllers removeObject:self];
+        self.navigationController.viewControllers = [NSArray arrayWithArray:controllers];
+    }
+}
+
+- (void)dealloc {
+    if ([_selectRoomLifeTimer isValid]) {
+        [_selectRoomLifeTimer invalidate];
+        _selectRoomLifeTimer = nil;
+    }
 }
 
 - (id)initWithPlaceholderImage:(UIImage *)placeholderImage
@@ -351,6 +374,10 @@ NSUInteger const kCVVOverlayTag = 171739;
 - (void)clickBack {
     _preparedToDropSpinner = YES;
     [self dropDaSpinner];
+    if ([_selectRoomLifeTimer isValid]) {
+        [_selectRoomLifeTimer invalidate];
+        _selectRoomLifeTimer = nil;
+    }
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -923,6 +950,9 @@ NSUInteger const kCVVOverlayTag = 171739;
                                                    countryCode:pd.billingAddress.apiCountryCode
                                                     postalCode:pd.billingAddress.apiPostalCode];
     
+    self.paymentDetails = nil;
+    [self updatePaymentDetailsButtonTitle];
+    self.ccNumberOutlet.cardNumber = @"";
     [self.navigationController pushViewController:bvc animated:YES];
 }
 
@@ -1039,11 +1069,15 @@ NSUInteger const kCVVOverlayTag = 171739;
     textField.layer.borderColor = [UIColor clearColor].CGColor;
 }
 
-- (BOOL)checkMaxLenTextField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string maxLength:(NSUInteger)maxLength checkAlpha:(BOOL)checkAlpha successBlock:(void(^)(void))successBlock {
+- (BOOL)checkMaxLenTextField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string maxLength:(NSUInteger)maxLength checkAlpha:(BOOL)checkAlpha allowNumbers:(BOOL)allowNumbers successBlock:(void(^)(void))successBlock {
     
     if (checkAlpha) {
-        NSCharacterSet *dc = [[NSCharacterSet characterSetWithCharactersInString:@"-abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"] invertedSet];
-        if ([string rangeOfCharacterFromSet:dc].location != NSNotFound)
+//        NSCharacterSet *dc = [[NSCharacterSet characterSetWithCharactersInString:@"-abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"] invertedSet];
+        NSMutableCharacterSet *ac = allowNumbers ? [NSMutableCharacterSet alphanumericCharacterSet] : [NSMutableCharacterSet letterCharacterSet];
+        [ac formUnionWithCharacterSet:[NSCharacterSet punctuationCharacterSet]];
+//        [ac formUnionWithCharacterSet:[NSCharacterSet symbolCharacterSet]];
+        [ac formUnionWithCharacterSet:[NSCharacterSet whitespaceCharacterSet]];
+        if ([string rangeOfCharacterFromSet:[ac invertedSet]].location != NSNotFound)
             return NO;
     }
     
@@ -1083,9 +1117,16 @@ NSUInteger const kCVVOverlayTag = 171739;
         
     } else if (textField == self.cityTextField) {
         
-        NSString *city = [textField.text stringByReplacingCharactersInRange:range withString:string];
-        [self validateCity:city];
-        return YES;
+        return [self checkMaxLenTextField:textField
+            shouldChangeCharactersInRange:range
+                        replacementString:string
+                                maxLength:100
+                               checkAlpha:YES
+                             allowNumbers:YES
+                             successBlock:^{
+                                 NSString *city = [textField.text stringByReplacingCharactersInRange:range withString:string];
+                                 [self validateCity:city];
+                             }];
         
     } else if (textField == self.countryTextField) {
         
@@ -1112,6 +1153,7 @@ NSUInteger const kCVVOverlayTag = 171739;
                         replacementString:string
                                 maxLength:MAX_FIRST_NAME_LENGTH
                                checkAlpha:YES
+                             allowNumbers:NO
                              successBlock:^{
                                  NSString *ch = [textField.text stringByReplacingCharactersInRange:range withString:string];
                                  [self validateCardholder:ch];
@@ -1124,6 +1166,7 @@ NSUInteger const kCVVOverlayTag = 171739;
                         replacementString:string
                                 maxLength:MAX_LAST_NAME_LENGTH
                                checkAlpha:YES
+                             allowNumbers:NO
                              successBlock:^{
                                  NSString *ch = [textField.text stringByReplacingCharactersInRange:range withString:string];
                                  [self validateCardholderLast:ch];
@@ -1138,6 +1181,7 @@ NSUInteger const kCVVOverlayTag = 171739;
                         replacementString:string
                                 maxLength:MAX_FIRST_NAME_LENGTH
                                checkAlpha:YES
+                             allowNumbers:NO
                              successBlock:^{
                                  NSString *fn = [textField.text stringByReplacingCharactersInRange:range withString:string];
                                  [self validateFirstName:fn];
@@ -1150,6 +1194,7 @@ NSUInteger const kCVVOverlayTag = 171739;
                         replacementString:string
                                 maxLength:MAX_LAST_NAME_LENGTH
                                checkAlpha:YES
+                             allowNumbers:NO
                              successBlock:^{
                                  NSString *ln = [textField.text stringByReplacingCharactersInRange:range withString:string];
                                  [self validateLastName:ln];
@@ -1165,6 +1210,7 @@ NSUInteger const kCVVOverlayTag = 171739;
                         replacementString:string
                                 maxLength:MAX_EMAIL_LENGTH
                                checkAlpha:NO
+                             allowNumbers:YES
                              successBlock:^{
                                  NSString *em = [textField.text stringByReplacingCharactersInRange:range withString:string];
                                  [self validateEmailAddress:em withNoGoColor:NO];
@@ -2068,7 +2114,7 @@ NSUInteger const kCVVOverlayTag = 171739;
     PaymentDetails *pd = self.paymentDetails = self.paymentDetails ? : [PaymentDetails new];
     
     self.ccNumberOutlet.showsCardLogo = YES;
-    self.ccNumberOutlet.cardNumber = pd.cardNumber;
+    self.ccNumberOutlet.cardNumber = pd.cardNumber ? : @"";
     self.cardholderFirstOutlet.text = pd.cardHolderFirstName;
     self.cardholderLastOutlet.text = pd.cardHolderLastName;
     self.addressTextFieldOutlet.text = pd.billingAddress.address1;
@@ -2564,7 +2610,7 @@ NSUInteger const kCVVOverlayTag = 171739;
 }
 
 - (void)validateFirstName:(NSString *)firstName {
-    if ([firstName length] > 0) {
+    if (!stringIsEmpty(firstName)) {
         self.isValidFirstName = YES;
     } else {
         self.isValidFirstName = NO;
@@ -2573,7 +2619,7 @@ NSUInteger const kCVVOverlayTag = 171739;
 }
 
 - (void)validateLastName:(NSString *)lastName {
-    if ([lastName length] > 0) {
+    if (!stringIsEmpty(lastName)) {
         self.isValidLastName = YES;
     } else {
         self.isValidLastName = NO;

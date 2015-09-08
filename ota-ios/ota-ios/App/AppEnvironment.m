@@ -35,7 +35,16 @@ void TrotterLog(NSString *format, ...) {
 NSString * const kKeyGuestInfo = @"LgAuYeEsRtCiAnKfEo";
 
 //NSString * const GOOGLE_API_KEY = @"AIzaSyBTMg_o0S630MntWlqDC4J9tuNrh_YkLIo";
-NSString * const GOOGLE_API_KEY = @"AIzaSyDXmlmSp43YsY1QfPMaBP5Ww5UIXWNXXho";
+//NSString * const GOOGLE_API_KEY = @"AIzaSyDXmlmSp43YsY1QfPMaBP5Ww5UIXWNXXho";
+NSString * GoogleApiKey() {
+    if (inProductionMode()) {
+        return @"AIzaSyDXmlmSp43YsY1QfPMaBP5Ww5UIXWNXXho"; // project name: ota-iOS
+    } else if (environmentMode == BETA_MODE) {
+        return @"AIzaSyDXmlmSp43YsY1QfPMaBP5Ww5UIXWNXXho"; // project name: ota-iOS
+    } else {
+        return @"AIzaSyBTMg_o0S630MntWlqDC4J9tuNrh_YkLIo"; // project name: ean-ota-ios
+    }
+}
 
 int const URL_REQUEST_TIMEOUT = 30;
 

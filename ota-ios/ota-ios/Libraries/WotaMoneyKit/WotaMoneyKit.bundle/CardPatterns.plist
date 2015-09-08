@@ -20,7 +20,7 @@
 	</dict>
 	<dict>
 		<key>pattern</key>
-		<string>^35</string>
+		<string>^35(?:2[89]|[3-8][0-9])</string>
 		<key>companyName</key>
 		<string>JCB</string>
 		<key>shortName</key>

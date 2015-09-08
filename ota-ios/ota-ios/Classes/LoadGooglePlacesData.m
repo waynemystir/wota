@@ -33,7 +33,7 @@
 }
 
 - (void)autoCompleteSomePlaces:(NSString *)queryString {
-    NSString *urlString = [[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%@&key=%@", queryString, GOOGLE_API_KEY] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString *urlString = [[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%@&key=%@", queryString, GoogleApiKey()] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setTimeoutInterval:URL_REQUEST_TIMEOUT];
@@ -56,7 +56,7 @@
     // TODO: Get this URL and the one above into AppEnvironment
     //***************************************************************
     
-    NSString *urlString = [[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/details/json?placeid=%@&key=%@", placeId, GOOGLE_API_KEY] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString *urlString = [[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/details/json?placeid=%@&key=%@", placeId, GoogleApiKey()] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setTimeoutInterval:URL_REQUEST_TIMEOUT];
@@ -74,7 +74,7 @@
     
     NSString *types = @"park|natural_feature|establishment|airport|point_of_interest";
     
-    NSString *urlString = [[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/geocode/json?&latlng=%f,%f&result_type=%@&key=%@", latitude, longitude, types, GOOGLE_API_KEY] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString *urlString = [[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/geocode/json?&latlng=%f,%f&result_type=%@&key=%@", latitude, longitude, types, GoogleApiKey()] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setTimeoutInterval:URL_REQUEST_TIMEOUT];
@@ -93,7 +93,7 @@
     
     NSString *types = @"park|natural_feature|establishment|airport|point_of_interest";
     
-    NSString *urlString = [[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/geocode/json?&latlng=%f,%f&result_type=%@&key=%@", latitude, longitude, types, GOOGLE_API_KEY] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString *urlString = [[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/geocode/json?&latlng=%f,%f&result_type=%@&key=%@", latitude, longitude, types, GoogleApiKey()] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setTimeoutInterval:URL_REQUEST_TIMEOUT];
@@ -127,7 +127,7 @@
                      completionBlock:(void (^)(NSURLResponse *, NSData *, NSError *))completionBlock {
     
     NSString *typesString = [types componentsJoinedByString:@"|"];
-    NSString *urlString = [[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=%@&location=%f,%f&radius=%@&rankby=prominence&sensor=true&types=%@", GOOGLE_API_KEY, latitude, longitude, @500, typesString] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString *urlString = [[NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=%@&location=%f,%f&radius=%@&rankby=prominence&sensor=true&types=%@", GoogleApiKey(), latitude, longitude, @500, typesString] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];

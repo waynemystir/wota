@@ -83,7 +83,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 @property (weak, nonatomic) IBOutlet UILabel *diningTitle;
 @property (weak, nonatomic) IBOutlet UILabel *diningLabel;
 @property (nonatomic, strong) EanHotelInformationResponse *eanHotelInformationResponse;
-@property (nonatomic, strong) SelectRoomViewController *selectRoomViewController;
+//@property (nonatomic, strong) SelectRoomViewController *selectRoomViewController;
 @property (nonatomic) BOOL paymentTypesReturned;
 @property (nonatomic) BOOL policiesLabelIsSet;
 @property (nonatomic, strong) NSString *paymentTypesBulletted;
@@ -275,7 +275,6 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.navigationController.navigationBar.hidden = YES;
-    
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 }
 
@@ -597,18 +596,18 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     
     if (!image) image = [UIImage imageNamed:@"hotel_info"];
     
-    self.selectRoomViewController = [[SelectRoomViewController alloc] initWithPlaceholderImage:image hotelName:self.eanHotel.hotelNameFormatted locationName:self.locationString];
+    SelectRoomViewController *selectRoomViewController = [[SelectRoomViewController alloc] initWithPlaceholderImage:image hotelName:self.eanHotel.hotelNameFormatted locationName:self.locationString];
     SelectionCriteria *sc = [SelectionCriteria singleton];
-    [[LoadEanData sharedInstance:self.selectRoomViewController] loadAvailableRoomsWithHotelId:[_eanHotel.hotelId stringValue]
+    [[LoadEanData sharedInstance:selectRoomViewController] loadAvailableRoomsWithHotelId:[_eanHotel.hotelId stringValue]
                                                          arrivalDate:sc.arrivalDateEanString
                                                        departureDate:sc.returnDateEanString
                                                       numberOfAdults:sc.numberOfAdults
-                                                      childTravelers:[ChildTraveler childTravelers]];
+                                                                          childTravelers:[ChildTraveler childTravelers]];
+    [self.navigationController pushViewController:selectRoomViewController animated:YES];
 }
 
 - (void)gotoSelectRoomVC {
     [self prepareTheSelectRoomViewController];
-    [self.navigationController pushViewController:self.selectRoomViewController animated:YES];
 }
 
 - (void)loadDaMap {

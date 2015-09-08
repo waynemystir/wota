@@ -35,8 +35,7 @@ extern NSString * const kKeyGuestInfo;
 /**
  * Google stuff
  */
-extern NSString * const GOOGLE_API_KEY;
-
+extern NSString * GoogleApiKey();
 extern int const URL_REQUEST_TIMEOUT;
 
 /**

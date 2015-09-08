@@ -57,10 +57,10 @@
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                 </textView>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="6" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="xTS-rc-T8o" userLabel="willReceiveLabel">
-                    <rect key="frame" x="37" y="340" width="246" height="128"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="7" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="xTS-rc-T8o" userLabel="willReceiveLabel">
+                    <rect key="frame" x="37" y="338" width="246" height="140"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <string key="text">You will receive an email containing the confirmation and reservation details. Please keep a record of your itinerary number in the event that you need to look up this reservation.</string>
+                    <string key="text">You will receive an email containing the confirmation and reservation details. Please keep a record of your itinerary number in the event that you need to contact customer service or look up this reservation.</string>
                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
