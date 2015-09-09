@@ -433,6 +433,16 @@ NSUInteger const kCVVOverlayTag = 171739;
             if (self.eanHrar.hotelRoomArray.count > 0) {
                 self.tableData = self.eanHrar.hotelRoomArray;
                 [self.roomsTableViewOutlet reloadData];
+                NSArray *fa = [[NSBundle mainBundle] loadNibNamed:@"SelectRoomFooterView" owner:self options:nil];
+                UIView *fv = fa.firstObject;
+                NSArray *ia = [[NSBundle mainBundle] loadNibNamed:@"ImageDisclaimerView" owner:nil options:nil];
+                UIView *iv = ia.firstObject;
+                iv.frame = CGRectMake(0, 85, 320, 105);
+                UIView *wes = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 210)];
+                wes.backgroundColor = [UIColor clearColor];
+                [wes addSubview:fv];
+                [wes addSubview:iv];
+                self.roomsTableViewOutlet.tableFooterView = wes;
             } else {
                 UILabel *noRooms = [[UILabel alloc] initWithFrame:CGRectMake(30, 200, 260, 200)];
                 noRooms.numberOfLines = 3;
@@ -443,6 +453,7 @@ NSUInteger const kCVVOverlayTag = 171739;
                 noRooms.backgroundColor = [UIColor whiteColor];
                 [self.view addSubview:noRooms];
                 [self.view bringSubviewToFront:noRooms];
+                self.roomsTableViewOutlet.tableFooterView = nil;
             }
             [self dropDaSpinner];
             break;
@@ -1798,6 +1809,15 @@ NSUInteger const kCVVOverlayTag = 171739;
 
 #pragma mark PreBookConfirmDelegate methods
 
+- (void)clickTotalAmountLbl {
+    [self loadPriceDetailsPopup:nil];
+}
+
+- (void)clickAcknowledgeCancellationPolicyLbl {
+    __weak UIView *nrl = [self.view viewWithTag:kRoomNonRefundLongTag];
+    [self loadInfoDetailsPopup:nrl.gestureRecognizers.firstObject];
+}
+
 - (void)cancelBooking {
     [self dropBookConfirmView];
 }
@@ -2217,7 +2237,7 @@ NSUInteger const kCVVOverlayTag = 171739;
         [_preBookConfirmView setupTheView];
         _preBookConfirmView.preBookDelegate = self;
         _preBookConfirmView.hotelNameLabel.text = _hotelName;
-        _preBookConfirmView.cityStateCountryLabel.text = self.locationString;
+        _preBookConfirmView.cityStateCountryLabel.text = [self.locationString stringByReplacingOccurrencesOfString:@"\n" withString:@", "];
     }
     
     __weak UIView *pbcv = _preBookConfirmView;
@@ -2225,9 +2245,8 @@ NSUInteger const kCVVOverlayTag = 171739;
     EanAvailabilityHotelRoomResponse *room = [self.tableData objectAtIndex:self.expandedIndexPath.row];
     _preBookConfirmView.roomDescriptionLabel.text = room.roomType.roomTypeDescrition;
     NSNumberFormatter *twoDigit = kPriceTwoDigitFormatter(room.rateInfo.chargeableRateInfo.currencyCode);
-    NSString *totalAmt = [twoDigit stringFromNumber:room.rateInfo.totalPlusHotelFees];
-    _preBookConfirmView.totalChargesLabel.text = [NSString stringWithFormat:@"Total With Tax: %@", totalAmt];
-    _preBookConfirmView.refundableLabel.text = room.rateInfo.nonRefundableLongString;
+    NSString *totalAmt = [twoDigit stringFromNumber:room.rateInfo.chargeableRateInfo.total];
+    _preBookConfirmView.totalChargesLabel.text = totalAmt;
     
     CGPoint pboCenter = [self.view convertPoint:self.bookButtonOutlet.center fromView:self.inputBookOutlet];
     CGFloat fromX = pboCenter.x - _preBookConfirmView.center.x;
@@ -2235,6 +2254,9 @@ NSUInteger const kCVVOverlayTag = 171739;
     CGAffineTransform fromTransform = CGAffineTransformMakeTranslation(fromX, fromY);
     _preBookConfirmView.transform = CGAffineTransformScale(fromTransform, 0.01f, 0.01f);
     
+    _preBookConfirmView.checkMark.hidden = YES;
+    _preBookConfirmView.confirmButton.enabled = NO;
+    _preBookConfirmView.acknowledged = NO;
     [self.view addSubview:_preBookConfirmView];
     
     [UIView animateWithDuration:kSrAnimationDuration animations:^{

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
@@ -26,6 +26,7 @@
                 <outlet property="mapMapSearch" destination="tG7-m1-yPx" id="KaZ-XU-dmT"/>
                 <outlet property="mapSpinner" destination="K9Y-Go-cm2" id="sne-hA-KY5"/>
                 <outlet property="mapViewContainer" destination="lmT-rW-gec" id="TaJ-B9-HFc"/>
+                <outlet property="menuContainer" destination="g3y-gg-RwU" id="EZy-He-Uv2"/>
                 <outlet property="minusAdultOutlet" destination="X2B-0S-NLb" id="hlb-dQ-5w6"/>
                 <outlet property="mkMapView" destination="0nh-5L-AFC" id="4l3-29-JPE"/>
                 <outlet property="openingWhereTo" destination="LRm-TY-5fT" id="VjA-gf-rsO"/>
@@ -202,6 +203,16 @@
                                     <fontDescription key="fontDescription" type="system" pointSize="28"/>
                                     <nil key="highlightedColor"/>
                                 </label>
+                                <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="trotter" id="fzb-e7-cFV">
+                                    <rect key="frame" x="0.0" y="390" width="60" height="60"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </imageView>
+                                <view contentMode="scaleToFill" id="g3y-gg-RwU" userLabel="menuContainer" customClass="WotaTappableView">
+                                    <rect key="frame" x="0.0" y="390" width="60" height="60"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
                             </subviews>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </view>
@@ -359,6 +370,10 @@
             <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
             <point key="canvasLocation" x="302" y="378"/>
         </view>
+        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="7TJ-v7-Jmh">
+            <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+        </imageView>
     </objects>
     <resources>
         <image name="filter" width="32" height="32"/>
@@ -366,6 +381,7 @@
         <image name="search_big" width="64" height="64"/>
         <image name="search_mid" width="32" height="32"/>
         <image name="sort" width="32" height="32"/>
+        <image name="trotter" width="38" height="38"/>
         <image name="user_silhouette" width="16" height="16"/>
         <image name="wmap" width="32" height="32"/>
         <image name="wmap_big" width="64" height="64"/>

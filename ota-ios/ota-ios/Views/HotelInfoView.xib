@@ -15,6 +15,7 @@
                 <outlet property="feesLabel" destination="IrE-Ms-XIO" id="NGG-e9-I1Y"/>
                 <outlet property="feesTitle" destination="SQC-8z-L2b" id="69t-P2-L8g"/>
                 <outlet property="fromRateContainer" destination="vya-sM-6l1" id="BD3-di-wkZ"/>
+                <outlet property="imageDisclaimerContainer" destination="HIA-92-99M" id="CwS-f7-amz"/>
                 <outlet property="imageScrollerOutlet" destination="vZH-Bf-tX6" id="bRX-Ah-4Ju"/>
                 <outlet property="mapContainerOutlet" destination="MAY-ls-PPp" id="Crl-Ua-LzV"/>
                 <outlet property="mapOverlay" destination="O5k-aK-YpL" id="Vtb-eM-Bmz"/>
@@ -181,6 +182,11 @@
                             <fontDescription key="fontDescription" type="system" pointSize="9"/>
                             <nil key="highlightedColor"/>
                         </label>
+                        <view contentMode="scaleToFill" id="HIA-92-99M" userLabel="imageDisclaimerView">
+                            <rect key="frame" x="0.0" y="880" width="320" height="105"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        </view>
                         <view contentMode="scaleToFill" id="7hm-dB-gRe" userLabel="starContainer">
                             <rect key="frame" x="179" y="235" width="129" height="26"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -233,7 +239,7 @@
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </view>
                         <view contentMode="scaleToFill" id="Jkz-pZ-lK0" userLabel="bookARoomNowContainer" customClass="WotaTappableView">
-                            <rect key="frame" x="10" y="880" width="300" height="30"/>
+                            <rect key="frame" x="10" y="980" width="300" height="30"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Book A Room Now" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="kgs-l7-NAQ" userLabel="bookARoomLabel">

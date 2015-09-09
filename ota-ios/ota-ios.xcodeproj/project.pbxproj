@@ -28,6 +28,7 @@
 		B019E5F41B9512BA000BAC23 /* ImageViewHotelInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B019E5F31B9512BA000BAC23 /* ImageViewHotelInfo.m */; };
 		B01E25861AFDD33E001D02B1 /* EanHotelFee.m in Sources */ = {isa = PBXBuildFile; fileRef = B01E25851AFDD33E001D02B1 /* EanHotelFee.m */; };
 		B01F0ECE1AF8669600C68BA8 /* WotaTappableView.m in Sources */ = {isa = PBXBuildFile; fileRef = B01F0ECD1AF8669600C68BA8 /* WotaTappableView.m */; };
+		B02A8E051B9F84D9003664A3 /* ImageDisclaimerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B02A8E041B9F84D9003664A3 /* ImageDisclaimerView.xib */; };
 		B032F62A1AC18F6700809395 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B032F6291AC18F6700809395 /* main.m */; };
 		B032F62D1AC18F6700809395 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B032F62C1AC18F6700809395 /* AppDelegate.m */; };
 		B032F6351AC18F6700809395 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B032F6341AC18F6700809395 /* Images.xcassets */; };
@@ -58,6 +59,8 @@
 		B06140CB1B76636D004D3FEE /* BackCancelViewLarger.m in Sources */ = {isa = PBXBuildFile; fileRef = B06140CA1B76636D004D3FEE /* BackCancelViewLarger.m */; };
 		B0617ACF1AF5BE5500AEA216 /* EanCancelPolicyInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B0617ACE1AF5BE5500AEA216 /* EanCancelPolicyInfo.m */; };
 		B061FE7E1B3910D6005773B3 /* HotelsTableViewDelegateImplementation.m in Sources */ = {isa = PBXBuildFile; fileRef = B061FE7D1B3910D6005773B3 /* HotelsTableViewDelegateImplementation.m */; };
+		B06BAB841B9F2B6A0081C331 /* MenuView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B06BAB831B9F2B6A0081C331 /* MenuView.xib */; };
+		B06BAB861B9F713F0081C331 /* SelectRoomFooterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B06BAB851B9F713F0081C331 /* SelectRoomFooterView.xib */; };
 		B06C98BA1B0951E500DBE09D /* InternationalCallingCodes.plist in Resources */ = {isa = PBXBuildFile; fileRef = B06C98B91B0951E500DBE09D /* InternationalCallingCodes.plist */; };
 		B06C98BC1B09585300DBE09D /* CountryPicker.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B06C98BB1B09585300DBE09D /* CountryPicker.bundle */; };
 		B06C98BF1B09586B00DBE09D /* CountryPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = B06C98BE1B09586B00DBE09D /* CountryPicker.m */; };
@@ -226,6 +229,7 @@
 		B01E25851AFDD33E001D02B1 /* EanHotelFee.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanHotelFee.m; sourceTree = "<group>"; };
 		B01F0ECC1AF8669600C68BA8 /* WotaTappableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WotaTappableView.h; sourceTree = "<group>"; };
 		B01F0ECD1AF8669600C68BA8 /* WotaTappableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WotaTappableView.m; sourceTree = "<group>"; };
+		B02A8E041B9F84D9003664A3 /* ImageDisclaimerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ImageDisclaimerView.xib; sourceTree = "<group>"; };
 		B032F6241AC18F6700809395 /* Trotter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Trotter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B032F6281AC18F6700809395 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B032F6291AC18F6700809395 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -280,6 +284,8 @@
 		B0617ACE1AF5BE5500AEA216 /* EanCancelPolicyInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanCancelPolicyInfo.m; sourceTree = "<group>"; };
 		B061FE7C1B3910D6005773B3 /* HotelsTableViewDelegateImplementation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotelsTableViewDelegateImplementation.h; sourceTree = "<group>"; };
 		B061FE7D1B3910D6005773B3 /* HotelsTableViewDelegateImplementation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotelsTableViewDelegateImplementation.m; sourceTree = "<group>"; };
+		B06BAB831B9F2B6A0081C331 /* MenuView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuView.xib; sourceTree = "<group>"; };
+		B06BAB851B9F713F0081C331 /* SelectRoomFooterView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SelectRoomFooterView.xib; sourceTree = "<group>"; };
 		B06C98B91B0951E500DBE09D /* InternationalCallingCodes.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = InternationalCallingCodes.plist; sourceTree = "<group>"; };
 		B06C98BB1B09585300DBE09D /* CountryPicker.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = CountryPicker.bundle; sourceTree = "<group>"; };
 		B06C98BD1B09586B00DBE09D /* CountryPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CountryPicker.h; sourceTree = "<group>"; };
@@ -668,7 +674,9 @@
 				B010E3831B4CCE7300CA8374 /* SortView.xib */,
 				B09277E41B4F70CC0094159B /* NoHotelsView.xib */,
 				B05BB27C1B77BCBE00A51842 /* LocationNotAvailableView.xib */,
+				B02A8E041B9F84D9003664A3 /* ImageDisclaimerView.xib */,
 				B0FE0F4D1AC70A2500DAF635 /* SelectRoomView.xib */,
+				B06BAB851B9F713F0081C331 /* SelectRoomFooterView.xib */,
 				B080B7C81AC505DC00075A32 /* HotelInfoView.xib */,
 				B0FE0F481AC6ED0000DAF635 /* BookView.xib */,
 				B0E811061B65B51C00DE6D1A /* ChildView.h */,
@@ -701,6 +709,7 @@
 				B0C443461B9B8E9700F456CE /* PreBookConfirmView.m */,
 				B0C443481B9B8EBA00F456CE /* PreBookConfirmView.xib */,
 				B0C4434A1B9BEC5900F456CE /* CVVView.xib */,
+				B06BAB831B9F2B6A0081C331 /* MenuView.xib */,
 				B0D01EBF1B07ED830001C558 /* Navigation */,
 			);
 			path = Views;
@@ -1095,6 +1104,7 @@
 				B0D02FF51AE6123000B1E75F /* jcb.png in Resources */,
 				B0D02FF41AE6123000B1E75F /* discover@2x.png in Resources */,
 				B0C443491B9B8EBA00F456CE /* PreBookConfirmView.xib in Resources */,
+				B02A8E051B9F84D9003664A3 /* ImageDisclaimerView.xib in Resources */,
 				B0D02FED1AE6123000B1E75F /* cvc-amex.png in Resources */,
 				B0CB24B31B991418006A8282 /* USStateAbbreviations.plist in Resources */,
 				B0D02FEE1AE6123000B1E75F /* cvc-amex@2x.png in Resources */,
@@ -1111,8 +1121,10 @@
 				B0D02FF71AE6123000B1E75F /* mastercard.png in Resources */,
 				B0FE0F491AC6ED0000DAF635 /* BookView.xib in Resources */,
 				B0BB3F451B59DD3500DCCFE7 /* HotelNameFilterView.xib in Resources */,
+				B06BAB841B9F2B6A0081C331 /* MenuView.xib in Resources */,
 				B010E3841B4CCE7300CA8374 /* SortView.xib in Resources */,
 				B0C04AD51B5212AD002C89F2 /* NetworkProblemView.xib in Resources */,
+				B06BAB861B9F713F0081C331 /* SelectRoomFooterView.xib in Resources */,
 				B0D02FFE1AE6123000B1E75F /* textfield.png in Resources */,
 				B05BD6321AC1FF54002C2882 /* PlaceAutoCompleteTableViewCell.xib in Resources */,
 				B018C0421AD96A7600DDCE2E /* GuestDetailsView.xib in Resources */,

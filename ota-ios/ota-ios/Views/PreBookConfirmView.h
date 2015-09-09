@@ -8,15 +8,20 @@
 
 #import <UIKit/UIKit.h>
 #import "WotaButton.h"
+#import "WotaTappableView.h"
 
 @protocol PreBookConfirmDelegate <NSObject>
 
+- (void)clickTotalAmountLbl;
+- (void)clickAcknowledgeCancellationPolicyLbl;
 - (void)cancelBooking;
 - (void)confirmBooking;
 
 @end
 
 @interface PreBookConfirmView : UIView
+
+@property (nonatomic) BOOL acknowledged;
 
 @property (weak, nonatomic) id<PreBookConfirmDelegate> preBookDelegate;
 @property (weak, nonatomic) IBOutlet UILabel *hotelNameLabel;
@@ -25,9 +30,13 @@
 @property (weak, nonatomic) IBOutlet UILabel *departDateLabel;
 @property (weak, nonatomic) IBOutlet UILabel *roomDescriptionLabel;
 @property (weak, nonatomic) IBOutlet UILabel *totalChargesLabel;
-@property (weak, nonatomic) IBOutlet UILabel *refundableLabel;
 @property (weak, nonatomic) IBOutlet WotaButton *cancelButton;
 @property (weak, nonatomic) IBOutlet WotaButton *confirmButton;
+@property (weak, nonatomic) IBOutlet UILabel *acknowCancelLabel;
+@property (weak, nonatomic) IBOutlet WotaButton *acknowButton;
+@property (weak, nonatomic) IBOutlet UIView *checkMark;
+@property (weak, nonatomic) IBOutlet WotaTappableView *acknowCancelTouch;
+@property (weak, nonatomic) IBOutlet WotaTappableView *totalContainer;
 
 - (void)setupTheView;
 

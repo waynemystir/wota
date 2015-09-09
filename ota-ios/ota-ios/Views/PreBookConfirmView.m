@@ -14,15 +14,70 @@
 
 - (void)setupTheView {
     self.frame = CGRectMake(0, 64, 320, 504);
+    
+    UITapGestureRecognizer *ttgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickTotalAmtLabel:)];
+    ttgr.numberOfTapsRequired = ttgr.numberOfTouchesRequired = 1;
+    [_totalContainer addGestureRecognizer:ttgr];
+    
+    UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickAcknowLbl:)];
+    tgr.numberOfTapsRequired = tgr.numberOfTouchesRequired = 1;
+    _acknowCancelTouch.playClickSound = NO;
+    [_acknowCancelTouch addGestureRecognizer:tgr];
+    
+    [_acknowButton addTarget:self action:@selector(clickAcknowBtn:) forControlEvents:UIControlEventTouchUpInside];
     [_cancelButton addTarget:self action:@selector(clickCancel:) forControlEvents:UIControlEventTouchUpInside];
     [_confirmButton addTarget:self action:@selector(clickConfirm:) forControlEvents:UIControlEventTouchUpInside];
+    
     SelectionCriteria *sc = [SelectionCriteria singleton];
     NSDateFormatter *df = kPrettyDateFormatter();
     _arrivalDateLabel.text = [NSString stringWithFormat:@"Arrive: %@", [df stringFromDate:sc.arrivalDate]];
     _departDateLabel.text = [NSString stringWithFormat:@"Depart: %@", [df stringFromDate:sc.returnDate]];
-    _totalChargesLabel.layer.cornerRadius = WOTA_CORNER_RADIUS;
-    _totalChargesLabel.layer.borderWidth = 1.0f;
-    _totalChargesLabel.layer.borderColor = kTheColorOfMoney().CGColor;
+    
+    _totalContainer.layer.cornerRadius = WOTA_CORNER_RADIUS;
+    _totalContainer.layer.borderWidth = 1.0f;
+    _totalContainer.layer.borderColor = kTheColorOfMoney().CGColor;
+    _totalContainer.tapColor = kTheColorOfMoney();
+    
+    NSString *text = @"By confirming this booking, I acknowledge that I have read and accept the cancellation policy for the selected room.";
+    
+    NSDictionary *attribs = @{
+                              NSForegroundColorAttributeName: self.acknowCancelLabel.textColor,
+                              NSFontAttributeName: self.acknowCancelLabel.font
+                              };
+    NSMutableAttributedString *attributedText =
+    [[NSMutableAttributedString alloc] initWithString:text
+                                           attributes:attribs];
+    
+    NSRange redTextRange = [text rangeOfString:@"cancellation policy"];// * Notice that usage of rangeOfString in this case may cause some bugs - I use it here only for demonstration
+    [attributedText setAttributes:@{NSForegroundColorAttributeName:self.tintColor}
+                            range:redTextRange];
+    
+    self.acknowCancelLabel.attributedText = attributedText;
+    
+    self.acknowCancelTouch.borderColor = self.acknowCancelTouch.tapColor = self.acknowCancelTouch.untapColor = self.acknowCancelTouch.backgroundColor = [UIColor clearColor];
+    self.checkMark.layer.cornerRadius = WOTA_CORNER_RADIUS;
+}
+
+- (void)clickTotalAmtLabel:(UITapGestureRecognizer *)tgr {
+    if (!self.preBookDelegate) return;
+    [self.preBookDelegate clickTotalAmountLbl];
+}
+
+- (void)clickAcknowLbl:(UITapGestureRecognizer *)tgr {
+    if (!self.preBookDelegate) return;
+    [self.preBookDelegate clickAcknowledgeCancellationPolicyLbl];
+}
+
+- (void)clickAcknowBtn:(id)sender {
+    if (self.acknowledged) {
+        self.confirmButton.enabled = NO;
+        self.checkMark.hidden = YES;
+    } else {
+        self.confirmButton.enabled = YES;
+        self.checkMark.hidden = NO;
+    }
+    
+    self.acknowledged = !self.acknowledged;
 }
 
 - (void)clickCancel:(id)sender {

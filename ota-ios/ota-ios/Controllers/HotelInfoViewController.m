@@ -88,6 +88,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 @property (nonatomic) BOOL policiesLabelIsSet;
 @property (nonatomic, strong) NSString *paymentTypesBulletted;
 @property (weak, nonatomic) IBOutlet UILabel *pageNumberLabel;
+@property (weak, nonatomic) IBOutlet UIView *imageDisclaimerContainer;
 @property (weak, nonatomic) IBOutlet WotaTappableView *bookRoomContainer;
 @property (nonatomic, strong) MKMapView *mapView;
 @property (nonatomic, strong) NSString *locationString;
@@ -179,6 +180,9 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     tgr2b.numberOfTouchesRequired = 1;
     tgr2b.cancelsTouchesInView = YES;
     [_bookRoomContainer addGestureRecognizer:tgr2b];
+    
+    UIView *idv = [[NSBundle mainBundle] loadNibNamed:@"ImageDisclaimerView" owner:nil options:nil].firstObject;
+    [_imageDisclaimerContainer addSubview:idv];
     
     NSURL *iu = [NSURL URLWithString:[_eanHotel tripAdvisorRatingUrl]];
     [_tripAdvisorImageView setImageWithURL:iu placeholderImage:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
@@ -559,8 +563,12 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
         flf = _feesLabel.frame;
     }
     
+    CGRect idvf = _imageDisclaimerContainer.frame;
+    _imageDisclaimerContainer.frame = CGRectMake(idvf.origin.x, flf.origin.y + flf.size.height + 5.0f, idvf.size.width, idvf.size.height);
+    idvf = _imageDisclaimerContainer.frame;
+    
     CGRect barf = _bookRoomContainer.frame;
-    _bookRoomContainer.frame = CGRectMake(barf.origin.x, flf.origin.y + flf.size.height + 15.0f, barf.size.width, barf.size.height);
+    _bookRoomContainer.frame = CGRectMake(barf.origin.x, idvf.origin.y + idvf.size.height + 15.0f, barf.size.width, barf.size.height);
     barf = _bookRoomContainer.frame;
     
     _scrollViewOutlet.contentSize = CGSizeMake(_scrollViewOutlet.frame.size.width, barf.origin.y + barf.size.height + 67.0f);

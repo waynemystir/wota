@@ -85,7 +85,11 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 
 @property (nonatomic, weak) UIView *currentWmapView;
 
+@property (nonatomic, strong) UIView *menuView;
+
 #pragma mark Outlets
+
+@property (weak, nonatomic) IBOutlet WotaTappableView *menuContainer;
 
 @property (weak, nonatomic) IBOutlet UIView *whereToContainer;
 @property (weak, nonatomic) IBOutlet UITextField *whereToTextField;
@@ -329,6 +333,15 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     self.footerDatesBtn.titleLabel.adjustsFontSizeToFitWidth = YES;
     
     [self highlightWhereTo];
+    
+    self.menuContainer.borderColor = [UIColor clearColor];
+    self.menuContainer.tapColor = kWotaColorOne();
+    self.menuContainer.untapColor = [UIColor clearColor];
+    self.menuContainer.layer.cornerRadius = 0.0f;
+    UITapGestureRecognizer *menuTgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickMenu:)];
+    menuTgr.numberOfTapsRequired = menuTgr.numberOfTouchesRequired = 1;
+    menuTgr.cancelsTouchesInView = YES;
+    [self.menuContainer addGestureRecognizer:menuTgr];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -682,6 +695,8 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
                     if (ehlr.hotelList.count == 0) {
                         [wes handleNoHotels];
                         [wes tydieUpAfterHotelListReturned];
+                        
+                        wes.hotelsTableView.tableFooterView = nil;
                     } else {
                         [wes redrawMapAnnotationsWithCompletion:^{
                             [wes tydieUpAfterHotelListReturned];
@@ -690,6 +705,9 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
                         if (self.spinnerIsSwirling) {
                             [wes performSelector:@selector(tydieUpAfterHotelListReturned) withObject:nil afterDelay:0.4];
                         }
+                        
+                        NSArray *ia = [[NSBundle mainBundle] loadNibNamed:@"ImageDisclaimerView" owner:nil options:nil];
+                        wes.hotelsTableView.tableFooterView = ia.firstObject;
                     }
                 });
             });
@@ -1553,6 +1571,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     tf.text = @"";
     self.hotelTableViewDelegate.hotelData = [NSArray array];
     [self.hotelsTableView reloadData];
+    self.hotelsTableView.tableFooterView = nil;
     self.mapBackContainer.hidden = YES;
     [self letsFindHotelsWithSearchRadius:[SelectionCriteria singleton].zoomRadius];
 }
@@ -1584,6 +1603,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         tf.text = @"";
         self.hotelTableViewDelegate.hotelData = [NSArray array];
         [self.hotelsTableView reloadData];
+        self.hotelsTableView.tableFooterView = nil;
     } else if (!self.loadingGooglePlaceDetails) {
         if ([SelectionCriteria singleton].currentLocationIsSelectedPlace
             && ![SelectionCriteria singleton].currentLocationIsSet
@@ -1594,6 +1614,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         } else {
             self.hotelTableViewDelegate.hotelData = [NSArray array];
             [self.hotelsTableView reloadData];
+            self.hotelsTableView.tableFooterView = nil;
         }
     } else {
         self.clickedSearchWhileReverseGeocoding = YES;
@@ -1602,6 +1623,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
         tf.text = @"";
         self.hotelTableViewDelegate.hotelData = [NSArray array];
         [self.hotelsTableView reloadData];
+        self.hotelsTableView.tableFooterView = nil;
     }
     
     [self transitionToHotelSearchMode];
@@ -2357,6 +2379,40 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     HotelInfoViewController *hvc = [[HotelInfoViewController alloc] initWithHotel:hotel];
     [[LoadEanData sharedInstance:hvc] loadHotelDetailsWithId:[hotel.hotelId stringValue]];
     [self.navigationController pushViewController:hvc animated:YES];
+}
+
+#pragma mark Menu
+
+- (UIView *)menuView {
+    if (_menuView) return _menuView;
+    
+    NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"MenuView" owner:self options:nil];
+    _menuView = views.firstObject;
+    UIButton *cb = (UIButton *)[_menuView viewWithTag:246824];
+    [cb addTarget:self action:@selector(dropMenu) forControlEvents:UIControlEventTouchUpInside];
+    
+    return _menuView;
+}
+
+- (void)clickMenu:(UITapGestureRecognizer *)tgr {
+    __weak UIView *m = self.menuView;
+    m.frame = CGRectMake(0, 569, 320, 548);
+    [self.view addSubview:m];
+    
+    [UIView animateWithDuration:0.5 animations:^{
+        m.frame = CGRectMake(0, 20, 320, 548);
+    } completion:^(BOOL finished) {
+        ;
+    }];
+}
+
+- (void)dropMenu {
+    __weak UIView *m = self.menuView;
+    [UIView animateWithDuration:0.5 animations:^{
+        m.frame = CGRectMake(0, 569, 320, 548);
+    } completion:^(BOOL finished) {
+        ;
+    }];
 }
 
 @end
