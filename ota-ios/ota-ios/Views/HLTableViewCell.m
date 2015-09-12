@@ -9,20 +9,26 @@
 #import "HLTableViewCell.h"
 #import "AppEnvironment.h"
 
+#define degreesToRadians(x) (M_PI * x / 180.0)
+
 @implementation HLTableViewCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier hotelRating:(NSNumber *)hotelRating {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
+        
+        self.clipsToBounds = YES;
         
         _thumbImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 96, 96)];
         _thumbImageView.contentMode = UIViewContentModeScaleAspectFill;
         _thumbImageView.clipsToBounds = YES;
         [self.contentView addSubview:_thumbImageView];
         
-        _hotelNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(99, 5, 220, 26)];
+        _hotelNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(99, 5, 211, 26)];
         _hotelNameLabel.backgroundColor = [UIColor clearColor];
         _hotelNameLabel.textColor = [UIColor blackColor];
-        _hotelNameLabel.font = [UIFont boldSystemFontOfSize:15.5f];
+        _hotelNameLabel.font = [UIFont boldSystemFontOfSize:15.0f];
+        _hotelNameLabel.adjustsFontSizeToFitWidth = YES;
+        _hotelNameLabel.minimumScaleFactor = 0.98f;
         [self.contentView addSubview:_hotelNameLabel];
         
         _starBoard = [[StarBoard alloc] initWithFrame:CGRectMake(98, 35, 129, 26)];
@@ -47,6 +53,15 @@
         _cityLabel.textAlignment = NSTextAlignmentLeft;
         _cityLabel.font = [UIFont boldSystemFontOfSize:15.0f];
         [self.contentView addSubview:_cityLabel];
+        
+        _promoLabel = [[UILabel alloc] initWithFrame:CGRectMake(285, -8, 60, 27)];
+        _promoLabel.backgroundColor = kTheColorOfMoney();
+        _promoLabel.textColor = [UIColor whiteColor];
+        _promoLabel.textAlignment = NSTextAlignmentCenter;
+        _promoLabel.font = [UIFont boldSystemFontOfSize:11.0f];
+        _promoLabel.numberOfLines = 2;
+        _promoLabel.transform = CGAffineTransformMakeRotation(degreesToRadians(45));
+        [self.contentView addSubview:_promoLabel];
         
         UIView *separator = [[UILabel alloc] initWithFrame:CGRectMake(0, 95.5f, 320, 0.5f)];
         separator.backgroundColor = [UIColor blackColor];

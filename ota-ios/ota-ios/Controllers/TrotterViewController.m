@@ -2357,6 +2357,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     WotaMapAnnotatioin *wa = (WotaMapAnnotatioin *)annotation;
     WotaMKPinAnnotationView *annotationView = [[WotaMKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:nil];
     UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
+    iv.contentMode = UIViewContentModeScaleAspectFill;
     
     [iv setImageWithURL:[NSURL URLWithString:wa.imageUrl] placeholderImage:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
         // TODO: placeholder image

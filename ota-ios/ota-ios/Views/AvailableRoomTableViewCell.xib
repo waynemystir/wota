@@ -12,7 +12,7 @@
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="hc3-uT-WvZ" id="YKY-4e-kyr">
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <view tag="13" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Si8-AH-KtS" userLabel="borderView">
+                    <view clipsSubviews="YES" tag="13" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Si8-AH-KtS" userLabel="borderView">
                         <rect key="frame" x="2" y="2" width="316" height="125"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ivg-jm-Y5x" userLabel="roomImageView">

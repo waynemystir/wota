@@ -26,6 +26,7 @@
 @property (nonatomic, strong) NSString *hotelCountry;
 @property (nonatomic) NSUInteger numberOfRoomsRequested;
 @property (nonatomic, strong) NSString *checkInInstructions;
+@property (nonatomic, strong, readonly) NSString *checkInInstructionsStripped;
 @property (nonatomic, strong) NSNumber *tripAdvisorRating;
 @property (nonatomic) NSUInteger tripAdvisorReviewCount;
 @property (nonatomic, strong) NSString *tripAdvisorRatingUrl;

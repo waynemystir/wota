@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "LoadDataProtocol.h"
 
+extern void setWithIpAddress(BOOL withIp);
+
 @interface LoadEanData : NSObject
 
 @property (nonatomic, weak) id<LoadDataProtocol> delegate;

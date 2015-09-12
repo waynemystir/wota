@@ -18,5 +18,6 @@
 @property (nonatomic, strong) UILabel *hotelNameLabel;
 @property (nonatomic, strong) UILabel *roomRateLabel;
 @property (nonatomic, strong) UILabel *cityLabel;
+@property (nonatomic, strong) UILabel *promoLabel;
 
 @end

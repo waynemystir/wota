@@ -32,6 +32,13 @@
     
     EanHotelRoomReservationResponse *hrrr = [[EanHotelRoomReservationResponse alloc] init];
     
+    if ([idHrrr count] == 0) {
+        hrrr.isResponseEmpty = YES;
+        return hrrr;
+    } else {
+        hrrr.isResponseEmpty = NO;
+    }
+    
     hrrr.eanWsError = [self checkForEanError:idHrrr];
     if (hrrr.eanWsError) return hrrr;
     
@@ -79,6 +86,7 @@
     hrrr.cancelPolicyInfoList = [idHrrr objectForKey:@"CancelPolicyInfoList"];
     hrrr.nonRefundable = [[idHrrr objectForKey:@"nonRefundable"] boolValue];
     hrrr.rateOccupancyPerRoom = [[idHrrr objectForKey:@"rateOccupancyPerRoom"] integerValue];
+    hrrr.errorText = [idHrrr objectForKey:@"errorText"];
     
     return hrrr;
 }

@@ -68,6 +68,15 @@ NSString * const kNotificationHotelDataSorted = @"kNotificationHotelDataSorted";
     cell.roomRateLabel.text = [pf stringFromNumber:hotel.lowRate];//[NSNumber numberWithLong:3339993339]
     cell.cityLabel.text = hotel.city;
     
+    NSString *discount = hotel.roomRateDetails.rateInfo.chargeableRateInfo.discountPercentString;
+    if (hotel.roomRateDetails.rateInfo.promo && !stringIsEmpty(discount)) {
+        cell.promoLabel.hidden = NO;
+        cell.promoLabel.text = [NSString stringWithFormat:@"\n-%@", discount];
+    } else {
+        cell.promoLabel.hidden = YES;
+        cell.promoLabel.text = @"";
+    }
+    
     return cell;
 }
 

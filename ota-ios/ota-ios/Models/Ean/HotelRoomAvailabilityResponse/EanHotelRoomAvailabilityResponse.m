@@ -124,4 +124,12 @@ NSString * const kFreeCancelString = @"Free Cancellation by";
     return [_hotelName stringByConvertingHTMLToPlainText];
 }
 
+- (NSString *)checkInInstructionsStripped {
+    NSString *cii = [_checkInInstructions stringByReplacingOccurrencesOfString:@"<ul><li>" withString:@"<br/> ● "];
+    cii = [cii stringByReplacingOccurrencesOfString:@"<li>" withString:@"<br/> ● "];
+    cii = [cii stringByReplacingOccurrencesOfString:@"<br /><p>" withString:@"<p>"];
+    cii = [cii stringByReplacingOccurrencesOfString:@"<p>" withString:@"<br/><br/>"];
+    return [@"" stringByAppendingString:stringByStrippingHTMLReplaceBreak(cii, @"\n ")];
+}
+
 @end

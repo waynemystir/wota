@@ -505,7 +505,9 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     _policiesTitle.frame = CGRectMake(pf.origin.x, alf.origin.y + alf.size.height + 15.0f, pf.size.width, pf.size.height);
     pf = _policiesTitle.frame;
     
-    NSString *pt = [NSString stringWithFormat:@"%@%@", hd.checkInInstructionsFormatted, hd.propertyInformationFormatted];
+    NSString *pcid = stringIsEmpty(hd.checkInInstructionsFormatted) ? @"" : @"\n";
+    pcid = stringIsEmpty(hd.hotelPolicy) ? @"" : [NSString stringWithFormat:@"%@● ", pcid];
+    NSString *pt = [NSString stringWithFormat:@"%@%@%@%@", hd.checkInInstructionsFormatted, pcid, hd.hotelPolicy, hd.propertyInformationFormatted];
     _policiesLabel.text = pt;
 //    [_policiesLabel sizeToFit];
     CGRect plf = _policiesLabel.frame;

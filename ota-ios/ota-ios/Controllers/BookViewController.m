@@ -14,6 +14,8 @@
 #import "GuestInfo.h"
 #import "EanCredentials.h"
 #import "NetworkProblemResponder.h"
+#import "LoadEanData.h"
+#import "WotaButton.h"
 
 @interface BookViewController ()
 
@@ -27,6 +29,13 @@
 @property (nonatomic, strong) NSNumber *confirmNumber;
 @property (weak, nonatomic) IBOutlet WotaTappableView *previousScreenView;
 @property (weak, nonatomic) IBOutlet UILabel *errorTitle;
+@property (weak, nonatomic) IBOutlet UIView *pendingOverlay;
+@property (weak, nonatomic) IBOutlet WotaButton *callCustSuppUS;
+@property (weak, nonatomic) IBOutlet WotaButton *callCustSuppEU;
+@property (weak, nonatomic) IBOutlet WotaTappableView *linkToSelfServeView;
+@property (weak, nonatomic) IBOutlet WotaTappableView *returnHotelSrchAfterPendingView;
+@property (weak, nonatomic) IBOutlet UITextView *pendingItineraryTextView;
+@property (weak, nonatomic) IBOutlet UIView *pendingItineraryContainer;
 
 @end
 
@@ -62,7 +71,7 @@
 #pragma mark LoadDataProtocol methods
 
 - (void)requestStarted:(NSURLConnection *)connection {
-    NSLog(@"%@.%@.:::%@", self.class, NSStringFromSelector(_cmd), [[[connection currentRequest] URL] absoluteString]);
+    TrotterLog(@"%@.%@.:::%@", self.class, NSStringFromSelector(_cmd), [[[connection currentRequest] URL] absoluteString]);
 }
 
 - (void)requestFinished:(NSData *)responseData dataType:(LOAD_DATA_TYPE)dataType {
@@ -71,11 +80,52 @@
         return;
     
     EanHotelRoomReservationResponse *hrrr = [EanHotelRoomReservationResponse eanObjectFromApiResponseData:responseData];
-    if (hrrr.eanWsError) {
-        [self handleProblems:hrrr.eanWsError.presentationMessage];
-    } else if (-1 == hrrr.itineraryId || !hrrr.processedWithConfirmation || hrrr.confirmationNumbers.count == 0
-                    || ![hrrr.confirmationNumbers.firstObject isKindOfClass:[NSNumber class]]) {
+    if (!hrrr || hrrr.isResponseEmpty) {
+        
         [self handleProblems:nil];
+        
+    } else if (hrrr.eanWsError) {
+        
+        if ([hrrr.eanWsError.eweCategory isEqualToString:@"PRICE_MISMATCH"]) {
+            
+            setWithIpAddress(NO);
+            NSMutableArray *controllers = [self.navigationController.viewControllers mutableCopy];
+            NSUInteger bvcIndex = [controllers indexOfObject:self];
+            if (bvcIndex != NSNotFound) {
+                [controllers removeObjectAtIndex:(bvcIndex - 1)];
+                self.navigationController.viewControllers = [NSArray arrayWithArray:controllers];
+            }
+            
+            [self handleProblems:hrrr.eanWsError.presentationMessage];
+            
+        } else if ([hrrr.eanWsError.eweHandling isEqualToString:@"AGENT_ATTENTION"]) {
+            
+            [self handlePendingState:hrrr.eanWsError.itineraryId];
+            
+        } else {
+            
+            [self handleProblems:hrrr.eanWsError.presentationMessage];
+            
+        }
+        
+    } else if ([hrrr.reservationStatusCode isEqualToString:@"PS"]) {
+      
+        [self handlePendingState:hrrr.itineraryId];
+        
+    } else if ([hrrr.reservationStatusCode isEqualToString:@"UC"]) {
+        
+        // TODO: I need to cancel these bookings and message them as "inventory unavailable" to the customer to avoid duplicate bookings. If left alone, EAN will continue to attempt to process these bookings and may eventually confirm them without further notice.
+        
+    } else if ([hrrr.reservationStatusCode isEqualToString:@"CX"] ||
+               [hrrr.reservationStatusCode isEqualToString:@"ER"] ||
+               [hrrr.reservationStatusCode isEqualToString:@"DT"] ||
+               -1 == hrrr.itineraryId ||
+               !hrrr.processedWithConfirmation ||
+               hrrr.confirmationNumbers.count == 0 ||
+               ![hrrr.confirmationNumbers.firstObject isKindOfClass:[NSNumber class]]) {
+        
+        [self handleProblems:hrrr.errorText];
+        
     } else {
         self.itinNumber = hrrr.itineraryId;
         self.ItineraryTextView.text = [NSString stringWithFormat:@"%@", @(self.itinNumber)];
@@ -90,6 +140,7 @@
         tgr2.numberOfTapsRequired = tgr2.numberOfTouchesRequired = 1;
         [self.viewOrCancelView addGestureRecognizer:tgr2];
         
+        self.pendingOverlay.hidden = YES;
         [self dropDaSpinner];
         
         __weak typeof(self) wes = self;
@@ -100,11 +151,40 @@
         }];
     }
     
-    NSString *respString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
-    NSLog(@"%@.%@:::%@", self.class, NSStringFromSelector(_cmd), respString);
+//    NSString *respString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
+//    TrotterLog(@"%@.%@:::%@", self.class, NSStringFromSelector(_cmd), respString);
+}
+
+- (void)handlePendingState:(NSInteger)itineraryNumber {
+    self.itinNumber = itineraryNumber;
+    if (self.itinNumber > 0) {
+        self.pendingItineraryTextView.text = [NSString stringWithFormat:@"%@", @(self.itinNumber)];
+    } else {
+        self.pendingItineraryContainer.hidden = YES;
+    }
+    
+    self.pendingOverlay.hidden = NO;
+    
+    [self.callCustSuppUS addTarget:self action:@selector(clickCustomerSupportUS:) forControlEvents:UIControlEventTouchUpInside];
+    [self.callCustSuppEU addTarget:self action:@selector(clickCustomerSupportEU:) forControlEvents:UIControlEventTouchUpInside];
+    
+    UITapGestureRecognizer *tgrss = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickSelfServiceLink:)];
+    tgrss.numberOfTapsRequired = tgrss.numberOfTouchesRequired = 1;
+    [self.linkToSelfServeView addGestureRecognizer:tgrss];
+    
+    UITapGestureRecognizer *tgr1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickReturnToMenu:)];
+    tgr1.numberOfTapsRequired = tgr1.numberOfTouchesRequired = 1;
+    [self.returnHotelSrchAfterPendingView addGestureRecognizer:tgr1];
+    
+    [self dropDaSpinner];
 }
 
 - (void)handleProblems:(NSString *)message {
+    [self handleProblems:message titleMsg:nil];
+}
+
+- (void)handleProblems:(NSString *)message titleMsg:(NSString *)titleMsg {
+    self.pendingOverlay.hidden = YES;
     if (!stringIsEmpty(message)) {
         self.problemMessage.text = [NSString stringWithFormat:@"%@\n\n%@", self.problemMessage.text, message];
         CGRect pmf = self.problemMessage.frame;
@@ -118,6 +198,11 @@
     tgr.numberOfTapsRequired = tgr.numberOfTouchesRequired = 1;
     [self.previousScreenView addGestureRecognizer:tgr];
     self.errorTitle.hidden = NO;
+    if (titleMsg) {
+        self.errorTitle.adjustsFontSizeToFitWidth = YES;
+        self.errorTitle.minimumScaleFactor = 0.6f;
+        self.errorTitle.text = titleMsg;
+    }
     self.previousScreenView.hidden = NO;
     self.problemMessage.hidden = NO;
     [self dropDaSpinner];
@@ -127,7 +212,9 @@
     [self dropDaSpinner];
     __weak typeof(self) wes = self;
     [NetworkProblemResponder launchWithSuperView:self.view headerTitle:nil messageString:nil completionCallback:^{
-        [wes.navigationController popViewControllerAnimated:YES];
+//        [wes.navigationController popViewControllerAnimated:YES];
+        
+        // TODO: I need to place an itinerary request using only the affiliateConfirmationId
     }];
 }
 
@@ -158,6 +245,27 @@
     NSString *urlString = [NSString stringWithFormat:@"https://travelnow.com/selfService/%@/searchByIdAndEmail?itineraryId=%@&email=%@", [EanCredentials CID], @(self.itinNumber), [[GuestInfo singleton] email]];
     
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
+}
+
+- (void)clickCustomerSupportUS:(id)sender {
+    [self makeTheCall:@"1-800-780-5733"];
+}
+
+- (void)clickCustomerSupportEU:(id)sender {
+    [self makeTheCall:@"00-800-11-20-11-40"];
+}
+
+- (void)clickSelfServiceLink:(UITapGestureRecognizer *)tgr {
+    NSString *urlString = [NSString stringWithFormat:@"https://www.travelnow.com/selfService/482231/searchform"];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
+}
+
+#pragma mark Making A Call
+
+- (void)makeTheCall:(NSString *)phoneNumber {
+    NSString *cleanedString = [[phoneNumber componentsSeparatedByCharactersInSet:[[NSCharacterSet characterSetWithCharactersInString:@"0123456789-+()"] invertedSet]] componentsJoinedByString:@""];
+    NSURL *telURL = [NSURL URLWithString:[NSString stringWithFormat:@"telprompt:%@", cleanedString]];
+    [[UIApplication sharedApplication] openURL:telURL];
 }
 
 @end

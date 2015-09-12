@@ -13,6 +13,12 @@
 #import "ChildTraveler.h"
 #import "EanCredentials.h"
 
+static BOOL withIpAddressForBooking = YES;
+
+void setWithIpAddress(BOOL withIp) {
+    withIpAddressForBooking = withIp;
+}
+
 typedef NS_ENUM(NSUInteger, HTTP_METHOD) {
     HTTP_GET = 0,
     HTTP_POST = 1
@@ -136,8 +142,15 @@ NSString * kEanCustomerUserAgent() {
     return _customerUserAgent;
 }
 
-NSString * kEanCommonParameters() {
-    return [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@",
+NSString * kEanCommonParameters(BOOL withIpAddress) {
+    NSString *ipAddress = @"";
+    if (withIpAddress) {
+        ipAddress = [NSString stringWithFormat:@"&%@=%@", EAN_PK_CUSTIPADD, [AppDelegate externalIP]];
+    } else {
+        withIpAddressForBooking = YES;
+    }
+    
+    return [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@%@&%@=%@&%@=%@",
             EAN_PK_API_EXPERIENCE, EAN_API_EXPERIENCE,
             EAN_PK_CID, [EanCredentials CID],
             EAN_PK_API_KEY, [EanCredentials apiKey],
@@ -145,7 +158,7 @@ NSString * kEanCommonParameters() {
             EAN_PK_MINOR_REV, EAN_MINOR_REV,
             EAN_PK_LOCALE, [[NSLocale currentLocale] objectForKey:NSLocaleIdentifier],
             EAN_PK_CURRENCY_CODE, [[NSLocale currentLocale] objectForKey:NSLocaleCurrencyCode],
-            EAN_PK_CUSTIPADD, [AppDelegate externalIP],
+            ipAddress,
             EAN_PK_CUSTSESSID, kEanCustomerSessionId(),
             EAN_PK_CUSTUSERAGENT, kEanCustomerUserAgent()];
 }
@@ -154,7 +167,7 @@ NSString * kEanCommonParameters() {
 
 NSString * kEanRequest(NSString * endPoint) {
     return [NSString stringWithFormat:@"%@/%@/%@?%@",
-            EAN_GEN_REQ_BASE_URL, EAN_URL_EXT, endPoint, kEanCommonParameters()];
+            EAN_GEN_REQ_BASE_URL, EAN_URL_EXT, endPoint, kEanCommonParameters(YES)];
 }
 
 NSString * kURLeanHotelList() {
@@ -175,7 +188,7 @@ NSString * kURLeanAvailRooms() {
 
 NSString * kURLeanBookReservation() {
     return [NSString stringWithFormat:@"%@/%@/%@?%@",
-            EAN_BOK_REQ_BASE_URL, EAN_URL_EXT, EAN_BOOK_RESERVATION, kEanCommonParameters()];
+            EAN_BOK_REQ_BASE_URL, EAN_URL_EXT, EAN_BOOK_RESERVATION, kEanCommonParameters(withIpAddressForBooking)];
 }
 
 @interface LoadEanData () <NSURLConnectionDelegate, NSURLConnectionDataDelegate>
@@ -205,7 +218,13 @@ NSString * kURLeanBookReservation() {
 
 - (void)fireOffConnectionWithURL:(NSURL *)url httpMethod:(HTTP_METHOD)httpMethod {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    [request setTimeoutInterval:URL_REQUEST_TIMEOUT];
+    
+    if ([[url absoluteString] containsString:EAN_BOOK_RESERVATION])
+        // I chose 67 seconds because EAN servers have a 60 second timeout
+        // http://developer.ean.com/docs/error-handling/special-cases/prevent-duplicates
+        [request setTimeoutInterval:67];
+    else
+        [request setTimeoutInterval:URL_REQUEST_TIMEOUT];
     
     switch (httpMethod) {
         case HTTP_GET: {

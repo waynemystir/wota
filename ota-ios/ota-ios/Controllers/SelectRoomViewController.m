@@ -81,6 +81,7 @@ NSUInteger const kPickerContainerDoneButton = 171737;
 NSUInteger const kFlagViewTag = 51974123;
 NSUInteger const kCVVViewTag = 171738;
 NSUInteger const kCVVOverlayTag = 171739;
+NSUInteger const kPromoLabelTag = 171740;
 
 @interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, SelectBedTypeDelegate, SelectSmokingPrefDelegate, NavigationDelegate, CountryPickerDelegate, StatePickerDelegate, PreBookConfirmDelegate>
 
@@ -213,7 +214,7 @@ NSUInteger const kCVVOverlayTag = 171739;
         [mutInfoPopupHeadingDict setObject:@"Complimentary" forKey:@(kRoomValueAddTag)];
         _infoPopupHeadingDict = [NSDictionary dictionaryWithDictionary:mutInfoPopupHeadingDict];
         
-        _selectRoomLifeTimer = [NSTimer timerWithTimeInterval:(60 * 30) target:self selector:@selector(removeThisControllerFromNavigationStack:) userInfo:nil repeats:NO];
+        _selectRoomLifeTimer = [NSTimer timerWithTimeInterval:(60 * 20) target:self selector:@selector(removeThisControllerFromNavigationStack:) userInfo:nil repeats:NO];
         
         [[NSRunLoop currentRunLoop] addTimer:_selectRoomLifeTimer forMode:NSDefaultRunLoopMode];
     }
@@ -518,13 +519,15 @@ NSUInteger const kCVVOverlayTag = 171739;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *cellIdentifier = @"AvailableRoomCellIdentifier";
-    AvailableRoomTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+//    NSString *cellIdentifier = @"AvailableRoomCellIdentifier";
+//    AvailableRoomTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+//    
+//    if (nil == cell) {
+//        [tableView registerNib:[UINib nibWithNibName:@"AvailableRoomTableViewCell" bundle:nil] forCellReuseIdentifier:cellIdentifier];
+//        cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+//    }
     
-    if (nil == cell) {
-        [tableView registerNib:[UINib nibWithNibName:@"AvailableRoomTableViewCell" bundle:nil] forCellReuseIdentifier:cellIdentifier];
-        cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-    }
+    AvailableRoomTableViewCell *cell = [[NSBundle mainBundle] loadNibNamed:@"AvailableRoomTableViewCell" owner:nil options:nil].firstObject;
     
     // Set these so that the cell expansion and compression work well
     // Curtesy of http://stackoverflow.com/questions/10220565/expanding-uitableviewcell
@@ -568,6 +571,23 @@ NSUInteger const kCVVOverlayTag = 171739;
     
 //    [self addRoomImageGradient:cell.roomImageViewOutlet];
     [cell.roomImageViewOutlet setImageWithURL:[NSURL URLWithString:room.roomImage.imageUrl] placeholderImage:self.placeholderImage];
+    
+    NSString *discount = room.rateInfo.chargeableRateInfo.discountPercentString;
+    if (room.rateInfo.promo && !stringIsEmpty(discount)) {
+        UILabel *promoLabel = [[UILabel alloc] initWithFrame:CGRectMake(280, -6, 60, 27)];
+        promoLabel.tag = 87326401;
+        promoLabel.backgroundColor = kTheColorOfMoney();
+        promoLabel.text = [NSString stringWithFormat:@"\n-%@", discount];
+        promoLabel.textColor = [UIColor whiteColor];
+        promoLabel.textAlignment = NSTextAlignmentCenter;
+        promoLabel.font = [UIFont boldSystemFontOfSize:11.0f];
+        promoLabel.numberOfLines = 2;
+        promoLabel.transform = CGAffineTransformMakeRotation((M_PI * 45 / 180.0));
+        [cell.contentView.subviews.firstObject addSubview:promoLabel];
+    } else {
+        UIView *w = [cell.contentView.subviews.firstObject viewWithTag:87326401];
+        [w removeFromSuperview];
+    }
     
     [self addPriceGradient:cell.priceGradientOutlet];
     [self addBottomGradient:cell.bottomGradientOutlet];
@@ -647,7 +667,17 @@ NSUInteger const kCVVOverlayTag = 171739;
     nonreundLongLabel.text = room.rateInfo.nonRefundableLongString;
     
     UILabel *rtdL = (UILabel *) [_tableViewPopOut viewWithTag:kRoomTypeDescrLongTag];
-    rtdL.text = room.roomType.descriptionLongStripped;
+    rtdL.text = [NSString stringWithFormat:@"%@%@", room.roomType.descriptionLongStripped, self.eanHrar.checkInInstructionsStripped];
+    
+    UILabel *promoLabel = (UILabel *) [_tableViewPopOut viewWithTag:kPromoLabelTag];
+    NSString *discount = room.rateInfo.chargeableRateInfo.discountPercentString;
+    if (room.rateInfo.promo && !stringIsEmpty(discount)) {
+        promoLabel.text = [NSString stringWithFormat:@"\n-%@", discount];
+        promoLabel.hidden = NO;
+    } else {
+        promoLabel.text = @"";
+        promoLabel.hidden = YES;
+    }
     
     [self.bedTypeButton setTitle:room.selectedBedType.bedTypeDescription forState:UIControlStateNormal];
     [self.smokingButton setTitle:[SelectSmokingPreferenceDelegateImplementation smokingPrefStringForEanSmokeCode:room.selectedSmokingPreference] forState:UIControlStateNormal];
@@ -815,6 +845,16 @@ NSUInteger const kCVVOverlayTag = 171739;
     rtdL.numberOfLines = 5;
     rtdL.font = [UIFont systemFontOfSize:12.0f];
     [borderView addSubview:rtdL];
+    
+    UILabel *promoLabel = [[UILabel alloc] initWithFrame:CGRectMake(280, -6, 60, 27)];
+    promoLabel.tag = kPromoLabelTag;
+    promoLabel.backgroundColor = kTheColorOfMoney();
+    promoLabel.textColor = [UIColor whiteColor];
+    promoLabel.textAlignment = NSTextAlignmentCenter;
+    promoLabel.font = [UIFont boldSystemFontOfSize:11.0f];
+    promoLabel.numberOfLines = 2;
+    promoLabel.transform = CGAffineTransformMakeRotation((M_PI * 45 / 180.0));
+    [borderView addSubview:promoLabel];
     
     [rtdL addGestureRecognizer:[self loadInfoPopupTapGesture]];
     [nonreundLongLabel addGestureRecognizer:[self loadInfoPopupTapGesture]];
@@ -2741,11 +2781,11 @@ NSUInteger const kCVVOverlayTag = 171739;
     NSString *expYear = expArr[1];
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"MM"];
+    [dateFormatter setDateFormat:@"MMMM"];
+    dateFormatter.locale = [NSLocale currentLocale];
     NSDate *daDate = [dateFormatter dateFromString:expMonth];
-    NSString *nExpMonth = [dateFormatter stringFromDate:daDate];
+    NSInteger intExpMonth = [[NSCalendar currentCalendar] component:NSCalendarUnitMonth fromDate:daDate];
     
-    NSInteger intExpMonth = [nExpMonth integerValue];
     NSInteger intExpYear = [expYear integerValue];
     
     NSDateComponents *components = [[NSCalendar currentCalendar] components:NSCalendarUnitMonth|NSCalendarUnitYear fromDate:[NSDate date]];

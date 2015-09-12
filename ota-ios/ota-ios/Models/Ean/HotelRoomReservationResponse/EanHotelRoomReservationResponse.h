@@ -35,6 +35,8 @@
 @property (nonatomic, strong) NSDictionary *cancelPolicyInfoList;
 @property (nonatomic) BOOL nonRefundable;
 @property (nonatomic) NSInteger rateOccupancyPerRoom;
+@property (nonatomic, strong) NSString *errorText;
 @property (nonatomic, strong) EanWsError *eanWsError;
+@property (nonatomic) BOOL isResponseEmpty;
 
 @end

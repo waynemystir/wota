@@ -28,6 +28,9 @@
 @property (nonatomic, strong) NSNumber *sumOfHotelFees;
 @property (nonatomic, strong, readonly) NSNumber *totalPlusHotelFees;
 @property (nonatomic, strong) NSString *rateType;
+@property (nonatomic, strong) NSNumber *promoId;
+@property (nonatomic, strong) NSString *promoDescription;
+@property (nonatomic, strong) NSString *promoType;
 @property (nonatomic) NSUInteger currentAllotment;
 @property (nonatomic) BOOL guaranteeRequired;
 @property (nonatomic) BOOL depositRequired;

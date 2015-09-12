@@ -86,6 +86,17 @@
         cri.surchargesArray = [NSArray arrayWithArray:mutSurchargesArray];
     }
     
+    if ([cri.averageBaseRate isEqual:@0]) {
+        cri.discountPercentString = @"";
+    } else {
+        float v = ([cri.averageBaseRate floatValue] - [cri.averageRate floatValue]) / [cri.averageBaseRate floatValue];
+        if (v <= 0 || v > 1.0) cri.discountPercentString = @"";
+        else {
+            int vs = roundf(100 * v);
+            cri.discountPercentString = [NSString stringWithFormat:@"%d%%", vs];
+        }
+    }
+    
     return cri;
 }
 

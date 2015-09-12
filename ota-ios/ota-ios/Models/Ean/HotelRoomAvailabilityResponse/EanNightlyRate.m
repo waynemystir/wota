@@ -23,6 +23,16 @@
     nr.promo = [[dict objectForKey:@"@promo"] boolValue];
     nr.rate = [NSNumber numberWithDouble:[[dict objectForKey:@"@rate"] doubleValue]];
     nr.baseRate = [NSNumber numberWithDouble:[[dict objectForKey:@"@baseRate"] doubleValue]];
+    if ([nr.baseRate isEqual:@0]) {
+        nr.discountPercentString = @"";
+    } else {
+        float v = ([nr.baseRate floatValue] - [nr.rate floatValue]) / [nr.baseRate floatValue];
+        if (v <= 0 || v > 1.0) nr.discountPercentString = @"";
+        else {
+            int vs = roundf(100 * v);
+            nr.discountPercentString = [NSString stringWithFormat:@"%d%%", vs];
+        }
+    }
     return nr;
 }
 
