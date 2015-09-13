@@ -36,6 +36,7 @@ NSString * const EAN_HOTEL_INFO = @"hotel/v3/info";
 NSString * const EAN_PAYMENT_TYPES = @"hotel/v3/paymentInfo";
 NSString * const EAN_ROOMS_AVAILABLE = @"hotel/v3/avail";
 NSString * const EAN_BOOK_RESERVATION = @"hotel/v3/res";
+NSString * const EAN_ITINERARY_REQ = @"hotel/v3/itin";
 NSString * const EAN_GEO_SEARCH = @"hotel/v3/geoSearch";
 
 #pragma mark URL parameter keys
@@ -191,6 +192,10 @@ NSString * kURLeanBookReservation() {
             EAN_BOK_REQ_BASE_URL, EAN_URL_EXT, EAN_BOOK_RESERVATION, kEanCommonParameters(withIpAddressForBooking)];
 }
 
+NSString * kURLeanItinReq() {
+    return kEanRequest(EAN_ITINERARY_REQ);
+}
+
 @interface LoadEanData () <NSURLConnectionDelegate, NSURLConnectionDataDelegate>
 
 @property (nonatomic, strong) NSMutableData *responseData;
@@ -222,7 +227,7 @@ NSString * kURLeanBookReservation() {
     if ([[url absoluteString] containsString:EAN_BOOK_RESERVATION])
         // I chose 67 seconds because EAN servers have a 60 second timeout
         // http://developer.ean.com/docs/error-handling/special-cases/prevent-duplicates
-        [request setTimeoutInterval:67];
+        [request setTimeoutInterval:10];
     else
         [request setTimeoutInterval:URL_REQUEST_TIMEOUT];
     
@@ -493,6 +498,15 @@ NSString * kURLeanBookReservation() {
     [self fireOffConnectionWithURL:url httpMethod:HTTP_POST];
 }
 
+- (void)loadItineraryWithAffiliateConfirmationId:(NSUUID *)affiliateConfirmationId {
+    NSString *urlString = [[NSString stringWithFormat:@"%@&%@=%@",
+                            kURLeanItinReq(),
+                            EAN_PK_AFFILIATE_CONFIRMATION_ID, [affiliateConfirmationId UUIDString]] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    
+    NSURL *url = [NSURL URLWithString:urlString];
+    [self fireOffConnectionWithURL:url httpMethod:HTTP_GET];
+}
+
 #pragma mark NSURLConnectionDataDelegate methods
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
@@ -529,6 +543,10 @@ NSString * kURLeanBookReservation() {
         
         [self.delegate requestFinished:self.responseData dataType:LOAD_EAN_BOOK];
         
+    } else if ([urlString containsString:EAN_ITINERARY_REQ]) {
+        
+        [self.delegate requestFinished:self.responseData dataType:LOAD_EAN_ITIN];
+        
     } else {
         assert(false);
     }
@@ -540,8 +558,39 @@ NSString * kURLeanBookReservation() {
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     NSLog(@"%@.%@ ERROR:%@ URL:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), [error localizedDescription], [[[connection currentRequest] URL] absoluteString]);
     
+    NSString *urlString = [[[connection currentRequest] URL] absoluteString];
+    LOAD_DATA_TYPE dt;
+    
+    if ([urlString containsString:EAN_H0TEL_LIST]) {
+        
+        dt = LOAD_EAN_HOTELS_LIST;
+        
+    } else if ([urlString containsString:EAN_HOTEL_INFO]) {
+        
+        dt = LOAD_EAN_HOTEL_DETAILS;
+        
+    } else if ([urlString containsString:EAN_PAYMENT_TYPES]) {
+        
+        dt = LOAD_EAN_PAYMENT_TYPES;
+        
+    } else if ([urlString containsString:EAN_ROOMS_AVAILABLE]) {
+        
+        dt = LOAD_EAN_AVAILABLE_ROOMS;
+        
+    } else if ([urlString containsString:EAN_BOOK_RESERVATION]) {
+        
+        dt = LOAD_EAN_BOOK;
+        
+    } else if ([urlString containsString:EAN_ITINERARY_REQ]) {
+        
+        dt = LOAD_EAN_ITIN;
+        
+    } else {
+        assert(false);
+    }
+    
     if ([[error localizedDescription] containsString:@"timed out"]) {
-        [self.delegate requestTimedOut];
+        [self.delegate requestTimedOut:dt];
     } else if ([[error localizedDescription] containsString:@"offline"]) {
         [self.delegate requestFailedOffline];
     } else {

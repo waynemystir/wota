@@ -163,6 +163,9 @@
 		B0D02FFE1AE6123000B1E75F /* textfield.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D02FE01AE6123000B1E75F /* textfield.png */; };
 		B0D02FFF1AE6123000B1E75F /* textfield@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B0D02FE11AE6123000B1E75F /* textfield@2x.png */; };
 		B0D030021AE7380F00B1E75F /* PaymentDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D030011AE7380F00B1E75F /* PaymentDetails.m */; };
+		B0D3D20D1BA4ACA9001FD5D3 /* EanHotelItineraryResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D3D20C1BA4ACA9001FD5D3 /* EanHotelItineraryResponse.m */; };
+		B0D3D2101BA4C25D001FD5D3 /* EanHotelConfirmation.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D3D20F1BA4C25D001FD5D3 /* EanHotelConfirmation.m */; };
+		B0D3D2131BA4D8C3001FD5D3 /* EanItinerary.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D3D2121BA4D8C3001FD5D3 /* EanItinerary.m */; };
 		B0DF52341ADC74D400136661 /* GooglePlaceTableViewDelegateImplementation.m in Sources */ = {isa = PBXBuildFile; fileRef = B0DF52331ADC74D400136661 /* GooglePlaceTableViewDelegateImplementation.m */; };
 		B0DF52371ADC77BA00136661 /* PostalResultsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B0DF52361ADC77BA00136661 /* PostalResultsTableViewCell.m */; };
 		B0DF52391ADC77F100136661 /* PostResultsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0DF52381ADC77F100136661 /* PostResultsTableViewCell.xib */; };
@@ -441,6 +444,12 @@
 		B0D02FE11AE6123000B1E75F /* textfield@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "textfield@2x.png"; sourceTree = "<group>"; };
 		B0D030001AE7380F00B1E75F /* PaymentDetails.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaymentDetails.h; sourceTree = "<group>"; };
 		B0D030011AE7380F00B1E75F /* PaymentDetails.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaymentDetails.m; sourceTree = "<group>"; };
+		B0D3D20B1BA4ACA9001FD5D3 /* EanHotelItineraryResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanHotelItineraryResponse.h; sourceTree = "<group>"; };
+		B0D3D20C1BA4ACA9001FD5D3 /* EanHotelItineraryResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanHotelItineraryResponse.m; sourceTree = "<group>"; };
+		B0D3D20E1BA4C25D001FD5D3 /* EanHotelConfirmation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanHotelConfirmation.h; sourceTree = "<group>"; };
+		B0D3D20F1BA4C25D001FD5D3 /* EanHotelConfirmation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanHotelConfirmation.m; sourceTree = "<group>"; };
+		B0D3D2111BA4D8C3001FD5D3 /* EanItinerary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanItinerary.h; sourceTree = "<group>"; };
+		B0D3D2121BA4D8C3001FD5D3 /* EanItinerary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanItinerary.m; sourceTree = "<group>"; };
 		B0DF52321ADC74D400136661 /* GooglePlaceTableViewDelegateImplementation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GooglePlaceTableViewDelegateImplementation.h; sourceTree = "<group>"; };
 		B0DF52331ADC74D400136661 /* GooglePlaceTableViewDelegateImplementation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GooglePlaceTableViewDelegateImplementation.m; sourceTree = "<group>"; };
 		B0DF52351ADC77BA00136661 /* PostalResultsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostalResultsTableViewCell.h; sourceTree = "<group>"; };
@@ -519,6 +528,7 @@
 				B0F554971B13B97F00E9B805 /* PaymentType */,
 				B09C5EA71AD1A99D00A3D7E8 /* HotelRoomAvailabilityResponse */,
 				B0A87D651AD4B131001505A6 /* HotelRoomReservationResponse */,
+				B0D3D20A1BA4AC30001FD5D3 /* ItineraryResponse */,
 			);
 			path = Ean;
 			sourceTree = "<group>";
@@ -988,6 +998,19 @@
 			path = Cards;
 			sourceTree = "<group>";
 		};
+		B0D3D20A1BA4AC30001FD5D3 /* ItineraryResponse */ = {
+			isa = PBXGroup;
+			children = (
+				B0D3D20B1BA4ACA9001FD5D3 /* EanHotelItineraryResponse.h */,
+				B0D3D20C1BA4ACA9001FD5D3 /* EanHotelItineraryResponse.m */,
+				B0D3D2111BA4D8C3001FD5D3 /* EanItinerary.h */,
+				B0D3D2121BA4D8C3001FD5D3 /* EanItinerary.m */,
+				B0D3D20E1BA4C25D001FD5D3 /* EanHotelConfirmation.h */,
+				B0D3D20F1BA4C25D001FD5D3 /* EanHotelConfirmation.m */,
+			);
+			name = ItineraryResponse;
+			sourceTree = "<group>";
+		};
 		B0F554971B13B97F00E9B805 /* PaymentType */ = {
 			isa = PBXGroup;
 			children = (
@@ -1164,6 +1187,7 @@
 			files = (
 				B05BD6271AC1EA65002C2882 /* LoadGooglePlacesData.m in Sources */,
 				B00E771D1B234A5A00C27331 /* NSString+HTML.m in Sources */,
+				B0D3D2101BA4C25D001FD5D3 /* EanHotelConfirmation.m in Sources */,
 				B0D02FE61AE6123000B1E75F /* PTKCardNumber.m in Sources */,
 				B09745871B29226800E4A9AD /* WotaMKPinAnnotationView.m in Sources */,
 				B080B7C71AC5057100075A32 /* HotelInfoViewController.m in Sources */,
@@ -1181,6 +1205,7 @@
 				B0C420791B64F7550001E9CB /* TrotterCalendarPicker.m in Sources */,
 				B0F242171B5E08510050B173 /* EanWsError.m in Sources */,
 				B0FE0F4C1AC70A0700DAF635 /* SelectRoomViewController.m in Sources */,
+				B0D3D20D1BA4ACA9001FD5D3 /* EanHotelItineraryResponse.m in Sources */,
 				B058A4941AE8B52C00E42594 /* WotaButton.m in Sources */,
 				B09E41831AEB2D9B000A718D /* SelectBedTypeDelegateImplementation.m in Sources */,
 				B03B42FD1ADDFE1B0083A6EA /* EanPlace.m in Sources */,
@@ -1233,6 +1258,7 @@
 				B0F242141B5CB94D0050B173 /* EanCredentials.m in Sources */,
 				B07958E61AF44A5800422182 /* EanChargeableRateInfo.m in Sources */,
 				B05BD6241AC1E9FB002C2882 /* AppEnvironment.m in Sources */,
+				B0D3D2131BA4D8C3001FD5D3 /* EanItinerary.m in Sources */,
 				B09797C91AC23C1F0014FC7C /* GoogleParser.m in Sources */,
 				B019E5F41B9512BA000BAC23 /* ImageViewHotelInfo.m in Sources */,
 				B0CBC8531B48AF9200F61CA9 /* RangeSliderThumbLayer.swift in Sources */,

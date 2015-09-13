@@ -725,7 +725,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     [self dropDaSpinnerAlready];
 }
 
-- (void)requestTimedOut {
+- (void)requestTimedOut:(LOAD_DATA_TYPE)dataType {
     self.loadingGooglePlaceDetails = NO;
     if (self.requestAlreadyJustFailed) {
         return;

@@ -76,4 +76,6 @@ extern void setWithIpAddress(BOOL withIp);
                      countryCode:(NSString *)countryCode
                       postalCode:(NSString *)postalCode;
 
+- (void)loadItineraryWithAffiliateConfirmationId:(NSUUID *)affiliateConfirmationId;
+
 @end

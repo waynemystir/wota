@@ -8,6 +8,7 @@
 
 #import "BookViewController.h"
 #import "EanHotelRoomReservationResponse.h"
+#import "EanHotelItineraryResponse.h"
 #import "NavigationView.h"
 #import "AppDelegate.h"
 #import "WotaTappableView.h"
@@ -16,6 +17,8 @@
 #import "NetworkProblemResponder.h"
 #import "LoadEanData.h"
 #import "WotaButton.h"
+#import "EanItinerary.h"
+#import "EanHotelConfirmation.h"
 
 @interface BookViewController ()
 
@@ -76,13 +79,71 @@
 
 - (void)requestFinished:(NSData *)responseData dataType:(LOAD_DATA_TYPE)dataType {
     
-    if (dataType != LOAD_EAN_BOOK)
-        return;
+    switch (dataType) {
+        case LOAD_EAN_BOOK: {
+            [self evaluateBookResponse:responseData];
+            break;
+        }
+            
+        case LOAD_EAN_ITIN: {
+            [self evaluateItineraryResponse:responseData];
+            break;
+        }
+            
+        default:
+            break;
+    }
+
+//    NSString *respString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
+//    TrotterLog(@"%@.%@:::%@", self.class, NSStringFromSelector(_cmd), respString);
+}
+
+- (void)evaluateItineraryResponse:(NSData *)responseData {
+    EanHotelItineraryResponse *hir = [EanHotelItineraryResponse eanObjectFromApiResponseData:responseData];
     
+    if (!hir) {
+        
+        [self handleProblems:nil];
+        
+    } else if (hir.eanWsError) {
+        
+        [self handleProblems:nil];
+        
+    } else if (!hir.itineraries.firstObject) {
+        
+        [self handleProblems:nil];
+        
+    } else if ([((EanItinerary *)hir.itineraries.firstObject).hotelConfirmation.status isEqualToString:@"PS"]) {
+        
+        [self handlePendingState:((EanItinerary *)hir.itineraries.firstObject).itineraryId];
+        
+    } else if ([((EanItinerary *)hir.itineraries.firstObject).hotelConfirmation.status isEqualToString:@"UC"]) {
+        
+        // TODO: I need to cancel these bookings and message them as "inventory unavailable" to the customer to avoid duplicate bookings. If left alone, EAN will continue to attempt to process these bookings and may eventually confirm them without further notice.
+        
+    } else if ([((EanItinerary *)hir.itineraries.firstObject).hotelConfirmation.status isEqualToString:@"CX"] ||
+               [((EanItinerary *)hir.itineraries.firstObject).hotelConfirmation.status isEqualToString:@"ER"] ||
+               [((EanItinerary *)hir.itineraries.firstObject).hotelConfirmation.status isEqualToString:@"DT"] ||
+               -1 == ((EanItinerary *)hir.itineraries.firstObject).itineraryId ||
+               !((EanItinerary *)hir.itineraries.firstObject).hotelConfirmation.confirmationNumber ||
+               ![((EanItinerary *)hir.itineraries.firstObject).hotelConfirmation.confirmationNumber isKindOfClass:[NSNumber class]]) {
+        
+        [self handleProblems:nil];
+        
+    } else {
+        
+        [self handleConfirmedItinerary:((EanItinerary *)hir.itineraries.firstObject).itineraryId confirmNumber:((EanItinerary *)hir.itineraries.firstObject).hotelConfirmation.confirmationNumber];
+        
+    }
+    
+    [self dropDaSpinner];
+}
+
+- (void)evaluateBookResponse:(NSData *)responseData {
     EanHotelRoomReservationResponse *hrrr = [EanHotelRoomReservationResponse eanObjectFromApiResponseData:responseData];
     if (!hrrr || hrrr.isResponseEmpty) {
         
-        [self handleProblems:nil];
+        [[LoadEanData sharedInstance:self] loadItineraryWithAffiliateConfirmationId:self.affiliateConfirmationId];
         
     } else if (hrrr.eanWsError) {
         
@@ -109,7 +170,7 @@
         }
         
     } else if ([hrrr.reservationStatusCode isEqualToString:@"PS"]) {
-      
+        
         [self handlePendingState:hrrr.itineraryId];
         
     } else if ([hrrr.reservationStatusCode isEqualToString:@"UC"]) {
@@ -127,32 +188,35 @@
         [self handleProblems:hrrr.errorText];
         
     } else {
-        self.itinNumber = hrrr.itineraryId;
-        self.ItineraryTextView.text = [NSString stringWithFormat:@"%@", @(self.itinNumber)];
-        self.confirmNumber = hrrr.confirmationNumbers.firstObject;
-        self.confirmTextView.text = [NSString stringWithFormat:@"%@", self.confirmNumber];
         
-        UITapGestureRecognizer *tgr1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickReturnToMenu:)];
-        tgr1.numberOfTapsRequired = tgr1.numberOfTouchesRequired = 1;
-        [self.returnMenuView addGestureRecognizer:tgr1];
+        [self handleConfirmedItinerary:hrrr.itineraryId confirmNumber:hrrr.confirmationNumbers.firstObject];
         
-        UITapGestureRecognizer *tgr2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickViewOrCancelReservation:)];
-        tgr2.numberOfTapsRequired = tgr2.numberOfTouchesRequired = 1;
-        [self.viewOrCancelView addGestureRecognizer:tgr2];
-        
-        self.pendingOverlay.hidden = YES;
-        [self dropDaSpinner];
-        
-        __weak typeof(self) wes = self;
-        [UIView animateWithDuration:0.15 animations:^{
-            wes.problemOverlay.alpha = 0.0f;
-        } completion:^(BOOL finished) {
-            [wes.problemOverlay removeFromSuperview];
-        }];
     }
+}
+
+- (void)handleConfirmedItinerary:(NSInteger)itineraryId confirmNumber:(NSNumber *)confirmNumber {
+    self.itinNumber = itineraryId;
+    self.ItineraryTextView.text = [NSString stringWithFormat:@"%@", @(self.itinNumber)];
+    self.confirmNumber = confirmNumber;
+    self.confirmTextView.text = [NSString stringWithFormat:@"%@", self.confirmNumber];
     
-//    NSString *respString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
-//    TrotterLog(@"%@.%@:::%@", self.class, NSStringFromSelector(_cmd), respString);
+    UITapGestureRecognizer *tgr1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickReturnToMenu:)];
+    tgr1.numberOfTapsRequired = tgr1.numberOfTouchesRequired = 1;
+    [self.returnMenuView addGestureRecognizer:tgr1];
+    
+    UITapGestureRecognizer *tgr2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickViewOrCancelReservation:)];
+    tgr2.numberOfTapsRequired = tgr2.numberOfTouchesRequired = 1;
+    [self.viewOrCancelView addGestureRecognizer:tgr2];
+    
+    self.pendingOverlay.hidden = YES;
+    [self dropDaSpinner];
+    
+    __weak typeof(self) wes = self;
+    [UIView animateWithDuration:0.15 animations:^{
+        wes.problemOverlay.alpha = 0.0f;
+    } completion:^(BOOL finished) {
+        [wes.problemOverlay removeFromSuperview];
+    }];
 }
 
 - (void)handlePendingState:(NSInteger)itineraryNumber {
@@ -208,14 +272,21 @@
     [self dropDaSpinner];
 }
 
-- (void)requestTimedOut {
-    [self dropDaSpinner];
-    __weak typeof(self) wes = self;
-    [NetworkProblemResponder launchWithSuperView:self.view headerTitle:nil messageString:nil completionCallback:^{
-//        [wes.navigationController popViewControllerAnimated:YES];
-        
-        // TODO: I need to place an itinerary request using only the affiliateConfirmationId
-    }];
+- (void)requestTimedOut:(LOAD_DATA_TYPE)dataType {
+    switch (dataType) {
+        case LOAD_EAN_BOOK: {
+            [[LoadEanData sharedInstance:self] loadItineraryWithAffiliateConfirmationId:self.affiliateConfirmationId];
+            break;
+        }
+            
+        case LOAD_EAN_ITIN: {
+            [self handleProblems:nil];
+            break;
+        }
+            
+        default:
+            break;
+    }
 }
 
 - (void)requestFailedOffline {

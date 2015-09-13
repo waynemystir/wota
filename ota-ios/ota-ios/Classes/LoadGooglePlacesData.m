@@ -171,8 +171,21 @@
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     TrotterLog(@"%@.%@ ERROR:%@ URL:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), [error localizedDescription], [[[connection currentRequest] URL] absoluteString]);
     
+    NSString *cs = [[[connection currentRequest] URL] absoluteString];
+    LOAD_DATA_TYPE dt;
+    if ([cs containsString:@"autocomplete"]) {
+        dt = LOAD_GOOGLE_AUTOCOMPLETE;
+    } else if ([cs containsString:@"place/details"]
+               || [cs containsString:@"maps/api/place"]) {
+        dt = LOAD_GOOGLE_PLACES;
+    } else if ([cs containsString:@"maps/api/geocode"]) {
+        dt = LOAD_GOOGLE_REVERSE_GEOCODE;
+    } else {
+        assert(false);
+    }
+    
     if ([[error localizedDescription] containsString:@"timed out"]) {
-        [self.delegate requestTimedOut];
+        [self.delegate requestTimedOut:dt];
     } else if ([[error localizedDescription] containsString:@"offline"]) {
         [self.delegate requestFailedOffline];
     } else {

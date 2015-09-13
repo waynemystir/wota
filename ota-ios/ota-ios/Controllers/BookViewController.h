@@ -11,4 +11,6 @@
 
 @interface BookViewController : UIViewController <LoadDataProtocol>
 
+@property (nonatomic, strong) NSUUID *affiliateConfirmationId;
+
 @end

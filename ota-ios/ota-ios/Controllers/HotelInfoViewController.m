@@ -316,7 +316,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 //    [self prepareTheSelectRoomViewController];
 }
 
-- (void)requestTimedOut {
+- (void)requestTimedOut:(LOAD_DATA_TYPE)dataType {
     [self dropTheSpinnerAlready:YES];
     __weak typeof(self) wes = self;
     [NetworkProblemResponder launchWithSuperView:self.view headerTitle:nil messageString:nil completionCallback:^{

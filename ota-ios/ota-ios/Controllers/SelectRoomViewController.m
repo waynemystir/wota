@@ -465,7 +465,7 @@ NSUInteger const kPromoLabelTag = 171740;
     }
 }
 
-- (void)requestTimedOut {
+- (void)requestTimedOut:(LOAD_DATA_TYPE)dataType {
     __weak typeof(self) wes = self;
     if (wes.navigationController.visibleViewController == self) {
         _preparedToDropSpinner = YES;
@@ -967,6 +967,8 @@ NSUInteger const kPromoLabelTag = 171740;
     GuestInfo *gi = [GuestInfo singleton];
     PaymentDetails *pd = self.paymentDetails;
     BookViewController *bvc = [BookViewController new];
+    NSUUID *aci = [NSUUID UUID];
+    bvc.affiliateConfirmationId = aci;
     
     NSString *creditCardNumber = inProductionMode() ? pd.cardNumber : @"5401999999999999";
     NSString *creditCardIdentifier = inProductionMode() ? self.cvvTextField.text : @"123";
@@ -985,7 +987,7 @@ NSUInteger const kPromoLabelTag = 171740;
                                                  room1LastName:gi.apiLastName
                                                 room1BedTypeId:self.selectedRoom.selectedBedType.bedTypeId
                                         room1SmokingPreference:self.selectedRoom.selectedSmokingPreference
-                                       affiliateConfirmationId:[NSUUID UUID]
+                                       affiliateConfirmationId:aci
                                                          email:gi.apiEmail
                                                      firstName:pd.cardHolderFirstName
                                                       lastName:pd.cardHolderLastName
