@@ -104,6 +104,7 @@
 		B0B50AD11B251FF300685384 /* GoogleNearbyPlace.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B50AD01B251FF300685384 /* GoogleNearbyPlace.m */; };
 		B0B50AD41B25285B00685384 /* GoogleNearbyPlaces.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B50AD31B25285B00685384 /* GoogleNearbyPlaces.m */; };
 		B0B50ADD1B255F2600685384 /* GoogleMarkerView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B50ADC1B255F2600685384 /* GoogleMarkerView.m */; };
+		B0B854AD1BA6512600E87C93 /* BookingSupportView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0B854AC1BA6512600E87C93 /* BookingSupportView.xib */; };
 		B0BB3F431B59632100DCCFE7 /* TrotterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B0BB3F421B59632100DCCFE7 /* TrotterViewController.m */; };
 		B0BB3F451B59DD3500DCCFE7 /* HotelNameFilterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0BB3F441B59DD3500DCCFE7 /* HotelNameFilterView.xib */; };
 		B0BD381F1AF9812100EF5E4F /* NightlyRateTableViewDelegateImplementation.m in Sources */ = {isa = PBXBuildFile; fileRef = B0BD381E1AF9812100EF5E4F /* NightlyRateTableViewDelegateImplementation.m */; };
@@ -358,6 +359,7 @@
 		B0B50AD31B25285B00685384 /* GoogleNearbyPlaces.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleNearbyPlaces.m; sourceTree = "<group>"; };
 		B0B50ADB1B255F2600685384 /* GoogleMarkerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleMarkerView.h; sourceTree = "<group>"; };
 		B0B50ADC1B255F2600685384 /* GoogleMarkerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleMarkerView.m; sourceTree = "<group>"; };
+		B0B854AC1BA6512600E87C93 /* BookingSupportView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BookingSupportView.xib; sourceTree = "<group>"; };
 		B0BB3F411B59632100DCCFE7 /* TrotterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrotterViewController.h; sourceTree = "<group>"; };
 		B0BB3F421B59632100DCCFE7 /* TrotterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrotterViewController.m; sourceTree = "<group>"; };
 		B0BB3F441B59DD3500DCCFE7 /* HotelNameFilterView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HotelNameFilterView.xib; sourceTree = "<group>"; };
@@ -720,6 +722,7 @@
 				B0C443481B9B8EBA00F456CE /* PreBookConfirmView.xib */,
 				B0C4434A1B9BEC5900F456CE /* CVVView.xib */,
 				B06BAB831B9F2B6A0081C331 /* MenuView.xib */,
+				B0B854AC1BA6512600E87C93 /* BookingSupportView.xib */,
 				B0D01EBF1B07ED830001C558 /* Navigation */,
 			);
 			path = Views;
@@ -1165,6 +1168,7 @@
 				B06C98BC1B09585300DBE09D /* CountryPicker.bundle in Resources */,
 				B0D02FFB1AE6123000B1E75F /* visa.png in Resources */,
 				B0F242111B5C7E7D0050B173 /* TravelersView.xib in Resources */,
+				B0B854AD1BA6512600E87C93 /* BookingSupportView.xib in Resources */,
 				B0508C6E1B34DCA8009CC56F /* PowerebByGoogleCell.xib in Resources */,
 				B0C4207B1B64F7C20001E9CB /* TrotterCalendarPicker.xib in Resources */,
 				B0FE0F4E1AC70A2500DAF635 /* SelectRoomView.xib in Resources */,

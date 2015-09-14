@@ -337,6 +337,11 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     }];
 }
 
+- (void)requestFailed {
+    [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"An Error Occurred" messageString:@"Please try again." completionCallback:^{
+    }];
+}
+
 #pragma mark Various
 
 - (UIImageView *)currentImageView {

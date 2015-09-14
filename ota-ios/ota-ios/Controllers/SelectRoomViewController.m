@@ -82,6 +82,7 @@ NSUInteger const kFlagViewTag = 51974123;
 NSUInteger const kCVVViewTag = 171738;
 NSUInteger const kCVVOverlayTag = 171739;
 NSUInteger const kPromoLabelTag = 171740;
+NSUInteger const kPickerContainerDisclaimer = 171741;
 
 @interface SelectRoomViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate, SelectBedTypeDelegate, SelectSmokingPrefDelegate, NavigationDelegate, CountryPickerDelegate, StatePickerDelegate, PreBookConfirmDelegate>
 
@@ -137,6 +138,7 @@ NSUInteger const kPromoLabelTag = 171740;
 @property (nonatomic, strong) WotaButton *smokingButton;
 @property (nonatomic, strong) UIView *pickerViewContainer;
 @property (nonatomic, strong) UIButton *pickerViewDoneButton;
+@property (nonatomic, strong) UILabel *pickerViewDisclaimerLabel;
 @property (nonatomic, strong) UIPickerView *bedTypePickerView;
 @property (nonatomic, strong) SelectBedTypeDelegateImplementation *bedTypePickerDelegate;
 @property (nonatomic) BOOL isPickerContainerShowing;
@@ -229,6 +231,10 @@ NSUInteger const kPromoLabelTag = 171740;
         [controllers removeObject:self];
         self.navigationController.viewControllers = [NSArray arrayWithArray:controllers];
     }
+}
+
+- (void)didReceiveMemoryWarning {
+    NSLog(@"%@:didReceiveMemoryWarning", self.class);
 }
 
 - (void)dealloc {
@@ -505,6 +511,11 @@ NSUInteger const kPromoLabelTag = 171740;
 
 - (void)requestFailedCredentials {
     [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"System Error" messageString:@"Sorry for the inconvenience. We are experiencing a technical issue. Please try again shortly." completionCallback:^{
+    }];
+}
+
+- (void)requestFailed {
+    [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"An Error Occurred" messageString:@"Please try again." completionCallback:^{
     }];
 }
 
@@ -889,6 +900,7 @@ NSUInteger const kPromoLabelTag = 171740;
 }
 
 - (void)clickBedType:(id)sender {
+    self.pickerViewDisclaimerLabel.text = @"Bed type not guaranteed";
     self.bedTypePickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 0, 320, 162)];
     self.bedTypePickerView.backgroundColor = UIColorFromRGB(0xe3e3e3);
     self.bedTypePickerDelegate = [SelectBedTypeDelegateImplementation new];
@@ -915,6 +927,7 @@ NSUInteger const kPromoLabelTag = 171740;
 }
 
 - (void)clickSmokingPref:(id)sender {
+    self.pickerViewDisclaimerLabel.text = @"Smoking preference not guaranteed";
     self.smokingPrefPickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 0, 320, 162)];
     self.smokingPrefPickerView.backgroundColor = UIColorFromRGB(0xe3e3e3);
     self.smokePrefDelegImplem = [SelectSmokingPreferenceDelegateImplementation new];
@@ -1019,12 +1032,18 @@ NSUInteger const kPromoLabelTag = 171740;
     NSString *expMonth = expArr[0];
     NSString *expYear = expArr[1];
     
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"MM"];
-    NSDate *daDate = [dateFormatter dateFromString:expMonth];
-    NSString *nExpMonth = [dateFormatter stringFromDate:daDate];
+//    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+//    [dateFormatter setDateFormat:@"MM"];
+//    NSDate *daDate = [dateFormatter dateFromString:expMonth];
+//    NSString *nExpMonth = [dateFormatter stringFromDate:daDate];
     
-    self.paymentDetails.expirationMonth = nExpMonth;
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"MMMM"];
+    dateFormatter.locale = [NSLocale currentLocale];
+    NSDate *daDate = [dateFormatter dateFromString:expMonth];
+    NSInteger nExpMonth = [[NSCalendar currentCalendar] component:NSCalendarUnitMonth fromDate:daDate];
+    
+    self.paymentDetails.expirationMonth = [NSString stringWithFormat: @"%ld", (long)nExpMonth];
     self.paymentDetails.expirationYear = expYear;
 }
 
@@ -1443,7 +1462,7 @@ NSUInteger const kPromoLabelTag = 171740;
             [weakSelf.pickerViewDoneButton setTitle:@"Done" forState:UIControlStateNormal];
         }
         for (UIView *v in weakSelf.pickerViewContainer.subviews)
-            if (v.tag != kPickerContainerDoneButton) [v removeFromSuperview];
+            if (v.tag != kPickerContainerDoneButton && v.tag != kPickerContainerDisclaimer) [v removeFromSuperview];
     }];
 }
 
@@ -1476,6 +1495,15 @@ NSUInteger const kPromoLabelTag = 171740;
     [self.pickerViewDoneButton addTarget:self action:@selector(tuiBedTypeDone:) forControlEvents:UIControlEventTouchUpInside];
     [self.pickerViewDoneButton addTarget:self action:@selector(tuoBedTypeDone:) forControlEvents:UIControlEventTouchUpOutside];
     [self.pickerViewContainer addSubview:self.pickerViewDoneButton];
+    
+    self.pickerViewDisclaimerLabel = [[UILabel alloc] initWithFrame:CGRectMake(4, 165, 223, 38)];
+    self.pickerViewDisclaimerLabel.tag = kPickerContainerDisclaimer;
+    self.pickerViewDisclaimerLabel.backgroundColor = [UIColor clearColor];
+    self.pickerViewDisclaimerLabel.textAlignment = NSTextAlignmentLeft;
+    self.pickerViewDisclaimerLabel.textColor = [UIColor blackColor];
+    self.pickerViewDisclaimerLabel.text = @"Smoking preference not guaranteed";
+    self.pickerViewDisclaimerLabel.font = [UIFont systemFontOfSize:13.0f];
+    [self.pickerViewContainer addSubview:self.pickerViewDisclaimerLabel];
 }
 
 - (void)tdExpirNext:(id)sender {

@@ -184,12 +184,21 @@
         assert(false);
     }
     
-    if ([[error localizedDescription] containsString:@"timed out"]) {
-        [self.delegate requestTimedOut:dt];
-    } else if ([[error localizedDescription] containsString:@"offline"]) {
-        [self.delegate requestFailedOffline];
-    } else {
-        [self.delegate requestFailedOffline];
+    switch (error.code) {
+        case NSURLErrorTimedOut: {
+            [self.delegate requestTimedOut:dt];
+            break;
+        }
+            
+        case NSURLErrorNotConnectedToInternet: {
+            [self.delegate requestFailedOffline];
+            break;
+        }
+            
+        default: {
+            [self.delegate requestFailed];
+            break;
+        }
     }
 }
 

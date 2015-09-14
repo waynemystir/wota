@@ -10,6 +10,7 @@
 #import "AppEnvironment.h"
 #import "JNKeychain.h"
 #import "TrotterViewController.h"
+#import "SelectRoomViewController.h"
 
 static NSString *_externalIP = nil;
 
@@ -58,6 +59,18 @@ static NSString *_externalIP = nil;
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    
+    NSMutableArray *controllers = [((UINavigationController *)self.window.rootViewController).viewControllers mutableCopy];
+    int indexOfSRVC = -1;
+    for (int j = 0; j < controllers.count; j++)
+        if ([controllers[j] isKindOfClass:[SelectRoomViewController class]]) {
+            indexOfSRVC = j;
+            break;
+        }
+    
+    if (indexOfSRVC > -1) [controllers removeObjectAtIndex:indexOfSRVC];
+    
+    ((UINavigationController *)self.window.rootViewController).viewControllers = controllers;
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {

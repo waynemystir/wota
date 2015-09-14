@@ -183,7 +183,7 @@ Thank you for your patience while we sort this out. To contact Customer Support:
                             <rect key="frame" x="15" y="431" width="290" height="52"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="https://www.travelnow.com/selfService/482231/searchform" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="M7e-rW-FA3">
+                                <label opaque="NO" userInteractionEnabled="NO" tag="414347" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Itineraries &amp; Support" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="M7e-rW-FA3">
                                     <rect key="frame" x="13" y="1" width="264" height="48"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>

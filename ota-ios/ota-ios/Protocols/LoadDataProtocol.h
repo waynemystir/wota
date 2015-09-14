@@ -28,6 +28,7 @@ typedef NS_ENUM(NSUInteger, LOAD_DATA_TYPE) {
 - (void)requestTimedOut:(LOAD_DATA_TYPE)dataType;
 - (void)requestFailedOffline;
 - (void)requestFailedCredentials;
+- (void)requestFailed;
 
 @optional
 

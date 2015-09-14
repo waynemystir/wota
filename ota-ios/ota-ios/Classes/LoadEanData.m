@@ -29,6 +29,7 @@ typedef NS_ENUM(NSUInteger, HTTP_METHOD) {
 NSString * const EAN_API_EXPERIENCE = @"PARTNER_MOBILE_APP";
 NSString * const EAN_MINOR_REV = @"30";
 NSString * const EAN_GEN_REQ_BASE_URL = @"http://api.ean.com";
+NSString * const EAN_GEN_REQ_BASE_URL_SEC = @"https://api.ean.com";
 NSString * const EAN_BOK_REQ_BASE_URL = @"https://book.api.ean.com";
 NSString * const EAN_URL_EXT = @"ean-services/rs";
 NSString * const EAN_H0TEL_LIST = @"hotel/v3/list";
@@ -193,7 +194,9 @@ NSString * kURLeanBookReservation() {
 }
 
 NSString * kURLeanItinReq() {
-    return kEanRequest(EAN_ITINERARY_REQ);
+//    return kEanRequest(EAN_ITINERARY_REQ);
+    return [NSString stringWithFormat:@"%@/%@/%@?%@",
+            EAN_GEN_REQ_BASE_URL, EAN_URL_EXT, EAN_ITINERARY_REQ, kEanCommonParameters(YES)];
 }
 
 @interface LoadEanData () <NSURLConnectionDelegate, NSURLConnectionDataDelegate>
@@ -227,7 +230,7 @@ NSString * kURLeanItinReq() {
     if ([[url absoluteString] containsString:EAN_BOOK_RESERVATION])
         // I chose 67 seconds because EAN servers have a 60 second timeout
         // http://developer.ean.com/docs/error-handling/special-cases/prevent-duplicates
-        [request setTimeoutInterval:10];
+        [request setTimeoutInterval:67];
     else
         [request setTimeoutInterval:URL_REQUEST_TIMEOUT];
     
@@ -589,12 +592,21 @@ NSString * kURLeanItinReq() {
         assert(false);
     }
     
-    if ([[error localizedDescription] containsString:@"timed out"]) {
-        [self.delegate requestTimedOut:dt];
-    } else if ([[error localizedDescription] containsString:@"offline"]) {
-        [self.delegate requestFailedOffline];
-    } else {
-        [self.delegate requestFailedOffline];
+    switch (error.code) {
+        case NSURLErrorTimedOut: {
+            [self.delegate requestTimedOut:dt];
+            break;
+        }
+            
+        case NSURLErrorNotConnectedToInternet: {
+            [self.delegate requestFailedOffline];
+            break;
+        }
+            
+        default: {
+            [self.delegate requestFailed];
+            break;
+        }
     }
 }
 

@@ -12,7 +12,7 @@
             <subviews>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6yA-6z-HSH">
                     <rect key="frame" x="10" y="16" width="300" height="73"/>
-                    <string key="text">It is the responsibility of the hotel chain and/or the individual property to ensure the accuracy of the photos displayed. Trotter Travel is not responsible for any inaccuracies in the photos.</string>
+                    <string key="text">It is the responsibility of the hotel chain and/or the individual property to ensure the accuracy of the photos displayed. Trotter Travel LLC is not responsible for any inaccuracies in the photos.</string>
                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                     <color key="textColor" red="0.46666666666666667" green="0.46666666666666667" blue="0.46666666666666667" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>

@@ -46,7 +46,7 @@ NSString * GoogleApiKey() {
     }
 }
 
-int const URL_REQUEST_TIMEOUT = 30;
+int const URL_REQUEST_TIMEOUT = 40;
 
 BOOL stringIsEmpty(NSString * aString) {
     

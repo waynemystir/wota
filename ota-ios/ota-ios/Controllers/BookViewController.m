@@ -74,7 +74,7 @@
 #pragma mark LoadDataProtocol methods
 
 - (void)requestStarted:(NSURLConnection *)connection {
-    TrotterLog(@"%@.%@.:::%@", self.class, NSStringFromSelector(_cmd), [[[connection currentRequest] URL] absoluteString]);
+    NSLog(@"%@.%@.:::%@", self.class, NSStringFromSelector(_cmd), [[[connection currentRequest] URL] absoluteString]);
 }
 
 - (void)requestFinished:(NSData *)responseData dataType:(LOAD_DATA_TYPE)dataType {
@@ -135,8 +135,6 @@
         [self handleConfirmedItinerary:((EanItinerary *)hir.itineraries.firstObject).itineraryId confirmNumber:((EanItinerary *)hir.itineraries.firstObject).hotelConfirmation.confirmationNumber];
         
     }
-    
-    [self dropDaSpinner];
 }
 
 - (void)evaluateBookResponse:(NSData *)responseData {
@@ -302,6 +300,11 @@
     }];
 }
 
+- (void)requestFailed {
+    [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"An Error Occurred" messageString:@"Please try again." completionCallback:^{
+    }];
+}
+
 #pragma mark Tap Gestures
 
 - (void)clickReturnToPreviousScreen:(UITapGestureRecognizer *)tgr {
@@ -313,7 +316,8 @@
 }
 
 - (void)clickViewOrCancelReservation:(UITapGestureRecognizer *)tgr {
-    NSString *urlString = [NSString stringWithFormat:@"https://travelnow.com/selfService/%@/searchByIdAndEmail?itineraryId=%@&email=%@", [EanCredentials CID], @(self.itinNumber), [[GuestInfo singleton] email]];
+    NSString *languageCode = [[NSLocale currentLocale] objectForKey:NSLocaleLanguageCode];
+    NSString *urlString = [NSString stringWithFormat:@"https://travelnow.com/selfService/%@/searchByIdAndEmail?itineraryId=%@&email=%@&lang=%@", [EanCredentials CID], @(self.itinNumber), [[GuestInfo singleton] email], languageCode];
     
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
 }
@@ -327,7 +331,8 @@
 }
 
 - (void)clickSelfServiceLink:(UITapGestureRecognizer *)tgr {
-    NSString *urlString = [NSString stringWithFormat:@"https://www.travelnow.com/selfService/482231/searchform"];
+    NSString *languageCode = [[NSLocale currentLocale] objectForKey:NSLocaleLanguageCode];
+    NSString *urlString = [NSString stringWithFormat:@"https://travelnow.com/selfService/searchform?cid=%@&lang=%@", [EanCredentials CID], languageCode];
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
 }
 

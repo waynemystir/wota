@@ -30,6 +30,7 @@
 #import "HotelInfoViewController.h"
 #import "TrotterCalendarPicker.h"
 #import "ChildView.h"
+#import "EanCredentials.h"
 
 typedef NS_ENUM(NSUInteger, VIEW_STATE) {
     VIEW_STATE_CRITERIA,
@@ -42,6 +43,10 @@ double const TRV_DEFAULT_RADIUS = 5.0;
 static double const TRV_METERS_PER_MILE = 1609.344;
 NSTimeInterval const kTrvFlipAnimationDuration = 0.75;
 NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
+NSTimeInterval const kTrvMenuAnimationDuration = 0.5;
+
+// tags
+NSUInteger const kBookingSupportTag = 1917151;
 
 @interface TrotterViewController () <CLLocationManagerDelegate, LoadDataProtocol, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, MKMapViewDelegate, ChildViewDelegate, TrotterCalendarPickerDelegate>
 
@@ -136,6 +141,10 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 - (IBAction)justPushIt:(id)sender;
 - (IBAction)clickKidsButton:(id)sender;
 - (IBAction)findHotelsClicked:(id)sender;
+- (IBAction)clickBookSupport:(id)sender;
+- (IBAction)closeBookSupport:(id)sender;
+- (IBAction)clickCallCustSuppUS:(id)sender;
+- (IBAction)clickCallCustSuppEU:(id)sender;
 
 @end
 
@@ -771,6 +780,24 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     __weak typeof(self) wes = self;
     [wes animateTableViewCompression];
     [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"System Error" messageString:@"Sorry for the inconvenience. We are experiencing a technical issue. Please try again shortly." completionCallback:^{
+        wes.requestAlreadyJustFailed = NO;
+        if (self.placesTableData != [SelectionCriteria singleton].placesArray) {
+            self.placesTableData = [SelectionCriteria singleton].placesArray;
+            [self.placesTableView reloadData];
+        }
+    }];
+}
+
+- (void)requestFailed {
+    self.loadingGooglePlaceDetails = NO;
+    if (self.requestAlreadyJustFailed) {
+        return;
+    }
+    self.requestAlreadyJustFailed = YES;
+    [self nukeEmAll];
+    __weak typeof(self) wes = self;
+    [wes animateTableViewCompression];
+    [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"Error Occurrred" messageString:@"Please try again." completionCallback:^{
         wes.requestAlreadyJustFailed = NO;
         if (self.placesTableData != [SelectionCriteria singleton].placesArray) {
             self.placesTableData = [SelectionCriteria singleton].placesArray;
@@ -2400,7 +2427,7 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
     m.frame = CGRectMake(0, 569, 320, 548);
     [self.view addSubview:m];
     
-    [UIView animateWithDuration:0.5 animations:^{
+    [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
         m.frame = CGRectMake(0, 20, 320, 548);
     } completion:^(BOOL finished) {
         ;
@@ -2409,11 +2436,63 @@ NSTimeInterval const kTrvSearchModeAnimationDuration = 0.36;
 
 - (void)dropMenu {
     __weak UIView *m = self.menuView;
-    [UIView animateWithDuration:0.5 animations:^{
+    [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
         m.frame = CGRectMake(0, 569, 320, 548);
     } completion:^(BOOL finished) {
         ;
     }];
+}
+
+- (IBAction)clickBookSupport:(id)sender {
+    NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"BookingSupportView" owner:self options:nil];
+    UIView *bsv = views.firstObject;
+    bsv.tag = kBookingSupportTag;
+    bsv.frame = CGRectMake(0, 569, 320, 548);
+    
+    UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickSelfServeLink:)];
+    tgr.numberOfTapsRequired = tgr.numberOfTouchesRequired = 1;
+    UIView *ssl = [bsv viewWithTag:6390128];
+    [ssl addGestureRecognizer:tgr];
+    
+    [self.view addSubview:bsv];
+    
+    [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
+        bsv.frame = CGRectMake(0, 20, 320, 548);
+    } completion:^(BOOL finished) {
+    }];
+}
+
+- (IBAction)closeBookSupport:(id)sender {
+    UIView *bsv = [self.view viewWithTag:kBookingSupportTag];
+    
+    [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
+        bsv.frame = CGRectMake(0, 569, 320, 548);
+    } completion:^(BOOL finished) {
+        [bsv removeFromSuperview];
+    }];
+}
+
+- (IBAction)clickCallCustSuppUS:(id)sender {
+    [self makeTheCall:@"1-800-780-5733"];
+}
+
+- (IBAction)clickCallCustSuppEU:(id)sender {
+    [self makeTheCall:@"00-800-11-20-11-40"];
+}
+
+- (void)clickSelfServeLink:(UITapGestureRecognizer *)tgr {
+    NSString *languageCode = [[NSLocale currentLocale] objectForKey:NSLocaleLanguageCode];
+    NSString *urlString = [NSString stringWithFormat:@"https://travelnow.com/selfService/searchform?cid=%@&lang=%@", [EanCredentials CID], languageCode];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
+}
+
+
+#pragma mark Making A Call
+
+- (void)makeTheCall:(NSString *)phoneNumber {
+    NSString *cleanedString = [[phoneNumber componentsSeparatedByCharactersInSet:[[NSCharacterSet characterSetWithCharactersInString:@"0123456789-+()"] invertedSet]] componentsJoinedByString:@""];
+    NSURL *telURL = [NSURL URLWithString:[NSString stringWithFormat:@"telprompt:%@", cleanedString]];
+    [[UIApplication sharedApplication] openURL:telURL];
 }
 
 @end
