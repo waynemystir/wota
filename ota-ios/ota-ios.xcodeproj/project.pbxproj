@@ -114,6 +114,7 @@
 		B0C04AD51B5212AD002C89F2 /* NetworkProblemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0C04AD41B5212AD002C89F2 /* NetworkProblemView.xib */; };
 		B0C04AD81B523569002C89F2 /* NetworkProblemView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0C04AD71B523569002C89F2 /* NetworkProblemView.m */; };
 		B0C04ADC1B534FDD002C89F2 /* NoPredictionsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0C04ADB1B534FDD002C89F2 /* NoPredictionsCell.xib */; };
+		B0C2EB501BA7E50A00D88154 /* ClearDataView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0C2EB4F1BA7E50A00D88154 /* ClearDataView.xib */; };
 		B0C420791B64F7550001E9CB /* TrotterCalendarPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = B0C420781B64F7550001E9CB /* TrotterCalendarPicker.m */; };
 		B0C4207B1B64F7C20001E9CB /* TrotterCalendarPicker.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0C4207A1B64F7C20001E9CB /* TrotterCalendarPicker.xib */; };
 		B0C420801B6551520001E9CB /* TrotterCalendarDay.m in Sources */ = {isa = PBXBuildFile; fileRef = B0C4207F1B6551520001E9CB /* TrotterCalendarDay.m */; };
@@ -374,6 +375,7 @@
 		B0C04AD61B523569002C89F2 /* NetworkProblemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkProblemView.h; sourceTree = "<group>"; };
 		B0C04AD71B523569002C89F2 /* NetworkProblemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkProblemView.m; sourceTree = "<group>"; };
 		B0C04ADB1B534FDD002C89F2 /* NoPredictionsCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NoPredictionsCell.xib; sourceTree = "<group>"; };
+		B0C2EB4F1BA7E50A00D88154 /* ClearDataView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ClearDataView.xib; sourceTree = "<group>"; };
 		B0C420771B64F7550001E9CB /* TrotterCalendarPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrotterCalendarPicker.h; sourceTree = "<group>"; };
 		B0C420781B64F7550001E9CB /* TrotterCalendarPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrotterCalendarPicker.m; sourceTree = "<group>"; };
 		B0C4207A1B64F7C20001E9CB /* TrotterCalendarPicker.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TrotterCalendarPicker.xib; sourceTree = "<group>"; };
@@ -723,6 +725,7 @@
 				B0C4434A1B9BEC5900F456CE /* CVVView.xib */,
 				B06BAB831B9F2B6A0081C331 /* MenuView.xib */,
 				B0B854AC1BA6512600E87C93 /* BookingSupportView.xib */,
+				B0C2EB4F1BA7E50A00D88154 /* ClearDataView.xib */,
 				B0D01EBF1B07ED830001C558 /* Navigation */,
 			);
 			path = Views;
@@ -1127,6 +1130,7 @@
 				B03DA0071B46D5930039B9C6 /* FilterTableView.xib in Resources */,
 				B0D02FF31AE6123000B1E75F /* discover.png in Resources */,
 				B0D02FEB1AE6123000B1E75F /* amex.png in Resources */,
+				B0C2EB501BA7E50A00D88154 /* ClearDataView.xib in Resources */,
 				B0D02FF51AE6123000B1E75F /* jcb.png in Resources */,
 				B0D02FF41AE6123000B1E75F /* discover@2x.png in Resources */,
 				B0C443491B9B8EBA00F456CE /* PreBookConfirmView.xib in Resources */,

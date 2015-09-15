@@ -19,6 +19,7 @@
 #import "WotaButton.h"
 #import "EanItinerary.h"
 #import "EanHotelConfirmation.h"
+#import "SelectRoomViewController.h"
 
 @interface BookViewController ()
 
@@ -42,7 +43,9 @@
 
 @end
 
-@implementation BookViewController
+@implementation BookViewController {
+    int numberOfPriceMismatchRecalls;
+}
 
 - (id)init {
     self = [super initWithNibName:@"BookView" bundle:nil];
@@ -147,15 +150,29 @@
         
         if ([hrrr.eanWsError.eweCategory isEqualToString:@"PRICE_MISMATCH"]) {
             
-            setWithIpAddress(NO);
             NSMutableArray *controllers = [self.navigationController.viewControllers mutableCopy];
-            NSUInteger bvcIndex = [controllers indexOfObject:self];
-            if (bvcIndex != NSNotFound) {
-                [controllers removeObjectAtIndex:(bvcIndex - 1)];
-                self.navigationController.viewControllers = [NSArray arrayWithArray:controllers];
-            }
+            int indexOfSRVC = -1;
+            SelectRoomViewController *srvc;
+            for (int j = 0; j < controllers.count; j++)
+                if ([controllers[j] isKindOfClass:[SelectRoomViewController class]]) {
+                    indexOfSRVC = j;
+                    break;
+                }
             
-            [self handleProblems:hrrr.eanWsError.presentationMessage];
+            if (indexOfSRVC > -1) srvc = controllers[indexOfSRVC];
+            if (srvc) {
+                if (numberOfPriceMismatchRecalls++ > 0) {
+                    [controllers removeObjectAtIndex:indexOfSRVC];
+                    self.navigationController.viewControllers = [NSArray arrayWithArray:controllers];
+                    [self handleProblems:hrrr.eanWsError.presentationMessage];
+                } else {
+                    setWithIpAddress(NO);
+                    [srvc bookIt];
+                    return;
+                }
+            } else {
+                [self handleProblems:hrrr.eanWsError.presentationMessage];
+            }
             
         } else if ([hrrr.eanWsError.eweHandling isEqualToString:@"AGENT_ATTENTION"]) {
             
@@ -190,6 +207,20 @@
         [self handleConfirmedItinerary:hrrr.itineraryId confirmNumber:hrrr.confirmationNumbers.firstObject];
         
     }
+    
+    [self nukePaymentDetails];
+}
+
+- (void)nukePaymentDetails {
+    NSArray *controllers = self.navigationController.viewControllers;
+    SelectRoomViewController *srvc;
+    for (int j = 0; j < controllers.count; j++)
+        if ([controllers[j] isKindOfClass:[SelectRoomViewController class]]) {
+            srvc = controllers[j];
+            break;
+        }
+    
+    if (srvc) [srvc nukePaymentDetails];
 }
 
 - (void)handleConfirmedItinerary:(NSInteger)itineraryId confirmNumber:(NSNumber *)confirmNumber {
@@ -271,6 +302,8 @@
 }
 
 - (void)requestTimedOut:(LOAD_DATA_TYPE)dataType {
+    [self nukePaymentDetails];
+    
     switch (dataType) {
         case LOAD_EAN_BOOK: {
             [[LoadEanData sharedInstance:self] loadItineraryWithAffiliateConfirmationId:self.affiliateConfirmationId];
@@ -278,7 +311,7 @@
         }
             
         case LOAD_EAN_ITIN: {
-            [self handleProblems:nil];
+            [self handleProblems:@"The reservation request timed out. Please check your connection and try again."];
             break;
         }
             
@@ -288,6 +321,7 @@
 }
 
 - (void)requestFailedOffline {
+    [self nukePaymentDetails];
     [self dropDaSpinner];
     __weak typeof(self) wes = self;
     [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"Network Error" messageString:@"The network could not be reached. Please check your connection and try again." completionCallback:^{
@@ -296,12 +330,20 @@
 }
 
 - (void)requestFailedCredentials {
+    [self nukePaymentDetails];
+    [self dropDaSpinner];
+    __weak typeof(self) wes = self;
     [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"System Error" messageString:@"Sorry for the inconvenience. We are experiencing a technical issue. Please try again shortly." completionCallback:^{
+        [wes.navigationController popViewControllerAnimated:YES];
     }];
 }
 
 - (void)requestFailed {
+    [self nukePaymentDetails];
+    [self dropDaSpinner];
+    __weak typeof(self) wes = self;
     [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"An Error Occurred" messageString:@"Please try again." completionCallback:^{
+        [wes.navigationController popViewControllerAnimated:YES];
     }];
 }
 

@@ -333,12 +333,18 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 }
 
 - (void)requestFailedCredentials {
+    [self dropTheSpinnerAlready:YES];
+    __weak typeof(self) wes = self;
     [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"System Error" messageString:@"Sorry for the inconvenience. We are experiencing a technical issue. Please try again shortly." completionCallback:^{
+        [wes.navigationController popViewControllerAnimated:YES];
     }];
 }
 
 - (void)requestFailed {
+    [self dropTheSpinnerAlready:YES];
+    __weak typeof(self) wes = self;
     [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"An Error Occurred" messageString:@"Please try again." completionCallback:^{
+        [wes.navigationController popViewControllerAnimated:YES];
     }];
 }
 

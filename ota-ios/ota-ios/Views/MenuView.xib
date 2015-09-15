@@ -33,6 +33,9 @@
                     <state key="normal" title="Clear Private Data">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
+                    <connections>
+                        <action selector="clickClearPrivData:" destination="-1" eventType="touchUpInside" id="TOn-dB-yJw"/>
+                    </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="z5V-V1-TzJ" customClass="WotaButton">
                     <rect key="frame" x="10" y="230" width="300" height="55"/>

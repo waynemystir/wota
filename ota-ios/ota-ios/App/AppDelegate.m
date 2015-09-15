@@ -70,7 +70,7 @@ static NSString *_externalIP = nil;
     
     if (indexOfSRVC > -1) [controllers removeObjectAtIndex:indexOfSRVC];
     
-    ((UINavigationController *)self.window.rootViewController).viewControllers = controllers;
+    ((UINavigationController *)self.window.rootViewController).viewControllers = [NSArray arrayWithArray:controllers];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {

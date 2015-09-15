@@ -15,4 +15,7 @@
                      hotelName:(NSString *)hotelName
                   locationName:(NSString *)locationName;
 
+- (void)bookIt;
+- (void)nukePaymentDetails;
+
 @end

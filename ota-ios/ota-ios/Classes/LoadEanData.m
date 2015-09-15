@@ -29,7 +29,6 @@ typedef NS_ENUM(NSUInteger, HTTP_METHOD) {
 NSString * const EAN_API_EXPERIENCE = @"PARTNER_MOBILE_APP";
 NSString * const EAN_MINOR_REV = @"30";
 NSString * const EAN_GEN_REQ_BASE_URL = @"http://api.ean.com";
-NSString * const EAN_GEN_REQ_BASE_URL_SEC = @"https://api.ean.com";
 NSString * const EAN_BOK_REQ_BASE_URL = @"https://book.api.ean.com";
 NSString * const EAN_URL_EXT = @"ean-services/rs";
 NSString * const EAN_H0TEL_LIST = @"hotel/v3/list";
@@ -194,9 +193,7 @@ NSString * kURLeanBookReservation() {
 }
 
 NSString * kURLeanItinReq() {
-//    return kEanRequest(EAN_ITINERARY_REQ);
-    return [NSString stringWithFormat:@"%@/%@/%@?%@",
-            EAN_GEN_REQ_BASE_URL, EAN_URL_EXT, EAN_ITINERARY_REQ, kEanCommonParameters(YES)];
+    return kEanRequest(EAN_ITINERARY_REQ);
 }
 
 @interface LoadEanData () <NSURLConnectionDelegate, NSURLConnectionDataDelegate>
@@ -495,7 +492,7 @@ NSString * kURLeanItinReq() {
                      EAN_PK_CC_STATE_PROV_CODE, stringIsEmpty(stateProvinceCode) ? @"" : stateProvinceCode,
                      EAN_PK_CC_COUNTRY_CODE, countryCode,
                      EAN_PK_CC_POSTAL_CODE, postalCode] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSLog(@"BOOKING:%@", urlString);
+    TrotterLog(@"BOOKING:%@", urlString);
     
     NSURL *url = [NSURL URLWithString:urlString];
     [self fireOffConnectionWithURL:url httpMethod:HTTP_POST];

@@ -47,6 +47,7 @@ NSTimeInterval const kTrvMenuAnimationDuration = 0.5;
 
 // tags
 NSUInteger const kBookingSupportTag = 1917151;
+NSUInteger const kClearPrivaDataTag = 1917152;
 
 @interface TrotterViewController () <CLLocationManagerDelegate, LoadDataProtocol, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, MKMapViewDelegate, ChildViewDelegate, TrotterCalendarPickerDelegate>
 
@@ -145,6 +146,9 @@ NSUInteger const kBookingSupportTag = 1917151;
 - (IBAction)closeBookSupport:(id)sender;
 - (IBAction)clickCallCustSuppUS:(id)sender;
 - (IBAction)clickCallCustSuppEU:(id)sender;
+- (IBAction)clickPrivDataCancelBtn:(id)sender;
+- (IBAction)clickPrivDataClearBtn:(id)sender;
+- (IBAction)clickClearPrivData:(id)sender;
 
 @end
 
@@ -2472,12 +2476,42 @@ NSUInteger const kBookingSupportTag = 1917151;
     }];
 }
 
+
+
 - (IBAction)clickCallCustSuppUS:(id)sender {
     [self makeTheCall:@"1-800-780-5733"];
 }
 
 - (IBAction)clickCallCustSuppEU:(id)sender {
     [self makeTheCall:@"00-800-11-20-11-40"];
+}
+
+- (IBAction)clickPrivDataCancelBtn:(id)sender {
+    UIView *cpdv = [self.view viewWithTag:kClearPrivaDataTag];
+    
+    [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
+        cpdv.transform = CGAffineTransformMakeScale(0.001f, 0.001);
+    } completion:^(BOOL finished) {
+        [cpdv removeFromSuperview];
+    }];
+}
+
+- (IBAction)clickPrivDataClearBtn:(id)sender {
+}
+
+- (IBAction)clickClearPrivData:(id)sender {
+    NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"ClearDataView" owner:self options:nil];
+    UIView *cpdv = views.firstObject;
+    cpdv.tag = kClearPrivaDataTag;
+    cpdv.frame = CGRectMake(30, 150, 260, 276);
+    cpdv.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
+    [self.view addSubview:cpdv];
+    
+    [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
+        cpdv.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+    } completion:^(BOOL finished) {
+        ;
+    }];
 }
 
 - (void)clickSelfServeLink:(UITapGestureRecognizer *)tgr {

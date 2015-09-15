@@ -216,7 +216,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
         [mutInfoPopupHeadingDict setObject:@"Complimentary" forKey:@(kRoomValueAddTag)];
         _infoPopupHeadingDict = [NSDictionary dictionaryWithDictionary:mutInfoPopupHeadingDict];
         
-        _selectRoomLifeTimer = [NSTimer timerWithTimeInterval:(60 * 20) target:self selector:@selector(removeThisControllerFromNavigationStack:) userInfo:nil repeats:NO];
+        _selectRoomLifeTimer = [NSTimer timerWithTimeInterval:(60 * 30) target:self selector:@selector(removeThisControllerFromNavigationStack:) userInfo:nil repeats:NO];
         
         [[NSRunLoop currentRunLoop] addTimer:_selectRoomLifeTimer forMode:NSDefaultRunLoopMode];
     }
@@ -474,8 +474,6 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
 - (void)requestTimedOut:(LOAD_DATA_TYPE)dataType {
     __weak typeof(self) wes = self;
     if (wes.navigationController.visibleViewController == self) {
-        _preparedToDropSpinner = YES;
-        [self dropDaSpinner];
         [NetworkProblemResponder launchWithSuperView:self.view headerTitle:nil messageString:nil completionCallback:^{
             [wes.navigationController popViewControllerAnimated:YES];
         }];
@@ -499,9 +497,12 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
         [self.view addSubview:timeOut];
         [self.view bringSubviewToFront:timeOut];
     }
+    _preparedToDropSpinner = YES;
+    [self dropDaSpinner];
 }
 
 - (void)requestFailedOffline {
+    _preparedToDropSpinner = YES;
     [self dropDaSpinner];
     __weak typeof(self) wes = self;
     [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"Network Error" messageString:@"The network could not be reached. Please check your connection and try again." completionCallback:^{
@@ -510,12 +511,20 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
 }
 
 - (void)requestFailedCredentials {
+    _preparedToDropSpinner = YES;
+    [self dropDaSpinner];
+    __weak typeof(self) wes = self;
     [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"System Error" messageString:@"Sorry for the inconvenience. We are experiencing a technical issue. Please try again shortly." completionCallback:^{
+        [wes.navigationController popViewControllerAnimated:YES];
     }];
 }
 
 - (void)requestFailed {
+    _preparedToDropSpinner = YES;
+    [self dropDaSpinner];
+    __weak typeof(self) wes = self;
     [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"An Error Occurred" messageString:@"Please try again." completionCallback:^{
+        [wes.navigationController popViewControllerAnimated:YES];
     }];
 }
 
@@ -979,7 +988,18 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     SelectionCriteria *sc = [SelectionCriteria singleton];
     GuestInfo *gi = [GuestInfo singleton];
     PaymentDetails *pd = self.paymentDetails;
-    BookViewController *bvc = [BookViewController new];
+    
+    NSArray *controllers = self.navigationController.viewControllers;
+    BookViewController *bvc;
+    BOOL existingBvc = NO;
+    for (int j = 0; j < controllers.count; j++)
+        if ([controllers[j] isKindOfClass:[BookViewController class]]) {
+            bvc = controllers[j];
+            existingBvc = YES;
+            break;
+        }
+    bvc = bvc ? : [BookViewController new];
+    
     NSUUID *aci = [NSUUID UUID];
     bvc.affiliateConfirmationId = aci;
     
@@ -1016,10 +1036,13 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
                                                    countryCode:pd.billingAddress.apiCountryCode
                                                     postalCode:pd.billingAddress.apiPostalCode];
     
+    if (!existingBvc) [self.navigationController pushViewController:bvc animated:YES];
+}
+
+- (void)nukePaymentDetails {
     self.paymentDetails = nil;
     [self updatePaymentDetailsButtonTitle];
     self.ccNumberOutlet.cardNumber = @"";
-    [self.navigationController pushViewController:bvc animated:YES];
 }
 
 - (void)saveDaExpiration {
