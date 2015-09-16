@@ -27,6 +27,7 @@ typedef NS_ENUM(NSUInteger, CHILD_TRAVELER_ID) {
 + (int)numberOfKids;
 + (NSInteger)addChildTraveler;
 + (NSInteger)removeLastChildTraveler;
++ (void)removeAllChildTravelers;
 + (BOOL)moreKidsOk;
 + (BOOL)lessKidsOk;
 + (NSDictionary *)childTravelersWithoutAges;

@@ -1523,7 +1523,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     self.pickerViewDisclaimerLabel.tag = kPickerContainerDisclaimer;
     self.pickerViewDisclaimerLabel.backgroundColor = [UIColor clearColor];
     self.pickerViewDisclaimerLabel.textAlignment = NSTextAlignmentLeft;
-    self.pickerViewDisclaimerLabel.textColor = [UIColor blackColor];
+    self.pickerViewDisclaimerLabel.textColor = [UIColor lightGrayColor];
     self.pickerViewDisclaimerLabel.text = @"Smoking preference not guaranteed";
     self.pickerViewDisclaimerLabel.font = [UIFont systemFontOfSize:13.0f];
     [self.pickerViewContainer addSubview:self.pickerViewDisclaimerLabel];

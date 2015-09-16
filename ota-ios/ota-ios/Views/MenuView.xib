@@ -43,6 +43,9 @@
                     <state key="normal" title="Terms &amp; Conditions">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
+                    <connections>
+                        <action selector="clickTermsConditions:" destination="-1" eventType="touchUpInside" id="san-R4-pN3"/>
+                    </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LiH-gs-W2p" customClass="WotaButton">
                     <rect key="frame" x="10" y="290" width="300" height="55"/>
@@ -50,6 +53,9 @@
                     <state key="normal" title="Privacy Policy">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
+                    <connections>
+                        <action selector="clickPrivacyPolicy:" destination="-1" eventType="touchUpInside" id="RW3-B1-yid"/>
+                    </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sSd-ff-854" customClass="WotaButton">
                     <rect key="frame" x="10" y="350" width="300" height="55"/>
@@ -57,6 +63,9 @@
                     <state key="normal" title="Acknowledgements">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
+                    <connections>
+                        <action selector="clickAcknowledgements:" destination="-1" eventType="touchUpInside" id="MWj-Af-nby"/>
+                    </connections>
                 </button>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>

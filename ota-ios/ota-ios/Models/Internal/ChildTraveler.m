@@ -162,6 +162,10 @@ NSString * const kKeyChildAge = @"childAge";
     [[self class] updateChildTravelers];
 }
 
++ (void)removeAllChildTravelers {
+    while ([self removeLastChildTraveler] > 0);
+}
+
 + (BOOL)moreKidsOk {
     if ([[self childTravelers] count] >= 4) {
         return NO;

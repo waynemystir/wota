@@ -492,7 +492,7 @@ NSString * kURLeanItinReq() {
                      EAN_PK_CC_STATE_PROV_CODE, stringIsEmpty(stateProvinceCode) ? @"" : stateProvinceCode,
                      EAN_PK_CC_COUNTRY_CODE, countryCode,
                      EAN_PK_CC_POSTAL_CODE, postalCode] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    TrotterLog(@"BOOKING:%@", urlString);
+    NSLog(@"BOOKING:%@", urlString);
     
     NSURL *url = [NSURL URLWithString:urlString];
     [self fireOffConnectionWithURL:url httpMethod:HTTP_POST];

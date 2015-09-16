@@ -46,7 +46,7 @@ NSString * const kKeyPhoneNumber = @"phone_number";
 }
 
 + (void)deleteGuest:(GuestInfo *)guest {
-    if (guest == _guestInfo) {
+    if (guest == _guestInfo && [JNKeychain loadValueForKey:kKeyGuestInfo]) {
         _guestInfo = nil;
         if (![JNKeychain deleteValueForKey:kKeyGuestInfo]) {
             NSLog(@"ERROR: There was a problem deleting guest info");

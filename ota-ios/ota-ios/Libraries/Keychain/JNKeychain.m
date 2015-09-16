@@ -9,6 +9,7 @@
 #define CHECK_OSSTATUS_ERROR(x) (x == noErr) ? YES : NO
 
 #import "JNKeychain.h"
+#import "AppEnvironment.h"
 
 @interface JNKeychain ()
 
@@ -19,20 +20,28 @@
 @implementation JNKeychain
 
 #pragma mark - Private
-+ (NSMutableDictionary *)getKeychainQuery:(NSString *)key
-{
++ (NSMutableDictionary *)getKeychainQuery:(NSString *)key {
+    if (!key || stringIsEmpty(key))
+        return nil;
+    
+    NSString *ag = [self getAccessGroup];
+    if (!ag)
+        return nil;
+    
     // see http://developer.apple.com/library/ios/#DOCUMENTATION/Security/Reference/keychainservices/Reference/reference.html
     return [@{(__bridge id)kSecClass            : (__bridge id)kSecClassGenericPassword,
               (__bridge id)kSecAttrService      : key,
               (__bridge id)kSecAttrAccount      : key,
-              (__bridge id)kSecAttrAccessGroup  : [self getAccessGroup],
+              (__bridge id)kSecAttrAccessGroup  : ag,
               (__bridge id)kSecAttrAccessible   : (__bridge id)kSecAttrAccessibleAfterFirstUnlock
               } mutableCopy];
 }
 
 #pragma mark - Public
-+ (BOOL)saveValue:(id)value forKey:(NSString*)key
-{
++ (BOOL)saveValue:(id)value forKey:(NSString*)key {
+    if (!key || stringIsEmpty(key) || !value)
+        return NO;
+    
     NSMutableDictionary *keychainQuery = [self getKeychainQuery:key];
     // delete any previous value with this key (we could use SecItemUpdate but its unnecesarily more complicated)
     [self deleteValueForKey:key];
@@ -43,16 +52,20 @@
     return CHECK_OSSTATUS_ERROR(result);
 }
 
-+ (BOOL)deleteValueForKey:(NSString *)key
-{
++ (BOOL)deleteValueForKey:(NSString *)key {
+    if (!key || stringIsEmpty(key))
+        return NO;
+    
     NSMutableDictionary *keychainQuery = [self getKeychainQuery:key];
     
     OSStatus result = SecItemDelete((__bridge CFDictionaryRef)keychainQuery);
     return CHECK_OSSTATUS_ERROR(result);
 }
 
-+ (id)loadValueForKey:(NSString *)key
-{
++ (id)loadValueForKey:(NSString *)key {
+    if (!key || stringIsEmpty(key))
+        return nil;
+    
     id value = nil;
     NSMutableDictionary *keychainQuery = [self getKeychainQuery:key];
     CFDataRef keyData = NULL;

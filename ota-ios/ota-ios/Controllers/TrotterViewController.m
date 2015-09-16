@@ -31,6 +31,7 @@
 #import "TrotterCalendarPicker.h"
 #import "ChildView.h"
 #import "EanCredentials.h"
+#import "GuestInfo.h"
 
 typedef NS_ENUM(NSUInteger, VIEW_STATE) {
     VIEW_STATE_CRITERIA,
@@ -48,6 +49,10 @@ NSTimeInterval const kTrvMenuAnimationDuration = 0.5;
 // tags
 NSUInteger const kBookingSupportTag = 1917151;
 NSUInteger const kClearPrivaDataTag = 1917152;
+NSUInteger const kPrivDataOverlaTag = 1917153;
+NSUInteger const kLegalDocumentVTag = 1917154;
+NSUInteger const kTermsWebOrNatiTag = 1917155;
+NSUInteger const kTermsUIWebViewTag = 1917156;
 
 @interface TrotterViewController () <CLLocationManagerDelegate, LoadDataProtocol, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, MKMapViewDelegate, ChildViewDelegate, TrotterCalendarPickerDelegate>
 
@@ -92,6 +97,8 @@ NSUInteger const kClearPrivaDataTag = 1917152;
 @property (nonatomic, weak) UIView *currentWmapView;
 
 @property (nonatomic, strong) UIView *menuView;
+@property (nonatomic, strong) UIView *menuOverlay;
+@property (nonatomic) BOOL termsAndCondsNativeOrWeb;
 
 #pragma mark Outlets
 
@@ -137,6 +144,10 @@ NSUInteger const kClearPrivaDataTag = 1917152;
 @property (weak, nonatomic) IBOutlet UIImageView *sortImageView;
 @property (weak, nonatomic) IBOutlet UIView *mapBackContainer;
 
+@property (weak, nonatomic) IBOutlet UILabel *legalViewTitle;
+@property (weak, nonatomic) IBOutlet UILabel *legalViewText;
+@property (weak, nonatomic) IBOutlet UIScrollView *legalScrollView;
+
 #pragma mark IBActions
 
 - (IBAction)justPushIt:(id)sender;
@@ -149,6 +160,10 @@ NSUInteger const kClearPrivaDataTag = 1917152;
 - (IBAction)clickPrivDataCancelBtn:(id)sender;
 - (IBAction)clickPrivDataClearBtn:(id)sender;
 - (IBAction)clickClearPrivData:(id)sender;
+- (IBAction)clickPrivacyPolicy:(id)sender;
+- (IBAction)clickTermsConditions:(id)sender;
+- (IBAction)clickLegalDone:(id)sender;
+- (IBAction)clickAcknowledgements:(id)sender;
 
 @end
 
@@ -2426,28 +2441,47 @@ NSUInteger const kClearPrivaDataTag = 1917152;
     return _menuView;
 }
 
+- (UIView *)menuOverlay {
+    if (_menuOverlay) return _menuOverlay;
+    
+    _menuOverlay = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 568)];
+    _menuOverlay.backgroundColor = [UIColor clearColor];
+    _menuOverlay.userInteractionEnabled = NO;
+    
+    return _menuOverlay;
+}
+
 - (void)clickMenu:(UITapGestureRecognizer *)tgr {
+    __weak UIView *mo = self.menuOverlay;
+    mo.userInteractionEnabled = YES;
+    [self.view addSubview:mo];
+    [self.view bringSubviewToFront:mo];
+    
     __weak UIView *m = self.menuView;
     m.frame = CGRectMake(0, 569, 320, 548);
     [self.view addSubview:m];
+    [self.view bringSubviewToFront:mo];
     
     [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
         m.frame = CGRectMake(0, 20, 320, 548);
     } completion:^(BOOL finished) {
-        ;
+        mo.userInteractionEnabled = NO;
     }];
 }
 
 - (void)dropMenu {
+    __weak UIView *mo = self.menuOverlay;
     __weak UIView *m = self.menuView;
     [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
         m.frame = CGRectMake(0, 569, 320, 548);
     } completion:^(BOOL finished) {
-        ;
+        [m removeFromSuperview];
+        [mo removeFromSuperview];
     }];
 }
 
 - (IBAction)clickBookSupport:(id)sender {
+    self.menuOverlay.userInteractionEnabled = YES;
     NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"BookingSupportView" owner:self options:nil];
     UIView *bsv = views.firstObject;
     bsv.tag = kBookingSupportTag;
@@ -2467,6 +2501,7 @@ NSUInteger const kClearPrivaDataTag = 1917152;
 }
 
 - (IBAction)closeBookSupport:(id)sender {
+    self.menuOverlay.userInteractionEnabled = NO;
     UIView *bsv = [self.view viewWithTag:kBookingSupportTag];
     
     [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
@@ -2487,16 +2522,27 @@ NSUInteger const kClearPrivaDataTag = 1917152;
 }
 
 - (IBAction)clickPrivDataCancelBtn:(id)sender {
+    if ([sender isKindOfClass:[NSString class]] && [sender isEqualToString:@"ClearTheData"]) {
+        [ChildTraveler removeAllChildTravelers];
+        [self setNumberOfKidsButtonLabel];
+        [self setNumberOfAdultsLabel:(2 - [SelectionCriteria singleton].numberOfAdults)];
+        [GuestInfo deleteGuest:[GuestInfo singleton]];
+    }
+    
     UIView *cpdv = [self.view viewWithTag:kClearPrivaDataTag];
+    UIView *ol = [self.view viewWithTag:kPrivDataOverlaTag];
     
     [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
         cpdv.transform = CGAffineTransformMakeScale(0.001f, 0.001);
+        ol.alpha = 0.0f;
     } completion:^(BOOL finished) {
         [cpdv removeFromSuperview];
+        [ol removeFromSuperview];
     }];
 }
 
 - (IBAction)clickPrivDataClearBtn:(id)sender {
+    [self clickPrivDataCancelBtn:@"ClearTheData"];
 }
 
 - (IBAction)clickClearPrivData:(id)sender {
@@ -2505,13 +2551,138 @@ NSUInteger const kClearPrivaDataTag = 1917152;
     cpdv.tag = kClearPrivaDataTag;
     cpdv.frame = CGRectMake(30, 150, 260, 276);
     cpdv.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
+    cpdv.layer.cornerRadius = WOTA_CORNER_RADIUS;
+    
+    UIView *ol = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 568)];
+    ol.tag = kPrivDataOverlaTag;
+    ol.alpha = 0.0f;
+    ol.backgroundColor = [UIColor blackColor];
+    ol.userInteractionEnabled = YES;
+    
+    [self.view addSubview:ol];
+    [self.view bringSubviewToFront:ol];
     [self.view addSubview:cpdv];
+    [self.view bringSubviewToFront:cpdv];
     
     [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
         cpdv.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+        ol.alpha = 0.7f;
     } completion:^(BOOL finished) {
         ;
     }];
+}
+
+- (IBAction)clickPrivacyPolicy:(id)sender {
+    [self loadLegalViewWithTitle:@"Privacy Policy" fileName:@"PrivacyPolicy"];
+}
+
+- (IBAction)clickTermsConditions:(id)sender {
+    [self loadLegalViewWithTitle:@"Terms & Conditions" fileName:@"TermsConditionsNotices"];
+    CGRect lsf = self.legalScrollView.frame;
+    self.legalScrollView.frame = CGRectMake(lsf.origin.x, lsf.origin.y, lsf.size.width, lsf.size.height - 40);
+    lsf = self.legalScrollView.frame;
+    
+    UILabel *urlLink = [[UILabel alloc] initWithFrame:CGRectMake(lsf.origin.x, lsf.origin.y + lsf.size.height + 4, lsf.size.width, 40)];
+    urlLink.tag = kTermsWebOrNatiTag;
+    urlLink.text = @"  Website Terms & Conditions";
+    urlLink.backgroundColor = [UIColor clearColor];
+    urlLink.textColor = self.view.tintColor;
+    urlLink.userInteractionEnabled = YES;
+    
+    UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapWebsiteTncLink:)];
+    tgr.numberOfTapsRequired = tgr.numberOfTouchesRequired = 1;
+    [urlLink addGestureRecognizer:tgr];
+    
+    __weak UIView *legalView = self.legalScrollView.superview;
+    [legalView addSubview:urlLink];
+}
+
+- (void)tapWebsiteTncLink:(UITapGestureRecognizer *)tgr {
+    UIWebView *wv = (UIWebView *)[self.legalScrollView.superview viewWithTag:kTermsUIWebViewTag];
+    if (!wv) {
+        self.termsAndCondsNativeOrWeb = NO;
+        CGRect lsf = self.legalScrollView.frame;
+        wv = [[UIWebView alloc] initWithFrame:CGRectMake(lsf.origin.x, lsf.origin.y, lsf.size.width, lsf.size.height)];
+        wv.tag = kTermsUIWebViewTag;
+        wv.layer.cornerRadius = WOTA_CORNER_RADIUS;
+        wv.layer.borderColor = [UIColor blackColor].CGColor;
+        wv.layer.borderWidth = 1.0f;
+        wv.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
+        NSURLRequest *req = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://travel.ian.com/index.jsp?pageName=userAgreement&locale=en_US&cid=482231"]];
+        [wv loadRequest:req];
+        [self.legalScrollView.superview addSubview:wv];
+    }
+    
+    UILabel *urlLink = (UILabel *)[self.legalScrollView.superview viewWithTag:kTermsWebOrNatiTag];
+    urlLink.userInteractionEnabled = NO;
+    urlLink.textColor = [UIColor lightGrayColor];
+    
+    if (!self.termsAndCondsNativeOrWeb) {
+        urlLink.text = @" Mobile Application Terms & Conditions";
+        [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
+            wv.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+        } completion:^(BOOL finished) {
+            urlLink.userInteractionEnabled = YES;
+            urlLink.textColor = self.view.tintColor;
+        }];
+    } else {
+        urlLink.text = @"  Website Terms & Conditions";
+        [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
+            wv.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
+        } completion:^(BOOL finished) {
+            urlLink.userInteractionEnabled = YES;
+            urlLink.textColor = self.view.tintColor;
+        }];
+    }
+    
+    self.termsAndCondsNativeOrWeb = !self.termsAndCondsNativeOrWeb;
+}
+
+- (void)loadLegalViewWithTitle:(NSString *)title fileName:(NSString *)fileName {
+    self.menuOverlay.userInteractionEnabled = YES;
+    NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"LegalView" owner:self options:nil];
+    UIView *legalView = views.firstObject;
+    legalView.tag = kLegalDocumentVTag;
+    legalView.frame = CGRectMake(0, 569, 320, 548);
+    [self.view addSubview:legalView];
+    self.legalViewTitle.text = title;
+    
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:fileName ofType:@"txt"];
+    NSError *error;
+    NSString *txtContent = [[NSString alloc] initWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:&error];
+    
+    if (!error) self.legalViewText.text = txtContent;
+    else return;
+    
+    CGRect lblFrame = self.legalViewText.frame;
+    CGSize newSize = [self.legalViewText sizeThatFits:CGSizeMake(lblFrame.size.width, CGFLOAT_MAX)];
+    lblFrame.size.height = newSize.height;
+    self.legalViewText.frame = lblFrame;
+    self.legalScrollView.contentSize = CGSizeMake(290, lblFrame.size.height + 20);
+    self.legalScrollView.layer.cornerRadius = WOTA_CORNER_RADIUS;
+    self.legalScrollView.layer.borderColor = [UIColor blackColor].CGColor;
+    self.legalScrollView.layer.borderWidth = 1.0f;
+    
+    [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
+        legalView.frame = CGRectMake(0, 20, 320, 548);
+    } completion:^(BOOL finished) {
+        ;
+    }];
+}
+
+- (IBAction)clickLegalDone:(id)sender {
+    self.menuOverlay.userInteractionEnabled = NO;
+    UIView *legalView = [self.view viewWithTag:kLegalDocumentVTag];
+    
+    [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
+        legalView.frame = CGRectMake(0, 569, 320, 548);
+    } completion:^(BOOL finished) {
+        [legalView removeFromSuperview];
+    }];
+}
+
+- (IBAction)clickAcknowledgements:(id)sender {
+    [self loadLegalViewWithTitle:@"Acknowledgements" fileName:@"Acknowledgements"];
 }
 
 - (void)clickSelfServeLink:(UITapGestureRecognizer *)tgr {

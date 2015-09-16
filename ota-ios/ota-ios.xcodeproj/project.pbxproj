@@ -122,6 +122,10 @@
 		B0C443471B9B8E9700F456CE /* PreBookConfirmView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0C443461B9B8E9700F456CE /* PreBookConfirmView.m */; };
 		B0C443491B9B8EBA00F456CE /* PreBookConfirmView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0C443481B9B8EBA00F456CE /* PreBookConfirmView.xib */; };
 		B0C4434B1B9BEC5900F456CE /* CVVView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0C4434A1B9BEC5900F456CE /* CVVView.xib */; };
+		B0C628091BA88E9A0097B97B /* LegalView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0C628081BA88E9A0097B97B /* LegalView.xib */; };
+		B0C6280B1BA88F8A0097B97B /* PrivacyPolicy.txt in Resources */ = {isa = PBXBuildFile; fileRef = B0C6280A1BA88F8A0097B97B /* PrivacyPolicy.txt */; };
+		B0C6280D1BA917510097B97B /* TermsConditionsNotices.txt in Resources */ = {isa = PBXBuildFile; fileRef = B0C6280C1BA917510097B97B /* TermsConditionsNotices.txt */; };
+		B0C6280F1BA9376A0097B97B /* Acknowledgements.txt in Resources */ = {isa = PBXBuildFile; fileRef = B0C6280E1BA9376A0097B97B /* Acknowledgements.txt */; };
 		B0CB24B11B9877F8006A8282 /* CursorlessTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = B0CB24B01B9877F8006A8282 /* CursorlessTextField.m */; };
 		B0CB24B31B991418006A8282 /* USStateAbbreviations.plist in Resources */ = {isa = PBXBuildFile; fileRef = B0CB24B21B991418006A8282 /* USStateAbbreviations.plist */; };
 		B0CB24B61B9920B4006A8282 /* StatePickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0CB24B51B9920B4006A8282 /* StatePickerView.m */; };
@@ -386,6 +390,10 @@
 		B0C443461B9B8E9700F456CE /* PreBookConfirmView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreBookConfirmView.m; sourceTree = "<group>"; };
 		B0C443481B9B8EBA00F456CE /* PreBookConfirmView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PreBookConfirmView.xib; sourceTree = "<group>"; };
 		B0C4434A1B9BEC5900F456CE /* CVVView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CVVView.xib; sourceTree = "<group>"; };
+		B0C628081BA88E9A0097B97B /* LegalView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LegalView.xib; sourceTree = "<group>"; };
+		B0C6280A1BA88F8A0097B97B /* PrivacyPolicy.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PrivacyPolicy.txt; sourceTree = "<group>"; };
+		B0C6280C1BA917510097B97B /* TermsConditionsNotices.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TermsConditionsNotices.txt; sourceTree = "<group>"; };
+		B0C6280E1BA9376A0097B97B /* Acknowledgements.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Acknowledgements.txt; sourceTree = "<group>"; };
 		B0CB24AF1B9877F8006A8282 /* CursorlessTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CursorlessTextField.h; sourceTree = "<group>"; };
 		B0CB24B01B9877F8006A8282 /* CursorlessTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CursorlessTextField.m; sourceTree = "<group>"; };
 		B0CB24B21B991418006A8282 /* USStateAbbreviations.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = USStateAbbreviations.plist; sourceTree = "<group>"; };
@@ -646,6 +654,9 @@
 				B09B95711B99CF7D006C4054 /* AUStateAbbreviations.plist */,
 				B09B956F1B99CAFE006C4054 /* CAStateAbbreviations.plist */,
 				B0CB24B21B991418006A8282 /* USStateAbbreviations.plist */,
+				B0C6280A1BA88F8A0097B97B /* PrivacyPolicy.txt */,
+				B0C6280C1BA917510097B97B /* TermsConditionsNotices.txt */,
+				B0C6280E1BA9376A0097B97B /* Acknowledgements.txt */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
@@ -726,6 +737,7 @@
 				B06BAB831B9F2B6A0081C331 /* MenuView.xib */,
 				B0B854AC1BA6512600E87C93 /* BookingSupportView.xib */,
 				B0C2EB4F1BA7E50A00D88154 /* ClearDataView.xib */,
+				B0C628081BA88E9A0097B97B /* LegalView.xib */,
 				B0D01EBF1B07ED830001C558 /* Navigation */,
 			);
 			path = Views;
@@ -1134,6 +1146,8 @@
 				B0D02FF51AE6123000B1E75F /* jcb.png in Resources */,
 				B0D02FF41AE6123000B1E75F /* discover@2x.png in Resources */,
 				B0C443491B9B8EBA00F456CE /* PreBookConfirmView.xib in Resources */,
+				B0C6280D1BA917510097B97B /* TermsConditionsNotices.txt in Resources */,
+				B0C6280F1BA9376A0097B97B /* Acknowledgements.txt in Resources */,
 				B02A8E051B9F84D9003664A3 /* ImageDisclaimerView.xib in Resources */,
 				B0D02FED1AE6123000B1E75F /* cvc-amex.png in Resources */,
 				B0CB24B31B991418006A8282 /* USStateAbbreviations.plist in Resources */,
@@ -1145,6 +1159,7 @@
 				B0D02FF91AE6123000B1E75F /* placeholder.png in Resources */,
 				B0C04ADC1B534FDD002C89F2 /* NoPredictionsCell.xib in Resources */,
 				B0D02FFF1AE6123000B1E75F /* textfield@2x.png in Resources */,
+				B0C628091BA88E9A0097B97B /* LegalView.xib in Resources */,
 				B09431E51B58A39300E69A71 /* TrotterView.xib in Resources */,
 				B09277E51B4F70CC0094159B /* NoHotelsView.xib in Resources */,
 				B0C4434B1B9BEC5900F456CE /* CVVView.xib in Resources */,
@@ -1158,6 +1173,7 @@
 				B0D02FFE1AE6123000B1E75F /* textfield.png in Resources */,
 				B05BD6321AC1FF54002C2882 /* PlaceAutoCompleteTableViewCell.xib in Resources */,
 				B018C0421AD96A7600DDCE2E /* GuestDetailsView.xib in Resources */,
+				B0C6280B1BA88F8A0097B97B /* PrivacyPolicy.txt in Resources */,
 				B0CBC7D91B483C2E00F61CA9 /* FilterView.xib in Resources */,
 				B09B95721B99CF7D006C4054 /* AUStateAbbreviations.plist in Resources */,
 				B0D02FF61AE6123000B1E75F /* jcb@2x.png in Resources */,
