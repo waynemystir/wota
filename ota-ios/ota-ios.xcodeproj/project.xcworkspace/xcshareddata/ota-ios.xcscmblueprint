@@ -1,0 +1,37 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "38CF75A6C2BD0DAE0B17A7F3E55250F15C6BA567",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "272F684BDB48C12FB82F63EFB90FF2436BBA2473" : 0,
+    "38CF75A6C2BD0DAE0B17A7F3E55250F15C6BA567" : 0,
+    "E28E36D423EC87798E52E2BF482E9F7A1E6479D6" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "0A368C34-84E9-4CE0-ADA5-9966CFF1E7F2",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "272F684BDB48C12FB82F63EFB90FF2436BBA2473" : "wota\/ota-ios\/ota-ios\/Libraries\/SDWebImage\/Vendors\/libwebp\/",
+    "38CF75A6C2BD0DAE0B17A7F3E55250F15C6BA567" : "wota",
+    "E28E36D423EC87798E52E2BF482E9F7A1E6479D6" : "wota\/ota-ios\/ota-ios\/Libraries\/SDWebImage\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "ota-ios",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "ota-ios\/ota-ios.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/chromium.googlesource.com\/webm\/libwebp",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "272F684BDB48C12FB82F63EFB90FF2436BBA2473"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:waynemystir\/wota.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "38CF75A6C2BD0DAE0B17A7F3E55250F15C6BA567"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/rs\/SDWebImage.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "E28E36D423EC87798E52E2BF482E9F7A1E6479D6"
+    }
+  ]
+}

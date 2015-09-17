@@ -60,7 +60,7 @@
                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sSd-ff-854" customClass="WotaButton">
                     <rect key="frame" x="10" y="350" width="300" height="55"/>
                     <fontDescription key="fontDescription" type="system" pointSize="19"/>
-                    <state key="normal" title="Acknowledgements">
+                    <state key="normal" title="Acknowledgements &amp; Credits">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>

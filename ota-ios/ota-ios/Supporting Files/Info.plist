@@ -22,10 +22,17 @@
 	<string>9</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This will help us to locate hotels and destinations for you!</string>
 	<key>UIBackgroundModes</key>
 	<array/>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchView</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>

@@ -14,10 +14,11 @@
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier hotelRating:(NSNumber *)hotelRating;
 
 @property (nonatomic, strong) UIImageView *thumbImageView;
-@property (nonatomic, strong) StarBoard *starBoard;
+//@property (nonatomic, strong) StarBoard *starBoard;
 @property (nonatomic, strong) UILabel *hotelNameLabel;
 @property (nonatomic, strong) UILabel *roomRateLabel;
 @property (nonatomic, strong) UILabel *cityLabel;
 @property (nonatomic, strong) UILabel *promoLabel;
+@property (nonatomic, strong) UIImageView *starBoardContainer;
 
 @end

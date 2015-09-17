@@ -84,7 +84,7 @@ class RangeSlider: UIControl {
         layer.addSublayer(upperThumbLayer)
     }
 
-    required init(coder: NSCoder) {
+    required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
 
@@ -92,7 +92,7 @@ class RangeSlider: UIControl {
         CATransaction.begin()
         CATransaction.setDisableActions(true)
 
-        trackLayer.frame = bounds.rectByInsetting(dx: 0.0, dy: bounds.height / 3)
+        trackLayer.frame = bounds.insetBy(dx: 0.0, dy: bounds.height / 3)
         trackLayer.setNeedsDisplay()
 
         let lowerThumbCenter = CGFloat(positionForValue(lowerValue))
@@ -115,7 +115,7 @@ class RangeSlider: UIControl {
     }
 
     // Touch handlers
-    override func beginTrackingWithTouch(touch: UITouch, withEvent event: UIEvent) -> Bool {
+    override func beginTrackingWithTouch(touch: UITouch, withEvent event: UIEvent?) -> Bool {
         previousLocation = touch.locationInView(self)
 
         // Hit test the thumb layers
@@ -132,7 +132,7 @@ class RangeSlider: UIControl {
         return min(max(value, lowerValue), upperValue)
     }
 
-    override func continueTrackingWithTouch(touch: UITouch, withEvent event: UIEvent) -> Bool {
+    override func continueTrackingWithTouch(touch: UITouch, withEvent event: UIEvent?) -> Bool {
         let location = touch.locationInView(self)
 
         // 1. Determine by how much the user has dragged
@@ -155,7 +155,7 @@ class RangeSlider: UIControl {
         return true
     }
 
-    override func endTrackingWithTouch(touch: UITouch, withEvent event: UIEvent) {
+    override func endTrackingWithTouch(touch: UITouch?, withEvent event: UIEvent?) {
         lowerThumbLayer.highlighted = false
         upperThumbLayer.highlighted = false
     }

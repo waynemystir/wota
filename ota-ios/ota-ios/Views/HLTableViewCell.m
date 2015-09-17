@@ -17,6 +17,7 @@
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         
         self.clipsToBounds = YES;
+        self.selectionStyle = UITableViewCellSelectionStyleNone;
         
         _thumbImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 96, 96)];
         _thumbImageView.contentMode = UIViewContentModeScaleAspectFill;
@@ -31,12 +32,15 @@
         _hotelNameLabel.minimumScaleFactor = 0.98f;
         [self.contentView addSubview:_hotelNameLabel];
         
-        _starBoard = [[StarBoard alloc] initWithFrame:CGRectMake(98, 35, 129, 26)];
-        _starBoard.numberOfStars = hotelRating;
-        CGAffineTransform t = CGAffineTransformMakeScale(0.75f, 0.75f);
-        t = CGAffineTransformTranslate(t, -21, 0);
-        _starBoard.transform = t;
-        [self.contentView addSubview:_starBoard];
+        _starBoardContainer = [[UIImageView alloc] initWithFrame:CGRectMake(98, 39, 129, 26)];
+        [self.contentView addSubview:_starBoardContainer];
+        
+//        _starBoard = [[StarBoard alloc] initWithFrame:CGRectMake(98, 35, 129, 26)];
+//        _starBoard.numberOfStars = hotelRating;
+//        CGAffineTransform t = CGAffineTransformMakeScale(0.75f, 0.75f);
+//        t = CGAffineTransformTranslate(t, -21, 0);
+//        _starBoard.transform = t;
+//        [self.contentView addSubview:_starBoard];
         
         _roomRateLabel = [[UILabel alloc] initWithFrame:CGRectMake(198, 32, 119, 33)];
         _roomRateLabel.backgroundColor = [UIColor clearColor];

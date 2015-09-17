@@ -77,7 +77,22 @@ NSString * const kNotificationHotelDataSorted = @"kNotificationHotelDataSorted";
         cell.promoLabel.text = @"";
     }
     
+    StarBoard *starBoard = [[StarBoard alloc] initWithFrame:CGRectMake(98, 35, 129, 26)];
+    starBoard.numberOfStars = hotel.hotelRating;
+    CGAffineTransform t = CGAffineTransformMakeScale(1.31f, 1.31f);
+    t = CGAffineTransformTranslate(t, -21, 0);
+    starBoard.transform = t;
+    cell.starBoardContainer.image = [self imageFromView:starBoard];
+
     return cell;
+}
+
+- (UIImage *) imageFromView:(UIView *)view {
+    UIGraphicsBeginImageContext(view.frame.size);
+    [[view layer] renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *screenshot = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return screenshot;
 }
 
 #pragma mark UITableViewDelegate methods

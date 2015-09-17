@@ -10,9 +10,9 @@ class RangeSliderThumbLayer: CALayer {
     }
     weak var rangeSlider: RangeSlider?
     
-    override func drawInContext(ctx: CGContext!) {
+    override func drawInContext(ctx: CGContext) {
         if let slider = rangeSlider {
-            let thumbFrame = bounds.rectByInsetting(dx: 2.0, dy: 2.0)
+            let thumbFrame = bounds.insetBy(dx: 2.0, dy: 2.0)
             let cornerRadius = thumbFrame.height * slider.curvaceousness / 2.0
             let thumbPath = UIBezierPath(roundedRect: thumbFrame, cornerRadius: cornerRadius)
             

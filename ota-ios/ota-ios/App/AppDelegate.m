@@ -28,7 +28,7 @@ static NSString *_externalIP = nil;
     
     TrotterViewController *mvc = [TrotterViewController new];
     UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:mvc];
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    self.window = [[UIWindow alloc] initWithFrame:CGRectMake(0, 0, 320, 568)];
     self.window.rootViewController = nc;
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];

@@ -43,6 +43,8 @@
         return NO;
     
     NSMutableDictionary *keychainQuery = [self getKeychainQuery:key];
+    if (!keychainQuery) return NO;
+    
     // delete any previous value with this key (we could use SecItemUpdate but its unnecesarily more complicated)
     [self deleteValueForKey:key];
     
@@ -57,6 +59,7 @@
         return NO;
     
     NSMutableDictionary *keychainQuery = [self getKeychainQuery:key];
+    if (!keychainQuery) return NO;
     
     OSStatus result = SecItemDelete((__bridge CFDictionaryRef)keychainQuery);
     return CHECK_OSSTATUS_ERROR(result);
@@ -68,6 +71,8 @@
     
     id value = nil;
     NSMutableDictionary *keychainQuery = [self getKeychainQuery:key];
+    if (!keychainQuery) return nil;
+    
     CFDataRef keyData = NULL;
     
     [keychainQuery setObject:(__bridge id)kCFBooleanTrue forKey:(__bridge id)kSecReturnData];

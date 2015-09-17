@@ -32,6 +32,7 @@
 #import "ChildView.h"
 #import "EanCredentials.h"
 #import "GuestInfo.h"
+#import "AcknowTapGesture.h"
 
 typedef NS_ENUM(NSUInteger, VIEW_STATE) {
     VIEW_STATE_CRITERIA,
@@ -53,6 +54,7 @@ NSUInteger const kPrivDataOverlaTag = 1917153;
 NSUInteger const kLegalDocumentVTag = 1917154;
 NSUInteger const kTermsWebOrNatiTag = 1917155;
 NSUInteger const kTermsUIWebViewTag = 1917156;
+NSUInteger const kAcknowledgemenTag = 1917157;
 
 @interface TrotterViewController () <CLLocationManagerDelegate, LoadDataProtocol, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, MKMapViewDelegate, ChildViewDelegate, TrotterCalendarPickerDelegate>
 
@@ -147,6 +149,7 @@ NSUInteger const kTermsUIWebViewTag = 1917156;
 @property (weak, nonatomic) IBOutlet UILabel *legalViewTitle;
 @property (weak, nonatomic) IBOutlet UILabel *legalViewText;
 @property (weak, nonatomic) IBOutlet UIScrollView *legalScrollView;
+@property (weak, nonatomic) IBOutlet UIScrollView *acknowScrollView;
 
 #pragma mark IBActions
 
@@ -164,6 +167,7 @@ NSUInteger const kTermsUIWebViewTag = 1917156;
 - (IBAction)clickTermsConditions:(id)sender;
 - (IBAction)clickLegalDone:(id)sender;
 - (IBAction)clickAcknowledgements:(id)sender;
+- (IBAction)clickAcknowDone:(id)sender;
 
 @end
 
@@ -2647,18 +2651,16 @@ NSUInteger const kTermsUIWebViewTag = 1917156;
     [self.view addSubview:legalView];
     self.legalViewTitle.text = title;
     
-    NSString *filePath = [[NSBundle mainBundle] pathForResource:fileName ofType:@"txt"];
-    NSError *error;
-    NSString *txtContent = [[NSString alloc] initWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:&error];
+    if (fileName) {
+        NSString *filePath = [[NSBundle mainBundle] pathForResource:fileName ofType:@"txt"];
+        NSError *error;
+        NSString *txtContent = [[NSString alloc] initWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:&error];
+        
+        if (!error) self.legalViewText.text = txtContent;
+        else return;
+    }
     
-    if (!error) self.legalViewText.text = txtContent;
-    else return;
-    
-    CGRect lblFrame = self.legalViewText.frame;
-    CGSize newSize = [self.legalViewText sizeThatFits:CGSizeMake(lblFrame.size.width, CGFLOAT_MAX)];
-    lblFrame.size.height = newSize.height;
-    self.legalViewText.frame = lblFrame;
-    self.legalScrollView.contentSize = CGSizeMake(290, lblFrame.size.height + 20);
+    [self resizeLegalLabelAndScrollView];
     self.legalScrollView.layer.cornerRadius = WOTA_CORNER_RADIUS;
     self.legalScrollView.layer.borderColor = [UIColor blackColor].CGColor;
     self.legalScrollView.layer.borderWidth = 1.0f;
@@ -2670,8 +2672,17 @@ NSUInteger const kTermsUIWebViewTag = 1917156;
     }];
 }
 
+- (void)resizeLegalLabelAndScrollView {
+    CGRect lblFrame = self.legalViewText.frame;
+    CGSize newSize = [self.legalViewText sizeThatFits:CGSizeMake(lblFrame.size.width, CGFLOAT_MAX)];
+    lblFrame.size.height = newSize.height;
+    self.legalViewText.frame = lblFrame;
+    self.legalScrollView.contentSize = CGSizeMake(290, lblFrame.size.height + 20);
+}
+
 - (IBAction)clickLegalDone:(id)sender {
     self.menuOverlay.userInteractionEnabled = NO;
+    [self.view endEditing:YES];
     UIView *legalView = [self.view viewWithTag:kLegalDocumentVTag];
     
     [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
@@ -2682,7 +2693,90 @@ NSUInteger const kTermsUIWebViewTag = 1917156;
 }
 
 - (IBAction)clickAcknowledgements:(id)sender {
-    [self loadLegalViewWithTitle:@"Acknowledgements" fileName:@"Acknowledgements"];
+    self.menuOverlay.userInteractionEnabled = YES;
+    NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"AcknowledgementsView" owner:self options:nil];
+    UIView *acknowView = views.firstObject;
+    acknowView.tag = kAcknowledgemenTag;
+    acknowView.frame = CGRectMake(0, 569, 320, 548);
+    [self.view addSubview:acknowView];
+    
+    __block CGRect vf = CGRectMake(5, 5, 300, 35);
+    __weak typeof(UIScrollView) *sv = self.acknowScrollView;
+    NSString *acknowDictPath = [[NSBundle mainBundle] pathForResource:@"AcknowsDictionary" ofType:@"plist"];
+    NSDictionary *acknowDict = [NSDictionary dictionaryWithContentsOfFile:acknowDictPath];
+    [acknowDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        UITextView *vw = [[UITextView alloc] initWithFrame:vf];
+        vw.backgroundColor = [UIColor clearColor];
+        vw.textColor = [UIColor blackColor];
+        vw.font = [UIFont systemFontOfSize:15.0f];
+        
+        NSDictionary *attribs = @{
+                                  NSForegroundColorAttributeName: vw.textColor,
+                                  NSFontAttributeName: vw.font
+                                  };
+        
+        NSString *plural = [key isEqualToString:@"Freepik"] ? @"s" : @"";
+        NSString *text = [NSString stringWithFormat:@"%@ Icon%@ made by %@ from www.flaticon.com", obj, plural, key];
+        
+        NSMutableAttributedString *attributedText =
+        [[NSMutableAttributedString alloc] initWithString:text
+                                               attributes:attribs];
+        
+        NSRange tintTextRange = [text rangeOfString:key];// * Notice that usage of rangeOfString in this case may cause some bugs - I use it here only for demonstration
+        [attributedText setAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:16.0f]} range:tintTextRange];
+        [attributedText setAttributes:@{NSForegroundColorAttributeName:self.view.tintColor}
+                                range:tintTextRange];
+        
+        vw.attributedText = attributedText;
+        [vw sizeToFit];
+        vw.editable = NO;
+        vw.selectable = NO;
+        [self addGestureRecongizerToView:vw key:key];
+        [sv addSubview:vw];
+        vf = CGRectMake(5, vw.frame.origin.y + vw.frame.size.height + 5, 300, 35);
+    }];
+    
+    self.acknowScrollView.layer.cornerRadius = WOTA_CORNER_RADIUS;
+    self.acknowScrollView.layer.borderColor = [UIColor blackColor].CGColor;
+    self.acknowScrollView.layer.borderWidth = 1.0f;
+    
+    [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
+        acknowView.frame = CGRectMake(0, 20, 320, 548);
+    } completion:^(BOOL finished) {
+        ;
+    }];
+}
+
+- (void)addGestureRecongizerToView:(UIView *)view key:(NSString *)key {
+    if (!view || !key) return;
+    
+    AcknowTapGesture *atg = [[AcknowTapGesture alloc] initWithTarget:self action:@selector(loadAcknowPage:)];
+    atg.acknowKey = key;
+    atg.numberOfTapsRequired = atg.numberOfTouchesRequired = 1;
+    view.userInteractionEnabled = YES;
+    [view addGestureRecognizer:atg];
+}
+
+- (void)loadAcknowPage:(AcknowTapGesture *)tgr {
+    NSString *acknowDictPath = [[NSBundle mainBundle] pathForResource:@"AcknowledgementsDict" ofType:@"plist"];
+    NSDictionary *acknowDict = [NSDictionary dictionaryWithContentsOfFile:acknowDictPath];
+    NSString *urlString = [acknowDict objectForKey:tgr.acknowKey];
+    
+    UIWebView *wv = [[UIWebView alloc] initWithFrame:self.acknowScrollView.bounds];
+    [wv loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlString]]];
+    [self.acknowScrollView addSubview:wv];
+}
+
+- (IBAction)clickAcknowDone:(id)sender {
+    self.menuOverlay.userInteractionEnabled = NO;
+    [self.view endEditing:YES];
+    UIView *acknowView = [self.view viewWithTag:kAcknowledgemenTag];
+    
+    [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
+        acknowView.frame = CGRectMake(0, 569, 320, 548);
+    } completion:^(BOOL finished) {
+        [acknowView removeFromSuperview];
+    }];
 }
 
 - (void)clickSelfServeLink:(UITapGestureRecognizer *)tgr {
