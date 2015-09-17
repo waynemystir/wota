@@ -331,7 +331,7 @@ NSString * kURLeanItinReq() {
                      EAN_PK_DEPART_DATE, returnDate];
     }
     
-    return [[[self URLhotelListWithLatitude:latitude longitude:longitude searchRadius:searchRadius withProximity:withProximity] stringByAppendingString:appendage] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    return [[[self URLhotelListWithLatitude:latitude longitude:longitude searchRadius:searchRadius withProximity:withProximity] stringByAppendingString:appendage] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
 }
 
 - (NSString *)URLhotelListWithLatitude:(double)latitude
@@ -357,7 +357,7 @@ NSString * kURLeanItinReq() {
 }
 
 - (NSString *)URLhotelInfoWithId:(NSString *)hotelId {
-    return [[NSString stringWithFormat:@"%@&%@=%@", kURLeanHotelInfo(), EAN_PK_HOTEL_ID, hotelId] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    return [[NSString stringWithFormat:@"%@&%@=%@", kURLeanHotelInfo(), EAN_PK_HOTEL_ID, hotelId] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
 }
 
 - (void)loadPaymentTypesWithHotelId:(NSString *)hotelId
@@ -377,9 +377,9 @@ NSString * kURLeanItinReq() {
 //    NSString *userAgent = [NSString stringWithFormat:@"%@/%@ (iOS %@) MOBILE_APP", appName, appVersion, osVersion];
 //    [request setValue:userAgent forHTTPHeaderField:@"User-Agent"];
     
-    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-        completionBlock(response, data, connectionError);
-    }];
+    [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        completionBlock(response, data, error);
+    }] resume];
 }
 
 - (NSString *)URLpaymentTypesWithHotelId:(NSString *)hotelId
@@ -389,7 +389,7 @@ NSString * kURLeanItinReq() {
              kURLeanPaymentTypes(),
              EAN_PK_HOTEL_ID, hotelId,
              EAN_PK_SUPPLIER_TYPE, supplierType,
-             EAN_PK_RATE_TYPE, rateType] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+             EAN_PK_RATE_TYPE, rateType] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
 }
 
 - (void)loadAvailableRoomsWithHotelId:(NSString *)hotelId
@@ -414,7 +414,7 @@ NSString * kURLeanItinReq() {
              EAN_PK_INCLUDE_DETAILS, @"true",
              EAN_PK_INCLUDE_ROOM_IMAGES, @"true",
              [self getRoomGroupParamWithNumberOfAdults:numberOfAdults childTravelers:childTravelers],
-             EAN_PK_OPTIONS, [NSString stringWithFormat:@"%@", EAN_ROOM_TYPES]] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+             EAN_PK_OPTIONS, [NSString stringWithFormat:@"%@", EAN_ROOM_TYPES]] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
 }
 
 - (NSString *)getRoomGroupParamWithNumberOfAdults:(NSUInteger)numberOfAdults
@@ -491,7 +491,7 @@ NSString * kURLeanItinReq() {
                      EAN_PK_CC_CITY, city,
                      EAN_PK_CC_STATE_PROV_CODE, stringIsEmpty(stateProvinceCode) ? @"" : stateProvinceCode,
                      EAN_PK_CC_COUNTRY_CODE, countryCode,
-                     EAN_PK_CC_POSTAL_CODE, postalCode] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                     EAN_PK_CC_POSTAL_CODE, postalCode] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     NSLog(@"BOOKING:%@", urlString);
     
     NSURL *url = [NSURL URLWithString:urlString];
@@ -501,7 +501,7 @@ NSString * kURLeanItinReq() {
 - (void)loadItineraryWithAffiliateConfirmationId:(NSUUID *)affiliateConfirmationId {
     NSString *urlString = [[NSString stringWithFormat:@"%@&%@=%@",
                             kURLeanItinReq(),
-                            EAN_PK_AFFILIATE_CONFIRMATION_ID, [affiliateConfirmationId UUIDString]] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                            EAN_PK_AFFILIATE_CONFIRMATION_ID, [affiliateConfirmationId UUIDString]] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     
     NSURL *url = [NSURL URLWithString:urlString];
     [self fireOffConnectionWithURL:url httpMethod:HTTP_GET];

@@ -1703,10 +1703,10 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
 }
 
 - (void)setupExpirationPicker {
-    self.expirationInputView = [[UIView alloc] initWithFrame:CGRectMake(0, 270, 320, 298)];
+    self.expirationInputView = [[UIView alloc] initWithFrame:CGRectMake(0, 340, 320, 228)];
     self.expirationInputView.backgroundColor = [UIColor whiteColor];
     
-    self.expirationNext = [[UIButton alloc] initWithFrame:CGRectMake(242, 257, 75, 38)];
+    self.expirationNext = [[UIButton alloc] initWithFrame:CGRectMake(242, 187, 75, 38)];
     self.expirationNext.backgroundColor = UIColorFromRGB(0xc4c4c4);
     self.expirationNext.layer.cornerRadius = 4.0f;
     self.expirationNext.layer.masksToBounds = NO;
@@ -1726,7 +1726,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     [self.expirationNext addTarget:self action:@selector(tuoExpirNext:) forControlEvents:UIControlEventTouchUpOutside];
     [self.expirationInputView addSubview:self.expirationNext];
     
-    self.expirationPicker = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 20, 320, 268)];
+    self.expirationPicker = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 20, 320, 162)];
     self.expirationPicker.backgroundColor = UIColorFromRGB(0xe3e3e3);
     [self.expirationInputView addSubview:self.expirationPicker];
     self.expirationPicker.dataSource = self;

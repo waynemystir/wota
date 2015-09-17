@@ -9,7 +9,23 @@
         <view contentMode="scaleToFill" id="iN0-l3-epB">
             <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="trotter_big" translatesAutoresizingMaskIntoConstraints="NO" id="VgA-fQ-RrY">
+                    <rect key="frame" x="246" y="246" width="108" height="108"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="108" id="Ihy-hO-ieu"/>
+                        <constraint firstAttribute="width" constant="108" id="gck-Am-JLn"/>
+                    </constraints>
+                </imageView>
+            </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="VgA-fQ-RrY" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="Uv7-Lo-ef9"/>
+                <constraint firstItem="VgA-fQ-RrY" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="gUR-jO-ahj"/>
+            </constraints>
         </view>
     </objects>
+    <resources>
+        <image name="trotter_big" width="152" height="152"/>
+    </resources>
 </document>

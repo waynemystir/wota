@@ -21,17 +21,6 @@
 - (void)loadPlaceDetails:(NSString *)placeId;
 
 - (void)loadPlaceDetailsWithLatitude:(double)latitude
-                           longitude:(double)longitude
-                     completionBlock:(void (^)(NSURLResponse *response, NSData *data, NSError *connectionError))completionBlock;
-
-- (void)loadPlaceDetailsWithLatitude:(double)latitude
                            longitude:(double)longitude;
-
-//- (void)loadPlaceDetailsWithPostalCode:(NSString *)postalCode;
-
-- (void)loadNearbyPlacesWithLatitude:(double)latitude
-                           longitude:(double)longitude
-                               types:(NSArray *)types
-                     completionBlock:(void(^)(NSURLResponse *response, NSData *data, NSError *connectionError))completionBlock;
 
 @end

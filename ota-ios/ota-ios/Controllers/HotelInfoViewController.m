@@ -114,10 +114,15 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     self = [self init];
     if (self != nil) {
         _eanHotel = eanHotel;
+        
         [[LoadEanData sharedInstance] loadPaymentTypesWithHotelId:[_eanHotel.hotelId stringValue] supplierType:_eanHotel.supplierType rateType:_eanHotel.roomRateDetails.rateInfo.rateType completionBlock:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
             _paymentTypesBulletted = [EanPaymentTypeResponse eanObjectFromApiResponseData:data].paymentTypesBulletted;
             _paymentTypesReturned = YES;
-            [self appendPaymentTypesToPoliciesLabel];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self appendPaymentTypesToPoliciesLabel];
+            });
+            
         }];
     }
     return self;

@@ -203,7 +203,7 @@ NSString * kURLecHotelList() {
     }
     
     EanCredentials *ec = [[EanCredentials alloc] init];
-    NSURL *url = [NSURL URLWithString:[[self testURL] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    NSURL *url = [NSURL URLWithString:[[self testURL] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setTimeoutInterval:30];

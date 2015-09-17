@@ -183,13 +183,10 @@ static NSString *_externalIP = nil;
 }
 
 + (void)acquireExternalIP {
-    NSURL *url = [NSURL URLWithString:@"http://ip-api.com/line/?fields=query"];
-    [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:url]
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-                               NSString *wes = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                               _externalIP = [wes stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-                           }];
+    [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:@"http://ip-api.com/line/?fields=query"] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        NSString *wes = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        _externalIP = [wes stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    }] resume];
 }
 
 @end

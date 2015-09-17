@@ -109,7 +109,7 @@ class RangeSlider: UIControl {
     }
 
     func positionForValue(value: Double) -> Double {
-        let widthDouble = Double(thumbWidth)
+//        let widthDouble = Double(thumbWidth)
         return Double(bounds.width - thumbWidth) * (value - minimumValue) /
             (maximumValue - minimumValue) + Double(thumbWidth / 2.0)
     }
