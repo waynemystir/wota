@@ -2371,7 +2371,6 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
     [nv animateRevertToFirstCancel];
     [nv animateRevertToWhereToContainer:kCardSecurityTag];
-    [nv rightViewRemoveCheckMark];
     
     [UIView animateWithDuration:kSrAnimationDuration animations:^{
         pbcv.transform = CGAffineTransformScale(toTransform, 0.01f, 0.01f);

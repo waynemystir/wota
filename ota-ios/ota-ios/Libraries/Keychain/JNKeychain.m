@@ -97,6 +97,9 @@
 }
 
 + (NSString *)getAccessGroup {
+    // ********** https://forums.developer.apple.com/thread/4743#14441 **********
+    // http://stackoverflow.com/questions/20344255/secitemadd-and-secitemcopymatching-returns-error-code-34018-errsecmissingentit/22305193#22305193
+    
     NSDictionary *query = [NSDictionary dictionaryWithObjectsAndKeys:
                            (__bridge NSString *)kSecClassGenericPassword, (__bridge NSString *)kSecClass,
                            @"bundleSeedID", kSecAttrAccount,

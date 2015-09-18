@@ -246,8 +246,10 @@ NSUInteger const kRightCheckMarkView = 4921743;
 - (void)rightViewRemoveCheckMark {
 //    [[_rightView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     UIView *sv = [_rightView viewWithTag:kRightCheckMarkButton];
-    [UIView transitionFromView:sv toView:nil duration:[self navigationAnimationDuration] options:UIViewAnimationOptionTransitionFlipFromBottom completion:^(BOOL finished) {
-        ;
+    __block UIView *dummyView = [[UIView alloc] initWithFrame:CGRectZero];
+    dummyView.backgroundColor = [UIColor clearColor];
+    [UIView transitionFromView:sv toView:dummyView duration:[self navigationAnimationDuration] options:UIViewAnimationOptionTransitionFlipFromBottom completion:^(BOOL finished) {
+        [dummyView removeFromSuperview];
     }];
 }
 

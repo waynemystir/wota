@@ -32,7 +32,6 @@
 		B032F62A1AC18F6700809395 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B032F6291AC18F6700809395 /* main.m */; };
 		B032F62D1AC18F6700809395 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B032F62C1AC18F6700809395 /* AppDelegate.m */; };
 		B032F6351AC18F6700809395 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B032F6341AC18F6700809395 /* Images.xcassets */; };
-		B032F6441AC18F6800809395 /* ota_iosTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B032F6431AC18F6800809395 /* ota_iosTests.m */; };
 		B0344C441AE5A560000BBFCE /* WotaMoneyUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = B0344C431AE5A560000BBFCE /* WotaMoneyUtils.m */; };
 		B0344C471AE5A5F8000BBFCE /* WotaForwardingTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = B0344C461AE5A5F8000BBFCE /* WotaForwardingTextField.m */; };
 		B0344C4A1AE5A696000BBFCE /* WotaCardNumberField.m in Sources */ = {isa = PBXBuildFile; fileRef = B0344C491AE5A696000BBFCE /* WotaCardNumberField.m */; };
@@ -208,16 +207,6 @@
 		B0FE0F4E1AC70A2500DAF635 /* SelectRoomView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0FE0F4D1AC70A2500DAF635 /* SelectRoomView.xib */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		B032F63E1AC18F6700809395 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B032F61C1AC18F6700809395 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = B032F6231AC18F6700809395;
-			remoteInfo = "ota-ios";
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		B00038641B10286E0000319A /* EanPropertyAmenity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanPropertyAmenity.h; sourceTree = "<group>"; };
 		B00038651B10286E0000319A /* EanPropertyAmenity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanPropertyAmenity.m; sourceTree = "<group>"; };
@@ -265,7 +254,6 @@
 		B032F62B1AC18F6700809395 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		B032F62C1AC18F6700809395 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		B032F6341AC18F6700809395 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		B032F63D1AC18F6700809395 /* ota-iosTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ota-iosTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B032F6421AC18F6800809395 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B032F6431AC18F6800809395 /* ota_iosTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ota_iosTests.m; sourceTree = "<group>"; };
 		B0344C421AE5A560000BBFCE /* WotaMoneyUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WotaMoneyUtils.h; sourceTree = "<group>"; };
@@ -560,13 +548,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B032F63A1AC18F6700809395 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -680,7 +661,6 @@
 			isa = PBXGroup;
 			children = (
 				B032F6241AC18F6700809395 /* Trotter.app */,
-				B032F63D1AC18F6700809395 /* ota-iosTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1163,24 +1143,6 @@
 			productReference = B032F6241AC18F6700809395 /* Trotter.app */;
 			productType = "com.apple.product-type.application";
 		};
-		B032F63C1AC18F6700809395 /* ota-iosTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = B032F64A1AC18F6800809395 /* Build configuration list for PBXNativeTarget "ota-iosTests" */;
-			buildPhases = (
-				B032F6391AC18F6700809395 /* Sources */,
-				B032F63A1AC18F6700809395 /* Frameworks */,
-				B032F63B1AC18F6700809395 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				B032F63F1AC18F6700809395 /* PBXTargetDependency */,
-			);
-			name = "ota-iosTests";
-			productName = "ota-iosTests";
-			productReference = B032F63D1AC18F6700809395 /* ota-iosTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -1189,7 +1151,7 @@
 			attributes = {
 				LastSwiftMigration = 0700;
 				LastSwiftUpdateCheck = 0700;
-				LastUpgradeCheck = 0620;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = Irwin;
 				TargetAttributes = {
 					B032F6231AC18F6700809395 = {
@@ -1200,10 +1162,6 @@
 								enabled = 1;
 							};
 						};
-					};
-					B032F63C1AC18F6700809395 = {
-						CreatedOnToolsVersion = 6.2;
-						TestTargetID = B032F6231AC18F6700809395;
 					};
 				};
 			};
@@ -1221,7 +1179,6 @@
 			projectRoot = "";
 			targets = (
 				B032F6231AC18F6700809395 /* ota-ios */,
-				B032F63C1AC18F6700809395 /* ota-iosTests */,
 			);
 		};
 /* End PBXProject section */
@@ -1301,13 +1258,6 @@
 				B0508C6E1B34DCA8009CC56F /* PowerebByGoogleCell.xib in Resources */,
 				B0C4207B1B64F7C20001E9CB /* TrotterCalendarPicker.xib in Resources */,
 				B0FE0F4E1AC70A2500DAF635 /* SelectRoomView.xib in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B032F63B1AC18F6700809395 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1443,23 +1393,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B032F6391AC18F6700809395 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				B032F6441AC18F6800809395 /* ota_iosTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		B032F63F1AC18F6700809395 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = B032F6231AC18F6700809395 /* ota-ios */;
-			targetProxy = B032F63E1AC18F6700809395 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		B032F6451AC18F6800809395 /* Debug */ = {
@@ -1484,6 +1418,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEFINES_MODULE = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1498,7 +1433,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
@@ -1540,7 +1475,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = Trotter;
@@ -1565,9 +1500,12 @@
 					"$(PROJECT_DIR)/Frameworks",
 				);
 				INFOPLIST_FILE = "ota-ios/Supporting Files/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.wota.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Trotter;
 				PROVISIONING_PROFILE = "";
+				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "ota-ios/Classes/ota-ios-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "$(SWIFT_MODULE_NAME)-Swift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1588,46 +1526,15 @@
 					"$(PROJECT_DIR)/Frameworks",
 				);
 				INFOPLIST_FILE = "ota-ios/Supporting Files/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.wota.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Trotter;
 				PROVISIONING_PROFILE = "";
+				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "ota-ios/Classes/ota-ios-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "$(SWIFT_MODULE_NAME)-Swift.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-		B032F64B1AC18F6800809395 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "ota-iosTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Trotter.app/Trotter";
-			};
-			name = Debug;
-		};
-		B032F64C1AC18F6800809395 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "ota-iosTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Trotter.app/Trotter";
 			};
 			name = Release;
 		};
@@ -1648,15 +1555,6 @@
 			buildConfigurations = (
 				B032F6481AC18F6800809395 /* Debug */,
 				B032F6491AC18F6800809395 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		B032F64A1AC18F6800809395 /* Build configuration list for PBXNativeTarget "ota-iosTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				B032F64B1AC18F6800809395 /* Debug */,
-				B032F64C1AC18F6800809395 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
