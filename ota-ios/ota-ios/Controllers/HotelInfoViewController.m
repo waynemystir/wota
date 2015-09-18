@@ -13,7 +13,8 @@
 #import "SelectRoomViewController.h"
 #import "EanHotelInformationResponse.h"
 #import "EanHotelInfoImage.h"
-#import <SDWebImage/UIImageView+WebCache.h>
+//#import <SDWebImage/UIImageView+WebCache.h>
+#import "UIImageView+WebCache.h"
 #import "NavigationView.h"
 #import "EanPropertyAmenity.h"
 #import "EanHotelDetails.h"
@@ -190,7 +191,10 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     [_imageDisclaimerContainer addSubview:idv];
     
     NSURL *iu = [NSURL URLWithString:[_eanHotel tripAdvisorRatingUrl]];
-    [_tripAdvisorImageView setImageWithURL:iu placeholderImage:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+//    [_tripAdvisorImageView setImageWithURL:iu placeholderImage:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+//        ;
+//    }];
+    [_tripAdvisorImageView sd_setImageWithURL:iu placeholderImage:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         ;
     }];
     
@@ -384,7 +388,22 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
         __weak typeof(ImageViewHotelInfo) *wiv = iv;
         __weak typeof(self) wes = self;
         UIImage *phi = [UIImage imageNamed:@"hotel_info"];
-        [iv setImageWithURL:[NSURL URLWithString:eanInfoImage.url] placeholderImage:phi completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+//        [iv setImageWithURL:[NSURL URLWithString:eanInfoImage.url] placeholderImage:phi completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+//            wiv.contentMode = UIViewContentModeScaleAspectFit;
+//            wiv.frame = [wes rectForOrient:wes.currentOrientation];
+//            if (!wes.hideEffinStatusBar) {
+//                wiv.center = CGPointMake(250, 212);
+//            }
+//            wiv.containsPlaceholderImage = NO;
+//            if (j == 0) {
+//                _firstImageArrived = YES;
+//            }
+////            if (!alreadyPreppedRoomViews && ++numberOfImagesCollected > (0.7f * ims.count)) {
+////                alreadyPreppedRoomViews = YES;
+////                [self prepareTheSelectRoomViewController];
+////            }
+//        }];
+        [iv sd_setImageWithURL:[NSURL URLWithString:eanInfoImage.url] placeholderImage:phi completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
             wiv.contentMode = UIViewContentModeScaleAspectFit;
             wiv.frame = [wes rectForOrient:wes.currentOrientation];
             if (!wes.hideEffinStatusBar) {

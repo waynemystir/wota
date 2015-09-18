@@ -8,7 +8,8 @@
 
 #import "HotelsTableViewDelegateImplementation.h"
 #import "HLTableViewCell.h"
-#import <SDWebImage/UIImageView+WebCache.h>
+//#import <SDWebImage/UIImageView+WebCache.h>
+#import "UIImageView+WebCache.h"
 #import "EanHotelListHotelSummary.h"
 #import "AppEnvironment.h"
 #import "HotelInfoViewController.h"
@@ -58,7 +59,10 @@ NSString * const kNotificationHotelDataSorted = @"kNotificationHotelDataSorted";
     
     UIImage *placeholderImage = [UIImage imageNamed:@"hotel_large"];
     NSString *imageUrlString = [@"http://images.travelnow.com" stringByAppendingString:hotel.thumbNailUrlEnhanced];
-    [cell.thumbImageView setImageWithURL:[NSURL URLWithString:imageUrlString] placeholderImage:placeholderImage completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+//    [cell.thumbImageView setImageWithURL:[NSURL URLWithString:imageUrlString] placeholderImage:placeholderImage completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+//        ;
+//    }];
+    [cell.thumbImageView sd_setImageWithURL:[NSURL URLWithString:imageUrlString] placeholderImage:placeholderImage completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         // TODO: if nothing comes back, replace hotel.thumbNailUrlEnhanced with hotel.thumbNailUrl and try again
         ;
     }];

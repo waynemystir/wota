@@ -26,7 +26,8 @@
 #import "BackCancelViewSmaller.h"
 #import "BackCancelViewLarger.h"
 #import "WotaMKPinAnnotationView.h"
-#import <SDWebImage/UIImageView+WebCache.h>
+//#import <SDWebImage/UIImageView+WebCache.h>
+#import "UIImageView+WebCache.h"
 #import "HotelInfoViewController.h"
 #import "TrotterCalendarPicker.h"
 #import "ChildView.h"
@@ -2409,7 +2410,13 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
     iv.contentMode = UIViewContentModeScaleAspectFill;
     
-    [iv setImageWithURL:[NSURL URLWithString:wa.imageUrl] placeholderImage:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+//    [iv setImageWithURL:[NSURL URLWithString:wa.imageUrl] placeholderImage:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+//        // TODO: placeholder image
+//        // TODO: if nothing comes back, replace hotel.thumbNailUrlEnhanced with hotel.thumbNailUrl and try again
+//        ;
+//    }];
+    
+    [iv sd_setImageWithURL:[NSURL URLWithString:wa.imageUrl] placeholderImage:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         // TODO: placeholder image
         // TODO: if nothing comes back, replace hotel.thumbNailUrlEnhanced with hotel.thumbNailUrl and try again
         ;

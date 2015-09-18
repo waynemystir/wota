@@ -30,7 +30,8 @@
 #import "SelectBedTypeDelegateImplementation.h"
 #import "SelectSmokingPreferenceDelegateImplementation.h"
 #import "WotaButton.h"
-#import <SDWebImage/UIImageView+WebCache.h>
+//#import <SDWebImage/UIImageView+WebCache.h>
+#import "UIImageView+WebCache.h"
 #import "WotaTappableView.h"
 #import "NightlyRateTableViewDelegateImplementation.h"
 #import "NavigationView.h"
@@ -590,7 +591,8 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     cell.nonrefundOutlet.text = room.rateInfo.nonRefundableString;
     
 //    [self addRoomImageGradient:cell.roomImageViewOutlet];
-    [cell.roomImageViewOutlet setImageWithURL:[NSURL URLWithString:room.roomImage.imageUrl] placeholderImage:self.placeholderImage];
+//    [cell.roomImageViewOutlet setImageWithURL:[NSURL URLWithString:room.roomImage.imageUrl] placeholderImage:self.placeholderImage];
+    [cell.roomImageViewOutlet sd_setImageWithURL:[NSURL URLWithString:room.roomImage.imageUrl] placeholderImage:self.placeholderImage];
     
     NSString *discount = room.rateInfo.chargeableRateInfo.discountPercentString;
     if (room.rateInfo.promo && !stringIsEmpty(discount)) {
@@ -648,7 +650,8 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     EanAvailabilityHotelRoomResponse *room = [self.tableData objectAtIndex:self.expandedIndexPath.row];
     
     UIImageView *roomImageView = (UIImageView *) [_tableViewPopOut viewWithTag:kRoomImageViewTag];
-    [roomImageView setImageWithURL:[NSURL URLWithString:room.roomImage.imageUrl] placeholderImage:self.placeholderImage];
+//    [roomImageView setImageWithURL:[NSURL URLWithString:room.roomImage.imageUrl] placeholderImage:self.placeholderImage];
+    [roomImageView sd_setImageWithURL:[NSURL URLWithString:room.roomImage.imageUrl] placeholderImage:self.placeholderImage];
     
     UILabel *rtd = (UILabel *) [_tableViewPopOut viewWithTag:kRoomTypeDescViewTag];
     rtd.text = room.roomType.roomTypeDescrition;
