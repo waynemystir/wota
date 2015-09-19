@@ -8,9 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import "LoadDataProtocol.h"
+#import "EanAvailabilityHotelRoomResponse.h"
 
 @interface BookViewController : UIViewController <LoadDataProtocol>
 
 @property (nonatomic, strong) NSUUID *affiliateConfirmationId;
+
+- (id)initWithRoom:(EanAvailabilityHotelRoomResponse *)room;
 
 @end

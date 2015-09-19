@@ -148,6 +148,8 @@
 		B0CBC8521B48AF9200F61CA9 /* RangeSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CBC84F1B48AF9200F61CA9 /* RangeSlider.swift */; };
 		B0CBC8531B48AF9200F61CA9 /* RangeSliderThumbLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CBC8501B48AF9200F61CA9 /* RangeSliderThumbLayer.swift */; };
 		B0CBC8541B48AF9200F61CA9 /* RangeSliderTrackLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CBC8511B48AF9200F61CA9 /* RangeSliderTrackLayer.swift */; };
+		B0CC93AD1BACDA760023069E /* RoomCostView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0CC93AC1BACDA760023069E /* RoomCostView.xib */; settings = {ASSET_TAGS = (); }; };
+		B0CC93B01BACDB390023069E /* RoomCostView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0CC93AF1BACDB390023069E /* RoomCostView.m */; settings = {ASSET_TAGS = (); }; };
 		B0D01DE51B02D4880001C558 /* NavigationView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D01DE41B02D4880001C558 /* NavigationView.m */; };
 		B0D01EB81B0590260001C558 /* BackCancelView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D01EB71B0590260001C558 /* BackCancelView.m */; };
 		B0D01EBB1B0657010001C558 /* CheckMarkView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D01EBA1B0657010001C558 /* CheckMarkView.m */; };
@@ -445,6 +447,9 @@
 		B0CBC84F1B48AF9200F61CA9 /* RangeSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RangeSlider.swift; sourceTree = "<group>"; };
 		B0CBC8501B48AF9200F61CA9 /* RangeSliderThumbLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RangeSliderThumbLayer.swift; sourceTree = "<group>"; };
 		B0CBC8511B48AF9200F61CA9 /* RangeSliderTrackLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RangeSliderTrackLayer.swift; sourceTree = "<group>"; };
+		B0CC93AC1BACDA760023069E /* RoomCostView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RoomCostView.xib; sourceTree = "<group>"; };
+		B0CC93AE1BACDB390023069E /* RoomCostView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoomCostView.h; sourceTree = "<group>"; };
+		B0CC93AF1BACDB390023069E /* RoomCostView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoomCostView.m; sourceTree = "<group>"; };
 		B0D01DE31B02D4880001C558 /* NavigationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavigationView.h; path = "ota-ios/Views/Navigation/NavigationView.h"; sourceTree = SOURCE_ROOT; };
 		B0D01DE41B02D4880001C558 /* NavigationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavigationView.m; path = "ota-ios/Views/Navigation/NavigationView.m"; sourceTree = SOURCE_ROOT; };
 		B0D01EB61B0590260001C558 /* BackCancelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackCancelView.h; sourceTree = "<group>"; };
@@ -779,6 +784,9 @@
 				B0C628081BA88E9A0097B97B /* LegalView.xib */,
 				B0E019351BA9A47A003BACDB /* AcknowledgementsView.xib */,
 				B0C18BDF1BAA1F2900ACD3F6 /* LaunchView.xib */,
+				B0CC93AE1BACDB390023069E /* RoomCostView.h */,
+				B0CC93AF1BACDB390023069E /* RoomCostView.m */,
+				B0CC93AC1BACDA760023069E /* RoomCostView.xib */,
 				B0D01EBF1B07ED830001C558 /* Navigation */,
 			);
 			path = Views;
@@ -1198,6 +1206,7 @@
 				B032F6351AC18F6700809395 /* Images.xcassets in Resources */,
 				B0D02FF21AE6123000B1E75F /* diners@2x.png in Resources */,
 				B09077871AE5AF5300F2D3CB /* WotaMoneyKit.bundle in Resources */,
+				B0CC93AD1BACDA760023069E /* RoomCostView.xib in Resources */,
 				B0E019341BA99B29003BACDB /* AcknowledgementsDict.plist in Resources */,
 				B0D02FEC1AE6123000B1E75F /* amex@2x.png in Resources */,
 				B018C0471ADA01FA00DDCE2E /* PaymentDetailsView.xib in Resources */,
@@ -1273,6 +1282,7 @@
 				B05BD6271AC1EA65002C2882 /* LoadGooglePlacesData.m in Sources */,
 				B00E771D1B234A5A00C27331 /* NSString+HTML.m in Sources */,
 				B0D3D2101BA4C25D001FD5D3 /* EanHotelConfirmation.m in Sources */,
+				B0CC93B01BACDB390023069E /* RoomCostView.m in Sources */,
 				B0D02FE61AE6123000B1E75F /* PTKCardNumber.m in Sources */,
 				B09745871B29226800E4A9AD /* WotaMKPinAnnotationView.m in Sources */,
 				B080B7C71AC5057100075A32 /* HotelInfoViewController.m in Sources */,

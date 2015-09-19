@@ -20,11 +20,16 @@
 #import "EanItinerary.h"
 #import "EanHotelConfirmation.h"
 #import "SelectRoomViewController.h"
+#import "RoomCostView.h"
+
+NSUInteger const kBookPriceDetailsPopupTag = 1239874;
 
 @interface BookViewController ()
 
+@property (nonatomic, strong) EanAvailabilityHotelRoomResponse *room;
 @property (weak, nonatomic) IBOutlet UITextView *ItineraryTextView;
 @property (weak, nonatomic) IBOutlet UITextView *confirmTextView;
+@property (weak, nonatomic) IBOutlet UILabel *totalChargesLbl;
 @property (weak, nonatomic) IBOutlet WotaTappableView *returnMenuView;
 @property (weak, nonatomic) IBOutlet WotaTappableView *viewOrCancelView;
 @property (weak, nonatomic) IBOutlet UIView *problemOverlay;
@@ -45,6 +50,13 @@
 
 @implementation BookViewController {
     int numberOfPriceMismatchRecalls;
+}
+
+- (id)initWithRoom:(EanAvailabilityHotelRoomResponse *)room {
+    if (self = [self init]) {
+        _room = room;
+    }
+    return self;
 }
 
 - (id)init {
@@ -229,6 +241,17 @@
     self.confirmNumber = confirmNumber;
     self.confirmTextView.text = [NSString stringWithFormat:@"%@", self.confirmNumber];
     
+    NSNumberFormatter *twoDigit = kPriceTwoDigitFormatter(_room.rateInfo.chargeableRateInfo.currencyCode);
+    NSString *totalAmt = [twoDigit stringFromNumber:_room.rateInfo.chargeableRateInfo.total];
+    self.totalChargesLbl.text = totalAmt;
+    self.totalChargesLbl.userInteractionEnabled = YES;
+    
+    UITapGestureRecognizer *tapper = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(loadPriceDetailsPopup:)];
+    tapper.numberOfTapsRequired = 1;
+    tapper.numberOfTouchesRequired = 1;
+    tapper.cancelsTouchesInView = NO;
+    [self.totalChargesLbl addGestureRecognizer:tapper];
+    
     UITapGestureRecognizer *tgr1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickReturnToMenu:)];
     tgr1.numberOfTapsRequired = tgr1.numberOfTouchesRequired = 1;
     [self.returnMenuView addGestureRecognizer:tgr1];
@@ -384,6 +407,13 @@
     NSString *cleanedString = [[phoneNumber componentsSeparatedByCharactersInSet:[[NSCharacterSet characterSetWithCharactersInString:@"0123456789-+()"] invertedSet]] componentsJoinedByString:@""];
     NSURL *telURL = [NSURL URLWithString:[NSString stringWithFormat:@"telprompt:%@", cleanedString]];
     [[UIApplication sharedApplication] openURL:telURL];
+}
+
+#pragma mark Price view
+
+- (void)loadPriceDetailsPopup:(UIGestureRecognizer *)sender {
+    RoomCostView *rcv = [[RoomCostView alloc] initWithFrame:CGRectMake(7, 100, 306, 368) room:_room];
+    [rcv loadCostSummaryView:self.view xOffset:0.0f yOffset:-193.0f];
 }
 
 @end

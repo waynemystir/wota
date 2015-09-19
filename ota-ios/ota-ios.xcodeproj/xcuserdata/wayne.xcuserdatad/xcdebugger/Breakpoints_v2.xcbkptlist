@@ -74,11 +74,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ota-ios/Controllers/HotelInfoViewController.m"
-            timestampString = "464242463.636963"
+            timestampString = "464248188.317842"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "111"
-            endingLineNumber = "111"
+            startingLineNumber = "112"
+            endingLineNumber = "112"
             landmarkName = "-didReceiveMemoryWarning"
             landmarkType = "5">
          </BreakpointContent>
@@ -132,11 +132,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ota-ios/Controllers/HotelInfoViewController.m"
-            timestampString = "464242463.636963"
+            timestampString = "464248188.317842"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "329"
-            endingLineNumber = "329"
+            startingLineNumber = "330"
+            endingLineNumber = "330"
             landmarkName = "-requestTimedOut:"
             landmarkType = "5">
          </BreakpointContent>
@@ -164,11 +164,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ota-ios/Controllers/SelectRoomViewController.m"
-            timestampString = "464242463.636963"
+            timestampString = "464322609.550475"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "238"
-            endingLineNumber = "238"
+            startingLineNumber = "239"
+            endingLineNumber = "239"
             landmarkName = "-didReceiveMemoryWarning"
             landmarkType = "5">
          </BreakpointContent>

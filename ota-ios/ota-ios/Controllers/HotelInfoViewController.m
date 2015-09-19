@@ -86,6 +86,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 @property (nonatomic, strong) EanHotelInformationResponse *eanHotelInformationResponse;
 //@property (nonatomic, strong) SelectRoomViewController *selectRoomViewController;
 @property (nonatomic) BOOL paymentTypesReturned;
+@property (nonatomic) BOOL paymentTypesAddedToPoliciesLabel;
 @property (nonatomic) BOOL policiesLabelIsSet;
 @property (nonatomic, strong) NSString *paymentTypesBulletted;
 @property (weak, nonatomic) IBOutlet UILabel *pageNumberLabel;
@@ -556,7 +557,8 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 }
 
 - (void)appendPaymentTypesToPoliciesLabel {
-    if (_paymentTypesReturned && _policiesLabelIsSet) {
+    if (!_paymentTypesAddedToPoliciesLabel && _paymentTypesReturned && _policiesLabelIsSet) {
+        _paymentTypesAddedToPoliciesLabel = YES;
         if (_paymentTypesBulletted) {
             NSString *pta = [_policiesLabel.text stringByAppendingString:_paymentTypesBulletted];
             _policiesLabel.text = pta;

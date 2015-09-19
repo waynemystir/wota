@@ -39,6 +39,7 @@
 #import "StatePickerView.h"
 #import "NetworkProblemResponder.h"
 #import "PreBookConfirmView.h"
+#import "RoomCostView.h"
 
 NSUInteger const kLoadDropRoomDetailsAnimationCurve = UIViewAnimationOptionCurveEaseInOut;
 NSTimeInterval const kSrAnimationDuration = 0.58;
@@ -1001,7 +1002,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
             existingBvc = YES;
             break;
         }
-    bvc = bvc ? : [BookViewController new];
+    bvc = bvc ? : [[BookViewController alloc] initWithRoom:self.selectedRoom];
     
     NSUUID *aci = [NSUUID UUID];
     bvc.affiliateConfirmationId = aci;
@@ -2568,137 +2569,143 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
 }
 
 - (void)loadPriceDetailsPopup:(UIGestureRecognizer *)sender {
-    NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"PriceDetailsPopupView" owner:self options:nil];
-    if (nil == views || [views count] != 1) {
-        return;
-    }
-    
-    __block UIView *pdp = views[0];
-    pdp.frame = CGRectMake(10, 100, 300, 368);
-    pdp.tag = kPriceDetailsPopupTag;
-    pdp.backgroundColor = [UIColor whiteColor];
-    pdp.layer.masksToBounds = YES;
-    pdp.layer.cornerRadius = 8.0f;
-    pdp.layer.borderColor = [UIColor blackColor].CGColor;
-    pdp.layer.borderWidth = 3.0f;
-    
-    WotaButton *wc = (WotaButton *)[pdp viewWithTag:9823754];
-    [wc addTarget:self action:@selector(dropPriceDetailsPopup) forControlEvents:UIControlEventTouchUpInside];
-    
-    EanAvailabilityHotelRoomResponse *room = [self.tableData objectAtIndex:self.expandedIndexPath.row];
-    self.nrtvd = [[NightlyRateTableViewDelegateImplementation alloc] init];
-    self.nrtvd.room = room;
-    self.nrtvd.tableData = room.rateInfo.chargeableRateInfo.nightlyRatesArray;
-    __weak UITableView *nrtv = (UITableView *) [pdp viewWithTag:19171917];
-    nrtv.dataSource = self.nrtvd;
-    nrtv.delegate = self.nrtvd;
-    nrtv.layer.borderColor = [UIColor blackColor].CGColor;
-    nrtv.layer.borderWidth = 2;
-    nrtv.layer.cornerRadius = 8.0f;
-    [nrtv reloadData];
-    
-    CGFloat maxTvHeight = [room.rateInfo.sumOfHotelFees doubleValue] == 0 ? 343.0f : 303.0f;
-    
-    CGFloat nrtvHeight = MIN(nrtv.contentSize.height, maxTvHeight);
-    nrtv.frame = CGRectMake(nrtv.frame.origin.x, nrtv.frame.origin.y, nrtv.frame.size.width, nrtvHeight);
-    
-    NSNumberFormatter *tdf = kPriceTwoDigitFormatter(room.rateInfo.chargeableRateInfo.currencyCode);
-    
-    UIView *taxesFeesContainer = [pdp viewWithTag:84623089];
-    CGRect tfcf = taxesFeesContainer.frame;
-    taxesFeesContainer.frame = CGRectMake(tfcf.origin.x, 44.0f + nrtvHeight + 7.0f, tfcf.size.width, tfcf.size.height);
-    tfcf = taxesFeesContainer.frame;
-    
-    UILabel *taxFeeTotal = (UILabel *) [pdp viewWithTag:61094356];
-    NSNumber *sc = room.rateInfo.chargeableRateInfo.surchargeTotal;
-    taxFeeTotal.text = [sc doubleValue] == 0 ? @"Included" : [tdf stringFromNumber:sc];
-    
-    if (0 != [room.rateInfo.sumOfHotelFees doubleValue]) {
-        UILabel *tfLabel = (UILabel *) [pdp viewWithTag:10854935];
-        tfLabel.text = @"Taxes";
-        
-        UIView *ev = [[UIView alloc] initWithFrame:CGRectMake(tfcf.origin.x, tfcf.origin.y + tfcf.size.height, tfcf.size.width, tfcf.size.height)];
-        
-        UILabel *evla = [[UILabel alloc] initWithFrame:CGRectMake(136, 0, 153, 19)];
-        evla.textAlignment = NSTextAlignmentRight;
-        evla.font = [UIFont systemFontOfSize:16.0f];
-        evla.text = [tdf stringFromNumber:room.rateInfo.chargeableRateInfo.total];
-        [ev addSubview:evla];
-        
-        UILabel *evl = [[UILabel alloc] initWithFrame:CGRectMake(11, 0, 124, 19)];
-        evl.textAlignment = NSTextAlignmentLeft;
-        evl.font = [UIFont systemFontOfSize:16.0f];
-        NSString *ft = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString*)kCFBundleNameKey];
-        evl.text = [NSString stringWithFormat:@"Due %@ Now", ft];
-        [ev addSubview:evl];
-        
-        [pdp addSubview:ev];
-        tfcf = ev.frame;
-        
-        UIView *sv = [[UIView alloc] initWithFrame:CGRectMake(tfcf.origin.x, tfcf.origin.y + tfcf.size.height-5, tfcf.size.width, tfcf.size.height)];
-        
-        UILabel *svla = [[UILabel alloc] initWithFrame:CGRectMake(149, 0, 140, 19)];
-        svla.textAlignment = NSTextAlignmentRight;
-        svla.font = [UIFont systemFontOfSize:16.0f];
-        svla.text = [tdf stringFromNumber:room.rateInfo.sumOfHotelFees];
-        [sv addSubview:svla];
-        
-        UILabel *svl = [[UILabel alloc] initWithFrame:CGRectMake(11, 0, 137, 19)];
-        svl.textAlignment = NSTextAlignmentLeft;
-        svl.font = [UIFont systemFontOfSize:16.0f];
-        svl.text = @"Fees Due at Hotel";
-        [sv addSubview:svl];
-        
-        [pdp addSubview:sv];
-        tfcf = sv.frame;
-    }
-    
-    UIView *totalContainer = [pdp viewWithTag:396458172];
-    CGRect tcf = totalContainer.frame;
-    totalContainer.frame = CGRectMake(tcf.origin.x, tfcf.origin.y + tfcf.size.height + 3.0f, tcf.size.width, tcf.size.height);
-    tcf = totalContainer.frame;
-    
-    UILabel *tripTotal = (UILabel *) [pdp viewWithTag:1947284];
-    tripTotal.text = [tdf stringFromNumber:room.rateInfo.totalPlusHotelFees];
-    
-    pdp.frame = CGRectMake(10, ((64 + 568 - tcf.origin.y - tcf.size.height)/2), 300, tcf.origin.y + tcf.size.height);
-    pdp.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(75, 15), 0.001f, 0.001f);
-    
-    self.navigationController.navigationBar.clipsToBounds = NO;
-    self.overlayDisable.alpha = 0.0f;
-    self.overlayDisableNav.alpha = 0.0f;
-    [self.view addSubview:self.overlayDisable];
-    [self.navigationController.navigationBar addSubview:self.overlayDisableNav];
-    [self.view bringSubviewToFront:self.overlayDisable];
-    [self.navigationController.navigationBar bringSubviewToFront:self.overlayDisableNav];
-    [self.view addSubview:pdp];
-    [self.view bringSubviewToFront:pdp];
-    
-    __weak typeof(self) weakSelf = self;
-    [UIView animateWithDuration:kSrAnimationDuration animations:^{
-        weakSelf.overlayDisable.alpha = 0.8f;
-        weakSelf.overlayDisableNav.alpha = 1.0f;
-        weakSelf.navigationController.navigationBar.alpha = 0.3f;
-        pdp.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
-    } completion:^(BOOL finished) {
-        ;
-    }];
+    CGFloat xo = sender ? 75.0f : 0.0f;
+    CGFloat yo = sender ? 15.0f : 43.0f;
+    RoomCostView *rcv = [[RoomCostView alloc] initWithFrame:CGRectMake(7, 100, 306, 368) room:[self.tableData objectAtIndex:self.expandedIndexPath.row]];
+    [rcv loadCostSummaryView:self.view xOffset:xo yOffset:yo];
 }
 
-- (void)dropPriceDetailsPopup {
-    __weak typeof(self) weakSelf = self;
-    __weak UIView *w = [self.view viewWithTag:kPriceDetailsPopupTag];
-    [UIView animateWithDuration:kSrAnimationDuration animations:^{
-        weakSelf.overlayDisable.alpha = 0.0f;
-        weakSelf.overlayDisableNav.alpha = 0.0f;
-        weakSelf.navigationController.navigationBar.alpha = 1.0f;
-        w.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(75, 15), 0.001f, 0.001f);
-    } completion:^(BOOL finished) {
-        [weakSelf.overlayDisable removeFromSuperview];
-        [weakSelf.overlayDisableNav removeFromSuperview];
-        [w removeFromSuperview];
-    }];
-}
+//- (void)loadPriceDetailsPopup:(UIGestureRecognizer *)sender {
+//    NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"PriceDetailsPopupView" owner:self options:nil];
+//    if (nil == views || [views count] != 1) {
+//        return;
+//    }
+//    
+//    __block UIView *pdp = views[0];
+//    pdp.frame = CGRectMake(7, 100, 306, 368);
+//    pdp.tag = kPriceDetailsPopupTag;
+//    pdp.backgroundColor = [UIColor whiteColor];
+//    pdp.layer.masksToBounds = YES;
+//    pdp.layer.cornerRadius = 8.0f;
+//    
+//    WotaButton *wc = (WotaButton *)[pdp viewWithTag:9823754];
+//    [wc addTarget:self action:@selector(dropPriceDetailsPopup) forControlEvents:UIControlEventTouchUpInside];
+//    
+//    EanAvailabilityHotelRoomResponse *room = [self.tableData objectAtIndex:self.expandedIndexPath.row];
+//    self.nrtvd = [[NightlyRateTableViewDelegateImplementation alloc] init];
+//    self.nrtvd.room = room;
+//    self.nrtvd.tableData = room.rateInfo.chargeableRateInfo.nightlyRatesArray;
+//    __weak UITableView *nrtv = (UITableView *) [pdp viewWithTag:19171917];
+//    nrtv.dataSource = self.nrtvd;
+//    nrtv.delegate = self.nrtvd;
+//    nrtv.layer.borderColor = [UIColor blackColor].CGColor;
+//    nrtv.layer.borderWidth = 2;
+//    nrtv.layer.cornerRadius = 8.0f;
+//    [nrtv reloadData];
+//    
+//    CGFloat maxTvHeight = [room.rateInfo.sumOfHotelFees doubleValue] == 0 ? 343.0f : 303.0f;
+//    
+//    CGFloat nrtvHeight = MIN(nrtv.contentSize.height, maxTvHeight);
+//    nrtv.frame = CGRectMake(nrtv.frame.origin.x, nrtv.frame.origin.y, nrtv.frame.size.width, nrtvHeight);
+//    
+//    NSNumberFormatter *tdf = kPriceTwoDigitFormatter(room.rateInfo.chargeableRateInfo.currencyCode);
+//    
+//    UIView *taxesFeesContainer = [pdp viewWithTag:84623089];
+//    CGRect tfcf = taxesFeesContainer.frame;
+//    taxesFeesContainer.frame = CGRectMake(tfcf.origin.x, 44.0f + nrtvHeight + 7.0f, tfcf.size.width, tfcf.size.height);
+//    tfcf = taxesFeesContainer.frame;
+//    
+//    UILabel *taxFeeTotal = (UILabel *) [pdp viewWithTag:61094356];
+//    NSNumber *sc = room.rateInfo.chargeableRateInfo.surchargeTotal;
+//    taxFeeTotal.text = [sc doubleValue] == 0 ? @"Included" : [tdf stringFromNumber:sc];
+//    
+//    if (0 != [room.rateInfo.sumOfHotelFees doubleValue]) {
+////        UILabel *tfLabel = (UILabel *) [pdp viewWithTag:10854935];
+////        tfLabel.text = @"Taxes";
+//        
+//        UIView *ev = [[UIView alloc] initWithFrame:CGRectMake(tfcf.origin.x, tfcf.origin.y + tfcf.size.height+1, tfcf.size.width, 38.0f)];
+//        ev.backgroundColor = UIColorFromRGB(0xE7E7E7);
+//        
+//        UILabel *evla = [[UILabel alloc] initWithFrame:CGRectMake(132, 9, 164, 20)];
+//        evla.textAlignment = NSTextAlignmentRight;
+//        evla.font = [UIFont systemFontOfSize:16.0f];
+//        evla.text = [tdf stringFromNumber:room.rateInfo.chargeableRateInfo.total];
+//        [ev addSubview:evla];
+//        
+//        UILabel *evl = [[UILabel alloc] initWithFrame:CGRectMake(11, 9, 124, 20)];
+//        evl.textAlignment = NSTextAlignmentLeft;
+//        evl.font = [UIFont systemFontOfSize:15.0f];
+//        NSString *ft = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString*)kCFBundleNameKey];
+//        evl.text = [NSString stringWithFormat:@"Due %@ Now", ft];
+//        [ev addSubview:evl];
+//        
+//        [pdp addSubview:ev];
+//        tfcf = ev.frame;
+//        
+//        UIView *sv = [[UIView alloc] initWithFrame:CGRectMake(tfcf.origin.x, tfcf.origin.y + tfcf.size.height+1, tfcf.size.width, 38.0f)];
+//        
+//        UILabel *svla = [[UILabel alloc] initWithFrame:CGRectMake(149, 9, 147, 20)];
+//        svla.textAlignment = NSTextAlignmentRight;
+//        svla.font = [UIFont systemFontOfSize:16.0f];
+//        svla.text = [tdf stringFromNumber:room.rateInfo.sumOfHotelFees];
+//        [sv addSubview:svla];
+//        
+//        UILabel *svl = [[UILabel alloc] initWithFrame:CGRectMake(11, 9, 137, 20)];
+//        svl.textAlignment = NSTextAlignmentLeft;
+//        svl.font = [UIFont systemFontOfSize:16.0f];
+//        svl.text = @"Fees Due at Hotel";
+//        [sv addSubview:svl];
+//        
+//        [pdp addSubview:sv];
+//        tfcf = sv.frame;
+//    }
+//    
+//    UIView *totalContainer = [pdp viewWithTag:396458172];
+//    CGRect tcf = totalContainer.frame;
+//    totalContainer.frame = CGRectMake(tcf.origin.x, tfcf.origin.y + tfcf.size.height + 1.0f, tcf.size.width, tcf.size.height);
+//    tcf = totalContainer.frame;
+//    
+//    UILabel *tripTotal = (UILabel *) [pdp viewWithTag:1947284];
+//    tripTotal.text = [tdf stringFromNumber:room.rateInfo.totalPlusHotelFees];
+//    
+//    pdp.frame = CGRectMake(7, ((50 + 568 - tcf.origin.y - tcf.size.height)/2), 306, tcf.origin.y + tcf.size.height);
+//    pdp.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(75, 15), 0.001f, 0.001f);
+//    
+//    self.navigationController.navigationBar.clipsToBounds = NO;
+//    self.overlayDisable.alpha = 0.0f;
+//    self.overlayDisableNav.alpha = 0.0f;
+//    [self.view addSubview:self.overlayDisable];
+//    [self.navigationController.navigationBar addSubview:self.overlayDisableNav];
+//    [self.view bringSubviewToFront:self.overlayDisable];
+//    [self.navigationController.navigationBar bringSubviewToFront:self.overlayDisableNav];
+//    [self.view addSubview:pdp];
+//    [self.view bringSubviewToFront:pdp];
+//    
+//    __weak typeof(self) weakSelf = self;
+//    [UIView animateWithDuration:kSrAnimationDuration animations:^{
+//        weakSelf.overlayDisable.alpha = 0.8f;
+//        weakSelf.overlayDisableNav.alpha = 1.0f;
+//        weakSelf.navigationController.navigationBar.alpha = 0.3f;
+//        pdp.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+//    } completion:^(BOOL finished) {
+//        ;
+//    }];
+//}
+
+//- (void)dropPriceDetailsPopup {
+//    __weak typeof(self) weakSelf = self;
+//    __weak UIView *w = [self.view viewWithTag:kPriceDetailsPopupTag];
+//    [UIView animateWithDuration:kSrAnimationDuration animations:^{
+//        weakSelf.overlayDisable.alpha = 0.0f;
+//        weakSelf.overlayDisableNav.alpha = 0.0f;
+//        weakSelf.navigationController.navigationBar.alpha = 1.0f;
+//        w.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(75, 15), 0.001f, 0.001f);
+//    } completion:^(BOOL finished) {
+//        [weakSelf.overlayDisable removeFromSuperview];
+//        [weakSelf.overlayDisableNav removeFromSuperview];
+//        [w removeFromSuperview];
+//    }];
+//}
 
 #pragma mark Validation methods
 

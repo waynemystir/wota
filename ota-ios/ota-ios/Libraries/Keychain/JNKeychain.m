@@ -24,15 +24,15 @@
     if (!key || stringIsEmpty(key))
         return nil;
     
-    NSString *ag = [self getAccessGroup];
-    if (!ag)
-        return nil;
+//    NSString *ag = [self getAccessGroup];
+//    if (!ag)
+//        return nil;
     
     // see http://developer.apple.com/library/ios/#DOCUMENTATION/Security/Reference/keychainservices/Reference/reference.html
     return [@{(__bridge id)kSecClass            : (__bridge id)kSecClassGenericPassword,
               (__bridge id)kSecAttrService      : key,
               (__bridge id)kSecAttrAccount      : key,
-              (__bridge id)kSecAttrAccessGroup  : ag,
+              (__bridge id)kSecAttrAccessGroup  : [self getAccessGroup],//ag,
               (__bridge id)kSecAttrAccessible   : (__bridge id)kSecAttrAccessibleAfterFirstUnlock
               } mutableCopy];
 }
