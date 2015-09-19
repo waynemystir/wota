@@ -8,12 +8,13 @@
 
 #import <Foundation/Foundation.h>
 #import "EanPlace.h"
+#import "CryptoCoding.h"
 
 extern NSUInteger const MAX_FIRST_NAME_LENGTH;
 extern NSUInteger const MAX_LAST_NAME_LENGTH;
 extern NSUInteger const MAX_EMAIL_LENGTH;
 
-@interface GuestInfo : NSObject <NSCoding>
+@interface GuestInfo : NSObject <NSCoding, CryptoCoding>
 
 @property (nonatomic, strong) NSString *firstName;
 @property (nonatomic, strong) NSString *lastName;
@@ -23,7 +24,7 @@ extern NSUInteger const MAX_EMAIL_LENGTH;
 @property (nonatomic, strong) NSString *phoneNumber;
 
 + (GuestInfo *)singleton;
-+ (void)deleteGuest:(GuestInfo *)guest;
++ (void)deleteGuest;
 
 @property (nonatomic, strong, readonly) NSString *apiFirstName;
 @property (nonatomic, strong, readonly) NSString *apiLastName;

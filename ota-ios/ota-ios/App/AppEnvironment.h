@@ -28,11 +28,6 @@ extern BOOL debugOrProductionMode;
 extern void TrotterLog(NSString *format, ...);
 
 /**
- * Keychain keys
- */
-extern NSString * const kKeyGuestInfo;
-
-/**
  * Google stuff
  */
 extern NSString * GoogleApiKey();
@@ -49,6 +44,7 @@ extern NSString * stringByStrippingHTMLReplaceBreakRemoveTail(NSString * s, NSSt
 /**
  * Various directories to persist the cache
  */
+extern NSString * kWotaDocumentDirectory();
 extern NSString * kWotaCacheDirectory();
 extern NSString * kWotaCacheChildTravelersDirectory();
 extern NSString * kWotaCacheGooglePlaceDetailDirectory();

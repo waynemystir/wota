@@ -2537,7 +2537,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
         [ChildTraveler removeAllChildTravelers];
         [self setNumberOfKidsButtonLabel];
         [self setNumberOfAdultsLabel:(2 - [SelectionCriteria singleton].numberOfAdults)];
-        [GuestInfo deleteGuest:[GuestInfo singleton]];
+        [GuestInfo deleteGuest];
     }
     
     UIView *cpdv = [self.view viewWithTag:kClearPrivaDataTag];

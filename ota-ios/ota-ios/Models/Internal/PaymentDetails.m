@@ -7,7 +7,6 @@
 //
 
 #import "PaymentDetails.h"
-#import "JNKeychain.h"
 #import "AppEnvironment.h"
 
 static PaymentDetails *_card1 = nil;

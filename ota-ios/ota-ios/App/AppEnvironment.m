@@ -32,8 +32,6 @@ void TrotterLog(NSString *format, ...) {
     va_end(args);
 }
 
-NSString * const kKeyGuestInfo = @"LgAuYeEsRtCiAnKfEo";
-
 //NSString * const GOOGLE_API_KEY = @"AIzaSyBTMg_o0S630MntWlqDC4J9tuNrh_YkLIo";
 //NSString * const GOOGLE_API_KEY = @"AIzaSyDXmlmSp43YsY1QfPMaBP5Ww5UIXWNXXho";
 NSString * GoogleApiKey() {
@@ -100,9 +98,20 @@ NSString * stringByStrippingHTMLReplaceBreakRemoveTail(NSString * s, NSString *b
     return s;
 }
 
+NSString * const WOTA_DOCUMENT_DIRECTORY = @"wota_document_directory";
 NSString * const WOTA_CACHE_DIRECTORY = @"wota_cache_directory";
 NSString * const WOTA_CACHE_CHILD_TRAVELERS_DIRECTORY = @"child_travelers_directory";
 NSString * const WOTA_CACHE_GOOGLE_PLACE_DETAIL_DIRECTORY = @"google_place_detail_directory";
+
+NSString * kWotaDocumentDirectory() {
+    NSString *path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject stringByAppendingPathComponent:WOTA_DOCUMENT_DIRECTORY];
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    
+    return path;
+}
 
 NSString * kWotaCacheDirectory() {
     NSString *path = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0]

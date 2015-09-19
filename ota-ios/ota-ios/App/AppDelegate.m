@@ -8,7 +8,6 @@
 
 #import "AppDelegate.h"
 #import "AppEnvironment.h"
-#import "JNKeychain.h"
 #import "TrotterViewController.h"
 #import "SelectRoomViewController.h"
 
@@ -32,20 +31,6 @@ static NSString *_externalIP = nil;
     self.window.rootViewController = nc;
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
-    
-    // Curtesy of http://stackoverflow.com/questions/4747404/delete-keychain-items-when-an-app-is-uninstalled
-    // TODO: Consider using another approach, like checking if there is a file in cache
-    // for Selection Criteria. I say this because there might be an issue with using User
-    // Defaults for this purpose: http://stackoverflow.com/questions/20269116/nsuserdefaults-loosing-its-keys-values-when-phone-is-rebooted-but-not-unlocked
-    //Clear keychain on first run in case of reinstallation
-    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"daFirstRun"]) {
-        
-        // Delete values from keychain here
-        [JNKeychain deleteValueForKey:kKeyGuestInfo];
-        
-        [[NSUserDefaults standardUserDefaults] setValue:@"da1stRun" forKey:@"daFirstRun"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
     
     return YES;
 }

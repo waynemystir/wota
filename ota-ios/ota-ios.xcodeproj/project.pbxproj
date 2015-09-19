@@ -24,7 +24,6 @@
 		B018C0421AD96A7600DDCE2E /* GuestDetailsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B018C0411AD96A7600DDCE2E /* GuestDetailsView.xib */; };
 		B018C0451AD9BEC800DDCE2E /* GuestInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B018C0441AD9BEC800DDCE2E /* GuestInfo.m */; };
 		B018C0471ADA01FA00DDCE2E /* PaymentDetailsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B018C0461ADA01FA00DDCE2E /* PaymentDetailsView.xib */; };
-		B018C04B1ADA08CF00DDCE2E /* JNKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = B018C04A1ADA08CF00DDCE2E /* JNKeychain.m */; };
 		B019E5F41B9512BA000BAC23 /* ImageViewHotelInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B019E5F31B9512BA000BAC23 /* ImageViewHotelInfo.m */; };
 		B01E25861AFDD33E001D02B1 /* EanHotelFee.m in Sources */ = {isa = PBXBuildFile; fileRef = B01E25851AFDD33E001D02B1 /* EanHotelFee.m */; };
 		B01F0ECE1AF8669600C68BA8 /* WotaTappableView.m in Sources */ = {isa = PBXBuildFile; fileRef = B01F0ECD1AF8669600C68BA8 /* WotaTappableView.m */; };
@@ -48,6 +47,8 @@
 		B049D2101AC19B2300E2E18C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B049D2051AC19B2300E2E18C /* SystemConfiguration.framework */; };
 		B0508C6E1B34DCA8009CC56F /* PowerebByGoogleCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0508C6D1B34DCA8009CC56F /* PowerebByGoogleCell.xib */; };
 		B0508C741B351064009CC56F /* WotaPlace.m in Sources */ = {isa = PBXBuildFile; fileRef = B0508C731B351064009CC56F /* WotaPlace.m */; };
+		B055DFB11BADA98B00B7E6F5 /* CryptoCoding.m in Sources */ = {isa = PBXBuildFile; fileRef = B055DFB01BADA98B00B7E6F5 /* CryptoCoding.m */; settings = {ASSET_TAGS = (); }; };
+		B055DFB31BADACA800B7E6F5 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B055DFB21BADACA800B7E6F5 /* Security.framework */; };
 		B058A4941AE8B52C00E42594 /* WotaButton.m in Sources */ = {isa = PBXBuildFile; fileRef = B058A4931AE8B52C00E42594 /* WotaButton.m */; };
 		B05BB27D1B77BCBE00A51842 /* LocationNotAvailableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B05BB27C1B77BCBE00A51842 /* LocationNotAvailableView.xib */; };
 		B05BD6241AC1E9FB002C2882 /* AppEnvironment.m in Sources */ = {isa = PBXBuildFile; fileRef = B05BD6231AC1E9FB002C2882 /* AppEnvironment.m */; };
@@ -241,8 +242,6 @@
 		B018C0431AD9BEC800DDCE2E /* GuestInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuestInfo.h; sourceTree = "<group>"; };
 		B018C0441AD9BEC800DDCE2E /* GuestInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuestInfo.m; sourceTree = "<group>"; };
 		B018C0461ADA01FA00DDCE2E /* PaymentDetailsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PaymentDetailsView.xib; sourceTree = "<group>"; };
-		B018C0491ADA08CF00DDCE2E /* JNKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JNKeychain.h; sourceTree = "<group>"; };
-		B018C04A1ADA08CF00DDCE2E /* JNKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JNKeychain.m; sourceTree = "<group>"; };
 		B019E5F21B9512BA000BAC23 /* ImageViewHotelInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageViewHotelInfo.h; sourceTree = "<group>"; };
 		B019E5F31B9512BA000BAC23 /* ImageViewHotelInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageViewHotelInfo.m; sourceTree = "<group>"; };
 		B01E25841AFDD33E001D02B1 /* EanHotelFee.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanHotelFee.h; sourceTree = "<group>"; };
@@ -256,8 +255,6 @@
 		B032F62B1AC18F6700809395 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		B032F62C1AC18F6700809395 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		B032F6341AC18F6700809395 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		B032F6421AC18F6800809395 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B032F6431AC18F6800809395 /* ota_iosTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ota_iosTests.m; sourceTree = "<group>"; };
 		B0344C421AE5A560000BBFCE /* WotaMoneyUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WotaMoneyUtils.h; sourceTree = "<group>"; };
 		B0344C431AE5A560000BBFCE /* WotaMoneyUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WotaMoneyUtils.m; sourceTree = "<group>"; };
 		B0344C451AE5A5F8000BBFCE /* WotaForwardingTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WotaForwardingTextField.h; sourceTree = "<group>"; };
@@ -284,6 +281,9 @@
 		B0508C6D1B34DCA8009CC56F /* PowerebByGoogleCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PowerebByGoogleCell.xib; sourceTree = "<group>"; };
 		B0508C721B351064009CC56F /* WotaPlace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WotaPlace.h; sourceTree = "<group>"; };
 		B0508C731B351064009CC56F /* WotaPlace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WotaPlace.m; sourceTree = "<group>"; };
+		B055DFAF1BADA98B00B7E6F5 /* CryptoCoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CryptoCoding.h; sourceTree = "<group>"; };
+		B055DFB01BADA98B00B7E6F5 /* CryptoCoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CryptoCoding.m; sourceTree = "<group>"; };
+		B055DFB21BADACA800B7E6F5 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		B058A4921AE8B52C00E42594 /* WotaButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WotaButton.h; sourceTree = "<group>"; };
 		B058A4931AE8B52C00E42594 /* WotaButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WotaButton.m; sourceTree = "<group>"; };
 		B05BB27C1B77BCBE00A51842 /* LocationNotAvailableView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LocationNotAvailableView.xib; sourceTree = "<group>"; };
@@ -544,6 +544,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B055DFB31BADACA800B7E6F5 /* Security.framework in Frameworks */,
 				B09277E31B4F30940094159B /* ImageIO.framework in Frameworks */,
 				B09277E11B4F30450094159B /* CoreGraphics.framework in Frameworks */,
 				B07FC8681B27A8E70059A205 /* MapKit.framework in Frameworks */,
@@ -643,20 +644,10 @@
 			path = HotelInfoResponse;
 			sourceTree = "<group>";
 		};
-		B018C0481ADA08CF00DDCE2E /* Keychain */ = {
-			isa = PBXGroup;
-			children = (
-				B018C0491ADA08CF00DDCE2E /* JNKeychain.h */,
-				B018C04A1ADA08CF00DDCE2E /* JNKeychain.m */,
-			);
-			path = Keychain;
-			sourceTree = "<group>";
-		};
 		B032F61B1AC18F6700809395 = {
 			isa = PBXGroup;
 			children = (
 				B032F6261AC18F6700809395 /* ota-ios */,
-				B032F6401AC18F6700809395 /* ota-iosTests */,
 				B049D1F71AC19A7700E2E18C /* Frameworks */,
 				B032F6251AC18F6700809395 /* Products */,
 			);
@@ -702,23 +693,6 @@
 				B0E019331BA99B29003BACDB /* AcknowledgementsDict.plist */,
 			);
 			path = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		B032F6401AC18F6700809395 /* ota-iosTests */ = {
-			isa = PBXGroup;
-			children = (
-				B032F6431AC18F6800809395 /* ota_iosTests.m */,
-				B032F6411AC18F6800809395 /* Supporting Files */,
-			);
-			path = "ota-iosTests";
-			sourceTree = "<group>";
-		};
-		B032F6411AC18F6800809395 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				B032F6421AC18F6800809395 /* Info.plist */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		B032F64D1AC191FB00809395 /* Views */ = {
@@ -830,6 +804,7 @@
 		B049D1F71AC19A7700E2E18C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B055DFB21BADACA800B7E6F5 /* Security.framework */,
 				B07FC8671B27A8E70059A205 /* MapKit.framework */,
 				B049D1FC1AC19B2300E2E18C /* CoreLocation.framework */,
 				B09277E21B4F30940094159B /* ImageIO.framework */,
@@ -849,6 +824,15 @@
 				B05BD6231AC1E9FB002C2882 /* AppEnvironment.m */,
 			);
 			path = App;
+			sourceTree = "<group>";
+		};
+		B055DFAE1BADA98B00B7E6F5 /* CryptoCoding */ = {
+			isa = PBXGroup;
+			children = (
+				B055DFAF1BADA98B00B7E6F5 /* CryptoCoding.h */,
+				B055DFB01BADA98B00B7E6F5 /* CryptoCoding.m */,
+			);
+			path = CryptoCoding;
 			sourceTree = "<group>";
 		};
 		B05BD6211AC1E93B002C2882 /* Classes */ = {
@@ -961,11 +945,11 @@
 		B09797E81AC3BBDF0014FC7C /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				B055DFAE1BADA98B00B7E6F5 /* CryptoCoding */,
 				B08C08751BAA0E060031F910 /* SDWebImage */,
 				B00E77171B23491F00C27331 /* StringCategories */,
 				B0D02FB71AE6123000B1E75F /* PaymentKit */,
 				B0344C411AE5A448000BBFCE /* WotaMoneyKit */,
-				B018C0481ADA08CF00DDCE2E /* Keychain */,
 			);
 			path = Libraries;
 			sourceTree = "<group>";
@@ -1296,6 +1280,7 @@
 				B00E77221B236A3B00C27331 /* HLTableViewCell.m in Sources */,
 				B0F5549D1B13BB2300E9B805 /* EanPaymentTypeResponse.m in Sources */,
 				B08C089E1BAA0E060031F910 /* SDWebImageManager.m in Sources */,
+				B055DFB11BADA98B00B7E6F5 /* CryptoCoding.m in Sources */,
 				B0963CC61AC8E034002FD859 /* ChildSubView.m in Sources */,
 				B08C08A41BAA0E060031F910 /* UIImageView+HighlightedWebCache.m in Sources */,
 				B03C2BAA1AED74E700C13AC5 /* EanRateInfo.m in Sources */,
@@ -1309,7 +1294,6 @@
 				B03B42FD1ADDFE1B0083A6EA /* EanPlace.m in Sources */,
 				B09C5EA61AD1A16E00A3D7E8 /* EanHotelListHotelSummary.m in Sources */,
 				B0D01EBB1B0657010001C558 /* CheckMarkView.m in Sources */,
-				B018C04B1ADA08CF00DDCE2E /* JNKeychain.m in Sources */,
 				B09797D11AC321F90014FC7C /* GooglePlaceDetail.m in Sources */,
 				B05BD6301AC1FEE3002C2882 /* GooglePlace.m in Sources */,
 				B0C04AD31B5210C8002C89F2 /* NetworkProblemResponder.m in Sources */,

@@ -7,7 +7,6 @@
 //
 
 #import "GuestInfo.h"
-#import "JNKeychain.h"
 #import "AppEnvironment.h"
 
 NSUInteger const MAX_FIRST_NAME_LENGTH = 25;
@@ -29,29 +28,31 @@ NSString * const kKeyPhoneNumber = @"phone_number";
     static dispatch_once_t onceToken;
     
     dispatch_once(&onceToken, ^{
-        _guestInfo = [JNKeychain loadValueForKey:kKeyGuestInfo];
+        _guestInfo = [CryptoCoder unarchiveObjectWithFile:[self pathForGuestInfo]];
     });
     
-    if (nil == _guestInfo) {
+    if (!_guestInfo) {
         _guestInfo = [[self alloc] init];
     }
     
     return _guestInfo;
 }
 
-- (void)save {
-    if (![JNKeychain saveValue:self forKey:kKeyGuestInfo]) {
-        NSLog(@"ERROR: There was a problem saving GuestInfo");
-    }
++ (NSString *)CCPassword {
+    return @"LgAuYeEsRtCiAnKfEo";
 }
 
-+ (void)deleteGuest:(GuestInfo *)guest {
-    if (guest == _guestInfo && [JNKeychain loadValueForKey:kKeyGuestInfo]) {
-        _guestInfo = nil;
-        if (![JNKeychain deleteValueForKey:kKeyGuestInfo]) {
-            NSLog(@"ERROR: There was a problem deleting guest info");
-        }
-    }
++ (NSString *)pathForGuestInfo {
+    return [kWotaDocumentDirectory() stringByAppendingPathComponent:@"guest_info"];
+}
+
+- (void)save {
+    [CryptoCoder archiveRootObject:self toFile:[[self class] pathForGuestInfo]];
+}
+
++ (void)deleteGuest {
+    [[NSFileManager defaultManager] removeItemAtPath:[self pathForGuestInfo] error:nil];
+    _guestInfo = nil;
 }
 
 - (NSString *)apiValue:(NSString *)string maxChar:(int)maxChar {
