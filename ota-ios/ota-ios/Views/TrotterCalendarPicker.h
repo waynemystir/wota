@@ -9,12 +9,15 @@
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 
+@class TrotterCalendarPicker;
+
 @protocol TrotterCalendarPickerDelegate <NSObject>
 
 - (void)calendarPickerDidSelectDate:(NSDate *)selectedDate;
 - (void)calendarPickerDonePressed;
 - (void)calendarPickerCancelled;
 - (void)calendarPickerDidHide;
+- (void)goodTimeToRedrawCalendarPicker:(TrotterCalendarPicker *)tcp;
 
 @end
 
@@ -22,7 +25,7 @@
 
 @property (nonatomic, strong) NSDate *dwaDate;
 @property (nonatomic, strong) NSString *arrivalOrDepartureString;
-@property (weak, nonatomic) id<TrotterCalendarPickerDelegate> calendarDelegate;
+@property (weak, nonatomic) NSObject<TrotterCalendarPickerDelegate> *calendarDelegate;
 @property (strong, nonatomic) UIColor *selectedBackgroundColor;
 @property (strong, nonatomic) UIColor *currentDateColor;
 @property (strong, nonatomic) UIColor *currentDateColorSelected;

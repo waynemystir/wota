@@ -125,7 +125,7 @@
                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                     </state>
                                     <connections>
-                                        <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="2gh-pd-M7M"/>
+                                        <action selector="clickArrivalDateBtn:" destination="-1" eventType="touchUpInside" id="MZR-aY-GXp"/>
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="dgm-BA-HLi" userLabel="returnDateButton" customClass="WotaButton">
@@ -135,7 +135,7 @@
                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                     </state>
                                     <connections>
-                                        <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="lbf-x0-rM6"/>
+                                        <action selector="clickReturnDateBtn:" destination="-1" eventType="touchUpInside" id="dPc-Kw-0X1"/>
                                     </connections>
                                 </button>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="222 Adults" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="fb6-vD-e9a" userLabel="adultsLabel">
@@ -280,7 +280,7 @@
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
                             <connections>
-                                <action selector="justPushIt:" destination="-1" eventType="touchUpInside" id="wlq-9O-8QM"/>
+                                <action selector="clickFooterDatesBtn:" destination="-1" eventType="touchUpInside" id="pvm-13-AYc"/>
                             </connections>
                         </button>
                     </subviews>

@@ -154,7 +154,9 @@ NSUInteger const kAcknowledgemenTag = 1917157;
 
 #pragma mark IBActions
 
-- (IBAction)justPushIt:(id)sender;
+- (IBAction)clickArrivalDateBtn:(id)sender;
+- (IBAction)clickReturnDateBtn:(id)sender;
+- (IBAction)clickFooterDatesBtn:(id)sender;
 - (IBAction)clickKidsButton:(id)sender;
 - (IBAction)findHotelsClicked:(id)sender;
 - (IBAction)clickBookSupport:(id)sender;
@@ -270,6 +272,8 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     self.arrivalOrReturn = NO;
     [self refreshDisplayedArrivalDate];
     [self refreshDisplayedReturnDate];
+    [self redrawCheckInDatePicker];
+    [self redrawCheckOutDatePicker];
     
     UITapGestureRecognizer *fgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickFilterButton)];
     fgr.numberOfTapsRequired = 1;
@@ -1627,19 +1631,19 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     [self letsFindHotelsWithSearchRadius:[SelectionCriteria singleton].zoomRadius];
 }
 
-- (IBAction)justPushIt:(id)sender {
-    if (sender == self.arrivalDateOutlet) {
-        self.arrivalOrReturn = NO;
-        [self loadDatePicker];
-    } else if (sender == self.footerDatesBtn) {
-        self.arrivalOrReturn = NO;
-        [self loadDatePicker];
-    } else if (sender == self.returnDateOutlet) {
-        self.arrivalOrReturn = YES;
-        [self loadDatePicker];
-    } else {
-        TrotterLog(@"Dude we've got a problem");
-    }
+- (IBAction)clickArrivalDateBtn:(id)sender {
+    self.arrivalOrReturn = NO;
+    [self loadDatePicker];
+}
+
+- (IBAction)clickReturnDateBtn:(id)sender {
+    self.arrivalOrReturn = YES;
+    [self loadDatePicker];
+}
+
+- (IBAction)clickFooterDatesBtn:(id)sender {
+    self.arrivalOrReturn = NO;
+    [self loadDatePicker];
 }
 
 - (IBAction)clickKidsButton:(id)sender {
@@ -1799,20 +1803,24 @@ NSUInteger const kAcknowledgemenTag = 1917157;
 - (void)loadDatePicker {
     __weak TrotterCalendarPicker *tcp = nil;
     
-    if (!_arrivalOrReturn) {
-        tcp = checkInDatePicker;
-        tcp.dwaDate = [SelectionCriteria singleton].arrivalDate;
-        tcp.minDate = [NSDate date];
-        tcp.maxDate = kAddDays(500, [NSDate date]);
-    } else {
-        tcp = checkOutDatePicker;
-        tcp.dwaDate = [SelectionCriteria singleton].returnDate;
-        tcp.minDate = kAddDays(1, [SelectionCriteria singleton].arrivalDate);
-        tcp.maxDate = kAddDays(28, [SelectionCriteria singleton].arrivalDate);
-    }
+    if (!_arrivalOrReturn) tcp = checkInDatePicker;
+    else tcp = checkOutDatePicker;
     
-    [tcp redraw];
     [tcp loadDatePicker];
+}
+
+- (void)redrawCheckInDatePicker {
+    checkInDatePicker.dwaDate = [SelectionCriteria singleton].arrivalDate;
+    checkInDatePicker.minDate = [NSDate date];
+    checkInDatePicker.maxDate = kAddDays(500, [NSDate date]);
+    [checkInDatePicker redraw];
+}
+
+- (void)redrawCheckOutDatePicker {
+    checkOutDatePicker.dwaDate = [SelectionCriteria singleton].returnDate;
+    checkOutDatePicker.minDate = kAddDays(1, [SelectionCriteria singleton].arrivalDate);
+    checkOutDatePicker.maxDate = kAddDays(28, [SelectionCriteria singleton].arrivalDate);
+    [checkOutDatePicker redraw];
 }
 
 -(void)refreshDisplayedArrivalDate {
@@ -1867,7 +1875,6 @@ NSUInteger const kAcknowledgemenTag = 1917157;
 #pragma mark TrotterCalendarPickerDelegate Methods
 
 - (void)calendarPickerCancelled {
-    
 }
 
 - (void)calendarPickerDidSelectDate:(NSDate *)selectedDate {
@@ -1884,7 +1891,6 @@ NSUInteger const kAcknowledgemenTag = 1917157;
 }
 
 - (void)calendarPickerDonePressed {
-    
 }
 
 - (void)calendarPickerDidHide {
@@ -1903,6 +1909,14 @@ NSUInteger const kAcknowledgemenTag = 1917157;
             [self findHotelsClicked:nil];
             self.mapBackContainer.hidden = YES;
         }
+    }
+}
+
+- (void)goodTimeToRedrawCalendarPicker:(TrotterCalendarPicker *)tcp {
+    if (tcp == checkOutDatePicker) [self redrawCheckOutDatePicker];
+    else {
+        [self redrawCheckInDatePicker];
+        if (daDateChanged) [self redrawCheckOutDatePicker];
     }
 }
 

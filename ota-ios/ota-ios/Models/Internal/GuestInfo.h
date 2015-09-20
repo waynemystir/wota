@@ -14,7 +14,7 @@ extern NSUInteger const MAX_FIRST_NAME_LENGTH;
 extern NSUInteger const MAX_LAST_NAME_LENGTH;
 extern NSUInteger const MAX_EMAIL_LENGTH;
 
-@interface GuestInfo : NSObject <NSCoding, CryptoCoding>
+@interface GuestInfo : NSObject <CryptoCoding>
 
 @property (nonatomic, strong) NSString *firstName;
 @property (nonatomic, strong) NSString *lastName;

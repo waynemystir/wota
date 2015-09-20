@@ -88,7 +88,7 @@
     [sv bringSubviewToFront:overlay];
     [sv bringSubviewToFront:tcp];
     
-    [UIView animateWithDuration:0.33 animations:^{
+    [UIView animateWithDuration:0.28 animations:^{
         overlay.alpha = 0.7;
         tcp.frame = CGRectMake(0, 248, 320, 320);
     } completion:^(BOOL finished) {
@@ -100,7 +100,7 @@
     __weak typeof(self) tcp = self;
     __weak typeof(UIView) *sv = self.superview;
     
-    [UIView animateWithDuration:0.33 animations:^{
+    [UIView animateWithDuration:0.28 animations:^{
         overlay.alpha = 0.0f;
         tcp.frame = CGRectMake(0, 569, 320, 320);
     } completion:^(BOOL finished) {
@@ -109,6 +109,8 @@
         [sv sendSubviewToBack:tcp];
         [tcp.calendarDelegate calendarPickerDidHide];
     }];
+    
+    [self.calendarDelegate performSelector:@selector(goodTimeToRedrawCalendarPicker:) withObject:self afterDelay:0.01];
 }
 
 #pragma Redraw

@@ -55,12 +55,6 @@ NSString * const kKeyPhoneNumber = @"phone_number";
     _guestInfo = nil;
 }
 
-- (NSString *)apiValue:(NSString *)string maxChar:(int)maxChar {
-    NSString *rs = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    if (stringIsEmpty(rs)) return nil;
-    return [rs substringToIndex:MIN(rs.length, maxChar)];
-}
-
 #pragma mark NSCoding delegate methods
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
@@ -118,6 +112,12 @@ NSString * const kKeyPhoneNumber = @"phone_number";
 }
 
 #pragma mark API Getters
+
+- (NSString *)apiValue:(NSString *)string maxChar:(int)maxChar {
+    NSString *rs = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    if (stringIsEmpty(rs)) return nil;
+    return [rs substringToIndex:MIN(rs.length, maxChar)];
+}
 
 - (NSString *)apiFirstName {
     return [self apiValue:_firstName maxChar:MAX_FIRST_NAME_LENGTH];
