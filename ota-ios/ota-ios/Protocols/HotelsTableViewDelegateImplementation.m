@@ -57,12 +57,8 @@ NSString * const kNotificationHotelDataSorted = @"kNotificationHotelDataSorted";
     EanHotelListHotelSummary *hotel = self.currentHotelData[indexPath.row];
     HLTableViewCell *cell = [[HLTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier hotelRating:hotel.hotelRating];
     
-    UIImage *placeholderImage = [UIImage imageNamed:@"hotel_large"];
     NSString *imageUrlString = [@"http://images.travelnow.com" stringByAppendingString:hotel.thumbNailUrlEnhanced];
-//    [cell.thumbImageView setImageWithURL:[NSURL URLWithString:imageUrlString] placeholderImage:placeholderImage completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-//        ;
-//    }];
-    [cell.thumbImageView sd_setImageWithURL:[NSURL URLWithString:imageUrlString] placeholderImage:placeholderImage completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+    [cell.thumbImageView sd_setImageWithURL:[NSURL URLWithString:imageUrlString] placeholderImage:[[self class] phi] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         // TODO: if nothing comes back, replace hotel.thumbNailUrlEnhanced with hotel.thumbNailUrl and try again
         ;
     }];
@@ -81,22 +77,20 @@ NSString * const kNotificationHotelDataSorted = @"kNotificationHotelDataSorted";
         cell.promoLabel.text = @"";
     }
     
-    StarBoard *starBoard = [[StarBoard alloc] initWithFrame:CGRectMake(98, 35, 129, 26)];
-    starBoard.numberOfStars = hotel.hotelRating;
-    CGAffineTransform t = CGAffineTransformMakeScale(1.31f, 1.31f);
-    t = CGAffineTransformTranslate(t, -21, 0);
-    starBoard.transform = t;
-    cell.starBoardContainer.image = [self imageFromView:starBoard];
+    cell.starBoardContainer.image = [StarBoard starBoardImageForHotelListWithRating:hotel.hotelRating];
 
     return cell;
 }
 
-- (UIImage *) imageFromView:(UIView *)view {
-    UIGraphicsBeginImageContext(view.frame.size);
-    [[view layer] renderInContext:UIGraphicsGetCurrentContext()];
-    UIImage *screenshot = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return screenshot;
++ (UIImage *)phi {
+    static UIImage *_p = nil;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        _p = [UIImage imageNamed:@"hotel_large"];
+    });
+    
+    return _p;
 }
 
 #pragma mark UITableViewDelegate methods

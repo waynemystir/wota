@@ -592,7 +592,6 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     cell.nonrefundOutlet.text = room.rateInfo.nonRefundableString;
     
 //    [self addRoomImageGradient:cell.roomImageViewOutlet];
-//    [cell.roomImageViewOutlet setImageWithURL:[NSURL URLWithString:room.roomImage.imageUrl] placeholderImage:self.placeholderImage];
     [cell.roomImageViewOutlet sd_setImageWithURL:[NSURL URLWithString:room.roomImage.imageUrl] placeholderImage:self.placeholderImage];
     
     NSString *discount = room.rateInfo.chargeableRateInfo.discountPercentString;

@@ -29,6 +29,173 @@
 
 @implementation StarBoard
 
++ (UIImage *)starBoardImageForHotelListWithRating:(NSNumber *)rating {
+    
+    float r  = [rating floatValue];
+    
+    if (r < 0.25) return [self sb00];
+    else if (r >= 0.25 && r < 0.75) return [self sb05];
+    else if (r >= 0.75 && r < 1.25) return [self sb10];
+    else if (r >= 1.25 && r < 1.75) return [self sb15];
+    else if (r >= 1.75 && r < 2.25) return [self sb20];
+    else if (r >= 2.25 && r < 2.75) return [self sb25];
+    else if (r >= 2.75 && r < 3.25) return [self sb30];
+    else if (r >= 3.25 && r < 3.75) return [self sb35];
+    else if (r >= 3.75 && r < 4.25) return [self sb40];
+    else if (r >= 4.25 && r < 4.75) return [self sb45];
+    else if (r >= 4.75 && r < 5.25) return [self sb50];
+    else return [self sb00];
+    
+}
+
++ (CGRect)hotelTvCellFrame {
+    static CGRect _f;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        _f = CGRectMake(98, 35, 129, 26);
+    });
+    
+    return _f;
+}
+
++ (UIImage *)sb00 {
+    static UIImage *_sb00 = nil;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        _sb00 = [self starBoardImageWithFrame:[self hotelTvCellFrame] rating:@(0.0)];
+    });
+    
+    return _sb00;
+}
+
++ (UIImage *)sb05 {
+    static UIImage *_sb05 = nil;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        _sb05 = [self starBoardImageWithFrame:[self hotelTvCellFrame] rating:@(0.5)];
+    });
+    
+    return _sb05;
+}
+
++ (UIImage *)sb10 {
+    static UIImage *_sb10 = nil;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        _sb10 = [self starBoardImageWithFrame:[self hotelTvCellFrame] rating:@(1.0)];
+    });
+    
+    return _sb10;
+}
+
++ (UIImage *)sb15 {
+    static UIImage *_sb15 = nil;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        _sb15 = [self starBoardImageWithFrame:[self hotelTvCellFrame] rating:@(1.5)];
+    });
+    
+    return _sb15;
+}
+
++ (UIImage *)sb20 {
+    static UIImage *_sb20 = nil;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        _sb20 = [self starBoardImageWithFrame:[self hotelTvCellFrame] rating:@(2.0)];
+    });
+    
+    return _sb20;
+}
+
++ (UIImage *)sb25 {
+    static UIImage *_sb25 = nil;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        _sb25 = [self starBoardImageWithFrame:[self hotelTvCellFrame] rating:@(2.5)];
+    });
+    
+    return _sb25;
+}
+
++ (UIImage *)sb30 {
+    static UIImage *_sb30 = nil;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        _sb30 = [self starBoardImageWithFrame:[self hotelTvCellFrame] rating:@(3.0)];
+    });
+    
+    return _sb30;
+}
+
++ (UIImage *)sb35 {
+    static UIImage *_sb35 = nil;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        _sb35 = [self starBoardImageWithFrame:[self hotelTvCellFrame] rating:@(3.5)];
+    });
+    
+    return _sb35;
+}
+
++ (UIImage *)sb40 {
+    static UIImage *_sb40 = nil;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        _sb40 = [self starBoardImageWithFrame:[self hotelTvCellFrame] rating:@(4.0)];
+    });
+    
+    return _sb40;
+}
+
++ (UIImage *)sb45 {
+    static UIImage *_sb45 = nil;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        _sb45 = [self starBoardImageWithFrame:[self hotelTvCellFrame] rating:@(4.5)];
+    });
+    
+    return _sb45;
+}
+
++ (UIImage *)sb50 {
+    static UIImage *_sb50 = nil;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        _sb50 = [self starBoardImageWithFrame:[self hotelTvCellFrame] rating:@(5.0)];
+    });
+    
+    return _sb50;
+}
+
++ (UIImage *)starBoardImageWithFrame:(CGRect)frame rating:(NSNumber *)rating {
+    StarBoard *starBoard = [[StarBoard alloc] initWithFrame:frame];
+    starBoard.numberOfStars = rating;
+    CGAffineTransform t = CGAffineTransformMakeScale(1.31f, 1.31f);
+    t = CGAffineTransformTranslate(t, -21, 0);
+    starBoard.transform = t;
+    return [self imageFromView:starBoard];
+}
+
++ (UIImage *) imageFromView:(UIView *)view {
+    UIGraphicsBeginImageContext(view.frame.size);
+    [[view layer] renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *screenshot = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return screenshot;
+}
 
 - (id)initWithFrame:(CGRect)frame {
     if (self= [super initWithFrame:frame]) {

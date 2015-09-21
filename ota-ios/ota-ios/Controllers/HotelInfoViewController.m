@@ -40,6 +40,8 @@ typedef NS_ENUM(NSUInteger, HI_ORIENTATION) {
     HI_FLAT_FACE_DOWN = UIDeviceOrientationFaceDown
 };
 
+NSUInteger const kImageBatchSize = 20;
+NSUInteger const kImageBatchStartNext = 13;
 NSTimeInterval const kHiAnimationDuration = 0.43;
 CGFloat const kImageScrollerStartY = -100.0f;
 CGFloat const kImageScrollerStartHeight = 325.0f;
@@ -55,7 +57,6 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 @property (nonatomic) HI_ORIENTATION currentOrientation;
 @property (nonatomic) BOOL hideEffinStatusBar;
 
-@property (nonatomic) BOOL firstImageArrived;
 @property (nonatomic) BOOL alreadyDroppedSpinner;
 
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollViewOutlet;
@@ -94,6 +95,9 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 @property (weak, nonatomic) IBOutlet WotaTappableView *bookRoomContainer;
 @property (nonatomic, strong) MKMapView *mapView;
 @property (nonatomic, strong) NSString *locationString;
+@property (nonatomic, strong) NSMutableArray *eanImages;
+@property (nonatomic, strong) UIImage *placeHolderImage;
+@property (nonatomic, strong) NSMutableArray *imageBatchesAlreadyLoaded;
 
 @end
 
@@ -322,8 +326,6 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     self.eanHotelInformationResponse = [EanHotelInformationResponse eanObjectFromApiResponseData:responseData];
     [self loadupTheImageScroller];
     [self loadupTheAmenities];
-    
-//    [self prepareTheSelectRoomViewController];
 }
 
 - (void)requestTimedOut:(LOAD_DATA_TYPE)dataType {
@@ -360,6 +362,18 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 
 #pragma mark Various
 
+- (UIImage *)placeHolderImage {
+    return _placeHolderImage ? : (_placeHolderImage = [UIImage imageNamed:@"hotel_info"]);
+}
+
+- (NSMutableArray *)eanImages {
+    return _eanImages ? : (_eanImages = [NSMutableArray array]);
+}
+
+- (NSMutableArray *)imageBatchesAlreadyLoaded {
+    return _imageBatchesAlreadyLoaded ? : (_imageBatchesAlreadyLoaded = [@[] mutableCopy]);
+}
+
 - (UIImageView *)currentImageView {
     NSInteger cp = _currentPageNumber - 1;
     UIView *civc = [_imageScrollerOutlet viewWithTag:kRoomImageViewContainersStartingTag + cp];
@@ -370,10 +384,10 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 - (void)loadupTheImageScroller {
     NSArray *ims = self.eanHotelInformationResponse.hotelImagesArray;
     for (int j = 0; j < [ims count]; j++) {
-        EanHotelInfoImage *eanInfoImage = [EanHotelInfoImage imageFromDict:ims[j]];
         UIView *ivc = [[UIView alloc] initWithFrame:CGRectMake(j * 500, 0, 500.0f, 325.0f)];
         ivc.backgroundColor = [UIColor blackColor];
         ivc.tag = kRoomImageViewContainersStartingTag + j;
+        [_imageScrollerOutlet addSubview:ivc];
         
         ImageViewHotelInfo *iv = [[ImageViewHotelInfo alloc] initWithFrame:[self rectForOrient:HI_PORTRAIT]];
         iv.backgroundColor = [UIColor blackColor];
@@ -381,25 +395,15 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
         iv.contentMode = UIViewContentModeScaleAspectFit;
         iv.clipsToBounds = YES;
         iv.tag = kRoomImageViewsStartingTag + j;
+        iv.image = self.placeHolderImage;
         iv.containsPlaceholderImage = YES;
         [ivc addSubview:iv];
-        __weak typeof(ImageViewHotelInfo) *wiv = iv;
-        __weak typeof(self) wes = self;
-        UIImage *phi = [UIImage imageNamed:@"hotel_info"];
-        [iv sd_setImageWithURL:[NSURL URLWithString:eanInfoImage.url] placeholderImage:phi completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-            wiv.contentMode = UIViewContentModeScaleAspectFit;
-            wiv.frame = [wes rectForOrient:wes.currentOrientation];
-            if (!wes.hideEffinStatusBar) {
-                wiv.center = CGPointMake(250, 212);
-            }
-            wiv.containsPlaceholderImage = NO;
-            if (j == 0) {
-                _firstImageArrived = YES;
-            }
-        }];
         
-        [_imageScrollerOutlet addSubview:ivc];
+        EanHotelInfoImage *eii = [EanHotelInfoImage imageFromDict:ims[j]] ? : [EanHotelInfoImage new];
+        if (eii) [self.eanImages addObject:eii];
     }
+    
+    [self loadImageBatch:0];
     
     UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickTheImage:)];
     tgr.numberOfTapsRequired = tgr.numberOfTouchesRequired = 1;
@@ -410,6 +414,34 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     _currentPageNumber = 1;
     _totalNumberOfPages = [ims count];
     _pageNumberLabel.text = [NSString stringWithFormat:@"1/%lu", (unsigned long)[ims count]];
+}
+
+- (void)loadImageBatch:(int)j {
+    if (j < self.imageBatchesAlreadyLoaded.count) return;
+    else [self.imageBatchesAlreadyLoaded addObject:@(j)];
+    
+    int start = kImageBatchSize * j;
+    NSUInteger end = MIN((start + kImageBatchSize), self.eanImages.count);
+    while (start < end) [self loadTheImage:start++];
+}
+
+- (void)loadTheImage:(int)j {
+    EanHotelInfoImage *eii = self.eanImages[j];
+    
+    __weak UIView *ivc = [_imageScrollerOutlet viewWithTag:(kRoomImageViewContainersStartingTag + j)];
+    __weak typeof(ImageViewHotelInfo) *wiv = (ImageViewHotelInfo *) [ivc viewWithTag:(kRoomImageViewsStartingTag + j)];
+    __weak typeof(self) wes = self;
+    
+    [wiv sd_setImageWithURL:[NSURL URLWithString:eii.url]
+           placeholderImage:wes.placeHolderImage
+                  completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                      
+        wiv.frame = [wes rectForOrient:wes.currentOrientation];
+        if (!wes.hideEffinStatusBar) {
+            wiv.center = CGPointMake(250, 212);
+        }
+        wiv.containsPlaceholderImage = NO;
+    }];
 }
 
 - (void)loadupTheAmenities {
@@ -619,7 +651,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
         }
     }
     
-    if (!image) image = [UIImage imageNamed:@"hotel_info"];
+    image = image ? : self.placeHolderImage;
     
     SelectRoomViewController *selectRoomViewController = [[SelectRoomViewController alloc] initWithPlaceholderImage:image hotelName:self.eanHotel.hotelNameFormatted locationName:self.locationString];
     SelectionCriteria *sc = [SelectionCriteria singleton];
@@ -917,8 +949,12 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
         // ...
         _pageNumberLabel.text = [NSString stringWithFormat:@"%ld/%ld", (long)_currentPageNumber, (long)_totalNumberOfPages];
         
-        // Finally, update previous page
+        // Update previous page
         previousPage = _currentPageNumber;
+        
+        // Check if we need to load the next batch of images
+        if (_currentPageNumber % kImageBatchSize == kImageBatchStartNext)
+            [self loadImageBatch:(1 + (int)(_currentPageNumber / kImageBatchSize))];
     }
 }
 

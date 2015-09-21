@@ -10,6 +10,9 @@
 
 @interface StarBoard : UIView
 
++ (UIImage *)starBoardImageForHotelListWithRating:(NSNumber *)rating;
++ (UIImage *)starBoardImageWithFrame:(CGRect)frame rating:(NSNumber *)rating;
+
 @property (nonatomic, strong) NSNumber* numberOfStars;
 
 @end
