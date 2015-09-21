@@ -23,6 +23,7 @@
 @property (nonatomic, strong) NSString *nightlyRateTypeDescription;
 @property (nonatomic, strong) NSDictionary *surcharges;
 @property (nonatomic, strong) NSArray *surchargesArray;
+@property (nonatomic) float hotelOccupAndSalesTaxSum;
 @property (nonatomic, strong) NSString *discountPercentString;
 
 + (EanChargeableRateInfo *)chargeableRateInfoFromDict:(NSDictionary *)dict;

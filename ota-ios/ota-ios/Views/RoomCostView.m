@@ -66,24 +66,50 @@
     
     NSNumberFormatter *tdf = kPriceTwoDigitFormatter(_room.rateInfo.chargeableRateInfo.currencyCode);
     
+    CGFloat nextVertOrigin = 44.0f + nrtvHeight + 7.0f;
     CGRect tfcf = self.taxesFeesContainer.frame;
-    self.taxesFeesContainer.frame = CGRectMake(tfcf.origin.x, 44.0f + nrtvHeight + 7.0f, tfcf.size.width, tfcf.size.height);
+    
+    if (_room.rateInfo.chargeableRateInfo.hotelOccupAndSalesTaxSum > 0) {
+        UIView *host = [[UIView alloc] initWithFrame:CGRectMake(tfcf.origin.x, nextVertOrigin-7, tfcf.size.width, tfcf.size.height)];
+        nextVertOrigin = host.frame.origin.y + host.frame.size.height + 1;
+        host.backgroundColor = UIColorFromRGB(0xE7E7E7);
+        [self addSubview:host];
+        
+        UILabel *hostAmtLbl = [[UILabel alloc] initWithFrame:CGRectMake(157, 8, 139, 20)];
+        hostAmtLbl.textAlignment = NSTextAlignmentRight;
+        hostAmtLbl.font = [UIFont systemFontOfSize:16.0f];
+        hostAmtLbl.adjustsFontSizeToFitWidth = YES;
+        hostAmtLbl.minimumScaleFactor = 0.8f;
+        hostAmtLbl.text = [tdf stringFromNumber:@(_room.rateInfo.chargeableRateInfo.hotelOccupAndSalesTaxSum)];
+        [host addSubview:hostAmtLbl];
+        
+        UILabel *hostLbl = [[UILabel alloc] initWithFrame:CGRectMake(11, 0, 144, 34)];
+        hostLbl.textAlignment = NSTextAlignmentLeft;
+        hostLbl.font = [UIFont systemFontOfSize:14.0f];
+        hostLbl.text = @"Hotel Occupancy and Sales Tax";
+        hostLbl.numberOfLines = 2;
+        [host addSubview:hostLbl];
+    }
+    
+    self.taxesFeesContainer.frame = CGRectMake(tfcf.origin.x, nextVertOrigin, tfcf.size.width, tfcf.size.height);
     tfcf = self.taxesFeesContainer.frame;
     
     NSNumber *sc = _room.rateInfo.chargeableRateInfo.surchargeTotal;
     self.taxFeeTotalAmtLabel.text = [sc doubleValue] == 0 ? @"Included" : [tdf stringFromNumber:sc];
     
     if (0 != [_room.rateInfo.sumOfHotelFees doubleValue]) {
-        UIView *ev = [[UIView alloc] initWithFrame:CGRectMake(tfcf.origin.x, tfcf.origin.y + tfcf.size.height+1, tfcf.size.width, 38.0f)];
+        UIView *ev = [[UIView alloc] initWithFrame:CGRectMake(tfcf.origin.x, tfcf.origin.y + tfcf.size.height+1, tfcf.size.width, 28.0f)];
         ev.backgroundColor = UIColorFromRGB(0xE7E7E7);
         
-        UILabel *evla = [[UILabel alloc] initWithFrame:CGRectMake(132, 9, 164, 20)];
+        UILabel *evla = [[UILabel alloc] initWithFrame:CGRectMake(132, 4, 164, 20)];
         evla.textAlignment = NSTextAlignmentRight;
         evla.font = [UIFont systemFontOfSize:16.0f];
+        evla.adjustsFontSizeToFitWidth = YES;
+        evla.minimumScaleFactor = 0.9f;
         evla.text = [tdf stringFromNumber:_room.rateInfo.chargeableRateInfo.total];
         [ev addSubview:evla];
         
-        UILabel *evl = [[UILabel alloc] initWithFrame:CGRectMake(11, 9, 124, 20)];
+        UILabel *evl = [[UILabel alloc] initWithFrame:CGRectMake(11, 4, 124, 20)];
         evl.textAlignment = NSTextAlignmentLeft;
         evl.font = [UIFont systemFontOfSize:15.0f];
         NSString *ft = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString*)kCFBundleNameKey];
@@ -93,18 +119,20 @@
         [self addSubview:ev];
         tfcf = ev.frame;
         
-        UIView *sv = [[UIView alloc] initWithFrame:CGRectMake(tfcf.origin.x, tfcf.origin.y + tfcf.size.height+1, tfcf.size.width, 38.0f)];
+        UIView *sv = [[UIView alloc] initWithFrame:CGRectMake(tfcf.origin.x, tfcf.origin.y + tfcf.size.height, tfcf.size.width, 28.0f)];
         
-        UILabel *svla = [[UILabel alloc] initWithFrame:CGRectMake(149, 9, 147, 20)];
+        UILabel *svla = [[UILabel alloc] initWithFrame:CGRectMake(149, 4, 147, 20)];
         svla.textAlignment = NSTextAlignmentRight;
         svla.font = [UIFont systemFontOfSize:16.0f];
+        svla.adjustsFontSizeToFitWidth = YES;
+        svla.minimumScaleFactor = 0.8f;
         svla.text = [tdf stringFromNumber:_room.rateInfo.sumOfHotelFees];
         [sv addSubview:svla];
         
-        UILabel *svl = [[UILabel alloc] initWithFrame:CGRectMake(11, 9, 137, 20)];
+        UILabel *svl = [[UILabel alloc] initWithFrame:CGRectMake(11, 4, 137, 20)];
         svl.textAlignment = NSTextAlignmentLeft;
-        svl.font = [UIFont systemFontOfSize:16.0f];
-        svl.text = @"Fees Due at Hotel";
+        svl.font = [UIFont systemFontOfSize:15.0f];
+        svl.text = @"Fees Paid at Hotel";
         [sv addSubview:svl];
         
         [self addSubview:sv];
@@ -112,7 +140,7 @@
     }
     
     CGRect tcf = self.totalContainer.frame;
-    self.totalContainer.frame = CGRectMake(tcf.origin.x, tfcf.origin.y + tfcf.size.height + 1.0f, tcf.size.width, tcf.size.height);
+    self.totalContainer.frame = CGRectMake(tcf.origin.x, tfcf.origin.y + tfcf.size.height, tcf.size.width, tcf.size.height);
     
     self.tripTotalAmtLabel.text = [tdf stringFromNumber:_room.rateInfo.totalPlusHotelFees];
 }

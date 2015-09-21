@@ -1877,6 +1877,9 @@ NSUInteger const kAcknowledgemenTag = 1917157;
 - (void)calendarPickerCancelled {
 }
 
+- (void)calendarPickerDonePressed {
+}
+
 - (void)calendarPickerDidSelectDate:(NSDate *)selectedDate {
     daDateChanged = YES;
     if (!_arrivalOrReturn) {
@@ -1888,9 +1891,6 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     }
     
     TrotterLog(@"Date selected: %@",[kPrettyDateFormatter() stringFromDate:selectedDate]);
-}
-
-- (void)calendarPickerDonePressed {
 }
 
 - (void)calendarPickerDidHide {

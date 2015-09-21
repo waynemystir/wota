@@ -75,10 +75,14 @@
     } else if ([idSurcharges isKindOfClass:[NSDictionary class]]) {
         EanSurcharge *sc = [EanSurcharge surchargeFromDict:idSurcharges];
         [mutSurchargesArray addObject:sc];
+        if (sc.surchargeType == HotelOccupancyTax || sc.surchargeType == SalesTax)
+            cri.hotelOccupAndSalesTaxSum += [sc.amount floatValue];
     } else if ([idSurcharges isKindOfClass:[NSArray class]]) {
         for (int j = 0; j < [idSurcharges count]; j++) {
             EanSurcharge *sc = [EanSurcharge surchargeFromDict:idSurcharges[j]];
             [mutSurchargesArray addObject:sc];
+            if (sc.surchargeType == HotelOccupancyTax || sc.surchargeType == SalesTax)
+                cri.hotelOccupAndSalesTaxSum += [sc.amount floatValue];
         }
     }
     
