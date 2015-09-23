@@ -13,7 +13,6 @@
 #import "SelectRoomViewController.h"
 #import "EanHotelInformationResponse.h"
 #import "EanHotelInfoImage.h"
-//#import <SDWebImage/UIImageView+WebCache.h>
 #import "UIImageView+WebCache.h"
 #import "NavigationView.h"
 #import "EanPropertyAmenity.h"
@@ -147,6 +146,11 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    CGRect sf = [[UIScreen mainScreen] bounds];
+    if (sf.size.height == 480) {
+        self.view.transform = kIpadTransform();
+    }
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rotateOrNot) name:UIDeviceOrientationDidChangeNotification object:nil];
     

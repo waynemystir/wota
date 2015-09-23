@@ -18,6 +18,8 @@
 @property (nonatomic, strong) NSString *departureDateString;
 @property (nonatomic, strong) NSDate *arrivalDate;
 @property (nonatomic, strong) NSDate *departureDate;
+@property (nonatomic) BOOL arrivalDateMatches;
+@property (nonatomic) BOOL departureDateMatches;
 @property (nonatomic, strong) NSString *hotelName;
 @property (nonatomic, strong) NSString *hotelNameFormatted;
 @property (nonatomic, strong) NSString *hotelAddress;

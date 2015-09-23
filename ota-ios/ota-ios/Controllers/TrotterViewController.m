@@ -26,7 +26,6 @@
 #import "BackCancelViewSmaller.h"
 #import "BackCancelViewLarger.h"
 #import "WotaMKPinAnnotationView.h"
-//#import <SDWebImage/UIImageView+WebCache.h>
 #import "UIImageView+WebCache.h"
 #import "HotelInfoViewController.h"
 #import "TrotterCalendarPicker.h"
@@ -204,6 +203,11 @@ NSUInteger const kAcknowledgemenTag = 1917157;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    CGRect sf = [[UIScreen mainScreen] bounds];
+    if (sf.size.height == 480) {
+        self.view.transform = kIpadTransform();
+    }
     
     self.viewState = VIEW_STATE_CRITERIA;
     

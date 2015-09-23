@@ -30,7 +30,6 @@
 #import "SelectBedTypeDelegateImplementation.h"
 #import "SelectSmokingPreferenceDelegateImplementation.h"
 #import "WotaButton.h"
-//#import <SDWebImage/UIImageView+WebCache.h>
 #import "UIImageView+WebCache.h"
 #import "WotaTappableView.h"
 #import "NightlyRateTableViewDelegateImplementation.h"
@@ -42,7 +41,7 @@
 #import "RoomCostView.h"
 
 NSUInteger const kLoadDropRoomDetailsAnimationCurve = UIViewAnimationOptionCurveEaseInOut;
-NSTimeInterval const kSrAnimationDuration = 0.58;
+NSTimeInterval const kSrAnimationDuration = 0.53;
 NSTimeInterval const kSrQuickAnimationDuration = 0.36;
 
 typedef NS_ENUM(NSUInteger, VIEW_DETAILS_TYPE) {
@@ -272,6 +271,11 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    CGRect sf = [[UIScreen mainScreen] bounds];
+    if (sf.size.height == 480) {
+        self.view.transform = kIpadTransform();
+    }
+    
     //**********************************************************************
     // This is needed so that this view controller (or it's nav controller?)
     // doesn't make room at the top of the table view's scroll view (I guess
@@ -439,7 +443,24 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
         case LOAD_EAN_AVAILABLE_ROOMS: {
             _preparedToDropSpinner = YES;
             self.eanHrar = [EanHotelRoomAvailabilityResponse eanObjectFromApiResponseData:responseData];
-            if (self.eanHrar.hotelRoomArray.count > 0) {
+            if (self.eanHrar.hotelRoomArray.count == 0) {
+                UILabel *noRooms = [[UILabel alloc] initWithFrame:CGRectMake(30, 200, 260, 200)];
+                noRooms.numberOfLines = 3;
+                noRooms.lineBreakMode = NSLineBreakByWordWrapping;
+                noRooms.textAlignment = NSTextAlignmentCenter;
+                noRooms.text = @"No rooms available. Please change the dates or the number of guests and try again.";
+                noRooms.textColor = [UIColor blackColor];
+                noRooms.backgroundColor = [UIColor whiteColor];
+                [self.view addSubview:noRooms];
+                [self.view bringSubviewToFront:noRooms];
+                self.roomsTableViewOutlet.tableFooterView = nil;
+            } else if (!self.eanHrar.arrivalDateMatches || !self.eanHrar.departureDateMatches) {
+                [self dropDaSpinner];
+                __weak typeof(self) wes = self;
+                [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"An Error Occurred" messageString:@"Please try again." completionCallback:^{
+                    [wes.navigationController popToRootViewControllerAnimated:YES];
+                }];
+            } else {
                 self.tableData = self.eanHrar.hotelRoomArray;
                 [self.roomsTableViewOutlet reloadData];
                 NSArray *fa = [[NSBundle mainBundle] loadNibNamed:@"SelectRoomFooterView" owner:self options:nil];
@@ -452,17 +473,6 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
                 [wes addSubview:fv];
                 [wes addSubview:iv];
                 self.roomsTableViewOutlet.tableFooterView = wes;
-            } else {
-                UILabel *noRooms = [[UILabel alloc] initWithFrame:CGRectMake(30, 200, 260, 200)];
-                noRooms.numberOfLines = 3;
-                noRooms.lineBreakMode = NSLineBreakByWordWrapping;
-                noRooms.textAlignment = NSTextAlignmentCenter;
-                noRooms.text = @"No rooms available. Please change the dates or the number of guests and try again.";
-                noRooms.textColor = [UIColor blackColor];
-                noRooms.backgroundColor = [UIColor whiteColor];
-                [self.view addSubview:noRooms];
-                [self.view bringSubviewToFront:noRooms];
-                self.roomsTableViewOutlet.tableFooterView = nil;
             }
             [self dropDaSpinner];
             break;
@@ -1969,9 +1979,10 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     tvp.hidden = NO;
     ibo.hidden = NO;
     
-    NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
+    __weak NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
     [self.view bringSubviewToFront:nv];
     [nv animateToCancel];
+    nv.leftView.userInteractionEnabled = NO;
     
     self.bedTypeButton.alpha = self.smokingButton.alpha = rtdl.alpha = 0.0f;
     tal.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(60.0f, -(tvp.frame.size.height/0.80f)), 0.001f, 0.001f);
@@ -2007,6 +2018,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
         weakSelf.smokingButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 0), 1.0f, 1.0f);
     } completion:^(BOOL finished) {
         rtv.hidden = YES;
+        nv.leftView.userInteractionEnabled = YES;
     }];
 }
 
@@ -2204,13 +2216,20 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
 
 - (void)loadPaymentDetailsView {
     NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
-    UIButton *b = [UIButton buttonWithType:UIButtonTypeSystem];
-    b.frame = nv.titleView.bounds;
-    b.tag = kCardSecurityTag;
-    [b addTarget:self action:@selector(loadInfoDetailsPopup:) forControlEvents:UIControlEventTouchUpInside];
-    [b setShowsTouchWhenHighlighted:YES];
-    [b setTitle:@"Card Security ℹ️" forState:UIControlStateNormal];
-    [nv replaceTitleViewContainer:b];
+    UIView *tv = [[UIView alloc] initWithFrame:nv.titleView.bounds];
+    tv.tag = kCardSecurityTag;
+    UILabel *b = [[UILabel alloc] initWithFrame:CGRectMake(89, 7, 83, 37)];
+    b.backgroundColor = [UIColor clearColor];
+    b.textAlignment = NSTextAlignmentLeft;
+    b.font = [UIFont boldSystemFontOfSize:16.0f];
+    b.text = @"Payment";
+    [tv addSubview:b];
+    UIImageView *iv = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"locked"]];
+    iv.frame = CGRectMake(62, 14, 22, 22);
+    iv.contentMode = UIViewContentModeScaleAspectFit;
+    iv.backgroundColor = [UIColor clearColor];
+    [tv addSubview:iv];
+    [nv replaceTitleViewContainer:tv];
     [nv animateToSecondCancel];
     [nv rightViewAddCheckMark];
     

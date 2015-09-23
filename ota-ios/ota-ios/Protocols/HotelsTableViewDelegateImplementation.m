@@ -8,7 +8,6 @@
 
 #import "HotelsTableViewDelegateImplementation.h"
 #import "HLTableViewCell.h"
-//#import <SDWebImage/UIImageView+WebCache.h>
 #import "UIImageView+WebCache.h"
 #import "EanHotelListHotelSummary.h"
 #import "AppEnvironment.h"

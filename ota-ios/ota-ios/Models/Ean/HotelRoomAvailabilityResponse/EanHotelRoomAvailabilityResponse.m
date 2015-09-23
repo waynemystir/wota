@@ -13,6 +13,7 @@
 #import "AppEnvironment.h"
 #import "EanNightlyRate.h"
 #import "NSString+HTML.h"
+#import "SelectionCriteria.h"
 
 NSString * const kNonrefundableString = @"This rate is non-refundable";
 NSString * const kFreeCancelString = @"Free Cancellation by";
@@ -46,6 +47,12 @@ NSString * const kFreeCancelString = @"Free Cancellation by";
     hrar.departureDateString = [idHrar objectForKey:@"departureDate"];
     hrar.arrivalDate = [kEanApiDateFormatter() dateFromString:hrar.arrivalDateString];
     hrar.departureDate = [kEanApiDateFormatter() dateFromString:hrar.departureDateString];
+    
+    NSCalendar *cal = [NSCalendar currentCalendar];
+    SelectionCriteria *sc = [SelectionCriteria singleton];
+    hrar.arrivalDateMatches = (!sc.arrivalDate || !hrar.arrivalDate) ? NO : [cal isDate:sc.arrivalDate equalToDate:hrar.arrivalDate toUnitGranularity:NSCalendarUnitDay];
+    hrar.departureDateMatches = (!sc.returnDate || !hrar.departureDate) ? NO : [cal isDate:sc.returnDate equalToDate:hrar.departureDate toUnitGranularity:NSCalendarUnitDay];
+    
     hrar.hotelName = [idHrar objectForKey:@"hotelName"];
     hrar.hotelAddress = [idHrar objectForKey:@"hotelAddress"];
     hrar.hotelCity = [idHrar objectForKey:@"hotelCity"];

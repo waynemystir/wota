@@ -21,6 +21,7 @@
 #import "EanHotelConfirmation.h"
 #import "SelectRoomViewController.h"
 #import "RoomCostView.h"
+#import "AppEnvironment.h"
 
 NSUInteger const kBookPriceDetailsPopupTag = 1239874;
 
@@ -67,6 +68,15 @@ NSUInteger const kBookPriceDetailsPopupTag = 1239874;
 - (void)loadView {
     [super loadView];
     [self loadDaSpinner];
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    CGRect sf = [[UIScreen mainScreen] bounds];
+    if (sf.size.height == 480) {
+        self.view.transform = kIpadTransform();
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -134,7 +144,8 @@ NSUInteger const kBookPriceDetailsPopupTag = 1239874;
         
     } else if ([((EanItinerary *)hir.itineraries.firstObject).hotelConfirmation.status isEqualToString:@"UC"]) {
         
-        // TODO: I need to cancel these bookings and message them as "inventory unavailable" to the customer to avoid duplicate bookings. If left alone, EAN will continue to attempt to process these bookings and may eventually confirm them without further notice.
+        // https://support.ean.com/hc/en-us/requests/112810
+        [self handlePendingState:((EanItinerary *)hir.itineraries.firstObject).itineraryId];
         
     } else if ([((EanItinerary *)hir.itineraries.firstObject).hotelConfirmation.status isEqualToString:@"CX"] ||
                [((EanItinerary *)hir.itineraries.firstObject).hotelConfirmation.status isEqualToString:@"ER"] ||
@@ -202,7 +213,8 @@ NSUInteger const kBookPriceDetailsPopupTag = 1239874;
         
     } else if ([hrrr.reservationStatusCode isEqualToString:@"UC"]) {
         
-        // TODO: I need to cancel these bookings and message them as "inventory unavailable" to the customer to avoid duplicate bookings. If left alone, EAN will continue to attempt to process these bookings and may eventually confirm them without further notice.
+        // https://support.ean.com/hc/en-us/requests/112810
+        [self handlePendingState:hrrr.itineraryId];
         
     } else if ([hrrr.reservationStatusCode isEqualToString:@"CX"] ||
                [hrrr.reservationStatusCode isEqualToString:@"ER"] ||
