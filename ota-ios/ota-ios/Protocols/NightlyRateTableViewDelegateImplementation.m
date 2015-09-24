@@ -63,6 +63,8 @@
     NSNumberFormatter *tdf = kPriceTwoDigitFormatter(self.room.rateInfo.chargeableRateInfo.currencyCode);
     
     UILabel *nightsTotal = [[UILabel alloc] initWithFrame:CGRectMake(90, 4, 153, 19)];
+    nightsTotal.adjustsFontSizeToFitWidth = YES;
+    nightsTotal.minimumScaleFactor = 0.6f;
     nightsTotal.textAlignment = NSTextAlignmentRight;
     nightsTotal.text = [tdf stringFromNumber:self.room.rateInfo.chargeableRateInfo.nightlyRateTotal];
     [hv addSubview:nightsTotal];

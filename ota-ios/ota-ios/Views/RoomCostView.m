@@ -79,7 +79,7 @@
         hostAmtLbl.textAlignment = NSTextAlignmentRight;
         hostAmtLbl.font = [UIFont systemFontOfSize:16.0f];
         hostAmtLbl.adjustsFontSizeToFitWidth = YES;
-        hostAmtLbl.minimumScaleFactor = 0.8f;
+        hostAmtLbl.minimumScaleFactor = 0.6f;
         hostAmtLbl.text = [tdf stringFromNumber:@(_room.rateInfo.chargeableRateInfo.hotelOccupAndSalesTaxSum)];
         [host addSubview:hostAmtLbl];
         
@@ -105,7 +105,7 @@
         evla.textAlignment = NSTextAlignmentRight;
         evla.font = [UIFont systemFontOfSize:16.0f];
         evla.adjustsFontSizeToFitWidth = YES;
-        evla.minimumScaleFactor = 0.9f;
+        evla.minimumScaleFactor = 0.7f;
         evla.text = [tdf stringFromNumber:_room.rateInfo.chargeableRateInfo.total];
         [ev addSubview:evla];
         
@@ -125,7 +125,7 @@
         svla.textAlignment = NSTextAlignmentRight;
         svla.font = [UIFont systemFontOfSize:16.0f];
         svla.adjustsFontSizeToFitWidth = YES;
-        svla.minimumScaleFactor = 0.8f;
+        svla.minimumScaleFactor = 0.65f;
         svla.text = [tdf stringFromNumber:_room.rateInfo.sumOfHotelFees];
         [sv addSubview:svla];
         
