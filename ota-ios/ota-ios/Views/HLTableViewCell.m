@@ -45,7 +45,7 @@
         _roomRateLabel = [[UILabel alloc] initWithFrame:CGRectMake(198, 32, 119, 33)];
         _roomRateLabel.backgroundColor = [UIColor clearColor];
         _roomRateLabel.numberOfLines = 1;
-        _roomRateLabel.minimumScaleFactor = 0.5f;
+        _roomRateLabel.minimumScaleFactor = 0.4f;
         _roomRateLabel.adjustsFontSizeToFitWidth = YES;
         _roomRateLabel.textColor = kTheColorOfMoney();
         _roomRateLabel.textAlignment = NSTextAlignmentRight;

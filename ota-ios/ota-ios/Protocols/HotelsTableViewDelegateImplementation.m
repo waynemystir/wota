@@ -64,7 +64,7 @@ NSString * const kNotificationHotelDataSorted = @"kNotificationHotelDataSorted";
     
     cell.hotelNameLabel.text = hotel.hotelNameFormatted;
     NSNumberFormatter *pf = kPriceRoundOffFormatter(hotel.rateCurrencyCode);
-    cell.roomRateLabel.text = [pf stringFromNumber:hotel.lowRate];//[NSNumber numberWithLong:3339993339]
+    cell.roomRateLabel.text = [pf stringFromNumber:hotel.lowRate];
     cell.cityLabel.text = hotel.city;
     
     NSString *discount = hotel.roomRateDetails.rateInfo.chargeableRateInfo.discountPercentString;
