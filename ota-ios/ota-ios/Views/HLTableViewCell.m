@@ -33,6 +33,7 @@
         [self.contentView addSubview:_hotelNameLabel];
         
         _starBoardContainer = [[UIImageView alloc] initWithFrame:CGRectMake(98, 39, 129, 26)];
+        _starBoardContainer.backgroundColor = [UIColor clearColor];
         [self.contentView addSubview:_starBoardContainer];
         
 //        _starBoard = [[StarBoard alloc] initWithFrame:CGRectMake(98, 35, 129, 26)];

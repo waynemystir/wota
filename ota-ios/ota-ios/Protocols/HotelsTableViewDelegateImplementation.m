@@ -99,6 +99,9 @@ NSString * const kNotificationHotelDataSorted = @"kNotificationHotelDataSorted";
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    cell.backgroundColor = UIColorFromRGB(0xe5e5e5);
+    
     EanHotelListHotelSummary *hotel = self.currentHotelData[indexPath.row];
     HotelInfoViewController *hvc = [[HotelInfoViewController alloc] initWithHotel:hotel];
     [[LoadEanData sharedInstance:hvc] loadHotelDetailsWithId:[hotel.hotelId stringValue]];
@@ -107,6 +110,11 @@ NSString * const kNotificationHotelDataSorted = @"kNotificationHotelDataSorted";
     UINavigationController *nc = (UINavigationController *) ad.window.rootViewController;
     [nc pushViewController:hvc animated:YES];
     [tableView endEditing:YES];
+}
+
+- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    cell.backgroundColor = [UIColor clearColor];
 }
 
 #pragma mark UIScrollViewDelegate methods
