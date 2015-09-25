@@ -8,6 +8,7 @@
 
 #import "GoogleNearbyPlaces.h"
 #import "GoogleNearbyPlace.h"
+#import "AppEnvironment.h"
 
 @implementation GoogleNearbyPlaces
 
@@ -19,17 +20,17 @@
     NSError *error = nil;
     id respDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
     if (error != nil) {
-        NSLog(@"%@.%@ ERROR trying to deserialize JSON data:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), error);
+        TrotterLog(@"%@.%@ ERROR trying to deserialize JSON data:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), error);
         return nil;
     }
     
     if (![NSJSONSerialization isValidJSONObject:respDict]) {
-        NSLog(@"%@.%@ ERROR: Response is not valid JSON", NSStringFromClass(self.class), NSStringFromSelector(_cmd));
+        TrotterLog(@"%@.%@ ERROR: Response is not valid JSON", NSStringFromClass(self.class), NSStringFromSelector(_cmd));
         return nil;
     }
     
     NSString *respString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    NSLog(@"%@ JSON Response String:%@", NSStringFromClass(self.class), respString);
+    TrotterLog(@"%@ JSON Response String:%@", NSStringFromClass(self.class), respString);
     
     NSArray *results = [respDict objectForKey:@"results"];
     if (nil == results || ![results isKindOfClass:[NSArray class]]) {

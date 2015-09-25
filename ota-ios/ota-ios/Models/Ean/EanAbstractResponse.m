@@ -19,12 +19,12 @@
     NSError *error = nil;
     id respDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
     if (error != nil) {
-        NSLog(@"%@.%@ ERROR trying to deserialize JSON data:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), error);
+        TrotterLog(@"%s ERROR trying to deserialize JSON data:%@", __PRETTY_FUNCTION__, error);
         return nil;
     }
     
     if (![NSJSONSerialization isValidJSONObject:respDict]) {
-        NSLog(@"%@.%@ ERROR: Response is not valid JSON", NSStringFromClass(self.class), NSStringFromSelector(_cmd));
+        TrotterLog(@"%s ERROR: Response is not valid JSON", __PRETTY_FUNCTION__);
         return nil;
     }
     

@@ -33,7 +33,7 @@
 #import "CryptoCoding.h"
 #import <CommonCrypto/CommonCryptor.h>
 #import <CommonCrypto/CommonKeyDerivation.h>
-
+#import "AppEnvironment.h"
 
 #pragma GCC diagnostic ignored "-Wobjc-missing-property-synthesis"
 #pragma GCC diagnostic ignored "-Wdirect-ivar-access"
@@ -245,7 +245,7 @@ const float CryptoCodingVersion = 2.0f;
     }
     else
     {
-        NSLog(@"Unsupported CryptoArchive version (%f)", _version);
+        TrotterLog(@"ERROR: %s: Unsupported CryptoArchive version (%f)", __PRETTY_FUNCTION__, _version);
         return nil;
     }
 }

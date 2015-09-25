@@ -235,7 +235,8 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
 }
 
 - (void)didReceiveMemoryWarning {
-    NSLog(@"%@:didReceiveMemoryWarning", self.class);
+    [super didReceiveMemoryWarning];
+    TrotterLog(@"WARNING:%s", __PRETTY_FUNCTION__);
 }
 
 - (void)dealloc {

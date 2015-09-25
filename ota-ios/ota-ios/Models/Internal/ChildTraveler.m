@@ -106,7 +106,7 @@ NSString * const kKeyChildAge = @"childAge";
     NSError *error = nil;
     NSArray* dirContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:&error];
     if (error != nil) {
-        NSLog(@"ERROR:%@", error);
+        TrotterLog(@"ERROR:%@", error);
     }
     return dirContents;
 }

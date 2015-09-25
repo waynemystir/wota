@@ -37,7 +37,7 @@ NSString * const kKeyDisplayName = @"displayName";
     NSError *error;
     NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
     if (error != nil) {
-        NSLog(@"");
+        TrotterLog(@"ERROR:%s:%@", __PRETTY_FUNCTION__, error.localizedDescription);
         return nil;
     }
     
@@ -59,7 +59,7 @@ NSString * const kKeyDisplayName = @"displayName";
     NSError *error;
     NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
     if (error != nil) {
-        NSLog(@"");
+        TrotterLog(@"ERROR:%s:%@", __PRETTY_FUNCTION__, error.localizedDescription);
         return nil;
     }
     

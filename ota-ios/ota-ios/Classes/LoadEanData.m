@@ -492,7 +492,7 @@ NSString * kURLeanItinReq() {
                      EAN_PK_CC_STATE_PROV_CODE, stringIsEmpty(stateProvinceCode) ? @"" : stateProvinceCode,
                      EAN_PK_CC_COUNTRY_CODE, countryCode,
                      EAN_PK_CC_POSTAL_CODE, postalCode] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-    NSLog(@"BOOKING:%@", urlString);
+    TrotterLog(@"ANALYTIC:BOOKING:%@", urlString);
     
     NSURL *url = [NSURL URLWithString:urlString];
     [self fireOffConnectionWithURL:url httpMethod:HTTP_POST];
@@ -510,8 +510,6 @@ NSString * kURLeanItinReq() {
 #pragma mark NSURLConnectionDataDelegate methods
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
-//    NSLog(@"%@.%@:::%@", self.class, NSStringFromSelector(_cmd), [[[connection currentRequest] URL] absoluteString]);
-//    NSLog(@"%@.%@ RESPONSE:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), [response description]);
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
@@ -519,8 +517,6 @@ NSString * kURLeanItinReq() {
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-//    NSLog(@"%@.%@:::%@", self.class, NSStringFromSelector(_cmd), [[[connection currentRequest] URL] absoluteString]);
-    
     NSString *urlString = [[[connection currentRequest] URL] absoluteString];
     
     if ([urlString containsString:EAN_H0TEL_LIST]) {
@@ -556,7 +552,7 @@ NSString * kURLeanItinReq() {
 #pragma mark NSURLConnectionDelegate methods
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-    NSLog(@"%@.%@ ERROR:%@ URL:%@", NSStringFromClass(self.class), NSStringFromSelector(_cmd), [error localizedDescription], [[[connection currentRequest] URL] absoluteString]);
+    TrotterLog(@"ERROR:%s %@ URL:%@", __PRETTY_FUNCTION__, [error localizedDescription], [[[connection currentRequest] URL] absoluteString]);
     
     NSString *urlString = [[[connection currentRequest] URL] absoluteString];
     LOAD_DATA_TYPE dt;

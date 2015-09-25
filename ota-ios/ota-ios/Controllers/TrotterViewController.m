@@ -408,9 +408,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-    
-    NSLog(@"%@.%@", self.class, NSStringFromSelector(_cmd));
+    TrotterLog(@"WARNING:%s", __PRETTY_FUNCTION__);
 }
 
 #pragma mark Highlight/Restore Where To

@@ -10,6 +10,7 @@
 #import "WotaButton.h"
 #import "ChildSubView.h"
 #import "ChildTraveler.h"
+#import "AppEnvironment.h"
 
 NSTimeInterval const kCvAnimationDuration = 0.6;
 
@@ -223,7 +224,7 @@ NSTimeInterval const kCvAnimationDuration = 0.6;
         [self checkIfWeCanAddKids];
         [self checkIfWeCanRemoveKids];
     } else {
-        NSLog(@"Dude we've got a problem");
+        TrotterLog(@"ERROR: %@.%@ didn't recognize sender", NSStringFromClass(self.class), NSStringFromSelector(_cmd));
     }
 }
 

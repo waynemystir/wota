@@ -16,7 +16,7 @@
     id response = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:&error];
     
     if (error != nil) {
-        NSLog(@"ERROR:%@", [error description]);
+        TrotterLog(@"ERROR:%@", [error description]);
         return nil;
     } else {
         TrotterLog(@"AUTOCOMPLETERESPONSE:%@", [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);

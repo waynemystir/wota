@@ -84,6 +84,11 @@ NSUInteger const kBookPriceDetailsPopupTag = 1239874;
     self.navigationController.navigationBar.hidden = YES;
 }
 
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    TrotterLog(@"WARNING:%s", __PRETTY_FUNCTION__);
+}
+
 #pragma mark Spinner
 
 - (void)loadDaSpinner {
