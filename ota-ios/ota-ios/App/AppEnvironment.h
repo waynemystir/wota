@@ -24,7 +24,7 @@ typedef NS_ENUM(NSUInteger, ENVIRONMENT_MODE) {
 
 extern ENVIRONMENT_MODE environmentMode;
 extern BOOL inProductionMode();
-extern BOOL debugOrProductionMode;
+extern BOOL inTestFlightMode();
 extern void TrotterLog(NSString *format, ...);
 
 /**

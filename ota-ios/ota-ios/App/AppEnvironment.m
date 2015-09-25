@@ -18,6 +18,10 @@ BOOL inProductionMode() {
     return environmentMode == PRODUCTION_MODE;
 }
 
+BOOL inTestFlightMode() {
+    return environmentMode == BETA_MODE;
+}
+
 BOOL const isLogging = NO;
 
 void TrotterLog(NSString *format, ...) {

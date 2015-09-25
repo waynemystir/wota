@@ -78,13 +78,8 @@ NSString * const kNotificationHotelDataSorted = @"kNotificationHotelDataSorted";
         cell.promoLabel.text = @"";
     }
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        UIImage *sbi = [StarBoard starBoardImageForHotelListWithRating:hotel.hotelRating];;
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            cell.starBoardContainer.image = sbi;
-        });
-    });
+    UIImage *sbi = [StarBoard starBoardImageForHotelListWithRating:hotel.hotelRating];
+    cell.starBoardContainer.image = sbi;
 
     return cell;
 }

@@ -117,6 +117,12 @@ NSDictionary * kEcCredentials3() {
              EC_PK_SHARED_SECRET : @"8cnuubg6ob4h7"};
 }
 
+NSDictionary * kEcCredentials4() {
+    return @{EC_PK_CID : @"496061",
+             EC_PK_API_KEY : @"1piud8uslul51mdt5kop1cr9d2",
+             EC_PK_SHARED_SECRET : @"31i2i7oggprs0"};
+}
+
 NSString * kEcCommonParameters() {
     return [NSString stringWithFormat:@"%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@",
             EC_PK_API_EXPERIENCE, EC_API_EXPERIENCE,
@@ -151,7 +157,7 @@ NSString * kURLecHotelList() {
     static dispatch_once_t onceToken;
     
     dispatch_once(&onceToken, ^{
-        _ca = [NSArray arrayWithObjects:kEcCredentials1(), kEcCredentials2(), kEcCredentials3(), nil];
+        _ca = inProductionMode() ? @[kEcCredentials1(), kEcCredentials2()] : inTestFlightMode() ? @[kEcCredentials3()] : @[kEcCredentials4()];
     });
     
     return _ca;
