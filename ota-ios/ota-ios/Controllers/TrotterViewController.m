@@ -360,7 +360,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     self.wmapHamburger.hidden = YES;
     self.currentWmapView = self.wmapMap;
     
-    BackCancelViewLarger *mapBack = [[BackCancelViewLarger alloc] initWithFrame:CGRectMake(5, 5, 50, 50)];
+    BackCancelViewLarger *mapBack = [[BackCancelViewLarger alloc] initWithFrame:CGRectMake(8, 18, 47, 42)];
     [self.mapBackContainer addSubview:mapBack];
     self.mapBackContainer.hidden = YES;
     
@@ -1372,8 +1372,12 @@ NSUInteger const kAcknowledgemenTag = 1917157;
             EanHotelListHotelSummary *hotel = [_hotelTableViewDelegate.currentHotelData objectAtIndex:j];
             WotaMapAnnotatioin *annotation = [[WotaMapAnnotatioin alloc] init];
             annotation.coordinate = CLLocationCoordinate2DMake(hotel.latitude, hotel.longitude);
-            NSString *imageUrlString = [@"http://images.travelnow.com" stringByAppendingString:hotel.thumbNailUrlEnhanced];
-            annotation.imageUrl = imageUrlString;
+            if (hotel.thumbNailUrlLooksOK) {
+                NSString *imageUrlString = [@"http://images.travelnow.com" stringByAppendingString:hotel.thumbNailUrlEnhanced];
+                annotation.imageUrl = imageUrlString;
+            } else {
+                annotation.imageUrl = nil;
+            }
             
             annotation.rowNUmber = j;
             annotation.title = hotel.hotelNameFormatted;
@@ -2428,17 +2432,12 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
     iv.contentMode = UIViewContentModeScaleAspectFill;
     
-//    [iv setImageWithURL:[NSURL URLWithString:wa.imageUrl] placeholderImage:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-//        // TODO: placeholder image
-//        // TODO: if nothing comes back, replace hotel.thumbNailUrlEnhanced with hotel.thumbNailUrl and try again
-//        ;
-//    }];
-    
-    [iv sd_setImageWithURL:[NSURL URLWithString:wa.imageUrl] placeholderImage:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-        // TODO: placeholder image
-        // TODO: if nothing comes back, replace hotel.thumbNailUrlEnhanced with hotel.thumbNailUrl and try again
-        ;
-    }];
+    if (wa.imageUrl)
+        [iv sd_setImageWithURL:[NSURL URLWithString:wa.imageUrl] placeholderImage:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            // TODO: placeholder image
+            // TODO: if nothing comes back, replace hotel.thumbNailUrlEnhanced with hotel.thumbNailUrl and try again
+            ;
+        }];
     
     annotationView.leftCalloutAccessoryView = iv;
     annotationView.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];

@@ -56,11 +56,13 @@ NSString * const kNotificationHotelDataSorted = @"kNotificationHotelDataSorted";
     EanHotelListHotelSummary *hotel = self.currentHotelData[indexPath.row];
     HLTableViewCell *cell = [[HLTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier hotelRating:hotel.hotelRating];
     
-    NSString *imageUrlString = [@"http://images.travelnow.com" stringByAppendingString:hotel.thumbNailUrlEnhanced];
-    [cell.thumbImageView sd_setImageWithURL:[NSURL URLWithString:imageUrlString] placeholderImage:[[self class] phi] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-        // TODO: if nothing comes back, replace hotel.thumbNailUrlEnhanced with hotel.thumbNailUrl and try again
-        ;
-    }];
+    if (hotel.thumbNailUrlLooksOK)
+        [cell.thumbImageView sd_setImageWithURL:hotel.thumbNailUrlEnhancedURL placeholderImage:[[self class] phi] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            // TODO: if nothing comes back, replace hotel.thumbNailUrlEnhanced with hotel.thumbNailUrl and try again
+            ;
+        }];
+    else
+        cell.thumbImageView.image = [[self class] phi];
     
     cell.hotelNameLabel.text = hotel.hotelNameFormatted;
     NSNumberFormatter *pf = kPriceRoundOffFormatter(hotel.rateCurrencyCode);
@@ -76,7 +78,13 @@ NSString * const kNotificationHotelDataSorted = @"kNotificationHotelDataSorted";
         cell.promoLabel.text = @"";
     }
     
-    cell.starBoardContainer.image = [StarBoard starBoardImageForHotelListWithRating:hotel.hotelRating];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        UIImage *sbi = [StarBoard starBoardImageForHotelListWithRating:hotel.hotelRating];;
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            cell.starBoardContainer.image = sbi;
+        });
+    });
 
     return cell;
 }
@@ -86,10 +94,21 @@ NSString * const kNotificationHotelDataSorted = @"kNotificationHotelDataSorted";
     static dispatch_once_t onceToken;
     
     dispatch_once(&onceToken, ^{
-        _p = [UIImage imageNamed:@"hotel_large"];
+        _p = [[self class] imageWithImage:[UIImage imageNamed:@"hotel_large"] scaledToSize:CGSizeMake(96, 96)];;
     });
     
     return _p;
+}
+
++ (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {
+    //UIGraphicsBeginImageContext(newSize);
+    // In next line, pass 0.0 to use the current device's pixel scaling factor (and thus account for Retina resolution).
+    // Pass 1.0 to force exact pixel size.
+    UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
+    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
 }
 
 #pragma mark UITableViewDelegate methods

@@ -8,6 +8,7 @@
 
 #import "EanHotelListHotelSummary.h"
 #import "NSString+HTML.h"
+#import "AppEnvironment.h"
 
 @implementation EanHotelListHotelSummary
 
@@ -54,6 +55,9 @@
     hotel.proximityUnit = [dict objectForKey:@"proximityUnit"];
     hotel.hotelInDestination = [[dict objectForKey:@"hotelInDestination"] boolValue];
     hotel.thumbNailUrl = [dict objectForKey:@"thumbNailUrl"];
+    hotel.thumbNailUrlEnhanced = [hotel.thumbNailUrl stringByReplacingOccurrencesOfString:@"_t" withString:@"_b"];
+    hotel.thumbNailUrlLooksOK = !stringIsEmpty(hotel.thumbNailUrlEnhanced);
+    hotel.thumbNailUrlEnhancedURL = [NSURL URLWithString:[@"http://images.travelnow.com" stringByAppendingString:hotel.thumbNailUrlEnhanced]];
     hotel.deepLink = [dict objectForKey:@"deepLink"];
     hotel.roomRateDetailsList = [dict objectForKey:@"RoomRateDetailsList"];
     
@@ -73,10 +77,6 @@
     }
     
     return hotel;
-}
-
-- (NSString *)thumbNailUrlEnhanced {
-    return [_thumbNailUrl stringByReplacingOccurrencesOfString:@"_t" withString:@"_b"];
 }
 
 - (NSString *)hotelNameFormatted {

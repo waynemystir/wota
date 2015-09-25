@@ -42,7 +42,9 @@
 @property (nonatomic, strong) NSString *proximityUnit;
 @property (nonatomic) BOOL hotelInDestination;
 @property (nonatomic, strong) NSString *thumbNailUrl;
-@property (nonatomic, strong, readonly) NSString *thumbNailUrlEnhanced;
+@property (nonatomic, strong) NSString *thumbNailUrlEnhanced;
+@property (nonatomic) BOOL thumbNailUrlLooksOK;
+@property (nonatomic, strong) NSURL *thumbNailUrlEnhancedURL;
 @property (nonatomic, strong) NSString *deepLink;
 @property (nonatomic, strong) NSDictionary *roomRateDetailsList;
 @property (nonatomic, strong) NSArray *roomRateDetailsArray;

@@ -190,6 +190,8 @@
 }
 
 + (UIImage *) imageFromView:(UIView *)view {
+    if (!view) return nil;
+    
     UIGraphicsBeginImageContext(view.frame.size);
     [[view layer] renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *screenshot = UIGraphicsGetImageFromCurrentImageContext();
