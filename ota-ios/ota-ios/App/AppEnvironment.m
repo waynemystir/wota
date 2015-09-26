@@ -36,11 +36,9 @@ void TrotterLog(NSString *format, ...) {
     va_end(args);
 }
 
-//NSString * const GOOGLE_API_KEY = @"AIzaSyBTMg_o0S630MntWlqDC4J9tuNrh_YkLIo";
-//NSString * const GOOGLE_API_KEY = @"AIzaSyDXmlmSp43YsY1QfPMaBP5Ww5UIXWNXXho";
 NSString * GoogleApiKey() {
     if (inProductionMode()) {
-        return @"AIzaSyDXmlmSp43YsY1QfPMaBP5Ww5UIXWNXXho"; // project name: ota-iOS
+        return @"AIzaSyBDkctJozElMNtbgYC_1J9saPsHBzFeC2w"; // project name: trotter-production
     } else if (environmentMode == BETA_MODE) {
         return @"AIzaSyDXmlmSp43YsY1QfPMaBP5Ww5UIXWNXXho"; // project name: ota-iOS
     } else {
