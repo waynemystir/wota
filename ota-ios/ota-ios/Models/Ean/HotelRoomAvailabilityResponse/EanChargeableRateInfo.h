@@ -15,15 +15,16 @@
 @property (nonatomic, strong) NSNumber *commissionableUsdTotal;
 @property (nonatomic, strong) NSString *currencyCode;
 @property (nonatomic, strong) NSNumber *maxNightlyRate;
-@property (nonatomic, strong) NSNumber *nightlyRateTotal;
-@property (nonatomic, strong) NSNumber *surchargeTotal;
-@property (nonatomic, strong) NSNumber *total;
+@property (nonatomic, strong) NSDecimalNumber *nightlyRateTotal;
+@property (nonatomic, strong) NSDecimalNumber *surchargeTotal;
+@property (nonatomic, strong) NSDecimalNumber *total;
+@property (nonatomic) BOOL totalEqualsNightlyTotalPlusSurcharges;
 @property (nonatomic, strong) NSDictionary *nightlyRatesPerRoom;
 @property (nonatomic, strong) NSArray *nightlyRatesArray;
 @property (nonatomic, strong) NSString *nightlyRateTypeDescription;
 @property (nonatomic, strong) NSDictionary *surcharges;
 @property (nonatomic, strong) NSArray *surchargesArray;
-@property (nonatomic) float hotelOccupAndSalesTaxSum;
+@property (nonatomic) double hotelOccupAndSalesTaxSum;
 @property (nonatomic, strong) NSString *discountPercentString;
 
 + (EanChargeableRateInfo *)chargeableRateInfoFromDict:(NSDictionary *)dict;

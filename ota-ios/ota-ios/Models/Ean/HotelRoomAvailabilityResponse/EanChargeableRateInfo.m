@@ -27,9 +27,16 @@
     cri.commissionableUsdTotal = [NSNumber numberWithDouble:[[dict objectForKey:@"@commissionableUsdTotal"] doubleValue]];
     cri.currencyCode = [dict objectForKey:@"@currencyCode"];
     cri.maxNightlyRate = [NSNumber numberWithDouble:[[dict objectForKey:@"@maxNightlyRate"] doubleValue]];
-    cri.nightlyRateTotal = [NSNumber numberWithDouble:[[dict objectForKey:@"@nightlyRateTotal"] doubleValue]];
-    cri.surchargeTotal = [NSNumber numberWithDouble:[[dict objectForKey:@"@surchargeTotal"] doubleValue]];
-    cri.total = [NSNumber numberWithDouble:[[dict objectForKey:@"@total"] doubleValue]];
+    id idNrt = [dict objectForKey:@"@nightlyRateTotal"] ? : @"0";
+    cri.nightlyRateTotal = [NSDecimalNumber decimalNumberWithString:idNrt];
+    id idSct = [dict objectForKey:@"@surchargeTotal"] ? : @"0";
+    cri.surchargeTotal = [NSDecimalNumber decimalNumberWithString:idSct];
+    id idTot = [dict objectForKey:@"@total"] ? : @"0";
+    cri.total = [NSDecimalNumber decimalNumberWithString:idTot];
+    
+    NSDecimalNumber *nightlyTotalPlusSurcharges = [cri.nightlyRateTotal decimalNumberByAdding:cri.surchargeTotal];
+    NSComparisonResult cr = [nightlyTotalPlusSurcharges compare:cri.total];
+    cri.totalEqualsNightlyTotalPlusSurcharges = cr == NSOrderedSame;
     
     cri.nightlyRatesPerRoom = [dict objectForKey:@"NightlyRatesPerRoom"];
     id idNightlyRates = [cri.nightlyRatesPerRoom objectForKey:@"NightlyRate"];
@@ -76,13 +83,13 @@
         EanSurcharge *sc = [EanSurcharge surchargeFromDict:idSurcharges];
         [mutSurchargesArray addObject:sc];
         if (sc.surchargeType == HotelOccupancyTax || sc.surchargeType == SalesTax)
-            cri.hotelOccupAndSalesTaxSum += [sc.amount floatValue];
+            cri.hotelOccupAndSalesTaxSum += [sc.amount doubleValue];
     } else if ([idSurcharges isKindOfClass:[NSArray class]]) {
         for (int j = 0; j < [idSurcharges count]; j++) {
             EanSurcharge *sc = [EanSurcharge surchargeFromDict:idSurcharges[j]];
             [mutSurchargesArray addObject:sc];
             if (sc.surchargeType == HotelOccupancyTax || sc.surchargeType == SalesTax)
-                cri.hotelOccupAndSalesTaxSum += [sc.amount floatValue];
+                cri.hotelOccupAndSalesTaxSum += [sc.amount doubleValue];
         }
     }
     
