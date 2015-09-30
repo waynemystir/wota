@@ -10,8 +10,11 @@
 #import "AppEnvironment.h"
 #import "TrotterViewController.h"
 #import "SelectRoomViewController.h"
+#import "IpAddress.h"
+#import "Analytics.h"
 
 static NSString *_externalIP = nil;
+static BOOL _ipSearchCompleted = NO;
 
 @interface AppDelegate ()
 
@@ -167,19 +170,59 @@ static NSString *_externalIP = nil;
 #pragma mark IP stuff
 
 + (NSString *)externalIP {
-    if (!_externalIP) {
+    if (!_externalIP && !_ipSearchCompleted) {
         [self acquireExternalIP];
     }
     
-    return _externalIP ? : @"0.0.0.0";
+    return _externalIP ? : @"173.61.103.98";
 }
 
 + (void)acquireExternalIP {
-    NSString *us = @"http://ip-api.com/line/?fields=query";
+    static BOOL _currentlySearchingForExternalIP = NO;
+    if (_currentlySearchingForExternalIP) return;
+    _currentlySearchingForExternalIP = YES;
+    
+//    NSString *us = @"http://ip-api.com/line/?fields=query";
 //    NSString *us = @"https://unique-hash-89300.appspot.com/ipservlet";
-    [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:us] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        NSString *wes = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        _externalIP = [wes stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    
+    NSString *us1 = @"https://api.ipify.org";
+    NSString *us2 = @"http://v4.ipv6-test.com/api/myip.php";
+    
+    [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:us1] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        
+        NSString *ip1 = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        
+        if (isValidIPv4(ip1)) {
+            
+            _externalIP = ip1;
+            _ipSearchCompleted = YES;
+            _currentlySearchingForExternalIP = NO;
+            
+        } else {
+            
+            [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:us2] completionHandler:^(NSData * _Nullable data2, NSURLResponse * _Nullable response2, NSError * _Nullable error2) {
+                
+                _ipSearchCompleted = YES;
+                
+                NSString *ip2 = [[[NSString alloc] initWithData:data2 encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                
+                if (isValidIPv4(ip2)) {
+                    
+                    _externalIP = ip2;
+                    _currentlySearchingForExternalIP = NO;
+                    
+                } else {
+                    
+                    NSString *vm2 = [NSString stringWithFormat:@"URL:%@ ip:%@", us2, ip2 ? : @""];
+                    [Analytics postEanErrorWithItineraryId:-141 handling:@"TROTTER_REPORT" category:@"TROTTER_IP" presentationMessage:@"IP address 1 lookup failed" verboseMessage:vm2];
+                    
+                }
+            }] resume];
+            
+            NSString *vm1 = [NSString stringWithFormat:@"URL:%@ ip:%@", us1, ip1 ? : @""];
+            [Analytics postEanErrorWithItineraryId:-141 handling:@"TROTTER_REPORT" category:@"TROTTER_IP" presentationMessage:@"IP address 1 lookup failed" verboseMessage:vm1];
+            
+        }
     }] resume];
 }
 

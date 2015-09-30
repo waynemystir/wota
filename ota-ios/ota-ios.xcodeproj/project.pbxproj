@@ -205,6 +205,7 @@
 		B0F554931B13798200E9B805 /* EanRoomRateDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = B0F554921B13798200E9B805 /* EanRoomRateDetails.m */; };
 		B0F5549A1B13B9E500E9B805 /* EanPaymentType.m in Sources */ = {isa = PBXBuildFile; fileRef = B0F554991B13B9E500E9B805 /* EanPaymentType.m */; };
 		B0F5549D1B13BB2300E9B805 /* EanPaymentTypeResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = B0F5549C1B13BB2300E9B805 /* EanPaymentTypeResponse.m */; };
+		B0FC8B791BBC677E007739D2 /* IpAddress.m in Sources */ = {isa = PBXBuildFile; fileRef = B0FC8B781BBC677E007739D2 /* IpAddress.m */; settings = {ASSET_TAGS = (); }; };
 		B0FE0F471AC6EB9500DAF635 /* BookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B0FE0F461AC6EB9500DAF635 /* BookViewController.m */; };
 		B0FE0F491AC6ED0000DAF635 /* BookView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0FE0F481AC6ED0000DAF635 /* BookView.xib */; };
 		B0FE0F4C1AC70A0700DAF635 /* SelectRoomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B0FE0F4B1AC70A0700DAF635 /* SelectRoomViewController.m */; };
@@ -534,6 +535,8 @@
 		B0F554991B13B9E500E9B805 /* EanPaymentType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanPaymentType.m; sourceTree = "<group>"; };
 		B0F5549B1B13BB2300E9B805 /* EanPaymentTypeResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanPaymentTypeResponse.h; sourceTree = "<group>"; };
 		B0F5549C1B13BB2300E9B805 /* EanPaymentTypeResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanPaymentTypeResponse.m; sourceTree = "<group>"; };
+		B0FC8B771BBC677E007739D2 /* IpAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IpAddress.h; sourceTree = "<group>"; };
+		B0FC8B781BBC677E007739D2 /* IpAddress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IpAddress.m; sourceTree = "<group>"; };
 		B0FE0F451AC6EB9500DAF635 /* BookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookViewController.h; sourceTree = "<group>"; };
 		B0FE0F461AC6EB9500DAF635 /* BookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookViewController.m; sourceTree = "<group>"; };
 		B0FE0F481AC6ED0000DAF635 /* BookView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BookView.xib; sourceTree = "<group>"; };
@@ -877,6 +880,8 @@
 				B0E0193A1BA9C0DA003BACDB /* AcknowTapGesture.m */,
 				B0C8FE2D1BBA431800EBB3DF /* Analytics.h */,
 				B0C8FE2E1BBA431800EBB3DF /* Analytics.m */,
+				B0FC8B771BBC677E007739D2 /* IpAddress.h */,
+				B0FC8B781BBC677E007739D2 /* IpAddress.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1281,6 +1286,7 @@
 				B0344C471AE5A5F8000BBFCE /* WotaForwardingTextField.m in Sources */,
 				B09C5EA31AD1930600A3D7E8 /* EanHotelListResponse.m in Sources */,
 				B0D01DE51B02D4880001C558 /* NavigationView.m in Sources */,
+				B0FC8B791BBC677E007739D2 /* IpAddress.m in Sources */,
 				B0D02FE31AE6123000B1E75F /* PTKCard.m in Sources */,
 				B00E77221B236A3B00C27331 /* HLTableViewCell.m in Sources */,
 				B0F5549D1B13BB2300E9B805 /* EanPaymentTypeResponse.m in Sources */,

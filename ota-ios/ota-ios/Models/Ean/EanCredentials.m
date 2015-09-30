@@ -13,6 +13,7 @@
 #import "EanHotelListHotelSummary.h"
 #import "EanWsError.h"
 #import "AppEnvironment.h"
+#import "Analytics.h"
 
 @interface EanCredentials () <NSURLConnectionDataDelegate, NSURLConnectionDelegate>
 
@@ -46,15 +47,6 @@ NSString * const EC_PK_CURRENCY_CODE = @"currencyCode";
 
 NSString * const EC_GEN_REQ_BASE_URL = @"http://api.ean.com";
 NSString * const EC_URL_EXT = @"ean-services/rs";
-NSString * const EC_H0TEL_LIST = @"hotel/v3/list";
-NSString * const EC_PK_LATITUDE = @"latitude";
-NSString * const EC_PK_LONGITUDE = @"longitude";
-NSString * const EC_PK_NUMBER_OF_RESULTS = @"numberOfResults";
-NSString * const EC_PK_SEARCH_RADIUS = @"searchRadius";
-NSString * const EC_PK_SEARCH_RADIUS_UNIT = @"searchRadiusUnit";
-NSString * const EC_PK_GEO_SORT = @"sort";
-NSString * const EC_PK_ARRIVAL_DATE = @"arrivalDate";
-NSString * const EC_PK_DEPART_DATE = @"departureDate";
 
 NSString * kEcGenerateSigMD5() {
     // Curtesy of http://stackoverflow.com/questions/2018550/how-do-i-create-an-md5-hash-of-a-string-in-cocoa
@@ -137,9 +129,9 @@ NSString * kEcCommonParameters() {
             EC_PK_CUSTUSERAGENT, kEcCustomerUserAgent()];
 }
 
-NSString * kURLecHotelList() {
+NSString * kURLecHotelInfo() {
     return [NSString stringWithFormat:@"%@/%@/%@?%@",
-            EC_GEN_REQ_BASE_URL, EC_URL_EXT, EC_H0TEL_LIST, kEcCommonParameters()];
+            EC_GEN_REQ_BASE_URL, EC_URL_EXT, @"hotel/v3/info", kEcCommonParameters()];
 }
 
 @implementation EanCredentials
@@ -164,10 +156,14 @@ NSString * kURLecHotelList() {
 }
 
 + (NSDictionary *)testingCredentials {
+    if ([self credentialsArray].count == 0 || kTestingCredentialsNumber < 0 || kTestingCredentialsNumber >= [self credentialsArray].count) return nil;
+    
     return [self credentialsArray][kTestingCredentialsNumber];
 }
 
 + (NSDictionary *)enabledCredentials {
+    if ([self credentialsArray].count == 0 || kEnabledCredentialsNumber < 0 || kEnabledCredentialsNumber >= [self credentialsArray].count) return nil;
+    
     return [self credentialsArray][kEnabledCredentialsNumber];
 }
 
@@ -224,22 +220,7 @@ NSString * kURLecHotelList() {
 }
 
 + (NSString *)testURL {
-    
-    NSDate *ad = kAddDays(120, [NSDate date]);
-    NSDate *dd = kAddDays(1, ad);
-    
-    // New York, NY 40.755867, -73.982428
-    return [NSString stringWithFormat:@"%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@&%@=%@",
-            kURLecHotelList(),
-            EC_PK_ARRIVAL_DATE, [kEanApiDateFormatter() stringFromDate:ad],
-            EC_PK_DEPART_DATE, [kEanApiDateFormatter() stringFromDate:dd],
-            EC_PK_LATITUDE, @40.755867,
-            EC_PK_LONGITUDE, @-73.982428,
-            EC_PK_NUMBER_OF_RESULTS, @2,
-            EC_PK_SEARCH_RADIUS, @50,
-            EC_PK_SEARCH_RADIUS_UNIT, @"MI",
-            EC_PK_GEO_SORT, @"PROXIMITY"
-            ];
+    return [[NSString stringWithFormat:@"%@&%@=%@&%@=%@", kURLecHotelInfo(), @"hotelId", @"115902", @"options", @"HOTEL_SUMMARY"] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
 }
 
 #pragma mark NSURLConnectionDataDelegate methods
@@ -299,7 +280,7 @@ NSString * kURLecHotelList() {
         return [[self class] nextWorkingCredentialsCheck];
     }
     
-    id idHlr = [respDict objectForKey:@"HotelListResponse"];
+    id idHlr = [respDict objectForKey:@"HotelInformationResponse"];
     
     if (nil == idHlr) {
         return [[self class] nextWorkingCredentialsCheck];
@@ -311,6 +292,10 @@ NSString * kURLecHotelList() {
     
     EanWsError *ewe = [EanWsError eanErrorFromApiJsonResponse:idHlr];
     if (ewe && [ewe.eweCategory isEqualToString:@"AUTHENTICATION"]) {
+        
+        NSString *vm = [NSString stringWithFormat:@"CID:%@ apiKey:%@ sharedSecret:%@ From:EanCredentials",  [[EanCredentials testingCredentials] objectForKey:EC_PK_CID] ? : @"", [[EanCredentials testingCredentials] objectForKey:EC_PK_API_KEY] ? : @"", [[EanCredentials testingCredentials] objectForKey:EC_PK_SHARED_SECRET] ? : @""];
+        [Analytics postEanErrorWithItineraryId:ewe.itineraryId handling:ewe.eweHandling category:ewe.eweCategory presentationMessage:ewe.presentationMessage verboseMessage:vm];
+        
         return [[self class] nextWorkingCredentialsCheck];
     }
     

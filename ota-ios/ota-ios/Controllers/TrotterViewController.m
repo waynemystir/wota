@@ -33,6 +33,8 @@
 #import "EanCredentials.h"
 #import "GuestInfo.h"
 #import "AcknowTapGesture.h"
+#import "Analytics.h"
+#import "EanCredentials.h"
 
 typedef NS_ENUM(NSUInteger, VIEW_STATE) {
     VIEW_STATE_CRITERIA,
@@ -816,6 +818,9 @@ NSUInteger const kAcknowledgemenTag = 1917157;
             [self.placesTableView reloadData];
         }
     }];
+    
+    NSString *vm = [NSString stringWithFormat:@"CID:%@ apiKey:%@ sharedSecret:%@ From:TrotterViewController",  [EanCredentials CID] ? : @"", [EanCredentials apiKey] ? : @"", [EanCredentials sharedSecret] ? : @""];
+    [Analytics postEanErrorWithItineraryId:-141 handling:@"TROTTER_REPORT" category:@"AUTHENTICATION" presentationMessage:@"Failed EAN credentials from TrotterViewController" verboseMessage:vm];
 }
 
 - (void)requestFailed {
