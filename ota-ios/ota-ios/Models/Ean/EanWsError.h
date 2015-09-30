@@ -10,7 +10,7 @@
 
 @interface EanWsError : NSObject
 
-@property (nonatomic) NSUInteger itineraryId;
+@property (nonatomic) NSInteger itineraryId;
 @property (nonatomic, strong) NSString *eweHandling;
 @property (nonatomic, strong) NSString *eweCategory;
 @property (nonatomic) NSUInteger exceptionConditionId;

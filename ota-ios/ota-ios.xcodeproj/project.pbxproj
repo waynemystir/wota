@@ -142,6 +142,7 @@
 		B0C628091BA88E9A0097B97B /* LegalView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0C628081BA88E9A0097B97B /* LegalView.xib */; };
 		B0C6280B1BA88F8A0097B97B /* PrivacyPolicy.txt in Resources */ = {isa = PBXBuildFile; fileRef = B0C6280A1BA88F8A0097B97B /* PrivacyPolicy.txt */; };
 		B0C6280D1BA917510097B97B /* TermsConditionsNotices.txt in Resources */ = {isa = PBXBuildFile; fileRef = B0C6280C1BA917510097B97B /* TermsConditionsNotices.txt */; };
+		B0C8FE2F1BBA431800EBB3DF /* Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = B0C8FE2E1BBA431800EBB3DF /* Analytics.m */; settings = {ASSET_TAGS = (); }; };
 		B0CB24B11B9877F8006A8282 /* CursorlessTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = B0CB24B01B9877F8006A8282 /* CursorlessTextField.m */; };
 		B0CB24B31B991418006A8282 /* USStateAbbreviations.plist in Resources */ = {isa = PBXBuildFile; fileRef = B0CB24B21B991418006A8282 /* USStateAbbreviations.plist */; };
 		B0CB24B61B9920B4006A8282 /* StatePickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = B0CB24B51B9920B4006A8282 /* StatePickerView.m */; };
@@ -437,6 +438,8 @@
 		B0C628081BA88E9A0097B97B /* LegalView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LegalView.xib; sourceTree = "<group>"; };
 		B0C6280A1BA88F8A0097B97B /* PrivacyPolicy.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PrivacyPolicy.txt; sourceTree = "<group>"; };
 		B0C6280C1BA917510097B97B /* TermsConditionsNotices.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TermsConditionsNotices.txt; sourceTree = "<group>"; };
+		B0C8FE2D1BBA431800EBB3DF /* Analytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analytics.h; sourceTree = "<group>"; };
+		B0C8FE2E1BBA431800EBB3DF /* Analytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Analytics.m; sourceTree = "<group>"; };
 		B0CB24AF1B9877F8006A8282 /* CursorlessTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CursorlessTextField.h; sourceTree = "<group>"; };
 		B0CB24B01B9877F8006A8282 /* CursorlessTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CursorlessTextField.m; sourceTree = "<group>"; };
 		B0CB24B21B991418006A8282 /* USStateAbbreviations.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = USStateAbbreviations.plist; sourceTree = "<group>"; };
@@ -872,6 +875,8 @@
 				B0CB24B01B9877F8006A8282 /* CursorlessTextField.m */,
 				B0E019391BA9C0DA003BACDB /* AcknowTapGesture.h */,
 				B0E0193A1BA9C0DA003BACDB /* AcknowTapGesture.m */,
+				B0C8FE2D1BBA431800EBB3DF /* Analytics.h */,
+				B0C8FE2E1BBA431800EBB3DF /* Analytics.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1291,6 +1296,7 @@
 				B058A4941AE8B52C00E42594 /* WotaButton.m in Sources */,
 				B09E41831AEB2D9B000A718D /* SelectBedTypeDelegateImplementation.m in Sources */,
 				B08C08A31BAA0E060031F910 /* UIImage+WebP.m in Sources */,
+				B0C8FE2F1BBA431800EBB3DF /* Analytics.m in Sources */,
 				B03B42FD1ADDFE1B0083A6EA /* EanPlace.m in Sources */,
 				B09C5EA61AD1A16E00A3D7E8 /* EanHotelListHotelSummary.m in Sources */,
 				B0D01EBB1B0657010001C558 /* CheckMarkView.m in Sources */,

@@ -175,7 +175,9 @@ static NSString *_externalIP = nil;
 }
 
 + (void)acquireExternalIP {
-    [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:@"http://ip-api.com/line/?fields=query"] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    NSString *us = @"http://ip-api.com/line/?fields=query";
+//    NSString *us = @"https://unique-hash-89300.appspot.com/ipservlet";
+    [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:us] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSString *wes = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         _externalIP = [wes stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     }] resume];

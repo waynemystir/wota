@@ -22,6 +22,7 @@
 #import "SelectRoomViewController.h"
 #import "RoomCostView.h"
 #import "AppEnvironment.h"
+#import "Analytics.h"
 
 NSUInteger const kBookPriceDetailsPopupTag = 1239874;
 
@@ -286,6 +287,8 @@ NSUInteger const kBookPriceDetailsPopupTag = 1239874;
     } completion:^(BOOL finished) {
         [wes.problemOverlay removeFromSuperview];
     }];
+    
+    [Analytics postBookingResponseWithAffConfId:[self.affiliateConfirmationId UUIDString] itineraryId:itineraryId confirmationId:[confirmNumber longLongValue]];
 }
 
 - (void)handlePendingState:(NSInteger)itineraryNumber {
@@ -314,6 +317,18 @@ NSUInteger const kBookPriceDetailsPopupTag = 1239874;
 
 - (void)handleProblems:(NSString *)message {
     [self handleProblems:message titleMsg:nil];
+    
+    NSString *vm = @"";
+    
+    NSString *sourceString = [[NSThread callStackSymbols] objectAtIndex:1];
+    NSCharacterSet *separatorSet = [NSCharacterSet characterSetWithCharactersInString:@" -[]+?.,"];
+    NSMutableArray *array = [NSMutableArray arrayWithArray:[sourceString  componentsSeparatedByCharactersInSet:separatorSet]];
+    [array removeObject:@""];
+    
+    if (array.count >= 5)
+        vm = [NSString stringWithFormat:@"%@.%@", [array objectAtIndex:3], [array objectAtIndex:4]];
+    
+    [Analytics postEanErrorWithItineraryId:-141 handling:@"TROTTER_REPORT" category:@"TROTTER_REPORTED_PROBLEM" presentationMessage:message verboseMessage:[NSString stringWithFormat:@"CALLED BY:%@", vm]];
 }
 
 - (void)handleProblems:(NSString *)message titleMsg:(NSString *)titleMsg {
@@ -364,6 +379,7 @@ NSUInteger const kBookPriceDetailsPopupTag = 1239874;
     [self nukePaymentDetails];
     [self dropDaSpinner];
     __weak typeof(self) wes = self;
+    [Analytics postEanErrorWithItineraryId:-141 handling:@"TROTTER_REPORT" category:@"TROTTER_PROBLEM" presentationMessage:@"FAILED OFFLINE" verboseMessage:[NSString stringWithFormat:@"CALLED BY:%s", __PRETTY_FUNCTION__]];
     [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"Network Error" messageString:@"The network could not be reached. Please check your connection and try again." completionCallback:^{
         [wes.navigationController popViewControllerAnimated:YES];
     }];
@@ -373,6 +389,7 @@ NSUInteger const kBookPriceDetailsPopupTag = 1239874;
     [self nukePaymentDetails];
     [self dropDaSpinner];
     __weak typeof(self) wes = self;
+    [Analytics postEanErrorWithItineraryId:-141 handling:@"TROTTER_REPORT" category:@"TROTTER_PROBLEM" presentationMessage:@"FAILED CREDENTIALS" verboseMessage:[NSString stringWithFormat:@"CALLED BY:%s", __PRETTY_FUNCTION__]];
     [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"System Error" messageString:@"Sorry for the inconvenience. We are experiencing a technical issue. Please try again shortly." completionCallback:^{
         [wes.navigationController popViewControllerAnimated:YES];
     }];
@@ -382,6 +399,7 @@ NSUInteger const kBookPriceDetailsPopupTag = 1239874;
     [self nukePaymentDetails];
     [self dropDaSpinner];
     __weak typeof(self) wes = self;
+    [Analytics postEanErrorWithItineraryId:-141 handling:@"TROTTER_REPORT" category:@"TROTTER_PROBLEM" presentationMessage:@"FAILED OTHER" verboseMessage:[NSString stringWithFormat:@"CALLED BY:%s", __PRETTY_FUNCTION__]];
     [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"An Error Occurred" messageString:@"Please try again." completionCallback:^{
         [wes.navigationController popViewControllerAnimated:YES];
     }];

@@ -39,6 +39,7 @@
 #import "NetworkProblemResponder.h"
 #import "PreBookConfirmView.h"
 #import "RoomCostView.h"
+#import "Analytics.h"
 
 NSUInteger const kLoadDropRoomDetailsAnimationCurve = UIViewAnimationOptionCurveEaseInOut;
 NSTimeInterval const kSrAnimationDuration = 0.53;
@@ -1051,6 +1052,23 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
                                                     postalCode:pd.billingAddress.apiPostalCode];
     
     if (!existingBvc) [self.navigationController pushViewController:bvc animated:YES];
+    
+    [Analytics postBookingRequestWithAffConfId:[aci UUIDString]
+                                room1FirstName:gi.apiFirstName
+                                 room1LastName:gi.apiLastName
+                                       hotelId:self.eanHrar.hotelId
+                                     hotelName:_hotelName
+                                   arrivalDate:sc.arrivalDateEanString
+                                    departDate:sc.returnDateEanString
+                                chargeableRate:[self.selectedRoom.rateInfo.chargeableRateInfo.total floatValue]
+                                         email:gi.apiEmail
+                                     homePhone:gi.apiPhoneNumber
+                                       rateKey:self.selectedRoom.rateInfo.roomGroup.rateKey
+                                  roomTypeCode:self.selectedRoom.roomType.roomCode
+                                      rateCode:self.selectedRoom.rateCode
+                               roomDescription:self.selectedRoom.roomType.roomTypeDescrition
+                                     bedTypeId:self.selectedRoom.selectedBedType.bedTypeId
+                                   smokingPref:self.selectedRoom.selectedSmokingPreference];
 }
 
 - (void)nukePaymentDetails {

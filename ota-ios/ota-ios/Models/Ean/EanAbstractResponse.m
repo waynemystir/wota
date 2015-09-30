@@ -8,6 +8,7 @@
 
 #import "EanAbstractResponse.h"
 #import "AppEnvironment.h"
+#import "Analytics.h"
 
 @implementation EanAbstractResponse
 
@@ -41,8 +42,10 @@
 + (EanWsError *)checkForEanError:(id)jsonResponse {
     id idEwe = [EanWsError eanErrorFromApiJsonResponse:jsonResponse];
     
-    if (nil != idEwe && [idEwe isKindOfClass:[EanWsError class]]) {
-        return idEwe;
+    if (idEwe && [idEwe isKindOfClass:[EanWsError class]]) {
+        EanWsError *ee = idEwe;
+        [Analytics postEanErrorWithItineraryId:ee.itineraryId handling:ee.eweHandling category:ee.eweCategory presentationMessage:ee.presentationMessage verboseMessage:ee.verboseMessage];
+        return ee;
     } else {
         return nil;
     }
