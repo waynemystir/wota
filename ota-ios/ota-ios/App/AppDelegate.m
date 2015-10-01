@@ -214,13 +214,13 @@ static BOOL _ipSearchCompleted = NO;
                 } else {
                     
                     NSString *vm2 = [NSString stringWithFormat:@"URL:%@ ip:%@", us2, ip2 ? : @""];
-                    [Analytics postEanErrorWithItineraryId:-141 handling:@"TROTTER_REPORT" category:@"TROTTER_IP" presentationMessage:@"IP address 1 lookup failed" verboseMessage:vm2];
+                    [Analytics postTrotterProblemWithCategory:@"TROTTER_IP_2" shortMessage:@"IP address 2 lookup failed" verboseMessage:vm2];
                     
                 }
             }] resume];
             
             NSString *vm1 = [NSString stringWithFormat:@"URL:%@ ip:%@", us1, ip1 ? : @""];
-            [Analytics postEanErrorWithItineraryId:-141 handling:@"TROTTER_REPORT" category:@"TROTTER_IP" presentationMessage:@"IP address 1 lookup failed" verboseMessage:vm1];
+            [Analytics postTrotterProblemWithCategory:@"TROTTER_IP_1" shortMessage:@"IP address 1 lookup failed" verboseMessage:vm1];
             
         }
     }] resume];

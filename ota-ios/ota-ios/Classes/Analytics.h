@@ -25,16 +25,26 @@
                                rateCode:(NSString *)rateCode
                         roomDescription:(NSString *)roomDescription
                               bedTypeId:(NSString *)bedTypeId
-                            smokingPref:(NSString *)smokingPref;
+                            smokingPref:(NSString *)smokingPref
+                          nonrefundable:(NSNumber *)nonrefundable
+                      customerSessionId:(NSString *)customerSessionId;
 
 + (void)postBookingResponseWithAffConfId:(NSString *)affiliateConfirmationId
                              itineraryId:(long long)itineraryId
-                          confirmationId:(long long)confirmationId;
+                          confirmationId:(long long)confirmationId
+               processedWithConfirmation:(NSNumber *)processedWithConfirmation
+                   reservationStatusCode:(NSString *)reservationStatusCode
+                           nonrefundable:(NSNumber *)nonrefundable
+                       customerSessionId:(NSString *)customerSessionId;
 
 + (void)postEanErrorWithItineraryId:(long long)itineraryId
                            handling:(NSString *)handling
                            category:(NSString *)category
                 presentationMessage:(NSString *)presentationMessage
                      verboseMessage:(NSString *)verboseMessage;
+
++ (void)postTrotterProblemWithCategory:(NSString *)category
+                          shortMessage:(NSString *)shortMessage
+                        verboseMessage:(NSString *)verboseMessage;
 
 @end

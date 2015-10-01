@@ -10,6 +10,7 @@
 #import "LoadDataProtocol.h"
 
 extern void setWithIpAddress(BOOL withIp);
+extern NSString * kEanCustomerSessionId();
 
 @interface LoadEanData : NSObject
 

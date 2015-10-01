@@ -42,7 +42,9 @@ NSString * const API_KEY = @"abcdef";
                                rateCode:(NSString *)rateCode
                         roomDescription:(NSString *)roomDescription
                               bedTypeId:(NSString *)bedTypeId
-                            smokingPref:(NSString *)smokingPref {
+                            smokingPref:(NSString *)smokingPref
+                          nonrefundable:(NSNumber *)nonrefundable
+                      customerSessionId:(NSString *)customerSessionId {
     NSDictionary *d = @{@"jsonrpc":@"2.0",
                         @"method":@"wanalytics.postBookingRequest",
                         @"id":@"gtl_1",
@@ -62,7 +64,9 @@ NSString * const API_KEY = @"abcdef";
                                 @"rateCode":rateCode,
                                 @"roomDescription":roomDescription,
                                 @"bedTypeId":bedTypeId,
-                                @"smokingPref":smokingPref
+                                @"smokingPref":smokingPref,
+                                @"nonrefundable":nonrefundable,
+                                @"customerSessionId":customerSessionId
                                 },
                         @"apiVersion":@"v1"
                         };
@@ -76,14 +80,22 @@ NSString * const API_KEY = @"abcdef";
 
 + (void)postBookingResponseWithAffConfId:(NSString *)affiliateConfirmationId
                              itineraryId:(long long)itineraryId
-                          confirmationId:(long long)confirmationId {
+                          confirmationId:(long long)confirmationId
+               processedWithConfirmation:(NSNumber *)processedWithConfirmation
+                   reservationStatusCode:(NSString *)reservationStatusCode
+                           nonrefundable:(NSNumber *)nonrefundable
+                       customerSessionId:(NSString *)customerSessionId {
     NSDictionary *d = @{@"jsonrpc":@"2.0",
                         @"method":@"wanalytics.postBookingResponse",
                         @"id":@"gtl_1",
                         @"params":@{
                                 @"itineraryId":@(itineraryId),
                                 @"affiliateConfirmationId":affiliateConfirmationId,
-                                @"confirmationId":@(confirmationId)
+                                @"confirmationId":@(confirmationId),
+                                @"processedWithConfirmation":processedWithConfirmation,
+                                @"reservationStatusCode":reservationStatusCode,
+                                @"nonrefundable":nonrefundable,
+                                @"customerSessionId":customerSessionId
                                 },
                         @"apiVersion":@"v1"
                         };
@@ -110,6 +122,28 @@ NSString * const API_KEY = @"abcdef";
                                 @"handling":handling,
                                 @"category":category,
                                 @"presentationMessage":presentationMessage
+                                },
+                        @"apiVersion":@"v1"
+                        };
+    
+    [[[NSURLSession sharedSession] dataTaskWithRequest:[self daReq:d] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        NSString *rs = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        NSString *err = error ? error.localizedDescription : @"NO ERROR";
+        NSLog(@"POST_RESPONSE:%@ ERR:%@", rs, err);
+    }] resume];
+}
+
++ (void)postTrotterProblemWithCategory:(NSString *)category
+                          shortMessage:(NSString *)shortMessage
+                        verboseMessage:(NSString *)verboseMessage {
+    NSDictionary *d = @{
+                        @"jsonrpc":@"2.0",
+                        @"method":@"wanalytics.postTrotterProblem",
+                        @"id":@"gtl_1",
+                        @"params":@{
+                                @"verboseMessage":verboseMessage,
+                                @"category":category,
+                                @"shortMessage":shortMessage
                                 },
                         @"apiVersion":@"v1"
                         };

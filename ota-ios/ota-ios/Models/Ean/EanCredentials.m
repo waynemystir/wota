@@ -293,7 +293,7 @@ NSString * kURLecHotelInfo() {
     EanWsError *ewe = [EanWsError eanErrorFromApiJsonResponse:idHlr];
     if (ewe && [ewe.eweCategory isEqualToString:@"AUTHENTICATION"]) {
         
-        NSString *vm = [NSString stringWithFormat:@"CID:%@ apiKey:%@ sharedSecret:%@ From:EanCredentials",  [[EanCredentials testingCredentials] objectForKey:EC_PK_CID] ? : @"", [[EanCredentials testingCredentials] objectForKey:EC_PK_API_KEY] ? : @"", [[EanCredentials testingCredentials] objectForKey:EC_PK_SHARED_SECRET] ? : @""];
+        NSString *vm = [NSString stringWithFormat:@"CID:%@ apiKey:%@ sharedSecret:%@ From:%s",  [[EanCredentials testingCredentials] objectForKey:EC_PK_CID] ? : @"", [[EanCredentials testingCredentials] objectForKey:EC_PK_API_KEY] ? : @"", [[EanCredentials testingCredentials] objectForKey:EC_PK_SHARED_SECRET] ? : @"", __PRETTY_FUNCTION__];
         [Analytics postEanErrorWithItineraryId:ewe.itineraryId handling:ewe.eweHandling category:ewe.eweCategory presentationMessage:ewe.presentationMessage verboseMessage:vm];
         
         return [[self class] nextWorkingCredentialsCheck];

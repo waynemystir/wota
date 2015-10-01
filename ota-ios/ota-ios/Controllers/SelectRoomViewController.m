@@ -1068,7 +1068,9 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
                                       rateCode:self.selectedRoom.rateCode
                                roomDescription:self.selectedRoom.roomType.roomTypeDescrition
                                      bedTypeId:self.selectedRoom.selectedBedType.bedTypeId
-                                   smokingPref:self.selectedRoom.selectedSmokingPreference];
+                                   smokingPref:self.selectedRoom.selectedSmokingPreference
+                                 nonrefundable:@(self.selectedRoom.rateInfo.nonRefundable)
+                             customerSessionId:kEanCustomerSessionId()];
 }
 
 - (void)nukePaymentDetails {

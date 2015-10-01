@@ -819,8 +819,8 @@ NSUInteger const kAcknowledgemenTag = 1917157;
         }
     }];
     
-    NSString *vm = [NSString stringWithFormat:@"CID:%@ apiKey:%@ sharedSecret:%@ From:TrotterViewController",  [EanCredentials CID] ? : @"", [EanCredentials apiKey] ? : @"", [EanCredentials sharedSecret] ? : @""];
-    [Analytics postEanErrorWithItineraryId:-141 handling:@"TROTTER_REPORT" category:@"AUTHENTICATION" presentationMessage:@"Failed EAN credentials from TrotterViewController" verboseMessage:vm];
+    NSString *vm = [NSString stringWithFormat:@"CID:%@ apiKey:%@ sharedSecret:%@ From:%s",  [EanCredentials CID] ? : @"", [EanCredentials apiKey] ? : @"", [EanCredentials sharedSecret] ? : @"", __PRETTY_FUNCTION__];
+    [Analytics postTrotterProblemWithCategory:@"TROTTER_CREDENTIALS" shortMessage:@"Request failed credentials" verboseMessage:vm];
 }
 
 - (void)requestFailed {

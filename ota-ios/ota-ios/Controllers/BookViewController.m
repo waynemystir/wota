@@ -288,7 +288,12 @@ NSUInteger const kBookPriceDetailsPopupTag = 1239874;
         [wes.problemOverlay removeFromSuperview];
     }];
     
-    [Analytics postBookingResponseWithAffConfId:[self.affiliateConfirmationId UUIDString] itineraryId:itineraryId confirmationId:[confirmNumber longLongValue]];
+    [Analytics postBookingResponseWithAffConfId:[self.affiliateConfirmationId UUIDString]
+                                    itineraryId:itineraryId confirmationId:[confirmNumber longLongValue]
+                      processedWithConfirmation:@(YES)
+                          reservationStatusCode:@"CF"
+                                  nonrefundable:@(_room.rateInfo.nonRefundable)
+                              customerSessionId:kEanCustomerSessionId()];
 }
 
 - (void)handlePendingState:(NSInteger)itineraryNumber {
@@ -328,7 +333,7 @@ NSUInteger const kBookPriceDetailsPopupTag = 1239874;
     if (array.count >= 5)
         vm = [NSString stringWithFormat:@"%@.%@", [array objectAtIndex:3], [array objectAtIndex:4]];
     
-    [Analytics postEanErrorWithItineraryId:-141 handling:@"TROTTER_REPORT" category:@"TROTTER_REPORTED_PROBLEM" presentationMessage:message verboseMessage:[NSString stringWithFormat:@"CALLED BY:%@", vm]];
+    [Analytics postTrotterProblemWithCategory:@"BOOKING_PROBLEM" shortMessage:[NSString stringWithFormat:@"From:%s", __PRETTY_FUNCTION__] verboseMessage:[NSString stringWithFormat:@"EAN message:%@", message]];
 }
 
 - (void)handleProblems:(NSString *)message titleMsg:(NSString *)titleMsg {
@@ -379,30 +384,31 @@ NSUInteger const kBookPriceDetailsPopupTag = 1239874;
     [self nukePaymentDetails];
     [self dropDaSpinner];
     __weak typeof(self) wes = self;
-    [Analytics postEanErrorWithItineraryId:-141 handling:@"TROTTER_REPORT" category:@"TROTTER_PROBLEM" presentationMessage:@"FAILED OFFLINE" verboseMessage:[NSString stringWithFormat:@"CALLED BY:%s", __PRETTY_FUNCTION__]];
     [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"Network Error" messageString:@"The network could not be reached. Please check your connection and try again." completionCallback:^{
         [wes.navigationController popViewControllerAnimated:YES];
     }];
+    [Analytics postTrotterProblemWithCategory:@"TROTTER_FAILED_OFFLINE" shortMessage:@"Request failed offline" verboseMessage:[NSString stringWithFormat:@"CALLED BY:%s", __PRETTY_FUNCTION__]];
 }
 
 - (void)requestFailedCredentials {
     [self nukePaymentDetails];
     [self dropDaSpinner];
     __weak typeof(self) wes = self;
-    [Analytics postEanErrorWithItineraryId:-141 handling:@"TROTTER_REPORT" category:@"TROTTER_PROBLEM" presentationMessage:@"FAILED CREDENTIALS" verboseMessage:[NSString stringWithFormat:@"CALLED BY:%s", __PRETTY_FUNCTION__]];
     [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"System Error" messageString:@"Sorry for the inconvenience. We are experiencing a technical issue. Please try again shortly." completionCallback:^{
         [wes.navigationController popViewControllerAnimated:YES];
     }];
+    NSString *vm = [NSString stringWithFormat:@"CID:%@ apiKey:%@ sharedSecret:%@ From:%s",  [EanCredentials CID] ? : @"", [EanCredentials apiKey] ? : @"", [EanCredentials sharedSecret] ? : @"", __PRETTY_FUNCTION__];
+    [Analytics postTrotterProblemWithCategory:@"TROTTER_CREDENTIALS" shortMessage:@"Request failed credentials" verboseMessage:vm];
 }
 
 - (void)requestFailed {
     [self nukePaymentDetails];
     [self dropDaSpinner];
     __weak typeof(self) wes = self;
-    [Analytics postEanErrorWithItineraryId:-141 handling:@"TROTTER_REPORT" category:@"TROTTER_PROBLEM" presentationMessage:@"FAILED OTHER" verboseMessage:[NSString stringWithFormat:@"CALLED BY:%s", __PRETTY_FUNCTION__]];
     [NetworkProblemResponder launchWithSuperView:self.view headerTitle:@"An Error Occurred" messageString:@"Please try again." completionCallback:^{
         [wes.navigationController popViewControllerAnimated:YES];
     }];
+    [Analytics postTrotterProblemWithCategory:@"TROTTER_REQUEST_FAILED" shortMessage:@"Request failed" verboseMessage:[NSString stringWithFormat:@"CALLED BY:%s", __PRETTY_FUNCTION__]];
 }
 
 #pragma mark Tap Gestures
