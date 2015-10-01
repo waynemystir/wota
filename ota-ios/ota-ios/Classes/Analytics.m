@@ -7,14 +7,28 @@
 //
 
 #import "Analytics.h"
+#import "AppEnvironment.h"
 
-NSString * const URL_STRING = @"https://trotter-analytics-development.appspot.com/_ah/api/rpc?prettyPrint=false";
-NSString * const API_KEY = @"abcdef";
+NSString * const API_KEY = @"AIzaSyDOdThZQk931Sx7EQnMDA8spwSXk0NHw0E";
+
+NSString * projectString() {
+    if (inProductionMode()) {
+        return @"trotter-analytics-production";
+    } else if (inTestFlightMode()) {
+        return @"trotter-analytics-beta";
+    } else {
+        return @"trotter-analytics-development";
+    }
+}
+
+NSString * analyticsUrlString() {
+    return [NSString stringWithFormat:@"https://%@.appspot.com/_ah/api/rpc?prettyPrint=false", projectString()];
+}
 
 @implementation Analytics
 
 + (NSMutableURLRequest *)daReq:(NSDictionary *)body {
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:URL_STRING]];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:analyticsUrlString()]];
     
     [request setTimeoutInterval:60];
     [request setHTTPMethod:@"POST"];
@@ -25,6 +39,14 @@ NSString * const API_KEY = @"abcdef";
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     
     return request;
+}
+
++ (void)performPost:(NSDictionary *)body {
+    [[[NSURLSession sharedSession] dataTaskWithRequest:[self daReq:body] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        NSString *rs = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        NSString *err = error ? error.localizedDescription : @"NO ERROR";
+        NSLog(@"PERFORM_POST RESPONSE:%@ ERR:%@", rs, err);
+    }] resume];
 }
 
 + (void)postBookingRequestWithAffConfId:(NSString *)affiliateConfirmationId
@@ -49,6 +71,7 @@ NSString * const API_KEY = @"abcdef";
                         @"method":@"wanalytics.postBookingRequest",
                         @"id":@"gtl_1",
                         @"params":@{
+                                @"apiKey":API_KEY,
                                 @"room1LastName":room1LastName,
                                 @"affiliateConfirmationId":affiliateConfirmationId,
                                 @"room1FirstName":room1FirstName,
@@ -71,11 +94,7 @@ NSString * const API_KEY = @"abcdef";
                         @"apiVersion":@"v1"
                         };
     
-    [[[NSURLSession sharedSession] dataTaskWithRequest:[self daReq:d] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        NSString *rs = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        NSString *err = error ? error.localizedDescription : @"NO ERROR";
-        NSLog(@"POST_REQUEST:%@ ERR:%@", rs, err);
-    }] resume];
+    [self performPost:d];
 }
 
 + (void)postBookingResponseWithAffConfId:(NSString *)affiliateConfirmationId
@@ -89,6 +108,7 @@ NSString * const API_KEY = @"abcdef";
                         @"method":@"wanalytics.postBookingResponse",
                         @"id":@"gtl_1",
                         @"params":@{
+                                @"apiKey":API_KEY,
                                 @"itineraryId":@(itineraryId),
                                 @"affiliateConfirmationId":affiliateConfirmationId,
                                 @"confirmationId":@(confirmationId),
@@ -100,11 +120,7 @@ NSString * const API_KEY = @"abcdef";
                         @"apiVersion":@"v1"
                         };
     
-    [[[NSURLSession sharedSession] dataTaskWithRequest:[self daReq:d] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        NSString *rs = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        NSString *err = error ? error.localizedDescription : @"NO ERROR";
-        NSLog(@"POST_RESPONSE:%@ ERR:%@", rs, err);
-    }] resume];
+    [self performPost:d];
 }
 
 + (void)postEanErrorWithItineraryId:(long long)itineraryId
@@ -117,6 +133,7 @@ NSString * const API_KEY = @"abcdef";
                         @"method":@"wanalytics.postEanError",
                         @"id":@"gtl_1",
                         @"params":@{
+                                @"apiKey":API_KEY,
                                 @"itineraryId":@(itineraryId),
                                 @"verboseMessage":verboseMessage,
                                 @"handling":handling,
@@ -126,11 +143,7 @@ NSString * const API_KEY = @"abcdef";
                         @"apiVersion":@"v1"
                         };
     
-    [[[NSURLSession sharedSession] dataTaskWithRequest:[self daReq:d] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        NSString *rs = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        NSString *err = error ? error.localizedDescription : @"NO ERROR";
-        NSLog(@"POST_RESPONSE:%@ ERR:%@", rs, err);
-    }] resume];
+    [self performPost:d];
 }
 
 + (void)postTrotterProblemWithCategory:(NSString *)category
@@ -141,6 +154,7 @@ NSString * const API_KEY = @"abcdef";
                         @"method":@"wanalytics.postTrotterProblem",
                         @"id":@"gtl_1",
                         @"params":@{
+                                @"apiKey":API_KEY,
                                 @"verboseMessage":verboseMessage,
                                 @"category":category,
                                 @"shortMessage":shortMessage
@@ -148,11 +162,7 @@ NSString * const API_KEY = @"abcdef";
                         @"apiVersion":@"v1"
                         };
     
-    [[[NSURLSession sharedSession] dataTaskWithRequest:[self daReq:d] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        NSString *rs = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        NSString *err = error ? error.localizedDescription : @"NO ERROR";
-        NSLog(@"POST_RESPONSE:%@ ERR:%@", rs, err);
-    }] resume];
+    [self performPost:d];
 }
 
 @end
