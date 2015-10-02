@@ -35,12 +35,10 @@ BOOL isValidIPv4_alt1(NSString *ipAdd) {
     
     ret = getaddrinfo([ipAdd UTF8String], NULL, &hint, &res);
     if (ret) {
-//        NSLog(@"%s %s", gai_strerror(ret), [ipAdd UTF8String] ? : [@"" UTF8String]);
         retBool = NO;
     } else if(res->ai_family == AF_INET) {
         retBool = YES;
     } else if (res->ai_family == AF_INET6) {
-//        NSLog(@"IPv6 address:%s", [ipAdd UTF8String] ? : [@"" UTF8String]);
         retBool = NO;
     } else {
         retBool = NO;

@@ -188,8 +188,8 @@ static BOOL _ipSearchCompleted = NO;
     NSString *us1 = @"https://api.ipify.org";
     
     NSURLSessionConfiguration *urlconfig = [NSURLSessionConfiguration defaultSessionConfiguration];
-    urlconfig.timeoutIntervalForRequest = 20;
-    urlconfig.timeoutIntervalForResource = 20;
+    urlconfig.timeoutIntervalForRequest = 35;
+    urlconfig.timeoutIntervalForResource = 35;
     
     NSURLSession *sess1 = [NSURLSession sessionWithConfiguration:urlconfig];
     
@@ -209,16 +209,36 @@ static BOOL _ipSearchCompleted = NO;
             NSURLSession *sess2 = [NSURLSession sessionWithConfiguration:urlconfig];
             [[sess2 dataTaskWithURL:[NSURL URLWithString:us2] completionHandler:^(NSData * _Nullable data2, NSURLResponse * _Nullable response2, NSError * _Nullable error2) {
                 
-                _ipSearchCompleted = YES;
-                
                 NSString *ip2 = [[[NSString alloc] initWithData:data2 encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                 
                 if (isValidIPv4_alt1(ip2) || isValidIPv4_alt2(ip2) || isValidIPv4_alt3(ip2)) {
                     
                     _externalIP = ip2;
+                    _ipSearchCompleted = YES;
                     _currentlySearchingForExternalIP = NO;
                     
                 } else {
+                    
+                    NSString *us3 = @"http://ipv4bot.whatismyipaddress.com/";
+                    NSURLSession *sess3 = [NSURLSession sessionWithConfiguration:urlconfig];
+                    [[sess3 dataTaskWithURL:[NSURL URLWithString:us3] completionHandler:^(NSData * _Nullable data3, NSURLResponse * _Nullable response3, NSError * _Nullable error3) {
+                        
+                        NSString *ip3 = [[[NSString alloc] initWithData:data3 encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                        
+                        if (isValidIPv4_alt1(ip3) || isValidIPv4_alt2(ip3) || isValidIPv4_alt3(ip3)) {
+                            
+                            _externalIP = ip3;
+                            
+                        } else {
+                            
+                            NSString *vm3 = [NSString stringWithFormat:@"URL:%@ ip:%@", us3, ip3 ? : @""];
+                            [Analytics postTrotterProblemWithCategory:@"TROTTER_IP_3" shortMessage:@"IP address 3 lookup failed" verboseMessage:vm3];
+                        }
+                        
+                        _ipSearchCompleted = YES;
+                        _currentlySearchingForExternalIP = NO;
+                        
+                    }] resume];
                     
                     NSString *vm2 = [NSString stringWithFormat:@"URL:%@ ip:%@", us2, ip2 ? : @""];
                     [Analytics postTrotterProblemWithCategory:@"TROTTER_IP_2" shortMessage:@"IP address 2 lookup failed" verboseMessage:vm2];
