@@ -186,13 +186,18 @@ static BOOL _ipSearchCompleted = NO;
 //    NSString *us = @"https://unique-hash-89300.appspot.com/ipservlet";
     
     NSString *us1 = @"https://api.ipify.org";
-    NSString *us2 = @"http://v4.ipv6-test.com/api/myip.php";
     
-    [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:us1] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    NSURLSessionConfiguration *urlconfig = [NSURLSessionConfiguration defaultSessionConfiguration];
+    urlconfig.timeoutIntervalForRequest = 20;
+    urlconfig.timeoutIntervalForResource = 20;
+    
+    NSURLSession *sess1 = [NSURLSession sessionWithConfiguration:urlconfig];
+    
+    [[sess1 dataTaskWithURL:[NSURL URLWithString:us1] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         
         NSString *ip1 = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         
-        if (isValidIPv4(ip1)) {
+        if (isValidIPv4_alt1(ip1) || isValidIPv4_alt2(ip1) || isValidIPv4_alt3(ip1)) {
             
             _externalIP = ip1;
             _ipSearchCompleted = YES;
@@ -200,13 +205,15 @@ static BOOL _ipSearchCompleted = NO;
             
         } else {
             
-            [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:us2] completionHandler:^(NSData * _Nullable data2, NSURLResponse * _Nullable response2, NSError * _Nullable error2) {
+            NSString *us2 = @"http://v4.ipv6-test.com/api/myip.php";
+            NSURLSession *sess2 = [NSURLSession sessionWithConfiguration:urlconfig];
+            [[sess2 dataTaskWithURL:[NSURL URLWithString:us2] completionHandler:^(NSData * _Nullable data2, NSURLResponse * _Nullable response2, NSError * _Nullable error2) {
                 
                 _ipSearchCompleted = YES;
                 
                 NSString *ip2 = [[[NSString alloc] initWithData:data2 encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                 
-                if (isValidIPv4(ip2)) {
+                if (isValidIPv4_alt1(ip2) || isValidIPv4_alt2(ip2) || isValidIPv4_alt3(ip2)) {
                     
                     _externalIP = ip2;
                     _currentlySearchingForExternalIP = NO;

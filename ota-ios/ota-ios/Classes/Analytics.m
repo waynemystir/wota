@@ -41,8 +41,13 @@ NSString * analyticsUrlString() {
     return request;
 }
 
-+ (void)performPost:(NSDictionary *)body {
-    [[[NSURLSession sharedSession] dataTaskWithRequest:[self daReq:body] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
++ (void)performPost:(NSDictionary *)body {NSURLSessionConfiguration *urlconfig = [NSURLSessionConfiguration defaultSessionConfiguration];
+    urlconfig.timeoutIntervalForRequest = 30;
+    urlconfig.timeoutIntervalForResource = 30;
+    
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:urlconfig];
+    
+    [[session dataTaskWithRequest:[self daReq:body] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSString *rs = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         NSString *err = error ? error.localizedDescription : @"NO ERROR";
         NSLog(@"PERFORM_POST RESPONSE:%@ ERR:%@", rs, err);

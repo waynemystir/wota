@@ -13,10 +13,11 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <stdbool.h>
+#include <arpa/inet.h>
 
 @implementation IpAddress
 
-BOOL isValidIPv4(NSString *ipAdd) {
+BOOL isValidIPv4_alt1(NSString *ipAdd) {
     
     if (!ipAdd || [[ipAdd  stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] == 0)
         return NO;
@@ -34,12 +35,12 @@ BOOL isValidIPv4(NSString *ipAdd) {
     
     ret = getaddrinfo([ipAdd UTF8String], NULL, &hint, &res);
     if (ret) {
-        NSLog(@"%s %s", gai_strerror(ret), [ipAdd UTF8String] ? : [@"" UTF8String]);
+//        NSLog(@"%s %s", gai_strerror(ret), [ipAdd UTF8String] ? : [@"" UTF8String]);
         retBool = NO;
     } else if(res->ai_family == AF_INET) {
         retBool = YES;
     } else if (res->ai_family == AF_INET6) {
-        NSLog(@"IPv6 address:%s", [ipAdd UTF8String] ? : [@"" UTF8String]);
+//        NSLog(@"IPv6 address:%s", [ipAdd UTF8String] ? : [@"" UTF8String]);
         retBool = NO;
     } else {
         retBool = NO;
@@ -47,6 +48,37 @@ BOOL isValidIPv4(NSString *ipAdd) {
     
     freeaddrinfo(res);
     return retBool;
+}
+
+BOOL isValidIPv4_alt2(NSString *ipAdd) {
+    const char *utf8 = [ipAdd UTF8String];
+    int success;
+    
+    struct in_addr dst;
+    success = inet_pton(AF_INET, utf8, &dst);
+    
+    return success == 1;
+}
+
+BOOL isValidIPv4_alt3(NSString *ipAdd) {
+    NSString *pattern = @"^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:nil];
+    NSTextCheckingResult *match = [regex firstMatchInString:ipAdd options:0 range:NSMakeRange(0, [ipAdd length])];
+    return match != nil;
+}
+
+BOOL isValidIPAddress(NSString *ipAdd) {
+    const char *utf8 = [ipAdd UTF8String];
+    int success;
+    
+    struct in_addr dst;
+    success = inet_pton(AF_INET, utf8, &dst);
+    if (success != 1) {
+        struct in6_addr dst6;
+        success = inet_pton(AF_INET6, utf8, &dst6);
+    }
+    
+    return success == 1;
 }
 
 @end

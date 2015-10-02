@@ -10,6 +10,9 @@
 
 @interface IpAddress : NSObject
 
-extern BOOL isValidIPv4(NSString *ipAdd);
+extern BOOL isValidIPv4_alt1(NSString *ipAdd);
+extern BOOL isValidIPv4_alt2(NSString *ipAdd);
+extern BOOL isValidIPv4_alt3(NSString *ipAdd);
+extern BOOL isValidIPAddress(NSString *ipAdd);
 
 @end
