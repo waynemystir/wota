@@ -30,6 +30,7 @@
 @property (weak, nonatomic) IBOutlet UIView *weekdaysView;
 @property (weak, nonatomic) IBOutlet UILabel *arriveOrDepartLabel;
 @property (weak, nonatomic) IBOutlet WotaButton *doneBtn;
+@property (nonatomic) CGRect screenRect;
 
 - (IBAction)nextMonthPressed:(id)sender;
 - (IBAction)prevMonthPressed:(id)sender;
@@ -58,7 +59,8 @@
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
-        self.frame = CGRectMake(0, 569, 320, 320);
+        _screenRect = [[UIScreen mainScreen] bounds];
+        self.frame = CGRectMake(0, _screenRect.size.height, 320, 320);
         overlay = [[UIControl alloc] initWithFrame:CGRectMake(0, 0, 320, 568)];
         overlay.backgroundColor = [UIColor blackColor];
         overlay.alpha = 0.0f;
@@ -102,7 +104,7 @@
     
     [UIView animateWithDuration:0.28 animations:^{
         overlay.alpha = 0.0f;
-        tcp.frame = CGRectMake(0, 569, 320, 320);
+        tcp.frame = CGRectMake(0, _screenRect.size.height + 1, 320, 320);
     } completion:^(BOOL finished) {
         [sv sendSubviewToBack:overlay];
         [overlay removeFromSuperview];

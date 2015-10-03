@@ -103,6 +103,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
 @property (nonatomic, strong) UIView *menuView;
 @property (nonatomic, strong) UIView *menuOverlay;
 @property (nonatomic) BOOL termsAndCondsNativeOrWeb;
+@property (nonatomic) CGRect screenRect;
 
 #pragma mark Outlets
 
@@ -189,7 +190,8 @@ NSUInteger const kAcknowledgemenTag = 1917157;
 #pragma mark Lifecycle methods
 
 - (id)init {
-    if (self = [super initWithNibName:@"TrotterView" bundle:nil]) {
+    if (self = [super initWithNibName:@"TrotterVw" bundle:nil]) {
+        _screenRect = [[UIScreen mainScreen] bounds];
         locationManager = [[CLLocationManager alloc] init];
         locationManager.distanceFilter = kCLDistanceFilterNone;
         locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
@@ -2163,7 +2165,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     if (!travelersView) {
         NSArray *wes = [[NSBundle mainBundle] loadNibNamed:@"TravelersView" owner:self options:nil];
         travelersView = wes.firstObject;
-        travelersView.frame = CGRectMake(0, 569, 320, 320);
+        travelersView.frame = CGRectMake(0, _screenRect.size.height, 320, 320);
         [self.view addSubview:travelersView];
         
         WotaButton *db = (WotaButton *)[travelersView viewWithTag:4728197];
@@ -2287,7 +2289,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     __weak UIView *tv = [self.view viewWithTag:434147];
     [UIView animateWithDuration:0.28 animations:^{
         _overlay.alpha = 0.0f;
-        tv.frame = CGRectMake(0, 569, 320, 320);
+        tv.frame = CGRectMake(0, _screenRect.size.height, 320, 320);
     } completion:^(BOOL finished) {
         [self.view sendSubviewToBack:_overlay];
         [self.view sendSubviewToBack:tv];
@@ -2489,7 +2491,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     [self.view bringSubviewToFront:mo];
     
     __weak UIView *m = self.menuView;
-    m.frame = CGRectMake(0, 569, 320, 548);
+    m.frame = CGRectMake(0, _screenRect.size.height, 320, 548);
     [self.view addSubview:m];
     [self.view bringSubviewToFront:mo];
     
@@ -2504,7 +2506,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     __weak UIView *mo = self.menuOverlay;
     __weak UIView *m = self.menuView;
     [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
-        m.frame = CGRectMake(0, 569, 320, 548);
+        m.frame = CGRectMake(0, _screenRect.size.height, 320, 548);
     } completion:^(BOOL finished) {
         [m removeFromSuperview];
         [mo removeFromSuperview];
@@ -2516,7 +2518,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"BookingSupportView" owner:self options:nil];
     UIView *bsv = views.firstObject;
     bsv.tag = kBookingSupportTag;
-    bsv.frame = CGRectMake(0, 569, 320, 548);
+    bsv.frame = CGRectMake(0, _screenRect.size.height, 320, 548);
     
     UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickSelfServeLink:)];
     tgr.numberOfTapsRequired = tgr.numberOfTouchesRequired = 1;
@@ -2536,7 +2538,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     UIView *bsv = [self.view viewWithTag:kBookingSupportTag];
     
     [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
-        bsv.frame = CGRectMake(0, 569, 320, 548);
+        bsv.frame = CGRectMake(0, _screenRect.size.height, 320, 548);
     } completion:^(BOOL finished) {
         [bsv removeFromSuperview];
     }];
@@ -2674,7 +2676,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"LegalView" owner:self options:nil];
     UIView *legalView = views.firstObject;
     legalView.tag = kLegalDocumentVTag;
-    legalView.frame = CGRectMake(0, 569, 320, 548);
+    legalView.frame = CGRectMake(0, _screenRect.size.height, 320, 548);
     [self.view addSubview:legalView];
     self.legalViewTitle.text = title;
     
@@ -2713,7 +2715,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     UIView *legalView = [self.view viewWithTag:kLegalDocumentVTag];
     
     [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
-        legalView.frame = CGRectMake(0, 569, 320, 548);
+        legalView.frame = CGRectMake(0, _screenRect.size.height, 320, 548);
     } completion:^(BOOL finished) {
         [legalView removeFromSuperview];
     }];
@@ -2724,7 +2726,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"AcknowledgementsView" owner:self options:nil];
     UIView *acknowView = views.firstObject;
     acknowView.tag = kAcknowledgemenTag;
-    acknowView.frame = CGRectMake(0, 569, 320, 548);
+    acknowView.frame = CGRectMake(0, _screenRect.size.height, 320, 548);
     [self.view addSubview:acknowView];
     
     __block CGRect vf = CGRectMake(5, 5, 300, 35);
@@ -2800,7 +2802,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     UIView *acknowView = [self.view viewWithTag:kAcknowledgemenTag];
     
     [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
-        acknowView.frame = CGRectMake(0, 569, 320, 548);
+        acknowView.frame = CGRectMake(0, _screenRect.size.height, 320, 548);
     } completion:^(BOOL finished) {
         [acknowView removeFromSuperview];
     }];

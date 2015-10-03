@@ -69,6 +69,8 @@
 		B07958E61AF44A5800422182 /* EanChargeableRateInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B07958E51AF44A5800422182 /* EanChargeableRateInfo.m */; };
 		B07958E91AF451C000422182 /* EanNightlyRate.m in Sources */ = {isa = PBXBuildFile; fileRef = B07958E81AF451C000422182 /* EanNightlyRate.m */; };
 		B07958EC1AF4751100422182 /* EanSurcharge.m in Sources */ = {isa = PBXBuildFile; fileRef = B07958EB1AF4751100422182 /* EanSurcharge.m */; };
+		B07F26B31BBEFB33000B0F48 /* TrotterViewTest.xib in Resources */ = {isa = PBXBuildFile; fileRef = B07F26B21BBEFB33000B0F48 /* TrotterViewTest.xib */; settings = {ASSET_TAGS = (); }; };
+		B07F26DA1BBF2640000B0F48 /* TrotterVw.xib in Resources */ = {isa = PBXBuildFile; fileRef = B07F26D91BBF2640000B0F48 /* TrotterVw.xib */; settings = {ASSET_TAGS = (); }; };
 		B07FC8681B27A8E70059A205 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B07FC8671B27A8E70059A205 /* MapKit.framework */; };
 		B080B7C71AC5057100075A32 /* HotelInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B080B7C61AC5057100075A32 /* HotelInfoViewController.m */; };
 		B080B7C91AC505DC00075A32 /* HotelInfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B080B7C81AC505DC00075A32 /* HotelInfoView.xib */; };
@@ -321,6 +323,8 @@
 		B07958E81AF451C000422182 /* EanNightlyRate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanNightlyRate.m; sourceTree = "<group>"; };
 		B07958EA1AF4751100422182 /* EanSurcharge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanSurcharge.h; sourceTree = "<group>"; };
 		B07958EB1AF4751100422182 /* EanSurcharge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanSurcharge.m; sourceTree = "<group>"; };
+		B07F26B21BBEFB33000B0F48 /* TrotterViewTest.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TrotterViewTest.xib; sourceTree = "<group>"; };
+		B07F26D91BBF2640000B0F48 /* TrotterVw.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TrotterVw.xib; sourceTree = "<group>"; };
 		B07FC8671B27A8E70059A205 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		B080B7C51AC5057100075A32 /* HotelInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotelInfoViewController.h; sourceTree = "<group>"; };
 		B080B7C61AC5057100075A32 /* HotelInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotelInfoViewController.m; sourceTree = "<group>"; };
@@ -704,6 +708,8 @@
 		B032F64D1AC191FB00809395 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				B07F26B21BBEFB33000B0F48 /* TrotterViewTest.xib */,
+				B07F26D91BBF2640000B0F48 /* TrotterVw.xib */,
 				B09431E41B58A39300E69A71 /* TrotterView.xib */,
 				B0BB3F441B59DD3500DCCFE7 /* HotelNameFilterView.xib */,
 				B0F242101B5C7E7D0050B173 /* TravelersView.xib */,
@@ -1208,6 +1214,7 @@
 				B0D02FFD1AE6123000B1E75F /* gradient@2x.png in Resources */,
 				B03DA0071B46D5930039B9C6 /* FilterTableView.xib in Resources */,
 				B0D02FF31AE6123000B1E75F /* discover.png in Resources */,
+				B07F26DA1BBF2640000B0F48 /* TrotterVw.xib in Resources */,
 				B0D02FEB1AE6123000B1E75F /* amex.png in Resources */,
 				B0C2EB501BA7E50A00D88154 /* ClearDataView.xib in Resources */,
 				B0D02FF51AE6123000B1E75F /* jcb.png in Resources */,
@@ -1249,6 +1256,7 @@
 				B09797CE1AC2518D0014FC7C /* MapView.xib in Resources */,
 				B09E41851AEB43DA000A718D /* WotaButton.xib in Resources */,
 				B0963CC31AC8DFED002FD859 /* ChildSubView.xib in Resources */,
+				B07F26B31BBEFB33000B0F48 /* TrotterViewTest.xib in Resources */,
 				B0E019381BA9B525003BACDB /* AcknowsDictionary.plist in Resources */,
 				B080B7C91AC505DC00075A32 /* HotelInfoView.xib in Resources */,
 				B0BD38211AF990F600EF5E4F /* NightRateTableCellView.xib in Resources */,
