@@ -12,6 +12,7 @@
                 <outlet property="arrivalDateOutlet" destination="R73-ve-uPC" id="3rv-Od-MkX"/>
                 <outlet property="autoCompleteSpinner" destination="Z88-90-f10" id="INa-Xu-b4S"/>
                 <outlet property="backContainer" destination="prd-ep-Cp9" id="6eS-B4-A5A"/>
+                <outlet property="backContainerLeadConstr" destination="CqE-iP-euy" id="CqE-vZ-4Dt"/>
                 <outlet property="checkHotelsOutlet" destination="wvh-AV-6KR" id="jHh-rP-f1A"/>
                 <outlet property="containerView" destination="aes-gI-1UL" id="YU3-Xu-dT6"/>
                 <outlet property="containerViewBottomConstraint" destination="Pqy-np-r1j" id="192-OB-I6m"/>
@@ -32,6 +33,12 @@
                 <outlet property="menuContainer" destination="ymM-wT-jyk" id="I69-bg-xdR"/>
                 <outlet property="minusAdultOutlet" destination="zgB-dN-ewt" id="DPx-E2-ZO1"/>
                 <outlet property="mkMapView" destination="ZjD-FZ-9Vw" id="x6s-m1-9jS"/>
+                <outlet property="openWmapContainerHeightConstr" destination="oj5-tl-eqf" id="ftx-d2-r3P"/>
+                <outlet property="openWmapContainerWidthConstr" destination="TFG-uY-mw6" id="dN9-z5-LSf"/>
+                <outlet property="openWtcBottomConstr" destination="qkN-Ru-e8E" id="P7c-sf-28j"/>
+                <outlet property="openWtcLeadConstr" destination="X3i-eg-hRC" id="LRy-eZ-Sbj"/>
+                <outlet property="openWtcTopConstr" destination="4w6-t5-ks4" id="Erb-c3-KM5"/>
+                <outlet property="openWtcTrailConstr" destination="qZg-zR-GoF" id="B13-ZH-Fja"/>
                 <outlet property="openingWhereTo" destination="xgM-EI-4MV" id="iqZ-oY-Jgd"/>
                 <outlet property="openingWmapContainer" destination="Oxx-dH-MDe" id="wmp-Ng-ISp"/>
                 <outlet property="overlay" destination="ghe-iy-1YG" id="KSD-Np-XYb"/>
@@ -43,6 +50,11 @@
                 <outlet property="whereToContainer" destination="eex-Wc-CNp" id="FfL-h6-pMa"/>
                 <outlet property="whereToSecondLevel" destination="YAP-jL-a1X" id="9it-f2-A1n"/>
                 <outlet property="whereToTextField" destination="2Sz-Nr-Bsq" id="IhG-CB-gHa"/>
+                <outlet property="whereToTextFieldLeadConstr" destination="Een-FI-s9A" id="EPk-w7-0xh"/>
+                <outlet property="wmapBigBottomConstr" destination="ecO-Ya-FQA" id="JUO-Er-NRO"/>
+                <outlet property="wmapBigLeadConstr" destination="C9o-Ge-RGn" id="INk-Je-8Ir"/>
+                <outlet property="wmapBigTopConstr" destination="oMw-Kt-vs3" id="zWZ-Gp-Ed7"/>
+                <outlet property="wmapBigTrailConstr" destination="AVo-WQ-o0U" id="WMv-ob-l7O"/>
                 <outlet property="wmapClicker" destination="jvj-4L-MmQ" id="YTZ-Pl-eYm"/>
                 <outlet property="wmapClickerTopConstr" destination="3T4-0x-gAF" id="ilC-1x-RkT"/>
                 <outlet property="wmapContainer" destination="bgf-nx-VIl" id="Kqd-Dt-s72"/>
@@ -372,11 +384,15 @@
                     </constraints>
                 </view>
                 <view autoresizesSubviews="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eex-Wc-CNp" userLabel="whereToContainer">
-                    <rect key="frame" x="5" y="36" width="590" height="66"/>
+                    <rect key="frame" x="0.0" y="36" width="600" height="66"/>
                     <subviews>
-                        <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="prd-ep-Cp9" userLabel="backContainer">
-                            <rect key="frame" x="-5" y="13" width="33" height="33"/>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="prd-ep-Cp9" userLabel="backContainer">
+                            <rect key="frame" x="4" y="13" width="33" height="33"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="33" id="Dan-d5-IeV"/>
+                                <constraint firstAttribute="width" constant="33" id="e4p-1J-Jej"/>
+                            </constraints>
                         </view>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YAP-jL-a1X" userLabel="whereToSecondLevel">
                             <rect key="frame" x="13" y="45" width="295" height="21"/>
@@ -385,7 +401,7 @@
                             <nil key="highlightedColor"/>
                         </label>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bgf-nx-VIl" userLabel="wmapContainer" customClass="WotaTappableView">
-                            <rect key="frame" x="558" y="16" width="30" height="30"/>
+                            <rect key="frame" x="564" y="16" width="30" height="30"/>
                             <subviews>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hamburger" translatesAutoresizingMaskIntoConstraints="NO" id="djG-PH-y7q" userLabel="wmapHamburger">
                                     <rect key="frame" x="5" y="5" width="20" height="20"/>
@@ -400,16 +416,20 @@
                                 <constraint firstAttribute="height" constant="30" id="gnI-vd-EOU"/>
                             </constraints>
                         </view>
-                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Where are you going?" minimumFontSize="11" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="2Sz-Nr-Bsq" userLabel="whereToTextField">
-                            <rect key="frame" x="6" y="16" width="270" height="30"/>
+                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Where are you going?" minimumFontSize="11" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="2Sz-Nr-Bsq" userLabel="whereToTextField">
+                            <rect key="frame" x="6" y="16" width="552" height="30"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="search"/>
                         </textField>
-                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="Z88-90-f10" userLabel="autoCompleteSpinner">
-                            <rect key="frame" x="224" y="21" width="20" height="20"/>
+                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="Z88-90-f10" userLabel="autoCompleteSpinner">
+                            <rect key="frame" x="510" y="21" width="20" height="20"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="20" id="Vh3-Za-AXf"/>
+                                <constraint firstAttribute="height" constant="20" id="rKy-3g-oAo"/>
+                            </constraints>
                         </activityIndicatorView>
-                        <view clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xgM-EI-4MV" userLabel="openingWhereTo">
-                            <rect key="frame" x="5" y="16" width="253" height="49"/>
+                        <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xgM-EI-4MV" userLabel="openingWhereTo">
+                            <rect key="frame" x="6" y="16" width="532" height="49"/>
                             <subviews>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="search_big" translatesAutoresizingMaskIntoConstraints="NO" id="ae1-TP-P6x" userLabel="imageViewOpeningSearch">
                                     <rect key="frame" x="10" y="11" width="27" height="27"/>
@@ -424,16 +444,20 @@
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Oxx-dH-MDe" userLabel="openingWmapCont">
-                            <rect key="frame" x="539" y="16" width="50" height="49"/>
+                            <rect key="frame" x="544" y="16" width="50" height="49"/>
                             <subviews>
-                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="wmap_big" translatesAutoresizingMaskIntoConstraints="NO" id="N65-3W-qrZ">
+                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="wmap_big" translatesAutoresizingMaskIntoConstraints="NO" id="N65-3W-qrZ" userLabel="wmapBigImageView">
                                     <rect key="frame" x="6" y="6" width="38" height="37"/>
                                 </imageView>
                             </subviews>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <constraints>
-                                <constraint firstAttribute="width" constant="50" id="TFG-uY-mw6"/>
-                                <constraint firstAttribute="height" constant="49" id="oj5-tl-eqf"/>
+                                <constraint firstAttribute="trailing" secondItem="N65-3W-qrZ" secondAttribute="trailing" constant="6" id="AVo-WQ-o0U" userLabel="wmapBigTrailConstr"/>
+                                <constraint firstItem="N65-3W-qrZ" firstAttribute="leading" secondItem="Oxx-dH-MDe" secondAttribute="leading" constant="6" id="C9o-Ge-RGn" userLabel="wmapBigLeadConstr"/>
+                                <constraint firstAttribute="width" constant="50" id="TFG-uY-mw6" userLabel="openWmapContainerWidthConstr"/>
+                                <constraint firstAttribute="bottom" secondItem="N65-3W-qrZ" secondAttribute="bottom" constant="6" id="ecO-Ya-FQA" userLabel="wmapBigBottomConstr"/>
+                                <constraint firstItem="N65-3W-qrZ" firstAttribute="top" secondItem="Oxx-dH-MDe" secondAttribute="top" constant="6" id="oMw-Kt-vs3" userLabel="wmapBigTopConstr"/>
+                                <constraint firstAttribute="height" constant="49" id="oj5-tl-eqf" userLabel="openWmapContainerHeightConstr"/>
                             </constraints>
                         </view>
                     </subviews>
@@ -441,11 +465,22 @@
                     <constraints>
                         <constraint firstItem="bgf-nx-VIl" firstAttribute="top" secondItem="eex-Wc-CNp" secondAttribute="top" constant="16" id="17E-GZ-QGp"/>
                         <constraint firstItem="Oxx-dH-MDe" firstAttribute="top" secondItem="eex-Wc-CNp" secondAttribute="top" constant="16" id="1Zo-Ss-Iw2"/>
-                        <constraint firstAttribute="trailing" secondItem="Oxx-dH-MDe" secondAttribute="trailing" constant="1" id="F5V-AX-Sfd"/>
+                        <constraint firstItem="xgM-EI-4MV" firstAttribute="top" secondItem="eex-Wc-CNp" secondAttribute="top" constant="16" id="4w6-t5-ks4" userLabel="openWtcTopConstr"/>
+                        <constraint firstItem="bgf-nx-VIl" firstAttribute="leading" secondItem="2Sz-Nr-Bsq" secondAttribute="trailing" constant="6" id="5q0-dO-2YG"/>
+                        <constraint firstItem="2Sz-Nr-Bsq" firstAttribute="top" secondItem="eex-Wc-CNp" secondAttribute="top" constant="16" id="6vE-zV-n5d"/>
+                        <constraint firstItem="prd-ep-Cp9" firstAttribute="leading" secondItem="eex-Wc-CNp" secondAttribute="leading" constant="4" id="CqE-iP-euy" userLabel="backContainerLeadConstr"/>
+                        <constraint firstItem="2Sz-Nr-Bsq" firstAttribute="leading" secondItem="eex-Wc-CNp" secondAttribute="leading" constant="6" id="Een-FI-s9A" userLabel="whereToTextFieldLeadConstr"/>
+                        <constraint firstAttribute="trailing" secondItem="Oxx-dH-MDe" secondAttribute="trailing" constant="6" id="F5V-AX-Sfd"/>
                         <constraint firstAttribute="height" constant="66" id="PZH-nW-wRM"/>
-                        <constraint firstAttribute="trailing" secondItem="bgf-nx-VIl" secondAttribute="trailing" constant="2" id="Qjn-Hi-2Nb"/>
-                        <constraint firstAttribute="bottom" secondItem="Oxx-dH-MDe" secondAttribute="bottom" constant="1" id="Zb6-ai-GeB"/>
+                        <constraint firstAttribute="bottom" secondItem="2Sz-Nr-Bsq" secondAttribute="bottom" constant="20" id="PhX-AK-1jS"/>
+                        <constraint firstAttribute="trailing" secondItem="bgf-nx-VIl" secondAttribute="trailing" constant="6" id="Qjn-Hi-2Nb"/>
+                        <constraint firstItem="xgM-EI-4MV" firstAttribute="leading" secondItem="eex-Wc-CNp" secondAttribute="leading" constant="6" id="X3i-eg-hRC" userLabel="openWtcLeadConstr"/>
+                        <constraint firstItem="Z88-90-f10" firstAttribute="top" secondItem="eex-Wc-CNp" secondAttribute="top" constant="21" id="crO-02-USx"/>
+                        <constraint firstItem="bgf-nx-VIl" firstAttribute="leading" secondItem="Z88-90-f10" secondAttribute="trailing" constant="34" id="m3h-Qk-qhK"/>
+                        <constraint firstItem="Oxx-dH-MDe" firstAttribute="leading" secondItem="xgM-EI-4MV" secondAttribute="trailing" constant="6" id="qZg-zR-GoF" userLabel="openWtcTrailConstr"/>
+                        <constraint firstAttribute="bottom" secondItem="xgM-EI-4MV" secondAttribute="bottom" constant="1" id="qkN-Ru-e8E" userLabel="openWtcBottomConstr"/>
                         <constraint firstAttribute="bottom" secondItem="bgf-nx-VIl" secondAttribute="bottom" constant="20" id="v44-KA-xgy"/>
+                        <constraint firstItem="prd-ep-Cp9" firstAttribute="top" secondItem="eex-Wc-CNp" secondAttribute="top" constant="13" id="yPS-NR-Gwk"/>
                     </constraints>
                 </view>
                 <view autoresizesSubviews="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jvj-4L-MmQ" userLabel="wmapClicker">
@@ -463,12 +498,12 @@
                 <constraint firstItem="V9L-ES-Vyh" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="4ya-Cw-ELm"/>
                 <constraint firstAttribute="trailing" secondItem="jvj-4L-MmQ" secondAttribute="trailing" id="91s-Gg-DWc"/>
                 <constraint firstItem="aes-gI-1UL" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="9Rw-aU-D83" userLabel="containerViewLeadingConstraint"/>
-                <constraint firstAttribute="trailing" secondItem="eex-Wc-CNp" secondAttribute="trailing" constant="5" id="9nn-81-ly8" userLabel="wtcTrailConstr"/>
+                <constraint firstAttribute="trailing" secondItem="eex-Wc-CNp" secondAttribute="trailing" id="9nn-81-ly8" userLabel="wtcTrailConstr"/>
                 <constraint firstAttribute="trailing" secondItem="aes-gI-1UL" secondAttribute="trailing" id="MA2-kn-CI6" userLabel="containerViewTrailingConstraint"/>
                 <constraint firstItem="eex-Wc-CNp" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="36" id="ObW-Uo-B9w" userLabel="wtcTopConstr"/>
                 <constraint firstAttribute="bottom" secondItem="aes-gI-1UL" secondAttribute="bottom" id="Pqy-np-r1j" userLabel="containerViewBottomConstraint"/>
                 <constraint firstItem="aes-gI-1UL" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="120" id="Shw-SC-zOW" userLabel="containerViewTopConstraint"/>
-                <constraint firstItem="eex-Wc-CNp" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="5" id="gvb-eR-76L" userLabel="wtcLeadConstr"/>
+                <constraint firstItem="eex-Wc-CNp" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="gvb-eR-76L" userLabel="wtcLeadConstr"/>
                 <constraint firstAttribute="trailing" secondItem="V9L-ES-Vyh" secondAttribute="trailing" id="iCy-ts-VZn"/>
                 <constraint firstAttribute="bottom" secondItem="V9L-ES-Vyh" secondAttribute="bottom" id="mMK-OG-4PV"/>
             </constraints>

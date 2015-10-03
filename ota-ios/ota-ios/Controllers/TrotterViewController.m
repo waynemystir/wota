@@ -157,6 +157,18 @@ NSUInteger const kAcknowledgemenTag = 1917157;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *containerViewTopConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *wtcTopConstr;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *wmapClickerTopConstr;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *whereToTextFieldLeadConstr;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *backContainerLeadConstr;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *openWtcLeadConstr;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *openWtcTopConstr;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *openWtcBottomConstr;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *openWtcTrailConstr;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *openWmapContainerWidthConstr;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *openWmapContainerHeightConstr;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *wmapBigTrailConstr;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *wmapBigLeadConstr;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *wmapBigBottomConstr;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *wmapBigTopConstr;
 
 
 #pragma mark IBActions
@@ -438,9 +450,8 @@ NSUInteger const kAcknowledgemenTag = 1917157;
 
 - (void)restoreWhereTo:(UITapGestureRecognizer *)tgr {
     
-    if (restoredWhereToAlready) {
+    if (restoredWhereToAlready)
         return;
-    }
     
     restoredWhereToAlready = YES;
     restoringWhereTo = YES;
@@ -463,14 +474,18 @@ NSUInteger const kAcknowledgemenTag = 1917157;
         wes.labelWhereYouGoing.text = [SelectionCriteria singleton].whereToFirst;
     }
     
+    [wes.view layoutIfNeeded];
+    wes.openWtcBottomConstr.constant = 20.0f;
+    wes.openWmapContainerWidthConstr.constant = wes.openWmapContainerHeightConstr.constant = 30.0f;
+    wes.wmapBigLeadConstr.constant = wes.wmapBigTopConstr.constant = wes.wmapBigTrailConstr.constant = wes.wmapBigBottomConstr.constant = 4.0f;
     [UIView animateWithDuration:0.23 animations:^{
-        wes.openingWhereTo.frame = CGRectMake(6, 16, 270, 30);
+        [wes.view layoutIfNeeded];
         wes.imageViewOpeningSearch.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
         wes.labelWhereYouGoing.frame = CGRectMake(6, 0, 270, 30);
         wes.labelWhereYouGoing.textColor = [UIColor lightGrayColor];
         wes.labelWhereYouGoing.font = [UIFont systemFontOfSize:17.0f];
         
-        wes.openingWmapContainer.frame = CGRectMake(283, 16, 30, 30);
+//        wes.openingWmapContainer.frame = CGRectMake(283, 16, 30, 30);
     } completion:^(BOOL finished) {
         restoringWhereTo = NO;
         wes.whereToTextField.hidden = NO;
@@ -1044,7 +1059,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     self.isPlacesTableViewExpanded = YES;
     [UIView animateWithDuration:self.animationDuraton animations:^{
         ovl.frame = CGRectMake(0, 66, wes.screenRect.size.width, wes.screenRect.size.height - 66);
-        actv.frame = [ wes placesTableViewExpandedFrame:keyboardFrame.size.height];
+        actv.frame = [wes placesTableViewExpandedFrame:keyboardFrame.size.height];
     } completion:^(BOOL finished) {
     }];
     
@@ -1190,16 +1205,11 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     wes.containerViewBottomConstraint.constant = 44.0f;
     wes.wtcTopConstr.constant = 22.0f;
     wes.wmapClickerTopConstr.constant = 21.0f;
+    wes.whereToTextFieldLeadConstr.constant = 29.0f;
+    wes.backContainerLeadConstr.constant = 1.0f;
     [UIView animateWithDuration:kTrvFlipAnimationDuration animations:^{
         [wes.view layoutIfNeeded];
-//        wes.containerView.frame = wes.containerViewFrame;
-//        wes.whereToContainer.frame = CGRectMake(0, 20, 320, 49);
-        wes.autoCompleteSpinner.frame = CGRectMake(224, 19, 20, 20);
-        wes.whereToTextField.frame = CGRectMake(32, 14, 244, 30);
         wes.whereToSecondLevel.frame = CGRectMake(39, 15, 232, 21);
-        wes.wmapContainer.frame = CGRectMake(283, 14, 30, 30);
-        wes.wmapClicker.frame = CGRectMake(273, 20, 48, 66);
-        wes.backContainer.frame = CGRectMake(0, 11, 33, 33);
         wes.footerContainer.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
         wes.mapMapSearch.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
     } completion:^(BOOL finished) {
@@ -1224,16 +1234,11 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     wes.containerViewBottomConstraint.constant = 0.0f;
     wes.wtcTopConstr.constant = 36.0f;
     wes.wmapClickerTopConstr.constant = 41.0f;
+    wes.whereToTextFieldLeadConstr.constant = 6.0f;
+    wes.backContainerLeadConstr.constant = 4.0f;
     [UIView animateWithDuration:kTrvFlipAnimationDuration animations:^{
         [wes.view layoutIfNeeded];
-//        wes.containerView.frame = wes.containerViewFrame;
-//        wes.whereToContainer.frame = CGRectMake(0, 52, 320, 66);
-        wes.autoCompleteSpinner.frame = CGRectMake(224, 21, 20, 20);
-        wes.whereToTextField.frame = CGRectMake(6, 16, 270, 30);
         wes.whereToSecondLevel.frame = CGRectMake(13, 45, 295, 21);
-        wes.wmapContainer.frame = CGRectMake(283, 16, 30, 30);
-        wes.wmapClicker.frame = CGRectMake(273, 52, 48, 66);
-        wes.backContainer.frame = CGRectMake(2, 13, 33, 33);
         wes.footerContainer.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 50), 0.1f, 0.001f);
         wes.mapMapSearch.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
     } completion:^(BOOL finished) {
@@ -1561,18 +1566,15 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     return _animationDuraton;
 }
 
-- (CGRect)containerViewFrame {
-    return self.criteriaOrHotelSearchMode ? CGRectMake(0, 74, 320, 450) : CGRectMake(0, 118, 320, 450);
-}
-
 - (CGRect)placesTableViewZeroFrame {
     CGFloat w = _screenRect.size.width;
-    return self.criteriaOrHotelSearchMode ? CGRectMake(0, 66, w, 0) : CGRectMake(0, 98, w, 0);
+    CGFloat sh = self.whereToContainer.frame.origin.y + self.whereToTextField.frame.origin.y + self.whereToTextField.frame.size.height;
+    return self.criteriaOrHotelSearchMode ? CGRectMake(0, sh, w, 0) : CGRectMake(0, sh, w, 0);
 }
 
 - (CGRect)placesTableViewExpandedFrame:(CGFloat) keyboardHeight {
     CGFloat w = _screenRect.size.width;
-    CGFloat sh = self.criteriaOrHotelSearchMode ? 66 : 98;
+    CGFloat sh = self.whereToContainer.frame.origin.y + self.whereToTextField.frame.origin.y + self.whereToTextField.frame.size.height;
     CGFloat h = _screenRect.size.height - sh - keyboardHeight;
     return CGRectMake(0, sh, w, h);
 }
