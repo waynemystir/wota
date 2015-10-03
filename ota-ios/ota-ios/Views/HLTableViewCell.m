@@ -19,12 +19,15 @@
         self.clipsToBounds = YES;
         self.selectionStyle = UITableViewCellSelectionStyleNone;
         
+        CGRect r = [[UIScreen mainScreen] bounds];
+        
         _thumbImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 96, 96)];
         _thumbImageView.contentMode = UIViewContentModeScaleAspectFill;
         _thumbImageView.clipsToBounds = YES;
         [self.contentView addSubview:_thumbImageView];
         
-        _hotelNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(99, 5, 211, 26)];
+        CGFloat hnlX = r.size.width - 109;
+        _hotelNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(99, 5, hnlX, 26)];
         _hotelNameLabel.backgroundColor = [UIColor clearColor];
         _hotelNameLabel.textColor = [UIColor blackColor];
         _hotelNameLabel.font = [UIFont boldSystemFontOfSize:15.0f];
@@ -43,7 +46,8 @@
 //        _starBoard.transform = t;
 //        [self.contentView addSubview:_starBoard];
         
-        _roomRateLabel = [[UILabel alloc] initWithFrame:CGRectMake(198, 32, 119, 33)];
+        CGFloat rrlX = r.size.width - 122;
+        _roomRateLabel = [[UILabel alloc] initWithFrame:CGRectMake(rrlX, 32, 119, 33)];
         _roomRateLabel.backgroundColor = [UIColor clearColor];
         _roomRateLabel.numberOfLines = 1;
         _roomRateLabel.minimumScaleFactor = 0.4f;
@@ -59,7 +63,8 @@
         _cityLabel.font = [UIFont boldSystemFontOfSize:15.0f];
         [self.contentView addSubview:_cityLabel];
         
-        _promoLabel = [[UILabel alloc] initWithFrame:CGRectMake(285, -8, 60, 27)];
+        CGFloat plX = r.size.width - 35;
+        _promoLabel = [[UILabel alloc] initWithFrame:CGRectMake(plX, -8, 60, 27)];
         _promoLabel.backgroundColor = kTheColorOfMoney();
         _promoLabel.textColor = [UIColor whiteColor];
         _promoLabel.textAlignment = NSTextAlignmentCenter;
@@ -68,7 +73,7 @@
         _promoLabel.transform = CGAffineTransformMakeRotation(degreesToRadians(45));
         [self.contentView addSubview:_promoLabel];
         
-        UIView *separator = [[UILabel alloc] initWithFrame:CGRectMake(0, 95.5f, 320, 0.5f)];
+        UIView *separator = [[UILabel alloc] initWithFrame:CGRectMake(0, 95.5f, r.size.width, 0.5f)];
         separator.backgroundColor = [UIColor blackColor];
         [self.contentView addSubview:separator];
     }

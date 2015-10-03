@@ -7,13 +7,19 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="TrotterViewController">
             <connections>
+                <outlet property="addAdultOutlet" destination="4kw-rN-bfM" id="Xlt-K3-MWh"/>
                 <outlet property="adultsLabel" destination="g8E-Vh-Y33" id="iGL-rM-jmX"/>
                 <outlet property="arrivalDateOutlet" destination="R73-ve-uPC" id="3rv-Od-MkX"/>
                 <outlet property="autoCompleteSpinner" destination="Z88-90-f10" id="INa-Xu-b4S"/>
                 <outlet property="backContainer" destination="prd-ep-Cp9" id="6eS-B4-A5A"/>
                 <outlet property="checkHotelsOutlet" destination="wvh-AV-6KR" id="jHh-rP-f1A"/>
                 <outlet property="containerView" destination="aes-gI-1UL" id="YU3-Xu-dT6"/>
+                <outlet property="containerViewBottomConstraint" destination="Pqy-np-r1j" id="192-OB-I6m"/>
+                <outlet property="containerViewTopConstraint" destination="Shw-SC-zOW" id="vUg-oH-8hO"/>
                 <outlet property="cupHolder" destination="4nI-db-6ks" id="uSe-hz-MhK"/>
+                <outlet property="filterContainer" destination="aIg-6w-kig" id="Ipz-ht-1Od"/>
+                <outlet property="footerContainer" destination="V9L-ES-Vyh" id="i3d-sY-iNJ"/>
+                <outlet property="footerDatesBtn" destination="Qe6-an-ZYT" id="kM7-Ab-d7W"/>
                 <outlet property="hotelsTableView" destination="L6n-T2-exm" id="tn3-4W-sLv"/>
                 <outlet property="hotelsTableViewContainer" destination="dXJ-qr-Ta1" id="gVb-XR-1gw"/>
                 <outlet property="imageViewOpeningSearch" destination="ae1-TP-P6x" id="303-vK-noj"/>
@@ -23,19 +29,26 @@
                 <outlet property="mapMapSearch" destination="GDL-4J-7gC" id="qwj-oP-qB2"/>
                 <outlet property="mapSpinner" destination="qoh-hy-aLf" id="TuQ-nS-0mL"/>
                 <outlet property="mapViewContainer" destination="YkH-Se-e5b" id="Vqx-ij-DxR"/>
+                <outlet property="menuContainer" destination="ymM-wT-jyk" id="I69-bg-xdR"/>
+                <outlet property="minusAdultOutlet" destination="zgB-dN-ewt" id="DPx-E2-ZO1"/>
                 <outlet property="mkMapView" destination="ZjD-FZ-9Vw" id="x6s-m1-9jS"/>
                 <outlet property="openingWhereTo" destination="xgM-EI-4MV" id="iqZ-oY-Jgd"/>
                 <outlet property="openingWmapContainer" destination="Oxx-dH-MDe" id="wmp-Ng-ISp"/>
                 <outlet property="overlay" destination="ghe-iy-1YG" id="KSD-Np-XYb"/>
                 <outlet property="returnDateOutlet" destination="btH-JZ-Utd" id="CEX-Hs-HYJ"/>
+                <outlet property="sortImageView" destination="tFx-Cw-qfv" id="oo3-s5-pW9"/>
+                <outlet property="sortMapSearch" destination="IRz-QY-jLy" id="7jW-DB-3sP"/>
+                <outlet property="sortMapSearchContainer" destination="Ip9-xT-bMP" id="PB7-Au-fv8"/>
                 <outlet property="view" destination="iN0-l3-epB" id="m45-ta-OsK"/>
                 <outlet property="whereToContainer" destination="eex-Wc-CNp" id="FfL-h6-pMa"/>
                 <outlet property="whereToSecondLevel" destination="YAP-jL-a1X" id="9it-f2-A1n"/>
                 <outlet property="whereToTextField" destination="2Sz-Nr-Bsq" id="IhG-CB-gHa"/>
                 <outlet property="wmapClicker" destination="jvj-4L-MmQ" id="YTZ-Pl-eYm"/>
+                <outlet property="wmapClickerTopConstr" destination="3T4-0x-gAF" id="ilC-1x-RkT"/>
                 <outlet property="wmapContainer" destination="bgf-nx-VIl" id="Kqd-Dt-s72"/>
                 <outlet property="wmapHamburger" destination="djG-PH-y7q" id="74u-SS-Z4M"/>
                 <outlet property="wmapMap" destination="ScW-pp-1SN" id="AqE-0a-5It"/>
+                <outlet property="wtcTopConstr" destination="ObW-Uo-B9w" id="iF7-1U-anK"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
@@ -48,49 +61,28 @@
                     <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aes-gI-1UL" userLabel="containerView">
-                    <rect key="frame" x="0.0" y="110" width="600" height="480"/>
+                    <rect key="frame" x="0.0" y="120" width="600" height="480"/>
                     <subviews>
-                        <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dXJ-qr-Ta1" userLabel="hotelsTableViewContainer">
-                            <rect key="frame" x="0.0" y="0.0" width="600" height="470"/>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dXJ-qr-Ta1" userLabel="hotelsTableViewContainer">
+                            <rect key="frame" x="0.0" y="0.0" width="600" height="480"/>
                             <subviews>
-                                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4YV-qv-FKZ" userLabel="mapViewContainer">
-                                    <rect key="frame" x="0.0" y="0.0" width="600" height="470"/>
-                                    <subviews>
-                                        <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="a68-tm-Uh9" userLabel="mkMapView">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="470"/>
-                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                        </mapView>
-                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="qgF-1c-Lf1" userLabel="mapSpinner">
-                                            <rect key="frame" x="5" y="5" width="37" height="37"/>
-                                            <color key="color" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                        </activityIndicatorView>
-                                        <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ds2-Pu-pvj" userLabel="mapBackContainer">
-                                            <rect key="frame" x="0.0" y="400" width="60" height="60"/>
-                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                        </view>
-                                        <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ckE-cB-Moc" userLabel="mapMapSearch">
-                                            <rect key="frame" x="540" y="410" width="60" height="60"/>
-                                            <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="search_big" translatesAutoresizingMaskIntoConstraints="NO" id="OYc-ev-nhe" userLabel="mapMapSearchImageView">
-                                                    <rect key="frame" x="5" y="5" width="50" height="50"/>
-                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                </imageView>
-                                            </subviews>
-                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                        </view>
-                                    </subviews>
-                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                </view>
-                                <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="96" sectionHeaderHeight="1" sectionFooterHeight="1" translatesAutoresizingMaskIntoConstraints="NO" id="L6n-T2-exm" userLabel="hotelsTableView">
-                                    <rect key="frame" x="0.0" y="0.0" width="600" height="470"/>
+                                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="96" sectionHeaderHeight="1" sectionFooterHeight="1" translatesAutoresizingMaskIntoConstraints="NO" id="L6n-T2-exm" userLabel="hotelsTableView">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="480"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="sectionIndexBackgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </tableView>
                                 <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="E6N-3S-87y" userLabel="topBorder">
                                     <rect key="frame" x="0.0" y="0.0" width="600" height="0.5"/>
                                     <color key="backgroundColor" red="0.69803921570000005" green="0.69803921570000005" blue="0.69803921570000005" alpha="1" colorSpace="calibratedRGB"/>
                                 </view>
                             </subviews>
-                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="trailing" secondItem="L6n-T2-exm" secondAttribute="trailing" id="0VA-f3-v93"/>
+                                <constraint firstItem="L6n-T2-exm" firstAttribute="top" secondItem="dXJ-qr-Ta1" secondAttribute="top" id="2oj-vC-c2w"/>
+                                <constraint firstAttribute="bottom" secondItem="L6n-T2-exm" secondAttribute="bottom" id="SzM-w0-YcF"/>
+                                <constraint firstItem="L6n-T2-exm" firstAttribute="leading" secondItem="dXJ-qr-Ta1" secondAttribute="leading" id="zmD-t1-lJc"/>
+                            </constraints>
                         </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YkH-Se-e5b" userLabel="mapViewContainer">
                             <rect key="frame" x="0.0" y="0.0" width="600" height="480"/>
@@ -146,13 +138,21 @@
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4nI-db-6ks" userLabel="cupHolder">
                             <rect key="frame" x="0.0" y="0.0" width="600" height="480"/>
                             <subviews>
-                                <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="trotter" translatesAutoresizingMaskIntoConstraints="NO" id="MJq-s4-iUb">
-                                    <rect key="frame" x="0.0" y="410" width="60" height="60"/>
+                                <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="trotter" translatesAutoresizingMaskIntoConstraints="NO" id="MJq-s4-iUb">
+                                    <rect key="frame" x="0.0" y="420" width="60" height="60"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="60" id="m2f-Fm-hqj"/>
+                                        <constraint firstAttribute="width" constant="60" id="tUE-LI-KG0"/>
+                                    </constraints>
                                 </imageView>
-                                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ymM-wT-jyk" userLabel="menuContainer" customClass="WotaTappableView">
-                                    <rect key="frame" x="0.0" y="410" width="60" height="60"/>
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ymM-wT-jyk" userLabel="menuContainer" customClass="WotaTappableView">
+                                    <rect key="frame" x="0.0" y="420" width="60" height="60"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="60" id="9B8-pH-Mi6"/>
+                                        <constraint firstAttribute="height" constant="60" id="uah-mv-NqY"/>
+                                    </constraints>
                                 </view>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wvh-AV-6KR" userLabel="checkHotelsButton" customClass="WotaButton">
                                     <rect key="frame" x="218" y="279" width="164" height="49"/>
@@ -240,6 +240,9 @@
                                     <state key="normal" title="-">
                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                     </state>
+                                    <connections>
+                                        <action selector="clickMinusBtn:" destination="-1" eventType="touchUpInside" id="Azw-Cu-7nU"/>
+                                    </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4kw-rN-bfM" userLabel="addAdultButton" customClass="WotaButton">
                                     <rect key="frame" x="389" y="153" width="46" height="30"/>
@@ -252,6 +255,9 @@
                                     <state key="normal" title="+">
                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                     </state>
+                                    <connections>
+                                        <action selector="clickPlusBtn:" destination="-1" eventType="touchUpInside" id="Q7f-IU-CUX"/>
+                                    </connections>
                                 </button>
                             </subviews>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -260,17 +266,21 @@
                                 <constraint firstItem="btH-JZ-Utd" firstAttribute="leading" secondItem="ZsM-93-ccP" secondAttribute="trailing" constant="2" id="1du-NR-3Z0"/>
                                 <constraint firstItem="eer-Q8-0EF" firstAttribute="leading" secondItem="4nI-db-6ks" secondAttribute="leading" constant="14" id="5h1-Sn-BUh"/>
                                 <constraint firstItem="g8E-Vh-Y33" firstAttribute="top" secondItem="btH-JZ-Utd" secondAttribute="bottom" constant="37" id="7gI-dG-i8Y"/>
+                                <constraint firstItem="MJq-s4-iUb" firstAttribute="leading" secondItem="4nI-db-6ks" secondAttribute="leading" id="9Gc-RB-cYc"/>
                                 <constraint firstItem="zgB-dN-ewt" firstAttribute="top" secondItem="btH-JZ-Utd" secondAttribute="bottom" constant="33" id="9ah-im-znR"/>
                                 <constraint firstItem="eer-Q8-0EF" firstAttribute="top" secondItem="4nI-db-6ks" secondAttribute="top" constant="44" id="BgF-1v-SBS"/>
                                 <constraint firstItem="4kw-rN-bfM" firstAttribute="leading" secondItem="g8E-Vh-Y33" secondAttribute="trailing" constant="35" id="CpE-Qg-iuK"/>
                                 <constraint firstItem="R73-ve-uPC" firstAttribute="leading" secondItem="eer-Q8-0EF" secondAttribute="trailing" constant="2" id="E5e-yF-VRO"/>
                                 <constraint firstItem="R73-ve-uPC" firstAttribute="top" secondItem="4nI-db-6ks" secondAttribute="top" constant="37" id="Fps-pc-ldS"/>
                                 <constraint firstItem="zgB-dN-ewt" firstAttribute="leading" secondItem="4nI-db-6ks" secondAttribute="leading" constant="57" id="HSJ-sh-idz"/>
+                                <constraint firstAttribute="bottom" secondItem="MJq-s4-iUb" secondAttribute="bottom" id="S0g-fo-ZOT"/>
                                 <constraint firstItem="4kw-rN-bfM" firstAttribute="top" secondItem="btH-JZ-Utd" secondAttribute="bottom" constant="33" id="VaI-cr-Lad"/>
                                 <constraint firstItem="wvh-AV-6KR" firstAttribute="top" secondItem="xYZ-VE-EuC" secondAttribute="bottom" constant="35" id="XjM-Ts-sGH"/>
                                 <constraint firstItem="g8E-Vh-Y33" firstAttribute="centerX" secondItem="4nI-db-6ks" secondAttribute="centerX" id="bMZ-X6-pjy"/>
+                                <constraint firstAttribute="bottom" secondItem="ymM-wT-jyk" secondAttribute="bottom" id="c8W-8e-cTj"/>
                                 <constraint firstAttribute="trailing" secondItem="4kw-rN-bfM" secondAttribute="trailing" constant="57" id="c8c-kp-14K"/>
                                 <constraint firstAttribute="trailing" secondItem="R73-ve-uPC" secondAttribute="trailing" constant="60" id="de8-Ag-HcD"/>
+                                <constraint firstItem="ymM-wT-jyk" firstAttribute="leading" secondItem="4nI-db-6ks" secondAttribute="leading" id="i47-b5-sJm"/>
                                 <constraint firstItem="ZsM-93-ccP" firstAttribute="leading" secondItem="4nI-db-6ks" secondAttribute="leading" constant="14" id="iD8-ad-zZa"/>
                                 <constraint firstItem="wvh-AV-6KR" firstAttribute="centerX" secondItem="4nI-db-6ks" secondAttribute="centerX" id="mMc-PZ-wd2"/>
                                 <constraint firstItem="ZsM-93-ccP" firstAttribute="top" secondItem="eer-Q8-0EF" secondAttribute="bottom" constant="31" id="q2H-4A-d56"/>
@@ -294,13 +304,17 @@
                         <constraint firstAttribute="bottom" secondItem="YkH-Se-e5b" secondAttribute="bottom" id="FDC-ek-vqv"/>
                         <constraint firstItem="YkH-Se-e5b" firstAttribute="leading" secondItem="aes-gI-1UL" secondAttribute="leading" id="O4Q-YU-FnP"/>
                         <constraint firstAttribute="trailing" secondItem="4nI-db-6ks" secondAttribute="trailing" id="PnD-cV-sYN"/>
+                        <constraint firstAttribute="trailing" secondItem="dXJ-qr-Ta1" secondAttribute="trailing" id="VKr-7X-FmQ"/>
                         <constraint firstItem="4nI-db-6ks" firstAttribute="leading" secondItem="aes-gI-1UL" secondAttribute="leading" id="bhU-t7-KZR"/>
                         <constraint firstItem="YkH-Se-e5b" firstAttribute="top" secondItem="aes-gI-1UL" secondAttribute="top" id="lYc-wM-tJ9"/>
+                        <constraint firstItem="dXJ-qr-Ta1" firstAttribute="leading" secondItem="aes-gI-1UL" secondAttribute="leading" id="ljl-li-u74"/>
                         <constraint firstItem="4nI-db-6ks" firstAttribute="top" secondItem="aes-gI-1UL" secondAttribute="top" id="pXc-f6-nsK"/>
+                        <constraint firstItem="dXJ-qr-Ta1" firstAttribute="top" secondItem="aes-gI-1UL" secondAttribute="top" id="uvU-lC-Cyl"/>
+                        <constraint firstAttribute="bottom" secondItem="dXJ-qr-Ta1" secondAttribute="bottom" id="uw9-fS-832"/>
                     </constraints>
                 </view>
-                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="V9L-ES-Vyh" userLabel="footerContainer">
-                    <rect key="frame" x="0.0" y="474" width="320" height="44"/>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="V9L-ES-Vyh" userLabel="footerContainer">
+                    <rect key="frame" x="0.0" y="556" width="600" height="44"/>
                     <subviews>
                         <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Fmg-7K-iwe" userLabel="footerSeparator">
                             <rect key="frame" x="0.0" y="0.0" width="320" height="1"/>
@@ -347,12 +361,18 @@
                             <state key="normal" title="Aug 29 - Aug 31">
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
+                            <connections>
+                                <action selector="clickFooterDatesBtn:" destination="-1" eventType="touchUpInside" id="ivj-e8-1Y5"/>
+                            </connections>
                         </button>
                     </subviews>
                     <color key="backgroundColor" red="0.92941176469999998" green="0.92941176469999998" blue="0.92941176469999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="44" id="1NH-f6-sRJ"/>
+                    </constraints>
                 </view>
-                <view autoresizesSubviews="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eex-Wc-CNp" userLabel="whereToContainer">
-                    <rect key="frame" x="20" y="31" width="320" height="66"/>
+                <view autoresizesSubviews="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eex-Wc-CNp" userLabel="whereToContainer">
+                    <rect key="frame" x="5" y="36" width="590" height="66"/>
                     <subviews>
                         <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="prd-ep-Cp9" userLabel="backContainer">
                             <rect key="frame" x="-5" y="13" width="33" height="33"/>
@@ -364,8 +384,8 @@
                             <color key="textColor" red="0.69803921570000005" green="0.69803921570000005" blue="0.69803921570000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bgf-nx-VIl" userLabel="wmapContainer" customClass="WotaTappableView">
-                            <rect key="frame" x="283" y="16" width="30" height="30"/>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bgf-nx-VIl" userLabel="wmapContainer" customClass="WotaTappableView">
+                            <rect key="frame" x="558" y="16" width="30" height="30"/>
                             <subviews>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hamburger" translatesAutoresizingMaskIntoConstraints="NO" id="djG-PH-y7q" userLabel="wmapHamburger">
                                     <rect key="frame" x="5" y="5" width="20" height="20"/>
@@ -375,6 +395,10 @@
                                 </imageView>
                             </subviews>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="30" id="Z7O-sm-lJ3"/>
+                                <constraint firstAttribute="height" constant="30" id="gnI-vd-EOU"/>
+                            </constraints>
                         </view>
                         <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Where are you going?" minimumFontSize="11" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="2Sz-Nr-Bsq" userLabel="whereToTextField">
                             <rect key="frame" x="6" y="16" width="270" height="30"/>
@@ -399,29 +423,54 @@
                             </subviews>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </view>
-                        <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Oxx-dH-MDe" userLabel="openingWmapCont">
-                            <rect key="frame" x="264" y="16" width="50" height="49"/>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Oxx-dH-MDe" userLabel="openingWmapCont">
+                            <rect key="frame" x="539" y="16" width="50" height="49"/>
                             <subviews>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="wmap_big" translatesAutoresizingMaskIntoConstraints="NO" id="N65-3W-qrZ">
                                     <rect key="frame" x="6" y="6" width="38" height="37"/>
                                 </imageView>
                             </subviews>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="50" id="TFG-uY-mw6"/>
+                                <constraint firstAttribute="height" constant="49" id="oj5-tl-eqf"/>
+                            </constraints>
                         </view>
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="bgf-nx-VIl" firstAttribute="top" secondItem="eex-Wc-CNp" secondAttribute="top" constant="16" id="17E-GZ-QGp"/>
+                        <constraint firstItem="Oxx-dH-MDe" firstAttribute="top" secondItem="eex-Wc-CNp" secondAttribute="top" constant="16" id="1Zo-Ss-Iw2"/>
+                        <constraint firstAttribute="trailing" secondItem="Oxx-dH-MDe" secondAttribute="trailing" constant="1" id="F5V-AX-Sfd"/>
+                        <constraint firstAttribute="height" constant="66" id="PZH-nW-wRM"/>
+                        <constraint firstAttribute="trailing" secondItem="bgf-nx-VIl" secondAttribute="trailing" constant="2" id="Qjn-Hi-2Nb"/>
+                        <constraint firstAttribute="bottom" secondItem="Oxx-dH-MDe" secondAttribute="bottom" constant="1" id="Zb6-ai-GeB"/>
+                        <constraint firstAttribute="bottom" secondItem="bgf-nx-VIl" secondAttribute="bottom" constant="20" id="v44-KA-xgy"/>
+                    </constraints>
                 </view>
-                <view autoresizesSubviews="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jvj-4L-MmQ" userLabel="wmapClicker">
-                    <rect key="frame" x="285" y="41" width="48" height="66"/>
+                <view autoresizesSubviews="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jvj-4L-MmQ" userLabel="wmapClicker">
+                    <rect key="frame" x="542" y="41" width="58" height="66"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="66" id="niw-Q5-gdw"/>
+                        <constraint firstAttribute="width" constant="58" id="tJg-ny-l0a"/>
+                    </constraints>
                 </view>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
-                <constraint firstItem="aes-gI-1UL" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="9Rw-aU-D83"/>
-                <constraint firstAttribute="trailing" secondItem="aes-gI-1UL" secondAttribute="trailing" id="MA2-kn-CI6"/>
-                <constraint firstAttribute="bottom" secondItem="aes-gI-1UL" secondAttribute="bottom" constant="10" id="Pqy-np-r1j"/>
-                <constraint firstItem="aes-gI-1UL" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="110" id="Shw-SC-zOW"/>
+                <constraint firstItem="jvj-4L-MmQ" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="41" id="3T4-0x-gAF" userLabel="wmapClickerTopConstr"/>
+                <constraint firstItem="V9L-ES-Vyh" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="4ya-Cw-ELm"/>
+                <constraint firstAttribute="trailing" secondItem="jvj-4L-MmQ" secondAttribute="trailing" id="91s-Gg-DWc"/>
+                <constraint firstItem="aes-gI-1UL" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="9Rw-aU-D83" userLabel="containerViewLeadingConstraint"/>
+                <constraint firstAttribute="trailing" secondItem="eex-Wc-CNp" secondAttribute="trailing" constant="5" id="9nn-81-ly8" userLabel="wtcTrailConstr"/>
+                <constraint firstAttribute="trailing" secondItem="aes-gI-1UL" secondAttribute="trailing" id="MA2-kn-CI6" userLabel="containerViewTrailingConstraint"/>
+                <constraint firstItem="eex-Wc-CNp" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="36" id="ObW-Uo-B9w" userLabel="wtcTopConstr"/>
+                <constraint firstAttribute="bottom" secondItem="aes-gI-1UL" secondAttribute="bottom" id="Pqy-np-r1j" userLabel="containerViewBottomConstraint"/>
+                <constraint firstItem="aes-gI-1UL" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="120" id="Shw-SC-zOW" userLabel="containerViewTopConstraint"/>
+                <constraint firstItem="eex-Wc-CNp" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="5" id="gvb-eR-76L" userLabel="wtcLeadConstr"/>
+                <constraint firstAttribute="trailing" secondItem="V9L-ES-Vyh" secondAttribute="trailing" id="iCy-ts-VZn"/>
+                <constraint firstAttribute="bottom" secondItem="V9L-ES-Vyh" secondAttribute="bottom" id="mMK-OG-4PV"/>
             </constraints>
         </view>
     </objects>

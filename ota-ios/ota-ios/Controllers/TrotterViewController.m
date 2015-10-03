@@ -64,7 +64,6 @@ NSUInteger const kAcknowledgemenTag = 1917157;
 @property (nonatomic, strong) NSMutableArray *placesTableData;
 @property (nonatomic, strong) UITableView *placesTableView;
 @property (nonatomic, readonly) CGRect placesTableViewZeroFrame;
-@property (nonatomic, readonly) CGRect placesTableViewExpandedFrame;
 @property (nonatomic) BOOL isPlacesTableViewExpanded;
 @property (nonatomic) NSTimeInterval animationDuraton;
 //@property (nonatomic, strong) MKMapView *mkMapView;
@@ -154,6 +153,12 @@ NSUInteger const kAcknowledgemenTag = 1917157;
 @property (weak, nonatomic) IBOutlet UIScrollView *legalScrollView;
 @property (weak, nonatomic) IBOutlet UIScrollView *acknowScrollView;
 
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *containerViewBottomConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *containerViewTopConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *wtcTopConstr;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *wmapClickerTopConstr;
+
+
 #pragma mark IBActions
 
 - (IBAction)clickArrivalDateBtn:(id)sender;
@@ -225,7 +230,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     
     self.mkMapView.delegate = self;
     
-    self.containerViewSpinnerContainer = [[UIView alloc] initWithFrame:self.view.bounds];
+    self.containerViewSpinnerContainer = [[UIView alloc] initWithFrame:_screenRect];
     self.containerViewSpinnerContainer.backgroundColor = [UIColor blackColor];
     self.containerViewSpinnerContainer.alpha = 0.0f;
     [self.view addSubview:self.containerViewSpinnerContainer];
@@ -387,6 +392,8 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     menuTgr.numberOfTapsRequired = menuTgr.numberOfTouchesRequired = 1;
     menuTgr.cancelsTouchesInView = YES;
     [self.menuContainer addGestureRecognizer:menuTgr];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(animateTableViewExpansion:) name:UIKeyboardWillShowNotification object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -408,6 +415,8 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -501,9 +510,9 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     [self clickMapBack:nil];
     self.containerView.userInteractionEnabled = YES;
     
-    if (!_isPlacesTableViewExpanded) {
-        [self animateTableViewExpansion];
-    }
+//    if (!_isPlacesTableViewExpanded) {
+//        [self animateTableViewExpansion];
+//    }
     
     [self.view bringSubviewToFront:self.wmapClicker];
     
@@ -1009,7 +1018,20 @@ NSUInteger const kAcknowledgemenTag = 1917157;
 
 #pragma mark Some animation methods
 
-- (void)animateTableViewExpansion {
+- (void)animateTableViewExpansion:(NSNotification *)notification {
+    if (_isPlacesTableViewExpanded)
+        return;
+    
+    // keyboard frame is in window coordinates
+    NSDictionary *userInfo = [notification userInfo];
+    CGRect keyboardFrame = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    
+    UIView *ovl = [[UIView alloc] initWithFrame:CGRectMake(0, 66, _screenRect.size.width, 0)];
+    ovl.tag = 148620;
+    ovl.backgroundColor = [UIColor whiteColor];
+    [self.view addSubview:ovl];
+    [self.view bringSubviewToFront:ovl];
+    
     __weak UIView *actv = self.placesTableView;
     [self.view bringSubviewToFront:actv];
 //    if (restoringWhereTo) {
@@ -1018,11 +1040,15 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     
     [self transitionToWmapCancel];
     
+    __weak typeof(self) wes = self;
     self.isPlacesTableViewExpanded = YES;
     [UIView animateWithDuration:self.animationDuraton animations:^{
-        actv.frame = self.placesTableViewExpandedFrame;
+        ovl.frame = CGRectMake(0, 66, wes.screenRect.size.width, wes.screenRect.size.height - 66);
+        actv.frame = [ wes placesTableViewExpandedFrame:keyboardFrame.size.height];
     } completion:^(BOOL finished) {
     }];
+    
+    [self.view bringSubviewToFront:self.wmapClicker];
 }
 
 - (void)animateTableViewCompression {
@@ -1050,14 +1076,17 @@ NSUInteger const kAcknowledgemenTag = 1917157;
             break;
     }
     
+    __weak UIView *ovl = [self.view viewWithTag:148620];
     __weak typeof(self) wes = self;
     __weak UIView *actv = self.placesTableView;
     [wes.view bringSubviewToFront:actv];
     self.isPlacesTableViewExpanded = NO;
     
     [UIView animateWithDuration:self.animationDuraton animations:^{
-        actv.frame = self.placesTableViewZeroFrame;
+        actv.frame = wes.placesTableViewZeroFrame;
+        ovl.frame = CGRectMake(0, 66, wes.screenRect.size.width, 0);
     } completion:^(BOOL finished) {
+        [ovl removeFromSuperview];
         [wes.view sendSubviewToBack:actv];
     }];
 }
@@ -1156,9 +1185,15 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     
     [self restoreWhereTo:nil];
     
+    [wes.view layoutIfNeeded];
+    wes.containerViewTopConstraint.constant = 120.0f - 35.0f;
+    wes.containerViewBottomConstraint.constant = 44.0f;
+    wes.wtcTopConstr.constant = 22.0f;
+    wes.wmapClickerTopConstr.constant = 21.0f;
     [UIView animateWithDuration:kTrvFlipAnimationDuration animations:^{
-        wes.containerView.frame = wes.containerViewFrame;
-        wes.whereToContainer.frame = CGRectMake(0, 20, 320, 49);
+        [wes.view layoutIfNeeded];
+//        wes.containerView.frame = wes.containerViewFrame;
+//        wes.whereToContainer.frame = CGRectMake(0, 20, 320, 49);
         wes.autoCompleteSpinner.frame = CGRectMake(224, 19, 20, 20);
         wes.whereToTextField.frame = CGRectMake(32, 14, 244, 30);
         wes.whereToSecondLevel.frame = CGRectMake(39, 15, 232, 21);
@@ -1184,9 +1219,15 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     wes.mapMapSearch.userInteractionEnabled = YES;
     wes.mapMapSearch.alpha = 1.0f;
     
+    [wes.view layoutIfNeeded];
+    wes.containerViewTopConstraint.constant = 120.0f;
+    wes.containerViewBottomConstraint.constant = 0.0f;
+    wes.wtcTopConstr.constant = 36.0f;
+    wes.wmapClickerTopConstr.constant = 41.0f;
     [UIView animateWithDuration:kTrvFlipAnimationDuration animations:^{
-        wes.containerView.frame = wes.containerViewFrame;
-        wes.whereToContainer.frame = CGRectMake(0, 52, 320, 66);
+        [wes.view layoutIfNeeded];
+//        wes.containerView.frame = wes.containerViewFrame;
+//        wes.whereToContainer.frame = CGRectMake(0, 52, 320, 66);
         wes.autoCompleteSpinner.frame = CGRectMake(224, 21, 20, 20);
         wes.whereToTextField.frame = CGRectMake(6, 16, 270, 30);
         wes.whereToSecondLevel.frame = CGRectMake(13, 45, 295, 21);
@@ -1525,11 +1566,15 @@ NSUInteger const kAcknowledgemenTag = 1917157;
 }
 
 - (CGRect)placesTableViewZeroFrame {
-    return self.criteriaOrHotelSearchMode ? CGRectMake(0, 64, 320, 0) : CGRectMake(0, 98, 320, 0);
+    CGFloat w = _screenRect.size.width;
+    return self.criteriaOrHotelSearchMode ? CGRectMake(0, 66, w, 0) : CGRectMake(0, 98, w, 0);
 }
 
-- (CGRect)placesTableViewExpandedFrame {
-    return self.criteriaOrHotelSearchMode ? CGRectMake(0, 64, 320, 288) : CGRectMake(0, 98, 320, 254);
+- (CGRect)placesTableViewExpandedFrame:(CGFloat) keyboardHeight {
+    CGFloat w = _screenRect.size.width;
+    CGFloat sh = self.criteriaOrHotelSearchMode ? 66 : 98;
+    CGFloat h = _screenRect.size.height - sh - keyboardHeight;
+    return CGRectMake(0, sh, w, h);
 }
 
 #pragma mark Various events and such
@@ -2022,9 +2067,19 @@ NSUInteger const kAcknowledgemenTag = 1917157;
 #pragma mark Helpers
 
 - (void)setupTheFilterTableView {
-    NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"HotelNameFilterView" owner:self options:nil];
-    UIView *filterView = views.firstObject;
-    UITextField *tf = (UITextField *) [filterView viewWithTag:41414141];
+//    NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"HotelNameFilterView" owner:self options:nil];
+//    UIView *filterView = views.firstObject;
+    
+    UIView *filterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, _screenRect.size.width, 44)];
+    
+    CGFloat wx = (_screenRect.size.width - 280)/2.0f;
+    UITextField *tf = [[UITextField alloc] initWithFrame:CGRectMake(wx, 7, 280, 30)];//(UITextField *) [filterView viewWithTag:41414141];
+    tf.tag = 41414141;
+    tf.layer.cornerRadius = 6.0f;
+    tf.layer.borderColor = UIColorFromRGB(0xcccccc).CGColor;
+    tf.layer.borderWidth = 0.5f;
+    tf.clearButtonMode = UITextFieldViewModeWhileEditing;
+    [filterView addSubview:tf];
     tf.delegate = _hotelTableViewDelegate;
     
     UIImage *im = [[UIImage imageNamed:@"search_mid.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
@@ -2037,7 +2092,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     ivc.backgroundColor = [UIColor clearColor];
     [ivc addSubview:iv];
     
-    UIView *separator = [[UILabel alloc] initWithFrame:CGRectMake(0, 43.5f, 320, 0.5f)];
+    UIView *separator = [[UILabel alloc] initWithFrame:CGRectMake(0, 43.5f, _screenRect.size.width, 0.5f)];
     separator.backgroundColor = kNavBorderColor();
     [filterView addSubview:separator];
     
@@ -2054,7 +2109,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     if (!fv) {
         NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"FilterView" owner:self options:nil];
         fv = views.firstObject;
-        fv.frame = CGRectMake(0, 600, 320, 300);
+        fv.frame = CGRectMake(0, _screenRect.size.height, 320, 300);
         [self.view addSubview:fv];
         
         UIButton *db = (WotaButton *) [fv viewWithTag:16171819];
@@ -2126,7 +2181,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     if (!sv) {
         NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"SortView" owner:self options:nil];
         sv = views.firstObject;
-        sv.frame = CGRectMake(0, 600, 320, 300);
+        sv.frame = CGRectMake(0, _screenRect.size.height, 320, 300);
         [self.view addSubview:sv];
         
         UIButton *db = (WotaButton *) [sv viewWithTag:36373839];
@@ -2240,7 +2295,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     filterViewUp = NO;
     [UIView animateWithDuration:kTrvSearchModeAnimationDuration animations:^{
         _overlay.alpha = 0.0f;
-        fv.frame = CGRectMake(0, 600, 320, 300);
+        fv.frame = CGRectMake(0, _screenRect.size.height, 320, 300);
     } completion:^(BOOL finished) {
         [self.view sendSubviewToBack:_overlay];
         [self.view sendSubviewToBack:fv];
@@ -2268,7 +2323,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     __weak UIView *sv = [self.view viewWithTag:414377];
     [UIView animateWithDuration:kTrvSearchModeAnimationDuration animations:^{
         _overlay.alpha = 0.0f;
-        sv.frame = CGRectMake(0, 600, 320, 300);
+        sv.frame = CGRectMake(0, _screenRect.size.height, 320, 300);
     } completion:^(BOOL finished) {
         [self.view sendSubviewToBack:_overlay];
         [self.view sendSubviewToBack:sv];

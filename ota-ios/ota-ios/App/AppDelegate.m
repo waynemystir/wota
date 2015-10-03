@@ -34,11 +34,11 @@ static BOOL _ipSearchCompleted = NO;
     self.window = [[UIWindow alloc] initWithFrame:sf];
     self.window.rootViewController = nc;
     self.window.backgroundColor = [UIColor whiteColor];
-    if (sf.size.height == 480) {
-        self.window.frame = CGRectMake(0, 0, 270.4224f, 480);
-        self.window.transform = CGAffineTransformMakeTranslation(25.0f, 0.0f);
-        self.window.clipsToBounds = YES;
-    }
+//    if (sf.size.height == 480) {
+//        self.window.frame = CGRectMake(0, 0, 270.4224f, 480);
+//        self.window.transform = CGAffineTransformMakeTranslation(25.0f, 0.0f);
+//        self.window.clipsToBounds = YES;
+//    }
     [self.window makeKeyAndVisible];
     
     return YES;
@@ -82,7 +82,7 @@ static BOOL _ipSearchCompleted = NO;
 #pragma mark Spinner stuff
 
 - (void)loadDaSpinner {
-    CGRect r = [[UIScreen mainScreen] bounds].size.height == 480 ? CGRectMake(0, 54.08448f, 270.4224f, 426) : CGRectMake(0, 64, 320, 504);
+    CGRect r = [[UIScreen mainScreen] bounds].size.height == 480 ? CGRectMake(0, 54.08448f, 270.4224f, 426) : CGRectMake(0, 64, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height - 64);
     [self loadDaSpinnerWithFrame:r];
 }
 

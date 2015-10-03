@@ -262,7 +262,8 @@ UIColor * kTheColorOfMoney() {
 }
 
 CGAffineTransform kIpadTransform() {
-    return CGAffineTransformMakeScale(0.845070f, 0.845070f);
+    return CGAffineTransformMakeScale(1.0f, 1.0f);
+//    return CGAffineTransformMakeScale(0.845070f, 0.845070f);
 }
 
 CGFloat const WOTA_CORNER_RADIUS = 6.0f;
