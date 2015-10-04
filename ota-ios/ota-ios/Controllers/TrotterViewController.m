@@ -54,7 +54,6 @@ NSUInteger const kBookingSupportTag = 1917151;
 NSUInteger const kClearPrivaDataTag = 1917152;
 NSUInteger const kPrivDataOverlaTag = 1917153;
 NSUInteger const kLegalDocumentVTag = 1917154;
-NSUInteger const kTermsWebOrNatiTag = 1917155;
 NSUInteger const kTermsUIWebViewTag = 1917156;
 NSUInteger const kAcknowledgemenTag = 1917157;
 
@@ -152,6 +151,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
 @property (weak, nonatomic) IBOutlet UILabel *legalViewText;
 @property (weak, nonatomic) IBOutlet UIScrollView *legalScrollView;
 @property (weak, nonatomic) IBOutlet UIScrollView *acknowScrollView;
+@property (weak, nonatomic) IBOutlet UILabel *legalLinkLabel;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *containerViewBottomConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *containerViewTopConstraint;
@@ -1034,7 +1034,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
 #pragma mark Some animation methods
 
 - (void)animateTableViewExpansion:(NSNotification *)notification {
-    if (_isPlacesTableViewExpanded)
+    if (_isPlacesTableViewExpanded || ![self.whereToTextField isFirstResponder])
         return;
     
     // keyboard frame is in window coordinates
@@ -1310,7 +1310,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
 - (void)loadNoWhateverView:(NSString *)title text:(NSString *)text {
     NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"NoHotelsView" owner:self options:nil];
     __block UIView *nhv = views.firstObject;
-    nhv.frame = CGRectMake(15, 210, 290, 165);
+    nhv.frame = CGRectMake((_screenRect.size.width - 290)/2, (_screenRect.size.height - 165)/2, 290, 165);
     nhv.layer.cornerRadius = WOTA_CORNER_RADIUS;
     nhv.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
     
@@ -1323,7 +1323,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     tt.text = title ? : tt.text;
     tx.text = text ? : tx.text;
     
-    UIView *ov = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 568)];
+    UIView *ov = [[UIView alloc] initWithFrame:_screenRect];
     ov.tag = 14942484;
     ov.backgroundColor = [UIColor blackColor];
     ov.alpha = 0.0;
@@ -2081,6 +2081,11 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     tf.layer.borderColor = UIColorFromRGB(0xcccccc).CGColor;
     tf.layer.borderWidth = 0.5f;
     tf.clearButtonMode = UITextFieldViewModeWhileEditing;
+    tf.autocorrectionType = UITextAutocorrectionTypeNo;
+    tf.autocapitalizationType = UITextAutocapitalizationTypeWords;
+    tf.spellCheckingType = UITextSpellCheckingTypeNo;
+    tf.enablesReturnKeyAutomatically = YES;
+    tf.returnKeyType = UIReturnKeyDone;
     [filterView addSubview:tf];
     tf.delegate = _hotelTableViewDelegate;
     
@@ -2222,8 +2227,8 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     if (!travelersView) {
         NSArray *wes = [[NSBundle mainBundle] loadNibNamed:@"TravelersView" owner:self options:nil];
         travelersView = wes.firstObject;
-        travelersView.frame = CGRectMake(0, _screenRect.size.height, 320, 320);
         [self.view addSubview:travelersView];
+        travelersView.frame = CGRectMake((_screenRect.size.width - 320)/2, _screenRect.size.height, 320, 320);
         
         WotaButton *db = (WotaButton *)[travelersView viewWithTag:4728197];
         [db addTarget:self action:@selector(dropTravelersView) forControlEvents:UIControlEventTouchUpInside];
@@ -2264,13 +2269,15 @@ NSUInteger const kAcknowledgemenTag = 1917157;
 
 - (void)clickTravelersContainer {
     __weak UIView *travelersView = [self.view viewWithTag:434147];
+    CGRect sr = _screenRect;
+    travelersView.frame = CGRectMake((sr.size.width - 320)/2, sr.size.height, 320, 320);
     
     [self.view endEditing:YES];
     [self.view bringSubviewToFront:_overlay];
     [self.view bringSubviewToFront:travelersView];
     [UIView animateWithDuration:0.28 animations:^{
         _overlay.alpha = 0.7f;
-        travelersView.frame = CGRectMake(0, 248, 320, 320);
+        travelersView.frame = CGRectMake((sr.size.width - 320)/2, sr.size.height - 320, 320, 320);
     } completion:^(BOOL finished) {
         ;
     }];
@@ -2278,6 +2285,8 @@ NSUInteger const kAcknowledgemenTag = 1917157;
 
 - (void)loadFilterView {
     __weak UIView *fv = [self.view viewWithTag:91929394];
+    CGRect sr = _screenRect;
+    fv.frame = CGRectMake((sr.size.width - 320)/2, sr.size.height, 320, 300);
     [self updateFilterViewNumbers:fv];
     [self.view bringSubviewToFront:_overlay];
     [self.view bringSubviewToFront:fv];
@@ -2285,7 +2294,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     filterViewUp = YES;
     [UIView animateWithDuration:kTrvSearchModeAnimationDuration animations:^{
         _overlay.alpha = 0.7f;
-        fv.frame = CGRectMake(0, 268, 320, 300);
+        fv.frame = CGRectMake((sr.size.width - 320)/2, sr.size.height - 300, 320, 300);
     } completion:^(BOOL finished) {
         ;
     }];
@@ -2294,10 +2303,11 @@ NSUInteger const kAcknowledgemenTag = 1917157;
 - (void)dropFilterView {
     [self.hotelTableViewDelegate letsFilter];
     __weak UIView *fv = [self.view viewWithTag:91929394];
+    CGRect sr = _screenRect;
     filterViewUp = NO;
     [UIView animateWithDuration:kTrvSearchModeAnimationDuration animations:^{
         _overlay.alpha = 0.0f;
-        fv.frame = CGRectMake(0, _screenRect.size.height, 320, 300);
+        fv.frame = CGRectMake((sr.size.width - 320)/2, _screenRect.size.height, 320, 300);
     } completion:^(BOOL finished) {
         [self.view sendSubviewToBack:_overlay];
         [self.view sendSubviewToBack:fv];
@@ -2311,11 +2321,13 @@ NSUInteger const kAcknowledgemenTag = 1917157;
 
 - (void)loadSortView {
     __weak UIView *sv = [self.view viewWithTag:414377];
+    CGRect sr = _screenRect;
+    sv.frame = CGRectMake((sr.size.width - 320)/2, sr.size.height, 320, 300);
     [self.view bringSubviewToFront:_overlay];
     [self.view bringSubviewToFront:sv];
     [UIView animateWithDuration:kTrvSearchModeAnimationDuration animations:^{
         _overlay.alpha = 0.7f;
-        sv.frame = CGRectMake(0, 268, 320, 300);
+        sv.frame = CGRectMake((sr.size.width - 320)/2, sr.size.height - 300, 320, 300);
     } completion:^(BOOL finished) {
         ;
     }];
@@ -2323,9 +2335,10 @@ NSUInteger const kAcknowledgemenTag = 1917157;
 
 - (void)dropSortView {
     __weak UIView *sv = [self.view viewWithTag:414377];
+    CGRect sr = _screenRect;
     [UIView animateWithDuration:kTrvSearchModeAnimationDuration animations:^{
         _overlay.alpha = 0.0f;
-        sv.frame = CGRectMake(0, _screenRect.size.height, 320, 300);
+        sv.frame = CGRectMake((sr.size.width - 320)/2, sr.size.height, 320, 300);
     } completion:^(BOOL finished) {
         [self.view sendSubviewToBack:_overlay];
         [self.view sendSubviewToBack:sv];
@@ -2333,7 +2346,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
 }
 
 - (void)dropFilterOrSortView {
-    if ([self.view viewWithTag:434147].frame.origin.y == 248) {
+    if ([self.view viewWithTag:434147].frame.origin.y == (_screenRect.size.height - 320)) {
         [self dropTravelersView];
     } else if (self.viewState == VIEW_STATE_MAP || filterViewUp) {
         [self dropFilterView];
@@ -2344,9 +2357,11 @@ NSUInteger const kAcknowledgemenTag = 1917157;
 
 - (void)dropTravelersView {
     __weak UIView *tv = [self.view viewWithTag:434147];
+    CGRect sr = _screenRect;
+    
     [UIView animateWithDuration:0.28 animations:^{
         _overlay.alpha = 0.0f;
-        tv.frame = CGRectMake(0, _screenRect.size.height, 320, 320);
+        tv.frame = CGRectMake((sr.size.width - 320)/2, _screenRect.size.height, 320, 320);
     } completion:^(BOOL finished) {
         [self.view sendSubviewToBack:_overlay];
         [self.view sendSubviewToBack:tv];
@@ -2527,6 +2542,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     _menuView = views.firstObject;
     UIButton *cb = (UIButton *)[_menuView viewWithTag:246824];
     [cb addTarget:self action:@selector(dropMenu) forControlEvents:UIControlEventTouchUpInside];
+    _menuView.frame = CGRectMake(0, 20, _screenRect.size.width, _screenRect.size.height - 20);
     
     return _menuView;
 }
@@ -2534,7 +2550,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
 - (UIView *)menuOverlay {
     if (_menuOverlay) return _menuOverlay;
     
-    _menuOverlay = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 568)];
+    _menuOverlay = [[UIView alloc] initWithFrame:_screenRect];
     _menuOverlay.backgroundColor = [UIColor clearColor];
     _menuOverlay.userInteractionEnabled = NO;
     
@@ -2548,12 +2564,12 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     [self.view bringSubviewToFront:mo];
     
     __weak UIView *m = self.menuView;
-    m.frame = CGRectMake(0, _screenRect.size.height, 320, 548);
+    m.frame = CGRectMake(0, _screenRect.size.height, _screenRect.size.width, _screenRect.size.height - 20);
     [self.view addSubview:m];
     [self.view bringSubviewToFront:mo];
     
     [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
-        m.frame = CGRectMake(0, 20, 320, 548);
+        m.frame = CGRectMake(0, 20, _screenRect.size.width, _screenRect.size.height - 20);
     } completion:^(BOOL finished) {
         mo.userInteractionEnabled = NO;
     }];
@@ -2563,7 +2579,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     __weak UIView *mo = self.menuOverlay;
     __weak UIView *m = self.menuView;
     [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
-        m.frame = CGRectMake(0, _screenRect.size.height, 320, 548);
+        m.frame = CGRectMake(0, _screenRect.size.height, _screenRect.size.width, _screenRect.size.height - 20);
     } completion:^(BOOL finished) {
         [m removeFromSuperview];
         [mo removeFromSuperview];
@@ -2575,7 +2591,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"BookingSupportView" owner:self options:nil];
     UIView *bsv = views.firstObject;
     bsv.tag = kBookingSupportTag;
-    bsv.frame = CGRectMake(0, _screenRect.size.height, 320, 548);
+    bsv.frame = CGRectMake(0, _screenRect.size.height, _screenRect.size.width, _screenRect.size.height - 20);
     
     UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickSelfServeLink:)];
     tgr.numberOfTapsRequired = tgr.numberOfTouchesRequired = 1;
@@ -2585,7 +2601,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     [self.view addSubview:bsv];
     
     [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
-        bsv.frame = CGRectMake(0, 20, 320, 548);
+        bsv.frame = CGRectMake(0, 20, _screenRect.size.width, _screenRect.size.height - 20);
     } completion:^(BOOL finished) {
     }];
 }
@@ -2595,7 +2611,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     UIView *bsv = [self.view viewWithTag:kBookingSupportTag];
     
     [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
-        bsv.frame = CGRectMake(0, _screenRect.size.height, 320, 548);
+        bsv.frame = CGRectMake(0, _screenRect.size.height, _screenRect.size.width, _screenRect.size.height - 20);
     } completion:^(BOOL finished) {
         [bsv removeFromSuperview];
     }];
@@ -2639,11 +2655,12 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"ClearDataView" owner:self options:nil];
     UIView *cpdv = views.firstObject;
     cpdv.tag = kClearPrivaDataTag;
-    cpdv.frame = CGRectMake(30, 150, 260, 276);
+    CGRect sr = _screenRect;
+    cpdv.frame = CGRectMake((sr.size.width - 260)/2, (sr.size.height - 276)/2, 260, 276);
     cpdv.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
     cpdv.layer.cornerRadius = WOTA_CORNER_RADIUS;
     
-    UIView *ol = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 568)];
+    UIView *ol = [[UIView alloc] initWithFrame:sr];
     ol.tag = kPrivDataOverlaTag;
     ol.alpha = 0.0f;
     ol.backgroundColor = [UIColor blackColor];
@@ -2664,6 +2681,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
 
 - (IBAction)clickPrivacyPolicy:(id)sender {
     [self loadLegalViewWithTitle:@"Privacy Policy" fileName:@"PrivacyPolicy"];
+    self.legalLinkLabel.hidden = YES;
 }
 
 - (IBAction)clickTermsConditions:(id)sender {
@@ -2672,19 +2690,11 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     self.legalScrollView.frame = CGRectMake(lsf.origin.x, lsf.origin.y, lsf.size.width, lsf.size.height - 40);
     lsf = self.legalScrollView.frame;
     
-    UILabel *urlLink = [[UILabel alloc] initWithFrame:CGRectMake(lsf.origin.x, lsf.origin.y + lsf.size.height + 4, lsf.size.width, 40)];
-    urlLink.tag = kTermsWebOrNatiTag;
-    urlLink.text = @"  Website Terms & Conditions";
-    urlLink.backgroundColor = [UIColor clearColor];
-    urlLink.textColor = self.view.tintColor;
-    urlLink.userInteractionEnabled = YES;
+    self.legalLinkLabel.text = @" Website Terms & Conditions";
     
     UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapWebsiteTncLink:)];
     tgr.numberOfTapsRequired = tgr.numberOfTouchesRequired = 1;
-    [urlLink addGestureRecognizer:tgr];
-    
-    __weak UIView *legalView = self.legalScrollView.superview;
-    [legalView addSubview:urlLink];
+    [self.legalLinkLabel addGestureRecognizer:tgr];
 }
 
 - (void)tapWebsiteTncLink:(UITapGestureRecognizer *)tgr {
@@ -2703,7 +2713,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
         [self.legalScrollView.superview addSubview:wv];
     }
     
-    UILabel *urlLink = (UILabel *)[self.legalScrollView.superview viewWithTag:kTermsWebOrNatiTag];
+    UILabel *urlLink = self.legalLinkLabel;
     urlLink.userInteractionEnabled = NO;
     urlLink.textColor = [UIColor lightGrayColor];
     
@@ -2716,7 +2726,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
             urlLink.textColor = self.view.tintColor;
         }];
     } else {
-        urlLink.text = @"  Website Terms & Conditions";
+        urlLink.text = @" Website Terms & Conditions";
         [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
             wv.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
         } completion:^(BOOL finished) {
@@ -2733,7 +2743,8 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"LegalView" owner:self options:nil];
     UIView *legalView = views.firstObject;
     legalView.tag = kLegalDocumentVTag;
-    legalView.frame = CGRectMake(0, _screenRect.size.height, 320, 548);
+    CGRect sr = _screenRect;
+    legalView.frame = CGRectMake(0, sr.size.height, sr.size.width, sr.size.height - 20);
     [self.view addSubview:legalView];
     self.legalViewTitle.text = title;
     
@@ -2752,7 +2763,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     self.legalScrollView.layer.borderWidth = 1.0f;
     
     [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
-        legalView.frame = CGRectMake(0, 20, 320, 548);
+        legalView.frame = CGRectMake(0, 20, sr.size.width, sr.size.height - 20);
     } completion:^(BOOL finished) {
         ;
     }];
@@ -2770,9 +2781,10 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     self.menuOverlay.userInteractionEnabled = NO;
     [self.view endEditing:YES];
     UIView *legalView = [self.view viewWithTag:kLegalDocumentVTag];
+    CGRect sr = _screenRect;
     
     [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
-        legalView.frame = CGRectMake(0, _screenRect.size.height, 320, 548);
+        legalView.frame = CGRectMake(0, sr.size.height, sr.size.width, sr.size.height - 20);
     } completion:^(BOOL finished) {
         [legalView removeFromSuperview];
     }];
@@ -2783,7 +2795,8 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"AcknowledgementsView" owner:self options:nil];
     UIView *acknowView = views.firstObject;
     acknowView.tag = kAcknowledgemenTag;
-    acknowView.frame = CGRectMake(0, _screenRect.size.height, 320, 548);
+    CGRect sr = _screenRect;
+    acknowView.frame = CGRectMake(0, sr.size.height, sr.size.width, sr.size.height - 20);
     [self.view addSubview:acknowView];
     
     __block CGRect vf = CGRectMake(5, 5, 300, 35);
@@ -2827,7 +2840,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     self.acknowScrollView.layer.borderWidth = 1.0f;
     
     [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
-        acknowView.frame = CGRectMake(0, 20, 320, 548);
+        acknowView.frame = CGRectMake(0, 20, sr.size.width, sr.size.height - 20);
     } completion:^(BOOL finished) {
         ;
     }];
@@ -2857,9 +2870,10 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     self.menuOverlay.userInteractionEnabled = NO;
     [self.view endEditing:YES];
     UIView *acknowView = [self.view viewWithTag:kAcknowledgemenTag];
+    CGRect sr = _screenRect;
     
     [UIView animateWithDuration:kTrvMenuAnimationDuration animations:^{
-        acknowView.frame = CGRectMake(0, _screenRect.size.height, 320, 548);
+        acknowView.frame = CGRectMake(0, sr.size.height, sr.size.width, sr.size.height - 20);
     } completion:^(BOOL finished) {
         [acknowView removeFromSuperview];
     }];

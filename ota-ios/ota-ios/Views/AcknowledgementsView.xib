@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="TrotterViewController">
@@ -11,19 +12,25 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="iN0-l3-epB">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="548"/>
+            <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Acknowledgements &amp; Credits" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="hU5-pt-Xnw" userLabel="acknowViewTitle">
-                    <rect key="frame" x="8" y="53" width="304" height="21"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Acknowledgements &amp; Credits" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hU5-pt-Xnw" userLabel="acknowViewTitle">
+                    <rect key="frame" x="148" y="53" width="304" height="21"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="21" id="OUg-mL-lXk"/>
+                        <constraint firstAttribute="width" constant="304" id="ioh-BI-WgU"/>
+                    </constraints>
                     <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="jzD-b6-UWI" customClass="WotaButton">
-                    <rect key="frame" x="249" y="8" width="63" height="32"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jzD-b6-UWI" customClass="WotaButton">
+                    <rect key="frame" x="529" y="8" width="63" height="32"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="63" id="NaT-Rb-aoU"/>
+                        <constraint firstAttribute="height" constant="32" id="Oc7-22-GKm"/>
+                    </constraints>
                     <state key="normal" title="Done">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
@@ -31,12 +38,23 @@
                         <action selector="clickAcknowDone:" destination="-1" eventType="touchUpInside" id="R3M-Xr-80L"/>
                     </connections>
                 </button>
-                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="z86-d8-kkJ" userLabel="acknowScrollView">
-                    <rect key="frame" x="5" y="92" width="310" height="449"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="z86-d8-kkJ" userLabel="acknowScrollView">
+                    <rect key="frame" x="145" y="92" width="310" height="449"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="449" id="EDU-9I-XTo"/>
+                        <constraint firstAttribute="width" constant="310" id="dHq-0u-VSA"/>
+                    </constraints>
                 </scrollView>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="z86-d8-kkJ" firstAttribute="top" secondItem="hU5-pt-Xnw" secondAttribute="bottom" constant="18" id="MsT-1J-hZw"/>
+                <constraint firstItem="hU5-pt-Xnw" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="53" id="Vtv-eD-wQT"/>
+                <constraint firstAttribute="trailing" secondItem="jzD-b6-UWI" secondAttribute="trailing" constant="8" id="gxu-Ot-cid"/>
+                <constraint firstItem="hU5-pt-Xnw" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="j8Y-JH-2Qh"/>
+                <constraint firstItem="z86-d8-kkJ" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="o0s-Lo-6QR"/>
+                <constraint firstItem="jzD-b6-UWI" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="8" id="wZS-tN-tYD"/>
+            </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <nil key="simulatedTopBarMetrics"/>
             <nil key="simulatedBottomBarMetrics"/>
@@ -45,9 +63,4 @@
             <point key="canvasLocation" x="297" y="366"/>
         </view>
     </objects>
-    <simulatedMetricsContainer key="defaultSimulatedMetrics">
-        <simulatedStatusBarMetrics key="statusBar"/>
-        <simulatedOrientationMetrics key="orientation"/>
-        <simulatedScreenMetrics key="destination" type="retina4"/>
-    </simulatedMetricsContainer>
 </document>

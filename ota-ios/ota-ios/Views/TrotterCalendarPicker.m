@@ -60,8 +60,8 @@
 - (id)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
         _screenRect = [[UIScreen mainScreen] bounds];
-        self.frame = CGRectMake(0, _screenRect.size.height, 320, 320);
-        overlay = [[UIControl alloc] initWithFrame:CGRectMake(0, 0, 320, 568)];
+        self.frame = CGRectMake((_screenRect.size.width - 320)/2, _screenRect.size.height, 320, 320);
+        overlay = [[UIControl alloc] initWithFrame:_screenRect];
         overlay.backgroundColor = [UIColor blackColor];
         overlay.alpha = 0.0f;
         [overlay addTarget:self action:@selector(overlayClicked) forControlEvents:UIControlEventTouchUpInside];
@@ -85,6 +85,8 @@
 - (void)loadDatePicker {
     __weak typeof(self) tcp = self;
     __weak typeof(UIView) *sv = self.superview;
+    CGRect sr = _screenRect;
+    tcp.frame = CGRectMake((sr.size.width - 320)/2, sr.size.height, 320, 320);
     
     [sv addSubview:overlay];
     [sv bringSubviewToFront:overlay];
@@ -92,7 +94,7 @@
     
     [UIView animateWithDuration:0.28 animations:^{
         overlay.alpha = 0.7;
-        tcp.frame = CGRectMake(0, 248, 320, 320);
+        tcp.frame = CGRectMake((sr.size.width - 320)/2, sr.size.height - 320, 320, 320);
     } completion:^(BOOL finished) {
         ;
     }];
@@ -101,10 +103,11 @@
 - (void)dropDatePicker {
     __weak typeof(self) tcp = self;
     __weak typeof(UIView) *sv = self.superview;
+    CGRect sr = _screenRect;
     
     [UIView animateWithDuration:0.28 animations:^{
         overlay.alpha = 0.0f;
-        tcp.frame = CGRectMake(0, _screenRect.size.height + 1, 320, 320);
+        tcp.frame = CGRectMake((sr.size.width - 320)/2, sr.size.height, 320, 320);
     } completion:^(BOOL finished) {
         [sv sendSubviewToBack:overlay];
         [overlay removeFromSuperview];

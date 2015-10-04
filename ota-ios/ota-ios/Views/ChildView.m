@@ -29,6 +29,7 @@ NSTimeInterval const kCvAnimationDuration = 0.6;
 @property (nonatomic, strong) WotaButton *doneButton;
 @property (nonatomic, strong) UIPickerView *pickerView;
 @property (nonatomic, strong) NSMutableArray *pickerData;
+@property (nonatomic) CGRect screenRect;
 
 - (IBAction)justPushIt:(id)sender;
 
@@ -67,8 +68,9 @@ NSTimeInterval const kCvAnimationDuration = 0.6;
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
-        self.frame = CGRectMake(0, 569, 320, 320);
-        overlay = [[UIControl alloc] initWithFrame:CGRectMake(0, 0, 320, 568)];
+        _screenRect = [[UIScreen mainScreen] bounds];
+        self.frame = CGRectMake((_screenRect.size.width - 320)/2, _screenRect.size.height, 320, 320);
+        overlay = [[UIControl alloc] initWithFrame:_screenRect];
         overlay.backgroundColor = [UIColor blackColor];
         overlay.alpha = 0.0f;
         [overlay addTarget:self action:@selector(overlayClicked) forControlEvents:UIControlEventTouchUpInside];
@@ -81,6 +83,7 @@ NSTimeInterval const kCvAnimationDuration = 0.6;
 - (void)loadChildView {
     __weak typeof(self) tcp = self;
     __weak typeof(UIView) *sv = self.superview;
+    CGRect sr = _screenRect;
     
     [sv addSubview:overlay];
     [sv bringSubviewToFront:overlay];
@@ -88,7 +91,7 @@ NSTimeInterval const kCvAnimationDuration = 0.6;
     
     [UIView animateWithDuration:0.33 animations:^{
         overlay.alpha = 0.7;
-        tcp.frame = CGRectMake(0, 248, 320, 320);
+        tcp.frame = CGRectMake((sr.size.width - 320)/2, sr.size.height - 320, 320, 320);
     } completion:^(BOOL finished) {
         ;
     }];
@@ -97,10 +100,11 @@ NSTimeInterval const kCvAnimationDuration = 0.6;
 - (void)dropChildView {
     __weak typeof(self) tcp = self;
     __weak typeof(UIView) *sv = self.superview;
+    CGRect sr = _screenRect;
     
     [UIView animateWithDuration:0.33 animations:^{
         overlay.alpha = 0.0f;
-        tcp.frame = CGRectMake(0, 569, 320, 320);
+        tcp.frame = CGRectMake((sr.size.width - 320)/2, sr.size.height, 320, 320);
     } completion:^(BOOL finished) {
         [sv sendSubviewToBack:overlay];
         [overlay removeFromSuperview];

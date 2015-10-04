@@ -35,7 +35,7 @@
         
         NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"NetworkProblemView" owner:self options:0];
         _networkProblemView = views.firstObject;
-        _networkProblemView.frame = CGRectMake(15, 180, 290, 195);
+        _networkProblemView.frame = CGRectMake((superView.bounds.size.width - 290)/2, (superView.bounds.size.height - 195)/2, 290, 195);
         _networkProblemView.layer.cornerRadius = WOTA_CORNER_RADIUS;
         _networkProblemView.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
         _networkProblemView.completionCallback = completionCallback;
