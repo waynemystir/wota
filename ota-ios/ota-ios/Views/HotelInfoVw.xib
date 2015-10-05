@@ -18,7 +18,12 @@
                 <outlet property="feesTitle" destination="7tl-hg-QeH" id="JdY-HC-0rx"/>
                 <outlet property="fromRateContainer" destination="jki-lX-PJt" id="Qgg-2j-LvR"/>
                 <outlet property="imageDisclaimerContainer" destination="SL9-jp-J6D" id="bi3-DF-iTO"/>
+                <outlet property="imageScrollerBottomConstr1" destination="IDz-em-LbO" id="qVq-T2-a8I"/>
+                <outlet property="imageScrollerBottomConstr2" destination="sAB-Qo-TYv" id="Mxx-lD-uix"/>
+                <outlet property="imageScrollerHeightConstr" destination="50x-tu-71q" id="Pql-SQ-2SE"/>
                 <outlet property="imageScrollerOutlet" destination="qZb-YU-y85" id="0NJ-gS-b57"/>
+                <outlet property="imageScrollerTopConstr" destination="UXY-1K-JVg" id="XkC-Dl-FRm"/>
+                <outlet property="imageScrollerWidthConstr" destination="N2L-tQ-X6v" id="ROb-XO-CYV"/>
                 <outlet property="mapContainerBottomConstr" destination="Jy9-e2-Gaf" id="QCY-qz-Arl"/>
                 <outlet property="mapContainerHeightConstr" destination="II2-XS-aDT" id="vtV-my-KGI"/>
                 <outlet property="mapContainerOutlet" destination="KSI-XB-sAu" id="Fhi-wJ-BGy"/>
@@ -29,6 +34,7 @@
                 <outlet property="policiesTitle" destination="l3d-9q-QmN" id="cJr-YS-vr6"/>
                 <outlet property="propAmenTities" destination="Hfv-m9-P3x" id="rjz-vh-QPG"/>
                 <outlet property="scrollViewOutlet" destination="dNG-zh-cKb" id="RFm-12-ydm"/>
+                <outlet property="scrollViewTopConstr" destination="nam-GO-CE9" id="Ym7-rV-qUP"/>
                 <outlet property="selectRoomContainer" destination="CiF-FQ-UG6" id="H9y-6s-WI3"/>
                 <outlet property="shortDescLabelOutlet" destination="RhG-Ty-vrD" id="xVa-PH-yBa"/>
                 <outlet property="someLabelOutlet" destination="Nkm-uO-rlD" id="HBn-e6-27e"/>
@@ -54,7 +60,7 @@
                             <rect key="frame" x="0.0" y="0.0" width="600" height="1083"/>
                             <subviews>
                                 <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qZb-YU-y85">
-                                    <rect key="frame" x="-31" y="-88" width="500" height="325"/>
+                                    <rect key="frame" x="-62" y="-112" width="500" height="325"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="325" id="50x-tu-71q"/>
                                         <constraint firstAttribute="width" constant="500" id="N2L-tQ-X6v"/>
@@ -72,7 +78,7 @@
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VDv-dB-Arh" userLabel="tripAdvisorContainer">
-                                    <rect key="frame" x="10" y="239" width="150" height="53"/>
+                                    <rect key="frame" x="10" y="215" width="150" height="53"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="TripAdvisor Traveler Rating" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A5Q-Dt-lc3" userLabel="tripAdvisorLabel">
                                             <rect key="frame" x="15" y="0.0" width="120" height="21"/>
@@ -133,7 +139,7 @@
                                     </constraints>
                                 </view>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jki-lX-PJt" userLabel="fromFromContainer" customClass="WotaTappableView">
-                                    <rect key="frame" x="5" y="301" width="189" height="30"/>
+                                    <rect key="frame" x="5" y="277" width="189" height="30"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Nkm-uO-rlD" userLabel="someLabel">
                                             <rect key="frame" x="5" y="3" width="179" height="23"/>
@@ -311,7 +317,7 @@
                                 <constraint firstAttribute="trailing" secondItem="7tl-hg-QeH" secondAttribute="trailing" constant="8" id="RJo-4V-Ghc"/>
                                 <constraint firstItem="rE6-Dn-siU" firstAttribute="top" secondItem="zAo-qh-w1y" secondAttribute="bottom" constant="3" id="TLm-zA-SP8"/>
                                 <constraint firstAttribute="trailing" secondItem="rE6-Dn-siU" secondAttribute="trailing" constant="8" id="Tkq-N2-Hvl"/>
-                                <constraint firstItem="qZb-YU-y85" firstAttribute="top" secondItem="h2d-pr-sap" secondAttribute="top" constant="-88" id="UXY-1K-JVg"/>
+                                <constraint firstItem="qZb-YU-y85" firstAttribute="top" secondItem="h2d-pr-sap" secondAttribute="top" constant="-112" id="UXY-1K-JVg"/>
                                 <constraint firstItem="Dep-RG-Bxo" firstAttribute="leading" secondItem="h2d-pr-sap" secondAttribute="leading" constant="8" id="Vzg-L5-aSV"/>
                                 <constraint firstItem="9nL-Ja-fWX" firstAttribute="leading" secondItem="h2d-pr-sap" secondAttribute="leading" constant="8" id="W6L-7J-b7F"/>
                                 <constraint firstItem="gYR-G7-lQl" firstAttribute="leading" secondItem="h2d-pr-sap" secondAttribute="leading" constant="8" id="YvA-GL-nKm"/>

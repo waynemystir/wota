@@ -42,7 +42,7 @@ typedef NS_ENUM(NSUInteger, HI_ORIENTATION) {
 NSUInteger const kImageBatchSize = 20;
 NSUInteger const kImageBatchStartNext = 13;
 NSTimeInterval const kHiAnimationDuration = 0.43;
-CGFloat const kImageScrollerStartY = -100.0f;
+CGFloat const kImageScrollerStartY = -112.0f;
 CGFloat const kImageScrollerStartHeight = 325.0f;
 CGFloat const kImageScrollerPortraitY = 34.0f;
 CGFloat const kImageScrollerPortraitHeight = 500.0f;
@@ -102,6 +102,12 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *mapContainerHeightConstr;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *mapContainerBottomConstr;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *imageScrollerTopConstr;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *imageScrollerBottomConstr1;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *imageScrollerBottomConstr2;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *imageScrollerHeightConstr;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *imageScrollerWidthConstr;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *scrollViewTopConstr;
 
 @end
 
@@ -162,19 +168,10 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rotateOrNot) name:UIDeviceOrientationDidChangeNotification object:nil];
     
-    //**********************************************************************
-    // This is needed so that this view controller (or it's nav controller?)
-    // doesn't make room at the top of the table view's scroll view (I guess
-    // to account for the nav bar).
-    //***********************************************************************
-//    self.automaticallyAdjustsScrollViewInsets = NO;
-    //***********************************************************************
-    
-//    self.scrollViewOutlet.contentSize = CGSizeMake(320.0f, 900.0f);
     self.scrollViewOutlet.scrollsToTop = YES;
     self.scrollViewOutlet.delaysContentTouches = NO;
     self.imageScrollerOutlet.delegate = self;
-    self.imageScrollerOutlet.contentSize = CGSizeMake(1900.0f, 195.0f);
+//    self.imageScrollerOutlet.contentSize = CGSizeMake(1900.0f, 195.0f);
     
     _fromRateContainer.tapColor = kTheColorOfMoney();
     _fromRateContainer.untapColor = [UIColor clearColor];
@@ -208,9 +205,6 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     [_imageDisclaimerContainer addSubview:idv];
     
     NSURL *iu = [NSURL URLWithString:[_eanHotel tripAdvisorRatingUrl]];
-//    [_tripAdvisorImageView setImageWithURL:iu placeholderImage:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-//        ;
-//    }];
     [_tripAdvisorImageView sd_setImageWithURL:iu placeholderImage:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         ;
     }];
@@ -231,18 +225,14 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     tgr3.cancelsTouchesInView = YES;
     [_mapOverlay addGestureRecognizer:tgr3];
     
-//    _mapView = [[MKMapView alloc] initWithFrame:_mapContainerOutlet.bounds];
     CLLocationCoordinate2D zoomLocation;
     zoomLocation.latitude = _eanHotel.latitude;
     zoomLocation.longitude= _eanHotel.longitude;
     MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(zoomLocation, 0.4*METERS_PER_MILE, 0.4*METERS_PER_MILE);
     [_mapView setRegion:viewRegion];
-//    _mapView.delegate = self;
     if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse) {
         _mapView.showsUserLocation = YES;
     }
-//    [_mapContainerOutlet addSubview:_mapView];
-//    [_mapContainerOutlet sendSubviewToBack:_mapView];
     
     MKPointAnnotation *hotelAnnotation = [[MKPointAnnotation alloc] init];
     hotelAnnotation.coordinate = CLLocationCoordinate2DMake(_eanHotel.latitude, _eanHotel.longitude);
@@ -769,16 +759,17 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
     
     _hideEffinStatusBar = YES;
     
+    __weak typeof(self) wes = self;
     __weak UIScrollView *sv = _scrollViewOutlet;
     sv.scrollEnabled = NO;
     [self.view bringSubviewToFront:sv];
-    UIView *overlay = [[UIView alloc] initWithFrame:CGRectMake(0, -200, 320, 1168)];
+    UIView *overlay = [[UIView alloc] initWithFrame:CGRectMake(0, -200, _sr.size.width, 1168)];
     overlay.tag = 10920983;
     overlay.userInteractionEnabled = YES;
     overlay.backgroundColor = [UIColor blackColor];
     overlay.alpha = 0.0f;
-    [sv addSubview:overlay];
-    [sv bringSubviewToFront:overlay];
+    [wes.view addSubview:overlay];
+    [wes.view bringSubviewToFront:overlay];
     
     __weak UIView *iso = _imageScrollerOutlet;
     [sv bringSubviewToFront:iso];
@@ -793,14 +784,16 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
         self.navigationController.interactivePopGestureRecognizer.enabled = NO;
     }
     
-    __weak typeof(self) weakSelf = self;
+    [wes.view layoutIfNeeded];
+    wes.scrollViewTopConstr.constant = 0;
+    wes.imageScrollerTopConstr.constant = kImageScrollerPortraitY + sv.contentOffset.y;
+    wes.imageScrollerHeightConstr.constant = _sr.size.height;
+    [wes.view bringSubviewToFront:wes.scrollViewOutlet];
     [UIView animateWithDuration:kHiAnimationDuration animations:^{
-        sv.frame = CGRectMake(0, 0, 320, 549+64);
-        overlay.alpha = 1.0;
-        iso.frame = CGRectMake(iso.frame.origin.x, kImageScrollerPortraitY + sv.contentOffset.y, iso.frame.size.width, kImageScrollerPortraitHeight);
+        [wes.view layoutIfNeeded];
         civ.frame = civFrame;
-        pnl.frame = CGRectMake(260, 545 + sv.contentOffset.y, 58, 21);
-        [weakSelf setNeedsStatusBarAppearanceUpdate];
+        overlay.alpha = 1.0f;
+        [wes setNeedsStatusBarAppearanceUpdate];
     } completion:^(BOOL finished) {
         for (int j = 0; j < [[iso subviews] count]; j++) {
             UIView *wivc = [iso viewWithTag:kRoomImageViewContainersStartingTag + j];
@@ -832,22 +825,24 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
         self.navigationController.interactivePopGestureRecognizer.enabled = YES;
     }
     
-    __weak typeof(self) weakSelf = self;
+    __weak typeof(self) wes = self;
+    [wes.view layoutIfNeeded];
+    wes.scrollViewTopConstr.constant = 64;
+    wes.imageScrollerTopConstr.constant = -112;
+    wes.imageScrollerHeightConstr.constant = 325;
     [UIView animateWithDuration:kHiAnimationDuration animations:^{
-        sv.frame = CGRectMake(0, 64, 320, 549);
-        overlay.alpha = 0.0f;
-        iso.frame = CGRectMake(iso.frame.origin.x, kImageScrollerStartY, iso.frame.size.width, kImageScrollerStartHeight);
-        civ.frame = [weakSelf rectForOrient:HI_PORTRAIT];
+        [wes.view layoutIfNeeded];
+        civ.frame = [wes rectForOrient:HI_PORTRAIT];
         civ.center = CGPointMake(250, 212);
-        pnl.frame = CGRectMake(260, 203, 58, 21);
-        [weakSelf setNeedsStatusBarAppearanceUpdate];
+        overlay.alpha = 0.0f;
+        [wes setNeedsStatusBarAppearanceUpdate];
     } completion:^(BOOL finished) {
         sv.scrollEnabled = YES;
         [overlay removeFromSuperview];
         for (int j = 0; j < [[iso subviews] count]; j++) {
             UIView *wivc = [iso viewWithTag:kRoomImageViewContainersStartingTag + j];
             UIImageView *wiv = (UIImageView *) [wivc viewWithTag:kRoomImageViewsStartingTag + j];
-            wiv.frame = [weakSelf rectForOrient:HI_PORTRAIT];
+            wiv.frame = [wes rectForOrient:HI_PORTRAIT];
             wiv.center = CGPointMake(250, 212);
         }
     }];

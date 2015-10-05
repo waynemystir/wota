@@ -1518,7 +1518,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.wota.travel.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Trotter;
-				PROVISIONING_PROFILE = "da9f5f1a-5aee-4f7a-ada1-1c299446a767";
+				PROVISIONING_PROFILE = "1989b82b-8d55-439c-9508-b8ddce9c0d39";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "ota-ios/Classes/ota-ios-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "$(SWIFT_MODULE_NAME)-Swift.h";
@@ -1544,7 +1544,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.wota.travel.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Trotter;
-				PROVISIONING_PROFILE = "da9f5f1a-5aee-4f7a-ada1-1c299446a767";
+				PROVISIONING_PROFILE = "1989b82b-8d55-439c-9508-b8ddce9c0d39";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "ota-ios/Classes/ota-ios-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "$(SWIFT_MODULE_NAME)-Swift.h";
