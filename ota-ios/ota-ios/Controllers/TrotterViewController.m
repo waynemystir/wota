@@ -2747,6 +2747,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     legalView.frame = CGRectMake(0, sr.size.height, sr.size.width, sr.size.height - 20);
     [self.view addSubview:legalView];
     self.legalViewTitle.text = title;
+    [self.legalViewText setPreferredMaxLayoutWidth:self.legalViewText.frame.size.width];
     
     if (fileName) {
         NSString *filePath = [[NSBundle mainBundle] pathForResource:fileName ofType:@"txt"];
@@ -2757,7 +2758,6 @@ NSUInteger const kAcknowledgemenTag = 1917157;
         else return;
     }
     
-    [self resizeLegalLabelAndScrollView];
     self.legalScrollView.layer.cornerRadius = WOTA_CORNER_RADIUS;
     self.legalScrollView.layer.borderColor = [UIColor blackColor].CGColor;
     self.legalScrollView.layer.borderWidth = 1.0f;
@@ -2767,14 +2767,6 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     } completion:^(BOOL finished) {
         ;
     }];
-}
-
-- (void)resizeLegalLabelAndScrollView {
-    CGRect lblFrame = self.legalViewText.frame;
-    CGSize newSize = [self.legalViewText sizeThatFits:CGSizeMake(lblFrame.size.width, CGFLOAT_MAX)];
-    lblFrame.size.height = newSize.height;
-    self.legalViewText.frame = lblFrame;
-    self.legalScrollView.contentSize = CGSizeMake(290, lblFrame.size.height + 20);
 }
 
 - (IBAction)clickLegalDone:(id)sender {

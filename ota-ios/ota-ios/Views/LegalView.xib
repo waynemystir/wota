@@ -14,7 +14,7 @@
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view autoresizesSubviews="NO" contentMode="scaleToFill" id="iN0-l3-epB">
+        <view autoresizesSubviews="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="iN0-l3-epB">
             <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
@@ -22,9 +22,8 @@
                     <rect key="frame" x="145" y="92" width="310" height="449"/>
                     <subviews>
                         <label autoresizesSubviews="NO" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tQr-Ab-Jfv" userLabel="legalViewText">
-                            <rect key="frame" x="10" y="8" width="290" height="426"/>
+                            <rect key="frame" x="10" y="8" width="290" height="893"/>
                             <constraints>
-                                <constraint firstAttribute="height" constant="426" id="1Fu-mW-oBa"/>
                                 <constraint firstAttribute="width" constant="290" id="MLF-ak-Wcw"/>
                             </constraints>
                             <string key="text">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
@@ -38,12 +37,10 @@ Section 1.10.32 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC
                         </label>
                     </subviews>
                     <constraints>
-                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="310" id="4Lj-as-Rz7"/>
+                        <constraint firstAttribute="width" constant="310" id="4Lj-as-Rz7"/>
                         <constraint firstAttribute="bottom" secondItem="tQr-Ab-Jfv" secondAttribute="bottom" constant="15" id="63L-Br-Tf1"/>
-                        <constraint firstAttribute="height" constant="449" id="Anw-IP-gC8"/>
                         <constraint firstAttribute="trailing" secondItem="tQr-Ab-Jfv" secondAttribute="trailing" constant="10" id="Fbj-cg-k5J"/>
-                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="449" id="If1-Va-GJ7"/>
-                        <constraint firstAttribute="width" constant="310" id="K7w-GE-79h"/>
+                        <constraint firstAttribute="height" constant="449" id="If1-Va-GJ7"/>
                         <constraint firstItem="tQr-Ab-Jfv" firstAttribute="leading" secondItem="h8v-u9-sq6" secondAttribute="leading" constant="10" id="RaS-1Y-MXv"/>
                         <constraint firstItem="tQr-Ab-Jfv" firstAttribute="top" secondItem="h8v-u9-sq6" secondAttribute="top" constant="8" id="cXZ-F1-XRT"/>
                     </constraints>

@@ -21,6 +21,7 @@
 		B0122E471AD088F800E44319 /* EanAvailabilityHotelRoomResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = B0122E461AD088F800E44319 /* EanAvailabilityHotelRoomResponse.m */; };
 		B0122E4D1AD0A88500E44319 /* EanHotelDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = B0122E4C1AD0A88500E44319 /* EanHotelDetails.m */; };
 		B0122E501AD0E8C700E44319 /* EanHotelInformationSummary.m in Sources */ = {isa = PBXBuildFile; fileRef = B0122E4F1AD0E8C700E44319 /* EanHotelInformationSummary.m */; };
+		B01693661BC175A1001FF20D /* HotelInfoVw.xib in Resources */ = {isa = PBXBuildFile; fileRef = B01693651BC175A1001FF20D /* HotelInfoVw.xib */; settings = {ASSET_TAGS = (); }; };
 		B018C0421AD96A7600DDCE2E /* GuestDetailsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B018C0411AD96A7600DDCE2E /* GuestDetailsView.xib */; };
 		B018C0451AD9BEC800DDCE2E /* GuestInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B018C0441AD9BEC800DDCE2E /* GuestInfo.m */; };
 		B018C0471ADA01FA00DDCE2E /* PaymentDetailsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B018C0461ADA01FA00DDCE2E /* PaymentDetailsView.xib */; };
@@ -69,7 +70,6 @@
 		B07958E61AF44A5800422182 /* EanChargeableRateInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B07958E51AF44A5800422182 /* EanChargeableRateInfo.m */; };
 		B07958E91AF451C000422182 /* EanNightlyRate.m in Sources */ = {isa = PBXBuildFile; fileRef = B07958E81AF451C000422182 /* EanNightlyRate.m */; };
 		B07958EC1AF4751100422182 /* EanSurcharge.m in Sources */ = {isa = PBXBuildFile; fileRef = B07958EB1AF4751100422182 /* EanSurcharge.m */; };
-		B07F26B31BBEFB33000B0F48 /* TrotterViewTest.xib in Resources */ = {isa = PBXBuildFile; fileRef = B07F26B21BBEFB33000B0F48 /* TrotterViewTest.xib */; settings = {ASSET_TAGS = (); }; };
 		B07F26DA1BBF2640000B0F48 /* TrotterVw.xib in Resources */ = {isa = PBXBuildFile; fileRef = B07F26D91BBF2640000B0F48 /* TrotterVw.xib */; settings = {ASSET_TAGS = (); }; };
 		B07FC8681B27A8E70059A205 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B07FC8671B27A8E70059A205 /* MapKit.framework */; };
 		B080B7C71AC5057100075A32 /* HotelInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B080B7C61AC5057100075A32 /* HotelInfoViewController.m */; };
@@ -242,6 +242,7 @@
 		B0122E4C1AD0A88500E44319 /* EanHotelDetails.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EanHotelDetails.m; path = "ota-ios/Models/Ean/HotelInfoResponse/EanHotelDetails.m"; sourceTree = SOURCE_ROOT; };
 		B0122E4E1AD0E8C700E44319 /* EanHotelInformationSummary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EanHotelInformationSummary.h; path = "ota-ios/Models/Ean/HotelInfoResponse/EanHotelInformationSummary.h"; sourceTree = SOURCE_ROOT; };
 		B0122E4F1AD0E8C700E44319 /* EanHotelInformationSummary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanHotelInformationSummary.m; sourceTree = "<group>"; };
+		B01693651BC175A1001FF20D /* HotelInfoVw.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HotelInfoVw.xib; sourceTree = "<group>"; };
 		B018C0411AD96A7600DDCE2E /* GuestDetailsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GuestDetailsView.xib; sourceTree = "<group>"; };
 		B018C0431AD9BEC800DDCE2E /* GuestInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuestInfo.h; sourceTree = "<group>"; };
 		B018C0441AD9BEC800DDCE2E /* GuestInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuestInfo.m; sourceTree = "<group>"; };
@@ -323,7 +324,6 @@
 		B07958E81AF451C000422182 /* EanNightlyRate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanNightlyRate.m; sourceTree = "<group>"; };
 		B07958EA1AF4751100422182 /* EanSurcharge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanSurcharge.h; sourceTree = "<group>"; };
 		B07958EB1AF4751100422182 /* EanSurcharge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanSurcharge.m; sourceTree = "<group>"; };
-		B07F26B21BBEFB33000B0F48 /* TrotterViewTest.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TrotterViewTest.xib; sourceTree = "<group>"; };
 		B07F26D91BBF2640000B0F48 /* TrotterVw.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TrotterVw.xib; sourceTree = "<group>"; };
 		B07FC8671B27A8E70059A205 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		B080B7C51AC5057100075A32 /* HotelInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotelInfoViewController.h; sourceTree = "<group>"; };
@@ -708,7 +708,6 @@
 		B032F64D1AC191FB00809395 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				B07F26B21BBEFB33000B0F48 /* TrotterViewTest.xib */,
 				B07F26D91BBF2640000B0F48 /* TrotterVw.xib */,
 				B09431E41B58A39300E69A71 /* TrotterView.xib */,
 				B0BB3F441B59DD3500DCCFE7 /* HotelNameFilterView.xib */,
@@ -732,6 +731,7 @@
 				B0FE0F4D1AC70A2500DAF635 /* SelectRoomView.xib */,
 				B06BAB851B9F713F0081C331 /* SelectRoomFooterView.xib */,
 				B080B7C81AC505DC00075A32 /* HotelInfoView.xib */,
+				B01693651BC175A1001FF20D /* HotelInfoVw.xib */,
 				B0FE0F481AC6ED0000DAF635 /* BookView.xib */,
 				B0E811061B65B51C00DE6D1A /* ChildView.h */,
 				B0E811071B65B51C00DE6D1A /* ChildView.m */,
@@ -1203,6 +1203,7 @@
 				B0C420821B6560040001E9CB /* TrotterCalendarDay.xib in Resources */,
 				B0D02FF01AE6123000B1E75F /* cvc@2x.png in Resources */,
 				B0D02FFC1AE6123000B1E75F /* visa@2x.png in Resources */,
+				B01693661BC175A1001FF20D /* HotelInfoVw.xib in Resources */,
 				B032F6351AC18F6700809395 /* Images.xcassets in Resources */,
 				B0D02FF21AE6123000B1E75F /* diners@2x.png in Resources */,
 				B09077871AE5AF5300F2D3CB /* WotaMoneyKit.bundle in Resources */,
@@ -1256,7 +1257,6 @@
 				B09797CE1AC2518D0014FC7C /* MapView.xib in Resources */,
 				B09E41851AEB43DA000A718D /* WotaButton.xib in Resources */,
 				B0963CC31AC8DFED002FD859 /* ChildSubView.xib in Resources */,
-				B07F26B31BBEFB33000B0F48 /* TrotterViewTest.xib in Resources */,
 				B0E019381BA9B525003BACDB /* AcknowsDictionary.plist in Resources */,
 				B080B7C91AC505DC00075A32 /* HotelInfoView.xib in Resources */,
 				B0BD38211AF990F600EF5E4F /* NightRateTableCellView.xib in Resources */,

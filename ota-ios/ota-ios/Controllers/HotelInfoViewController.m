@@ -59,6 +59,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 @property (nonatomic) BOOL alreadyDroppedSpinner;
 
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollViewOutlet;
+@property (weak, nonatomic) IBOutlet UIView *contentView;
 @property (weak, nonatomic) IBOutlet WotaTappableView *selectRoomContainer;
 @property (weak, nonatomic) IBOutlet UIScrollView *imageScrollerOutlet;
 @property (weak, nonatomic) IBOutlet WotaTappableView *fromRateContainer;
@@ -92,11 +93,15 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 @property (weak, nonatomic) IBOutlet UILabel *pageNumberLabel;
 @property (weak, nonatomic) IBOutlet UIView *imageDisclaimerContainer;
 @property (weak, nonatomic) IBOutlet WotaTappableView *bookRoomContainer;
-@property (nonatomic, strong) MKMapView *mapView;
+@property (nonatomic, weak) IBOutlet MKMapView *mapView;
 @property (nonatomic, strong) NSString *locationString;
 @property (nonatomic, strong) NSMutableArray *eanImages;
 @property (nonatomic, strong) UIImage *placeHolderImage;
 @property (nonatomic, strong) NSMutableArray *imageBatchesAlreadyLoaded;
+@property (nonatomic) CGRect sr;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *mapContainerHeightConstr;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *mapContainerBottomConstr;
 
 @end
 
@@ -107,7 +112,9 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 #pragma mark Lifecycle
 
 - (id)init {
-    self = [super initWithNibName:@"HotelInfoView" bundle:nil];
+    if (self = [super initWithNibName:@"HotelInfoVw" bundle:nil]) {
+        _sr = [[UIScreen mainScreen] bounds];
+    }
     return self;
 }
 
@@ -160,10 +167,10 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     // doesn't make room at the top of the table view's scroll view (I guess
     // to account for the nav bar).
     //***********************************************************************
-    self.automaticallyAdjustsScrollViewInsets = NO;
+//    self.automaticallyAdjustsScrollViewInsets = NO;
     //***********************************************************************
     
-    self.scrollViewOutlet.contentSize = CGSizeMake(320.0f, 900.0f);
+//    self.scrollViewOutlet.contentSize = CGSizeMake(320.0f, 900.0f);
     self.scrollViewOutlet.scrollsToTop = YES;
     self.scrollViewOutlet.delaysContentTouches = NO;
     self.imageScrollerOutlet.delegate = self;
@@ -224,7 +231,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     tgr3.cancelsTouchesInView = YES;
     [_mapOverlay addGestureRecognizer:tgr3];
     
-    _mapView = [[MKMapView alloc] initWithFrame:_mapContainerOutlet.bounds];
+//    _mapView = [[MKMapView alloc] initWithFrame:_mapContainerOutlet.bounds];
     CLLocationCoordinate2D zoomLocation;
     zoomLocation.latitude = _eanHotel.latitude;
     zoomLocation.longitude= _eanHotel.longitude;
@@ -234,14 +241,22 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse) {
         _mapView.showsUserLocation = YES;
     }
-    [_mapContainerOutlet addSubview:_mapView];
-    [_mapContainerOutlet sendSubviewToBack:_mapView];
+//    [_mapContainerOutlet addSubview:_mapView];
+//    [_mapContainerOutlet sendSubviewToBack:_mapView];
     
     MKPointAnnotation *hotelAnnotation = [[MKPointAnnotation alloc] init];
     hotelAnnotation.coordinate = CLLocationCoordinate2DMake(_eanHotel.latitude, _eanHotel.longitude);
     hotelAnnotation.title = _eanHotel.hotelNameFormatted;
     hotelAnnotation.subtitle = [NSString stringWithFormat:@"From %@/nt", [cf stringFromNumber:_eanHotel.lowRate]];
     [_mapView addAnnotation:hotelAnnotation];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_contentView
+                                                                     attribute:NSLayoutAttributeWidth
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:nil 
+                                                                     attribute:NSLayoutAttributeNotAnAttribute 
+                                                                    multiplier:1.0 
+                                                                      constant:_sr.size.width]];
 }
 
 - (void)colorTheHotelRatingStars {
@@ -273,7 +288,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     _star4.image = [_star4.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     _star5.image = [_star5.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     
-    for (int j = 1; j <= 5; j++) {
+    for (int j = 1; j <= stars.count; j++) {
         if (j <= [hr integerValue]) {
             [((UIImageView *)stars[j-1]) setTintColor:kWotaColorOne()];
         } else {
@@ -452,26 +467,14 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 - (void)loadupTheAmenities {
     EanHotelDetails *hd = self.eanHotelInformationResponse.hotelDetails;
     UILabel *so = _shortDescLabelOutlet;
+    [so setPreferredMaxLayoutWidth:_sr.size.width - 16];
     so.text = hd.locationDescription;
-    [so sizeToFit];
-    CGRect mf = _mapContainerOutlet.frame;
-    _mapContainerOutlet.frame = CGRectMake(mf.origin.x, so.frame.origin.y + so.frame.size.height + 10.0f, mf.size.width, mf.size.height);
-    mf = _mapContainerOutlet.frame;
     
-    CGRect tf = _propAmenTities.frame;
-    CGRect acf = _amenitiesContainer.frame;
     if (stringIsEmpty(hd.amenitiesDescription) && [self.eanHotelInformationResponse.propertyAmenitiesArray count] == 0) {
         _propAmenTities.text = @"";
-        _propAmenTities.frame = CGRectMake(tf.origin.x, mf.origin.y + mf.size.height + 0.0f, tf.size.width, 0.0f);
-        tf = _propAmenTities.frame;
-        
         _amenitiesContainer.text = @"";
-        _amenitiesContainer.frame = CGRectMake(acf.origin.x, tf.origin.y + tf.size.height + 0.0f, acf.size.width, 0.0f);
-        acf = _amenitiesContainer.frame;
+        _propAmenTities.hidden = _amenitiesContainer.hidden = YES;
     } else {
-        _propAmenTities.frame = CGRectMake(tf.origin.x, mf.origin.y + mf.size.height + 15.0f, tf.size.width, tf.size.height);
-        tf = _propAmenTities.frame;
-        
         NSString *at = !stringIsEmpty(hd.amenitiesDescription) ? [hd.amenitiesDescription stringByAppendingString:@"\n"] : @"";
         NSArray *ams = self.eanHotelInformationResponse.propertyAmenitiesArray;
         for (int j = 0; j < [ams count]; j++) {
@@ -481,37 +484,18 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
         }
         
         _amenitiesContainer.text = at;
-//        [_amenitiesContainer sizeToFit];
-        CGSize size = [_amenitiesContainer sizeThatFits:CGSizeMake(acf.size.width, CGFLOAT_MAX)];
-        acf.size.height = size.height;
-        _amenitiesContainer.frame = acf;
-        acf = _amenitiesContainer.frame;
-        
-        _amenitiesContainer.frame = CGRectMake(acf.origin.x, tf.origin.y + tf.size.height + 4.0f, acf.size.width, acf.size.height);
-        acf = _amenitiesContainer.frame;
+        [_amenitiesContainer setPreferredMaxLayoutWidth:_sr.size.width - 16];
+        _propAmenTities.hidden = _amenitiesContainer.hidden = NO;
     }
     
-    CGRect dtf = _diningTitle.frame;
-    CGRect dlf = _diningLabel.frame;
     if (stringIsEmpty(hd.diningDescription)) {
         _diningTitle.text = @"";
-        _diningTitle.frame = CGRectMake(dtf.origin.x, acf.origin.y + acf.size.height + 0.0f, dtf.size.width, 0.0f);
-        dtf = _diningTitle.frame;
-        
         _diningLabel.text = @"";
-        _diningLabel.frame = CGRectMake(dlf.origin.x, dtf.origin.y + dtf.size.height + 0.0f, dlf.size.width, 0.0);
-        dlf = _diningLabel.frame;
+        _diningTitle.hidden = _diningLabel.hidden = YES;
     } else {
-        _diningTitle.frame = CGRectMake(dtf.origin.x, acf.origin.y + acf.size.height + 15.0f, dtf.size.width, dtf.size.height);
-        dtf = _diningTitle.frame;
-        
         _diningLabel.text = stringByStrippingHTML(hd.diningDescription);
-        CGSize size = [_diningLabel sizeThatFits:CGSizeMake(dlf.size.width, CGFLOAT_MAX)];
-        dlf.size.height = size.height;
-        _diningLabel.frame = dlf;
-        
-        _diningLabel.frame = CGRectMake(dlf.origin.x, dtf.origin.y + dtf.size.height + 4.0f, dlf.size.width, dlf.size.height);
-        dlf = _diningLabel.frame;
+        [_diningLabel setPreferredMaxLayoutWidth:_sr.size.width - 16];
+        _diningTitle.hidden = _diningLabel.hidden = NO;
     }
     
     NSString *sl = _eanHotel.stateProvinceCode ? [NSString stringWithFormat:@", %@", _eanHotel.stateProvinceCode] : @"";
@@ -527,47 +511,21 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     NSString *alt = [NSString stringWithFormat:@"%@\n%@\n%@%@%@%@", _eanHotel.hotelNameFormatted, _eanHotel.address1Formatted, _eanHotel.city, sl, pcl, cl];
     self.locationString = [NSString stringWithFormat:@"%@%@%@", _eanHotel.city, sl, cl];
     
-    CGRect atf = _addressTitle.frame;
-    CGRect alf = _addressLabelOutlet.frame;
     if (stringIsEmpty(alt)) {
         _addressTitle.text = @"";
-        _addressTitle.frame = CGRectMake(atf.origin.x, dlf.origin.y + dlf.size.height + 0.0f, atf.size.width, 0.0f);
-        atf = _addressTitle.frame;
-        
         _addressLabelOutlet.text = @"";
-        _addressLabelOutlet.frame = CGRectMake(alf.origin.x, atf.origin.y + atf.size.height + 0.0f, alf.size.width, 0.0f);
-        alf = _addressLabelOutlet.frame;
     } else {
-        _addressTitle.frame = CGRectMake(atf.origin.x, dlf.origin.y + dlf.size.height + 15.0f, atf.size.width, atf.size.height);
-        atf = _addressTitle.frame;
-        
         _addressLabelOutlet.text = alt;
-//        [_addressLabelOutlet sizeToFit];
-        CGSize size = [_addressLabelOutlet sizeThatFits:CGSizeMake(alf.size.width, CGFLOAT_MAX)];
-        alf.size.height = size.height;
-        _addressLabelOutlet.frame = alf;
-        alf = _addressLabelOutlet.frame;
-        
-        _addressLabelOutlet.frame = CGRectMake(alf.origin.x, atf.origin.y + atf.size.height + 4.0f, alf.size.width, alf.size.height);
-        alf = _addressLabelOutlet.frame;
+        [_addressLabelOutlet setPreferredMaxLayoutWidth:_sr.size.width - 16];
     }
-    
-    CGRect pf = _policiesTitle.frame;
-    _policiesTitle.frame = CGRectMake(pf.origin.x, alf.origin.y + alf.size.height + 15.0f, pf.size.width, pf.size.height);
-    pf = _policiesTitle.frame;
     
     NSString *pcid = stringIsEmpty(hd.checkInInstructionsFormatted) ? @"" : @"\n";
     pcid = stringIsEmpty(hd.hotelPolicy) ? @"" : [NSString stringWithFormat:@"%@● ", pcid];
     NSString *pt = [NSString stringWithFormat:@"%@%@%@%@", hd.checkInInstructionsFormatted, pcid, hd.hotelPolicy, hd.propertyInformationFormatted];
     _policiesLabel.text = pt;
-//    [_policiesLabel sizeToFit];
-    CGRect plf = _policiesLabel.frame;
-    CGSize size = [_policiesLabel sizeThatFits:CGSizeMake(plf.size.width, CGFLOAT_MAX)];
-    plf.size.height = size.height;
-    _policiesLabel.frame = plf;
-    _policiesLabel.frame = CGRectMake(plf.origin.x, pf.origin.y + pf.size.height + 4.0f, plf.size.width, plf.size.height);
-    _policiesLabelIsSet = YES;
+    [_policiesLabel setPreferredMaxLayoutWidth:_sr.size.width - 16];
     
+    _policiesLabelIsSet = YES;
     [self appendPaymentTypesToPoliciesLabel];
 }
 
@@ -578,54 +536,21 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
             NSString *pta = [_policiesLabel.text stringByAppendingString:_paymentTypesBulletted];
             _policiesLabel.text = pta;
         }
-//        [_policiesLabel sizeToFit];
-        CGRect plf = _policiesLabel.frame;
-        CGSize size = [_policiesLabel sizeThatFits:CGSizeMake(plf.size.width, CGFLOAT_MAX)];
-        plf.size.height = size.height;
-        _policiesLabel.frame = plf;
     }
     
     [self finishOffTheLabels];
 }
 
 - (void)finishOffTheLabels {
-    CGRect plf = _policiesLabel.frame;
-    
-    CGRect ftf = _feesTitle.frame;
-    CGRect flf = _feesLabel.frame;
     if (stringIsEmpty(_eanHotelInformationResponse.hotelDetails.roomFeesDescriptionFormmatted)) {
         _feesTitle.text = @"";
-        _feesTitle.frame = CGRectMake(ftf.origin.x, plf.origin.y + plf.size.height + 0.0f, ftf.size.width, 0.0f);
-        ftf = _feesTitle.frame;
-        
         _feesLabel.text = @"";
-        _feesLabel.frame = CGRectMake(flf.origin.x, ftf.origin.y + ftf.size.height + 0.0f, flf.size.width, 0.0f);
-        flf = _feesLabel.frame;
     } else {
         _feesTitle.text = @"Fees";
-        _feesTitle.frame = CGRectMake(ftf.origin.x, plf.origin.y + plf.size.height + 15.0f, ftf.size.width, 21.0f);
-        ftf = _feesTitle.frame;
-        
         _feesLabel.text = self.eanHotelInformationResponse.hotelDetails.roomFeesDescriptionFormmatted;
-//        [_feesLabel sizeToFit];
-        CGSize size = [_feesLabel sizeThatFits:CGSizeMake(flf.size.width, CGFLOAT_MAX)];
-        flf.size.height = size.height;
-        _feesLabel.frame = flf;
-        flf = _feesLabel.frame;
-        
-        _feesLabel.frame = CGRectMake(flf.origin.x, ftf.origin.y + ftf.size.height + 4.0f, flf.size.width, flf.size.height);
-        flf = _feesLabel.frame;
+        [_feesLabel setPreferredMaxLayoutWidth:_sr.size.width - 16];
     }
     
-    CGRect idvf = _imageDisclaimerContainer.frame;
-    _imageDisclaimerContainer.frame = CGRectMake(idvf.origin.x, flf.origin.y + flf.size.height + 5.0f, idvf.size.width, idvf.size.height);
-    idvf = _imageDisclaimerContainer.frame;
-    
-    CGRect barf = _bookRoomContainer.frame;
-    _bookRoomContainer.frame = CGRectMake(barf.origin.x, idvf.origin.y + idvf.size.height + 15.0f, barf.size.width, barf.size.height);
-    barf = _bookRoomContainer.frame;
-    
-    _scrollViewOutlet.contentSize = CGSizeMake(_scrollViewOutlet.frame.size.width, barf.origin.y + barf.size.height + 67.0f);
     [self dropTheSpinnerAlready:NO];
 }
 
@@ -673,50 +598,37 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 }
 
 - (void)loadDaMap {
-    __weak UIScrollView *sv = _scrollViewOutlet;
-    __weak UIView *mc = _mapContainerOutlet;
-    __weak UIView *mv = _mapView;
-    [mc sendSubviewToBack:_mapOverlay];
-    [mc bringSubviewToFront:mv];
-    [sv bringSubviewToFront:mc];
-    mapRectInScroller = mc.frame;
-    _mapOverlay.frame = CGRectZero;
-    
     NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
     [self.view bringSubviewToFront:nv];
     [nv animateToCancel];
     
-    sv.scrollEnabled = NO;
+    _scrollViewOutlet.scrollEnabled = NO;
+    _mapOverlay.hidden = YES;
     
+    [_contentView layoutIfNeeded];
+    self.mapContainerHeightConstr.constant = _scrollViewOutlet.frame.size.height;
+    self.mapContainerBottomConstr.constant = 200;
     [UIView animateWithDuration:kHiAnimationDuration animations:^{
-        mc.frame = CGRectMake(0, sv.contentOffset.y, 320, 504);
-        mv.frame = mc.bounds;
+        [_contentView layoutIfNeeded];
+        self.mapContainerOutlet.frame = _scrollViewOutlet.bounds;
     } completion:^(BOOL finished) {
-        ;
     }];
 }
 
 - (void)dropDaMap {
-    __weak UIScrollView *sv = _scrollViewOutlet;
-    __weak UIView *mc = _mapContainerOutlet;
-    __weak UIView *mo = _mapOverlay;
-    __weak UIView *mv = _mapView;
-    __block CGRect mcf = mapRectInScroller;
-    
     NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
     [self.view bringSubviewToFront:nv];
     [nv animateToBack];
     
-    sv.scrollEnabled = YES;
+    _scrollViewOutlet.scrollEnabled = YES;
+    _mapOverlay.hidden = NO;
     
+    [_contentView layoutIfNeeded];
+    self.mapContainerHeightConstr.constant = 200;
+    self.mapContainerBottomConstr.constant = 19;
     [UIView animateWithDuration:kHiAnimationDuration animations:^{
-        mc.frame = mcf;
-        mo.frame = mc.bounds;
-        mv.center = CGPointMake(160, 100);
+        [_contentView layoutIfNeeded];
     } completion:^(BOOL finished) {
-        [sv sendSubviewToBack:mc];
-        [mc sendSubviewToBack:mv];
-        [mc bringSubviewToFront:mo];
     }];
 }
 
