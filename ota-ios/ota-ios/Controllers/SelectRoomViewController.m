@@ -147,7 +147,6 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
 @property (nonatomic, strong) UIPickerView *smokingPrefPickerView;
 @property (nonatomic, strong) SelectSmokingPreferenceDelegateImplementation *smokePrefDelegImplem;
 @property (nonatomic, strong) UIView *overlayDisable;
-@property (nonatomic, strong) UIView *overlayDisableNav;
 @property (nonatomic, strong) CountryPicker *countryPicker;
 @property (nonatomic, strong) UIView *countryPickerContainer;
 @property (nonatomic, strong) UIButton *countryPickerNextBtn;
@@ -187,6 +186,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
 @property (weak, nonatomic) IBOutlet UITextField *cvvTextField;
 @property (weak, nonatomic) IBOutlet WotaButton *purchaseButton;
 @property (weak, nonatomic) IBOutlet WotaButton *cancelPurchaseButton;
+@property (nonatomic) CGRect sr;
 
 @property (nonatomic, strong) NSTimer *selectRoomLifeTimer;
 
@@ -198,6 +198,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
 
 - (id)init {
     if (self = [super initWithNibName:@"SelectRoomView" bundle:nil]) {
+        _sr = [[UIScreen mainScreen] bounds];
         _bottomGradientColors = [NSArray arrayWithObjects:(id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:1].CGColor, nil];
         _bottomsUpGradientColors = [NSArray arrayWithObjects:(id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.1f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.2].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.3f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.4f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.5f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.6f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.7f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.8f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.9f].CGColor, (id)[UIColor colorWithWhite:1 alpha:1.0f].CGColor, nil];
         _priceGradientColors = [NSArray arrayWithObjects:(id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.1f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.2].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.3f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.4f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.5f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.6f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.7f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.8f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.9f].CGColor, (id)[UIColor colorWithWhite:1 alpha:1.0f].CGColor, nil];
@@ -300,26 +301,15 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     [self setupCountryPicker];
     [self setupStatePicker];
     [self setupPickerViewContainer];
-    self.overlayDisable = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 568)];
+    self.overlayDisable = [[UIView alloc] initWithFrame:_sr];
     self.overlayDisable.backgroundColor = [UIColor blackColor];
     self.overlayDisable.alpha = 0.8f;
     self.overlayDisable.userInteractionEnabled = YES;
-    self.overlayDisableNav = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 64)];
-    self.overlayDisable.backgroundColor = [UIColor blackColor];
-    self.overlayDisable.alpha = 0.95f;
-    self.overlayDisable.userInteractionEnabled = YES;
     
     self.inputBookOutlet.hidden = YES;
-//    self.inputBookOutlet.frame = CGRectMake(10.0f, 412.0f, 300.0f, 0.0f);
     self.inputBookOutlet.transform = [self hiddenGuestInputTransform];
-//    self.inputBookOutlet.layer.cornerRadius = WOTA_CORNER_RADIUS;
-//    self.inputBookOutlet.layer.borderWidth = 1.0f;
-//    self.inputBookOutlet.layer.borderColor = [UIColor blackColor].CGColor;
     
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-    
-//    self.guestButtonOutlet.titleLabel.adjustsFontSizeToFitWidth = YES;
-//    self.guestButtonOutlet.titleLabel.numberOfLines = 1;
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(loadGuestDetailsView)];
     tap.numberOfTapsRequired = 1;
@@ -467,10 +457,11 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
                 [self.roomsTableViewOutlet reloadData];
                 NSArray *fa = [[NSBundle mainBundle] loadNibNamed:@"SelectRoomFooterView" owner:self options:nil];
                 UIView *fv = fa.firstObject;
+                fv.frame = CGRectMake(0, 0, _sr.size.width, 105);
                 NSArray *ia = [[NSBundle mainBundle] loadNibNamed:@"ImageDisclaimerView" owner:nil options:nil];
                 UIView *iv = ia.firstObject;
-                iv.frame = CGRectMake(0, 85, 320, 105);
-                UIView *wes = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 210)];
+                iv.frame = CGRectMake(0, 85, _sr.size.width, 105);
+                UIView *wes = [[UIView alloc] initWithFrame:CGRectMake(0, 0, _sr.size.width, 210)];
                 wes.backgroundColor = [UIColor clearColor];
                 [wes addSubview:fv];
                 [wes addSubview:iv];
@@ -561,7 +552,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
 //        cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
 //    }
     
-    AvailableRoomTableViewCell *cell = [[NSBundle mainBundle] loadNibNamed:@"AvailableRoomTableViewCell" owner:nil options:nil].firstObject;
+    AvailableRoomTableViewCell *cell = [[NSBundle mainBundle] loadNibNamed:@"AvailableRoomTvCell" owner:nil options:nil].firstObject;
     
     // Set these so that the cell expansion and compression work well
     // Curtesy of http://stackoverflow.com/questions/10220565/expanding-uitableviewcell
@@ -608,7 +599,8 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     
     NSString *discount = room.rateInfo.chargeableRateInfo.discountPercentString;
     if (room.rateInfo.promo && !stringIsEmpty(discount)) {
-        UILabel *promoLabel = [[UILabel alloc] initWithFrame:CGRectMake(280, -6, 60, 27)];
+        CGFloat wf = _sr.size.width - 40;
+        UILabel *promoLabel = [[UILabel alloc] initWithFrame:CGRectMake(wf, -6, 60, 27)];
         promoLabel.tag = 87326401;
         promoLabel.backgroundColor = kTheColorOfMoney();
         promoLabel.text = [NSString stringWithFormat:@"\n-%@", discount];
@@ -657,7 +649,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     _tableViewPopOut.frame = self.rectOfCellInSuperview;
     
     UIView *cv = [_tableViewPopOut viewWithTag:kAvailRoomCellContViewTag];
-    cv.frame = CGRectMake(0, 0, 320, 129);
+    cv.frame = CGRectMake(0, 0, _sr.size.width, 129);
     
     EanAvailabilityHotelRoomResponse *room = [self.tableData objectAtIndex:self.expandedIndexPath.row];
     
@@ -728,11 +720,13 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     tableViewPopout.autoresizesSubviews = YES;
     [self.view addSubview:tableViewPopout];
     
-    UIView *cv = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 129)];
+    UIView *cv = [[UIView alloc] initWithFrame:CGRectMake(0, 0, _sr.size.width, 129)];
     cv.tag = kAvailRoomCellContViewTag;
     [tableViewPopout addSubview:cv];
     
-    UIView *borderView = [[UIView alloc] initWithFrame:CGRectMake(2, 2, 316, 125)];
+    CGFloat w316 = _sr.size.width - 4;
+    
+    UIView *borderView = [[UIView alloc] initWithFrame:CGRectMake(2, 2, w316, 125)];
     borderView.layer.borderColor = [UIColor blackColor].CGColor;
     borderView.layer.borderWidth = 1.0f;
     borderView.layer.cornerRadius = WOTA_CORNER_RADIUS;
@@ -741,30 +735,30 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     borderView.tag = kAvailRoomBorderViewTag;
     [cv addSubview:borderView];
     
-    UIImageView *roomImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, -71, 316, 210)];
+    UIImageView *roomImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, -71, w316, 210)];
     roomImageView.tag = kRoomImageViewTag;
     roomImageView.clipsToBounds = YES;
     roomImageView.contentMode = UIViewContentModeScaleAspectFill;
     [borderView addSubview:roomImageView];
     
-    UIView *imageViewBottomCover = [[UIView alloc] initWithFrame:CGRectMake(0, 84, 316, 55)];
+    UIView *imageViewBottomCover = [[UIView alloc] initWithFrame:CGRectMake(0, 84, w316, 55)];
     imageViewBottomCover.tag = kImageViewBottomCoverTag;
     imageViewBottomCover.backgroundColor = [UIColor whiteColor];
     [borderView addSubview:imageViewBottomCover];
     
-    UIView *priceGradientCover = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 316, 84)];
+    UIView *priceGradientCover = [[UIView alloc] initWithFrame:CGRectMake(0, 0, w316, 84)];
     priceGradientCover.tag = kPriceGradientCoverTag;
     priceGradientCover.clipsToBounds = YES;
     [self addPriceGradient:priceGradientCover];
     [borderView addSubview:priceGradientCover];
     
-    UIView *bottomGradientCover = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 316, 84)];
+    UIView *bottomGradientCover = [[UIView alloc] initWithFrame:CGRectMake(0, 0, w316, 84)];
     bottomGradientCover.tag = kBottomGradientCoverTag;
     bottomGradientCover.clipsToBounds = YES;
     [self addBottomGradient:bottomGradientCover];
     [borderView addSubview:bottomGradientCover];
     
-    UIView *bottomsUpGradientCover = [[UIView alloc] initWithFrame:CGRectMake(0, 190, 316, 20)];
+    UIView *bottomsUpGradientCover = [[UIView alloc] initWithFrame:CGRectMake(0, 190, w316, 20)];
     bottomsUpGradientCover.clipsToBounds = YES;
     [self addBottomsUpGradient:bottomsUpGradientCover];
     [borderView addSubview:bottomsUpGradientCover];
@@ -776,7 +770,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     rtd.font = [UIFont boldSystemFontOfSize:19.0f];
     [borderView addSubview:rtd];
     
-    WotaTappableView *vaContainer = [[WotaTappableView alloc] initWithFrame:CGRectMake(294, 52, 19, 19)];
+    WotaTappableView *vaContainer = [[WotaTappableView alloc] initWithFrame:CGRectMake((w316 - 22), 52, 19, 19)];
     vaContainer.playClickSound = NO;
     [vaContainer addGestureRecognizer:[self loadInfoPopupTapGesture]];
     vaContainer.tag = kRoomValueAddTag;
@@ -790,23 +784,22 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     [vaContainer addSubview:valueAdd];
     [borderView addSubview:vaContainer];
     
-    UILabel *rateLabel = [[UILabel alloc] initWithFrame:CGRectMake(200, 69, 112, 22)];
+    UILabel *rateLabel = [[UILabel alloc] initWithFrame:CGRectMake((w316 - 116), 69, 112, 22)];
     rateLabel.tag = kRoomRateViewTag;
     rateLabel.textColor = kTheColorOfMoney();
     rateLabel.textAlignment = NSTextAlignmentRight;
-//    [rateLabel setFont:[UIFont boldSystemFontOfSize:18.0f]];
-    [rateLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18.0f]];
+    [rateLabel setFont:[UIFont boldSystemFontOfSize:18.0f]];
     rateLabel.minimumScaleFactor = 0.5f;
     rateLabel.adjustsFontSizeToFitWidth = YES;
     [borderView addSubview:rateLabel];
     
-    UILabel *perNightLabel = [[UILabel alloc] initWithFrame:CGRectMake(259, 87, 53, 15)];
+    UILabel *perNightLabel = [[UILabel alloc] initWithFrame:CGRectMake((w316 - 57), 87, 53, 15)];
     perNightLabel.tag = kRoomPerNightTag;
     perNightLabel.textAlignment = NSTextAlignmentRight;
     [perNightLabel setFont:[UIFont systemFontOfSize:12.0f]];
     [borderView addSubview:perNightLabel];
     
-    WotaTappableView *totalView = [[WotaTappableView alloc] initWithFrame:CGRectMake(142, 240, 171, 40)];
+    WotaTappableView *totalView = [[WotaTappableView alloc] initWithFrame:CGRectMake((w316 - 174), 240, 171, 40)];
     totalView.tapColor = kTheColorOfMoney();
     totalView.untapColor = [UIColor clearColor];
     totalView.tag = kRoomTotalViewTag;
@@ -829,7 +822,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     totalLabel.lineBreakMode = NSLineBreakByClipping;
     totalLabel.textColor = kTheColorOfMoney();
     totalLabel.textAlignment = NSTextAlignmentRight;
-    [totalLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:21.0f]];
+    [totalLabel setFont:[UIFont boldSystemFontOfSize:21.0f]];
     totalLabel.minimumScaleFactor = 0.5f;
     totalLabel.adjustsFontSizeToFitWidth = YES;
     [totalView addSubview:totalLabel];
@@ -845,10 +838,10 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     totalWithTaxLabel.textAlignment = NSTextAlignmentRight;
     totalWithTaxLabel.textColor = kTheColorOfMoney();
     totalWithTaxLabel.textAlignment = NSTextAlignmentCenter;
-    [totalWithTaxLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:15.0f]];
+    [totalWithTaxLabel setFont:[UIFont boldSystemFontOfSize:15.0f]];
     [totalView addSubview:totalWithTaxLabel];
     
-    UILabel *nonreundLabel = [[UILabel alloc] initWithFrame:CGRectMake(198, 104, 118, 21)];
+    UILabel *nonreundLabel = [[UILabel alloc] initWithFrame:CGRectMake((w316 - 118), 104, 118, 21)];
     nonreundLabel.clipsToBounds = YES;
     nonreundLabel.lineBreakMode = NSLineBreakByClipping;
     nonreundLabel.layer.cornerRadius = WOTA_CORNER_RADIUS;
@@ -873,7 +866,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     nonreundLongLabel.textAlignment = NSTextAlignmentCenter;
     [borderView addSubview:nonreundLongLabel];
     
-    UILabel *rtdL = [[UILabel alloc] initWithFrame:CGRectMake(3, 278, 312, 82)];
+    UILabel *rtdL = [[UILabel alloc] initWithFrame:CGRectMake(3, 278, (w316 - 4), 82)];
     rtdL.tag = kRoomTypeDescrLongTag;
     rtdL.userInteractionEnabled = YES;
     rtdL.lineBreakMode = NSLineBreakByWordWrapping;
@@ -881,7 +874,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     rtdL.font = [UIFont systemFontOfSize:12.0f];
     [borderView addSubview:rtdL];
     
-    UILabel *promoLabel = [[UILabel alloc] initWithFrame:CGRectMake(280, -6, 60, 27)];
+    UILabel *promoLabel = [[UILabel alloc] initWithFrame:CGRectMake((w316 - 36), -6, 60, 27)];
     promoLabel.tag = kPromoLabelTag;
     promoLabel.backgroundColor = kTheColorOfMoney();
     promoLabel.textColor = [UIColor whiteColor];
@@ -898,7 +891,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     [self.bedTypeButton addTarget:self action:@selector(clickBedType:) forControlEvents:UIControlEventTouchUpInside];
     [tableViewPopout addSubview:self.bedTypeButton];
     
-    self.smokingButton = [WotaButton wbWithFrame:CGRectMake(194, 364, 120, 30)];
+    self.smokingButton = [WotaButton wbWithFrame:CGRectMake((w316 - 122), 364, 120, 30)];
     [self.smokingButton addTarget:self action:@selector(clickSmokingPref:) forControlEvents:UIControlEventTouchUpInside];
     [tableViewPopout addSubview:self.smokingButton];
     
@@ -944,7 +937,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     self.isPickerContainerShowing = YES;
     [UIView animateWithDuration:kSrQuickAnimationDuration animations:^{
         self.overlayDisable.alpha = 0.8f;
-        self.pickerViewContainer.frame = CGRectMake(0, 364, 320, 204);
+        self.pickerViewContainer.frame = CGRectMake((_sr.size.width - 320)/2, _sr.size.height - 204, 320, 204);
     } completion:^(BOOL finished) {
         ;
     }];
@@ -971,7 +964,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     self.isPickerContainerShowing = YES;
     [UIView animateWithDuration:kSrQuickAnimationDuration animations:^{
         self.overlayDisable.alpha = 0.8f;
-        self.pickerViewContainer.frame = CGRectMake(0, 364, 320, 204);
+        self.pickerViewContainer.frame = CGRectMake((_sr.size.width - 320)/2, _sr.size.height - 204, 320, 204);
     } completion:^(BOOL finished) {
         ;
     }];
@@ -1512,7 +1505,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     __weak typeof(self) weakSelf = self;
     [UIView animateWithDuration:kSrQuickAnimationDuration animations:^{
         weakSelf.overlayDisable.alpha = 0.0f;
-        weakSelf.pickerViewContainer.frame = CGRectMake(0, 600, 320, 204);
+        weakSelf.pickerViewContainer.frame = CGRectMake((_sr.size.width - 320)/2, _sr.size.height, 320, 204);
     } completion:^(BOOL finished) {
         [weakSelf.overlayDisable removeFromSuperview];
         if ([weakSelf.pickerViewDoneButton.titleLabel.text isEqualToString:@"Next"]) {
@@ -1528,7 +1521,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
 }
 
 - (void)setupPickerViewContainer {
-    self.pickerViewContainer = [[UIView alloc] initWithFrame:CGRectMake(0, 600, 320, 204)];
+    self.pickerViewContainer = [[UIView alloc] initWithFrame:CGRectMake((_sr.size.width - 320)/2, _sr.size.height, 320, 204)];
     self.pickerViewContainer.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:self.pickerViewContainer];
     
@@ -2012,22 +2005,23 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     self.bedTypeButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/0.55)), 0.001f, 0.001f);
     self.smokingButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/0.55f)), 0.001f, 0.001f);
     
+    CGFloat w316 = _sr.size.width - 4;
     [UIView animateWithDuration:kSrAnimationDuration delay:0.0 options:kLoadDropRoomDetailsAnimationCurve animations:^{
-        tvp.frame = CGRectMake(0.0f, 64.0f, 320.0f, 400.0f);
+        tvp.frame = CGRectMake(0.0f, 64.0f, (w316 + 4), 400.0f);
         cv.frame = CGRectMake(0, 0, tvp.bounds.size.width, tvp.bounds.size.height);
         borderView.frame = CGRectMake(2.0f, 2.0f, cv.frame.size.width - 4.0f, cv.frame.size.height - 4.0f);
-        riv.frame = CGRectMake(0, 0, 316, 210);
-        ivc.frame = CGRectMake(0, 210, 316, 61);
-        gic.frame = CGRectMake(0, 210, 316, 30);
-        cgc.frame = CGRectMake(0, 126, 316, 84);
+        riv.frame = CGRectMake(0, 0, w316, 210);
+        ivc.frame = CGRectMake(0, 210, w316, 61);
+        gic.frame = CGRectMake(0, 210, w316, 30);
+        cgc.frame = CGRectMake(0, 126, w316, 84);
         rtd.frame = CGRectMake(3, 188, 190, 53);
-        vap.frame = CGRectMake(284, 207, 27, 27);
+        vap.frame = CGRectMake((w316 - 32), 207, 27, 27);
         vai.frame = vap.bounds;
-        rtl.frame = CGRectMake(200, 230, 112, 22);
+        rtl.frame = CGRectMake((w316 - 116), 230, 112, 22);
         rtl.alpha = 0.0f;
         tal.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 0), 1.0f, 1.0f);
         tal.alpha = 1.0f;
-        pnt.frame = CGRectMake(259, 248, 53, 15);
+        pnt.frame = CGRectMake((w316 - 57), 248, 53, 15);
         pnt.alpha = 0.0f;
         nrl.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, 160), 0.001f, 0.001f);
         nrr.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 0), 1.0f, 1.0f);
@@ -2071,6 +2065,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     [self.view bringSubviewToFront:nv];
     [nv animateToBack];
     
+    CGFloat w316 = _sr.size.width - 4;
     [UIView animateWithDuration:kSrAnimationDuration delay:0.0 options:kLoadDropRoomDetailsAnimationCurve animations:^{
         weakSelf.bedTypeButton.alpha = weakSelf.smokingButton.alpha = rtdl.alpha = 0.0f;
         tal.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(80.0f, -(tvp.frame.size.height/2.3f)), 0.001f, 0.001f);
@@ -2081,17 +2076,17 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
         tvp.frame = weakSelf.rectOfCellInSuperview;
         cv.frame = weakSelf.rectOfAvailRoomContView;
         borderView.frame = CGRectMake(2.0f, 2.0f, weakSelf.rectOfAvailRoomContView.size.width - 4.0f, weakSelf.rectOfAvailRoomContView.size.height - 4.0f);
-        riv.frame = CGRectMake(0, -71, 316, 210);
-        ivc.frame = CGRectMake(0, 84, 316, 55);
-        gic.frame = CGRectMake(0, 0, 316, 84);
+        riv.frame = CGRectMake(0, -71, w316, 210);
+        ivc.frame = CGRectMake(0, 84, w316, 55);
+        gic.frame = CGRectMake(0, 0, w316, 84);
 //        cgc.alpha = 0.0f;
-        cgc.frame = CGRectMake(0, 0, 316, 84);
+        cgc.frame = CGRectMake(0, 0, w316, 84);
         rtd.frame = CGRectMake(3, 71, 190, 53);
-        vap.frame = CGRectMake(294, 52, 19, 19);
+        vap.frame = CGRectMake((w316 - 22), 52, 19, 19);
         vai.frame = vap.bounds;
-        rtl.frame = CGRectMake(200, 69, 112, 22);
+        rtl.frame = CGRectMake((w316 - 116), 69, 112, 22);
         rtl.alpha = 1.0f;
-        pnt.frame = CGRectMake(259, 87, 53, 15);
+        pnt.frame = CGRectMake((w316 - 57), 87, 53, 15);
         pnt.alpha = 1.0f;
         nrl.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 0), 1.0f, 1.0f);
         rtv.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
@@ -2105,7 +2100,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
 - (void)loadGuestDetailsView {
     __weak UIView *guestDetailsView = self.guestDetailsView;
     [self.view addSubview:guestDetailsView];
-    guestDetailsView.frame = CGRectMake(0, 64, 320, 568);
+    guestDetailsView.frame = CGRectMake(0, 64, _sr.size.width, _sr.size.height);
     guestDetailsView.backgroundColor = kWotaColorOne();
     [[guestDetailsView subviews] makeObjectsPerformSelector:@selector(setBackgroundColor:) withObject:(id)kWotaColorOne()];
     
@@ -2239,23 +2234,30 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     NavigationView *nv = (NavigationView *) [self.view viewWithTag:kNavigationViewTag];
     UIView *tv = [[UIView alloc] initWithFrame:nv.titleView.bounds];
     tv.tag = kCardSecurityTag;
-    UILabel *b = [[UILabel alloc] initWithFrame:CGRectMake(89, 7, 83, 37)];
+    
+    CGFloat wcvX = (tv.frame.size.width - 110)/2;
+    UIView *wcv = [[UIView alloc]initWithFrame:CGRectMake(wcvX, 0, 110, 37)];
+    wcv.backgroundColor = [UIColor clearColor];
+    UILabel *b = [[UILabel alloc] initWithFrame:CGRectMake(27, 7, 83, 37)];
     b.backgroundColor = [UIColor clearColor];
     b.textAlignment = NSTextAlignmentLeft;
     b.font = [UIFont boldSystemFontOfSize:16.0f];
     b.text = @"Payment";
-    [tv addSubview:b];
+    [wcv addSubview:b];
     UIImageView *iv = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"locked"]];
-    iv.frame = CGRectMake(62, 14, 22, 22);
+    iv.frame = CGRectMake(0, 14, 22, 22);
     iv.contentMode = UIViewContentModeScaleAspectFit;
     iv.backgroundColor = [UIColor clearColor];
-    [tv addSubview:iv];
+    [wcv addSubview:iv];
+    
+    [tv addSubview:wcv];
+    
     [nv replaceTitleViewContainer:tv];
     [nv animateToSecondCancel];
     [nv rightViewAddCheckMark];
     
     __weak UIView *paymentDetailsView = self.paymentDetailsView;
-    paymentDetailsView.frame = CGRectMake(0, 64, 320, 568);
+    paymentDetailsView.frame = CGRectMake(0, 64, _sr.size.width, _sr.size.height);
     paymentDetailsView.backgroundColor = kWotaColorOne();
     [[paymentDetailsView subviews] makeObjectsPerformSelector:@selector(setBackgroundColor:) withObject:(id)kWotaColorOne()];
     
@@ -2547,7 +2549,8 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     wv.frame = newFrame;
     
     CGFloat abc = wv.frame.origin.y + wv.frame.size.height + 10;
-    wayne.frame = CGRectMake(10, ((64 + 568 - abc)/2), 300, abc);
+    CGFloat wx = (_sr.size.width - 300)/2;
+    wayne.frame = CGRectMake(wx, ((64 + _sr.size.height - abc)/2), 300, abc);
     
     [wayne addSubview:wv];
     
@@ -2559,11 +2562,8 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     
     self.navigationController.navigationBar.clipsToBounds = NO;
     self.overlayDisable.alpha = 0.0f;
-    self.overlayDisableNav.alpha = 0.0f;
     [self.view addSubview:self.overlayDisable];
-    [self.navigationController.navigationBar addSubview:self.overlayDisableNav];
     [self.view bringSubviewToFront:self.overlayDisable];
-    [self.navigationController.navigationBar bringSubviewToFront:self.overlayDisableNav];
     [self.view addSubview:wayne];
     [self.view bringSubviewToFront:wayne];
     
@@ -2571,7 +2571,6 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     __weak typeof(self) weakSelf = self;
     [UIView animateWithDuration:kSrAnimationDuration animations:^{
         weakSelf.overlayDisable.alpha = 0.8f;
-        weakSelf.overlayDisableNav.alpha = 1.0f;
         weakSelf.navigationController.navigationBar.alpha = 0.3f;
         wayne.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
     } completion:^(BOOL finished) {
@@ -2597,12 +2596,10 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     [self.currentFirstResponder becomeFirstResponder];
     [UIView animateWithDuration:kSrAnimationDuration animations:^{
         weakSelf.overlayDisable.alpha = 0.0f;
-        weakSelf.overlayDisableNav.alpha = 0.0f;
         weakSelf.navigationController.navigationBar.alpha = 1.0f;
         w.transform = toTransform;
     } completion:^(BOOL finished) {
         [weakSelf.overlayDisable removeFromSuperview];
-        [weakSelf.overlayDisableNav removeFromSuperview];
         [w removeFromSuperview];
     }];
 }
@@ -2917,7 +2914,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     gradientLayer.frame = view.bounds;
     gradientLayer.colors = self.priceGradientColors;
     gradientLayer.startPoint = CGPointMake(0.65f, 0.45f);
-    gradientLayer.endPoint = CGPointMake(0.95f, 0.88f);
+    gradientLayer.endPoint = CGPointMake(0.75f, 0.88f);
 //    iv.layer.mask = gradientLayer;
     [view.layer addSublayer:gradientLayer];
 }

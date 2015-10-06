@@ -82,7 +82,7 @@ NSUInteger const kRightCheckMarkView = 4921743;
 }
 
 - (id)initWithDelegate:(id<NavigationDelegate>)navDelegate {
-    CGRect frame = CGRectMake(0, 0, 320, 64);
+    CGRect frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 64);
     if (self = [self initWithFrame:frame withDelegate:navDelegate]) {
     }
     return self;
@@ -94,11 +94,12 @@ NSUInteger const kRightCheckMarkView = 4921743;
         self.tag = kNavigationViewTag;
         self.opaque = NO;
         self.backgroundColor = kNavigationColor();
-        UIView *border = [[UIView alloc] initWithFrame:CGRectMake(0, 63.4f, 320, 0.6f)];
+        CGFloat ww = [[UIScreen mainScreen] bounds].size.width;
+        UIView *border = [[UIView alloc] initWithFrame:CGRectMake(0, 63.4f, ww, 0.6f)];
         border.backgroundColor = kNavBorderColor();
         [self addSubview:border];
         
-        _titleView = [[UIView alloc ]initWithFrame:CGRectMake(46, 20, 228, 44)];
+        _titleView = [[UIView alloc ]initWithFrame:CGRectMake(46, 20, ww - 92, 44)];
         [self addSubview:_titleView];
         [self setupWhereToContainer];
         [_titleView addSubview:_whereToContainer];
@@ -107,7 +108,7 @@ NSUInteger const kRightCheckMarkView = 4921743;
         [_leftView addSubview:[self defaultBackButton]];
         [self addSubview:_leftView];
         
-        _rightView = [[UIView alloc] initWithFrame:CGRectMake(276, 20, 44, 44)];
+        _rightView = [[UIView alloc] initWithFrame:CGRectMake(ww - 44, 20, 44, 44)];
         [self addSubview:_rightView];
     }
     return self;
@@ -161,7 +162,8 @@ NSUInteger const kRightCheckMarkView = 4921743;
 - (UILabel *)whereToLabel {
     UILabel *wtl = (UILabel *) [_whereToContainer viewWithTag:kWhereToLabelTag];
     if (nil == wtl) {
-        wtl = [[UILabel alloc] initWithFrame:CGRectMake(0, 3, 228, 21)];
+        CGFloat ww = [[UIScreen mainScreen] bounds].size.width;
+        wtl = [[UILabel alloc] initWithFrame:CGRectMake(0, 3, ww - 92, 21)];
         wtl.tag = kWhereToLabelTag;
         wtl.lineBreakMode = NSLineBreakByTruncatingTail;
         wtl.text = [SelectionCriteria singleton].whereToFirst;
@@ -208,7 +210,8 @@ NSUInteger const kRightCheckMarkView = 4921743;
         CGRect nn = numbLabel.frame;
         numbLabel.frame = CGRectMake(nn.origin.x, nn.origin.y, nn.size.width, 22);
         
-        tuv = [[UIView alloc] initWithFrame:CGRectMake(0, 22, 228, 22)];
+        CGFloat ww = [[UIScreen mainScreen] bounds].size.width;
+        tuv = [[UIView alloc] initWithFrame:CGRectMake(0, 22, ww - 92, 22)];
         tuv.tag = kTitleUnderViewTag;
         UIView *stuffContainer = [[UIView alloc] initWithFrame:tuv.bounds];
         [tuv addSubview:stuffContainer];
@@ -218,7 +221,7 @@ NSUInteger const kRightCheckMarkView = 4921743;
         [stuffContainer addSubview:sv];
         [stuffContainer addSubview:numbLabel];
         CGFloat maxNumbPoint = CGRectGetMaxX(numbLabel.frame);
-        stuffContainer.frame = CGRectMake((228 - maxNumbPoint)/2, 0, maxNumbPoint, 22);
+        stuffContainer.frame = CGRectMake((ww - 92 - maxNumbPoint)/2, 0, maxNumbPoint, 22);
     }
     return tuv;
 }

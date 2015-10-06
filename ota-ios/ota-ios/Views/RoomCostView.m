@@ -149,7 +149,9 @@
     self.xOffset = xOffset;
     self.yOffset = yOffset;
     CGRect tcf = self.totalContainer.frame;
-    self.frame = CGRectMake(7, ((50 + 568 - tcf.origin.y - tcf.size.height)/2), 306, tcf.origin.y + tcf.size.height);
+    CGFloat wx = ([[UIScreen mainScreen] bounds].size.width - self.frame.size.width)/2;
+    CGFloat wy = [[UIScreen mainScreen] bounds].size.height;
+    self.frame = CGRectMake(wx, ((50 + wy - tcf.origin.y - tcf.size.height)/2), self.frame.size.width, tcf.origin.y + tcf.size.height);
     self.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(xOffset, yOffset), 0.001f, 0.001f);
     
     self.overlayDisable.alpha = 0.0f;
@@ -181,7 +183,7 @@
 - (UIView *)overlayDisable {
     if (_overlayDisable) return _overlayDisable;
     
-    _overlayDisable = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 568)];
+    _overlayDisable = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     _overlayDisable.userInteractionEnabled = YES;
     _overlayDisable.alpha = 0.0f;
     _overlayDisable.backgroundColor = [UIColor blackColor];

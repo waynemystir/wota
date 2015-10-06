@@ -166,6 +166,8 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
         self.view.transform = kIpadTransform();
     }
     
+    self.currentOrientation = HI_PORTRAIT;
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rotateOrNot) name:UIDeviceOrientationDidChangeNotification object:nil];
     
     self.scrollViewOutlet.scrollsToTop = YES;
@@ -399,7 +401,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
         ivc.tag = kRoomImageViewContainersStartingTag + j;
         [_imageScrollerOutlet addSubview:ivc];
         
-        ImageViewHotelInfo *iv = [[ImageViewHotelInfo alloc] initWithFrame:[self rectForOrient:HI_PORTRAIT]];
+        ImageViewHotelInfo *iv = [ImageViewHotelInfo new];
         iv.backgroundColor = [UIColor blackColor];
         iv.center = CGPointMake(250, 212);
         iv.contentMode = UIViewContentModeScaleAspectFit;
@@ -407,6 +409,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
         iv.tag = kRoomImageViewsStartingTag + j;
         iv.image = self.placeHolderImage;
         iv.containsPlaceholderImage = YES;
+        iv.frame = [self rectForOrient:HI_PORTRAIT];
         [ivc addSubview:iv];
         
         EanHotelInfoImage *eii = [EanHotelInfoImage imageFromDict:ims[j]] ? : [EanHotelInfoImage new];
@@ -446,11 +449,11 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
            placeholderImage:wes.placeHolderImage
                   completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                       
-        wiv.frame = [wes rectForOrient:wes.currentOrientation];
-        if (!wes.hideEffinStatusBar) {
-            wiv.center = CGPointMake(250, 212);
-        }
-        wiv.containsPlaceholderImage = NO;
+                      wiv.frame = [wes rectForOrient:wes.currentOrientation];
+                      if (!wes.hideEffinStatusBar) {
+                          wiv.center = CGPointMake(250, 212);
+                      }
+                      wiv.containsPlaceholderImage = NO;
     }];
 }
 
@@ -735,13 +738,13 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
 - (CGRect)rectForOrient:(HI_ORIENTATION)ho {
     switch (ho) {
         case HI_PORTRAIT:
-            return CGRectMake(70, 0, 360.0f, kImageScrollerPortraitHeight);
+            return CGRectMake((500 - _sr.size.width - 20)/2, 0, _sr.size.width + 20, _sr.size.height);
             break;
         case HI_LANDSCAPE_LEFT:
-            return CGRectMake(10, 90, 480.0f, 320);
+            return CGRectMake(10, 90, _sr.size.height, _sr.size.width + 20);
             break;
         case HI_LANDSCAPE_RIGHT:
-            return CGRectMake(10, 90, 480.0f, 320);
+            return CGRectMake(10, 90, 480, 320);
             break;
             
         default:
@@ -763,11 +766,7 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
     __weak UIScrollView *sv = _scrollViewOutlet;
     sv.scrollEnabled = NO;
     [self.view bringSubviewToFront:sv];
-    UIView *overlay = [[UIView alloc] initWithFrame:CGRectMake(0, -200, _sr.size.width, 1168)];
-    overlay.tag = 10920983;
-    overlay.userInteractionEnabled = YES;
-    overlay.backgroundColor = [UIColor blackColor];
-    overlay.alpha = 0.0f;
+    UIView *overlay = [self imagerOverlay];
     [wes.view addSubview:overlay];
     [wes.view bringSubviewToFront:overlay];
     
@@ -785,7 +784,7 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
     }
     
     [wes.view layoutIfNeeded];
-    wes.scrollViewTopConstr.constant = 0;
+    wes.scrollViewTopConstr.constant = -32;
     wes.imageScrollerTopConstr.constant = kImageScrollerPortraitY + sv.contentOffset.y;
     wes.imageScrollerHeightConstr.constant = _sr.size.height;
     [wes.view bringSubviewToFront:wes.scrollViewOutlet];
@@ -801,6 +800,15 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
             wiv.frame = civFrame;
         }
     }];
+}
+
+- (UIView *)imagerOverlay {
+    UIView *overlay = [[UIView alloc] initWithFrame:CGRectMake(0, -200, _sr.size.width, 1168)];
+    overlay.tag = 10920983;
+    overlay.userInteractionEnabled = YES;
+    overlay.backgroundColor = [UIColor blackColor];
+    overlay.alpha = 0.0f;
+    return overlay;
 }
 
 - (void)dropDaPrettyPictures {

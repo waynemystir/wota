@@ -37,6 +37,7 @@
 		B0344C4A1AE5A696000BBFCE /* WotaCardNumberField.m in Sources */ = {isa = PBXBuildFile; fileRef = B0344C491AE5A696000BBFCE /* WotaCardNumberField.m */; };
 		B0344C4D1AE5A6E0000BBFCE /* WotaCardNumberFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = B0344C4C1AE5A6E0000BBFCE /* WotaCardNumberFormatter.m */; };
 		B0344C501AE5A7BD000BBFCE /* WotaCardPatternInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B0344C4F1AE5A7BD000BBFCE /* WotaCardPatternInfo.m */; };
+		B039ECC91BC30C9B00FD798A /* AvailableRoomTvCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B039ECC81BC30C9B00FD798A /* AvailableRoomTvCell.xib */; settings = {ASSET_TAGS = (); }; };
 		B03B42FD1ADDFE1B0083A6EA /* EanPlace.m in Sources */ = {isa = PBXBuildFile; fileRef = B03B42FC1ADDFE1B0083A6EA /* EanPlace.m */; };
 		B03B527E1AF99425007E2EA7 /* PriceDetailsPopupView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B03B527D1AF99425007E2EA7 /* PriceDetailsPopupView.xib */; };
 		B03C2BAA1AED74E700C13AC5 /* EanRateInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B03C2BA91AED74E700C13AC5 /* EanRateInfo.m */; };
@@ -270,6 +271,7 @@
 		B0344C4C1AE5A6E0000BBFCE /* WotaCardNumberFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WotaCardNumberFormatter.m; sourceTree = "<group>"; };
 		B0344C4E1AE5A7BD000BBFCE /* WotaCardPatternInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WotaCardPatternInfo.h; sourceTree = "<group>"; };
 		B0344C4F1AE5A7BD000BBFCE /* WotaCardPatternInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WotaCardPatternInfo.m; sourceTree = "<group>"; };
+		B039ECC81BC30C9B00FD798A /* AvailableRoomTvCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AvailableRoomTvCell.xib; sourceTree = "<group>"; };
 		B03B42FB1ADDFE1A0083A6EA /* EanPlace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EanPlace.h; sourceTree = "<group>"; };
 		B03B42FC1ADDFE1B0083A6EA /* EanPlace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EanPlace.m; sourceTree = "<group>"; };
 		B03B527D1AF99425007E2EA7 /* PriceDetailsPopupView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PriceDetailsPopupView.xib; sourceTree = "<group>"; };
@@ -740,6 +742,7 @@
 				B0963CC41AC8E034002FD859 /* ChildSubView.h */,
 				B0963CC51AC8E034002FD859 /* ChildSubView.m */,
 				B091B8961AD22FEF00BB6CB0 /* AvailableRoomTableViewCell.xib */,
+				B039ECC81BC30C9B00FD798A /* AvailableRoomTvCell.xib */,
 				B018C0411AD96A7600DDCE2E /* GuestDetailsView.xib */,
 				B018C0461ADA01FA00DDCE2E /* PaymentDetailsView.xib */,
 				B0DF52381ADC77F100136661 /* PostResultsTableViewCell.xib */,
@@ -1240,6 +1243,7 @@
 				B0D02FF71AE6123000B1E75F /* mastercard.png in Resources */,
 				B0FE0F491AC6ED0000DAF635 /* BookView.xib in Resources */,
 				B0BB3F451B59DD3500DCCFE7 /* HotelNameFilterView.xib in Resources */,
+				B039ECC91BC30C9B00FD798A /* AvailableRoomTvCell.xib in Resources */,
 				B06BAB841B9F2B6A0081C331 /* MenuView.xib in Resources */,
 				B010E3841B4CCE7300CA8374 /* SortView.xib in Resources */,
 				B0C04AD51B5212AD002C89F2 /* NetworkProblemView.xib in Resources */,
