@@ -2080,6 +2080,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     tf.layer.cornerRadius = 6.0f;
     tf.layer.borderColor = UIColorFromRGB(0xcccccc).CGColor;
     tf.layer.borderWidth = 0.5f;
+    tf.placeholder = @"Hotel name";
     tf.clearButtonMode = UITextFieldViewModeWhileEditing;
     tf.autocorrectionType = UITextAutocorrectionTypeNo;
     tf.autocapitalizationType = UITextAutocapitalizationTypeWords;
@@ -2095,7 +2096,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     iv.contentMode = UIViewContentModeScaleAspectFit;
     iv.frame = CGRectMake(10, 8, 14, 14);
     
-    UIView *ivc = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 26, 30)];
+    UIView *ivc = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 33, 30)];
     ivc.backgroundColor = [UIColor clearColor];
     [ivc addSubview:iv];
     

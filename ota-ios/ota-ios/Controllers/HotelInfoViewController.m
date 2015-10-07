@@ -85,6 +85,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 @property (weak, nonatomic) IBOutlet UILabel *feesLabel;
 @property (weak, nonatomic) IBOutlet UILabel *diningTitle;
 @property (weak, nonatomic) IBOutlet UILabel *diningLabel;
+@property (weak, nonatomic) IBOutlet UIView *taAndStarsContainer;
 @property (nonatomic, strong) EanHotelInformationResponse *eanHotelInformationResponse;
 //@property (nonatomic, strong) SelectRoomViewController *selectRoomViewController;
 @property (nonatomic) BOOL paymentTypesReturned;
@@ -109,6 +110,9 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *imageScrollerHeightConstr;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *imageScrollerWidthConstr;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *scrollViewTopConstr;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *tripAdvisorLeadConstr;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *tripAdvisorToStarContainerConstr;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *starContainerTrailConstr;
 
 @property (nonatomic) CGFloat picPageWidth;
 
@@ -253,6 +257,12 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
                                                                      attribute:NSLayoutAttributeNotAnAttribute 
                                                                     multiplier:1.0 
                                                                       constant:_sr.size.width]];
+    
+    if (_sr.size.width == 320) {
+        self.tripAdvisorToStarContainerConstr.constant = 17;
+        self.tripAdvisorLeadConstr.constant = 10;
+        self.starContainerTrailConstr.constant = 13;
+    }
 }
 
 - (void)colorTheHotelRatingStars {

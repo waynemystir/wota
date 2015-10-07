@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="8191" systemVersion="15A284" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
@@ -73,6 +73,7 @@
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ghe-iy-1YG" userLabel="overlay">
                     <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                    <animations/>
                     <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aes-gI-1UL" userLabel="containerView">
@@ -83,14 +84,17 @@
                             <subviews>
                                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="96" sectionHeaderHeight="1" sectionFooterHeight="1" translatesAutoresizingMaskIntoConstraints="NO" id="L6n-T2-exm" userLabel="hotelsTableView">
                                     <rect key="frame" x="0.0" y="0.0" width="600" height="480"/>
+                                    <animations/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="sectionIndexBackgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </tableView>
                                 <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="E6N-3S-87y" userLabel="topBorder">
                                     <rect key="frame" x="0.0" y="0.0" width="600" height="0.5"/>
+                                    <animations/>
                                     <color key="backgroundColor" red="0.69803921570000005" green="0.69803921570000005" blue="0.69803921570000005" alpha="1" colorSpace="calibratedRGB"/>
                                 </view>
                             </subviews>
+                            <animations/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <constraints>
                                 <constraint firstAttribute="trailing" secondItem="L6n-T2-exm" secondAttribute="trailing" id="0VA-f3-v93"/>
@@ -104,10 +108,12 @@
                             <subviews>
                                 <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="ZjD-FZ-9Vw" userLabel="mkMapView">
                                     <rect key="frame" x="0.0" y="0.0" width="600" height="480"/>
+                                    <animations/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </mapView>
                                 <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="qoh-hy-aLf" userLabel="mapSpinner">
                                     <rect key="frame" x="5" y="5" width="37" height="37"/>
+                                    <animations/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="37" id="VN1-ZI-9xM"/>
                                         <constraint firstAttribute="width" constant="37" id="z1p-jx-oGr"/>
@@ -115,6 +121,7 @@
                                 </activityIndicatorView>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wfo-kb-A5G" userLabel="mapBackContainer">
                                     <rect key="frame" x="0.0" y="410" width="60" height="60"/>
+                                    <animations/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="60" id="Rfj-XZ-PkY"/>
@@ -126,9 +133,11 @@
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="search_big" translatesAutoresizingMaskIntoConstraints="NO" id="Tc9-Ea-SFn" userLabel="mapMapSearchImageView">
                                             <rect key="frame" x="5" y="5" width="50" height="50"/>
+                                            <animations/>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </imageView>
                                     </subviews>
+                                    <animations/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="60" id="KsG-zz-yoy"/>
@@ -136,6 +145,7 @@
                                     </constraints>
                                 </view>
                             </subviews>
+                            <animations/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <constraints>
                                 <constraint firstItem="qoh-hy-aLf" firstAttribute="leading" secondItem="YkH-Se-e5b" secondAttribute="leading" constant="5" id="5cs-77-gu6"/>
@@ -155,6 +165,7 @@
                             <subviews>
                                 <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="trotter" translatesAutoresizingMaskIntoConstraints="NO" id="MJq-s4-iUb">
                                     <rect key="frame" x="0.0" y="420" width="60" height="60"/>
+                                    <animations/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="60" id="m2f-Fm-hqj"/>
@@ -163,6 +174,7 @@
                                 </imageView>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ymM-wT-jyk" userLabel="menuContainer" customClass="WotaTappableView">
                                     <rect key="frame" x="0.0" y="420" width="60" height="60"/>
+                                    <animations/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="60" id="9B8-pH-Mi6"/>
@@ -174,6 +186,7 @@
                                     <subviews>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="R73-ve-uPC" userLabel="arrivalDateButton" customClass="WotaButton">
                                             <rect key="frame" x="60" y="2" width="480" height="30"/>
+                                            <animations/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="30" id="cnK-kH-U3d"/>
                                             </constraints>
@@ -186,6 +199,7 @@
                                         </button>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="→" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eer-Q8-0EF">
                                             <rect key="frame" x="7" y="9" width="44" height="21"/>
+                                            <animations/>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="44" id="GsE-I0-jUa"/>
@@ -196,6 +210,7 @@
                                         </label>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="btH-JZ-Utd" userLabel="returnDateButton" customClass="WotaButton">
                                             <rect key="frame" x="60" y="54" width="480" height="30"/>
+                                            <animations/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="30" id="fgN-fy-PLJ"/>
                                             </constraints>
@@ -208,6 +223,7 @@
                                         </button>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="←" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZsM-93-ccP">
                                             <rect key="frame" x="7" y="57" width="44" height="21"/>
+                                            <animations/>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="21" id="r4l-qe-71f"/>
@@ -218,6 +234,7 @@
                                         </label>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zgB-dN-ewt" userLabel="minusAdultButton" customClass="WotaButton">
                                             <rect key="frame" x="183" y="125" width="46" height="30"/>
+                                            <animations/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="46" id="K7j-Vt-s2B"/>
                                                 <constraint firstAttribute="height" constant="30" id="bwa-oB-r0c"/>
@@ -233,6 +250,7 @@
                                         </button>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="222 Adults" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g8E-Vh-Y33" userLabel="adultsLabel">
                                             <rect key="frame" x="246" y="130" width="108" height="21"/>
+                                            <animations/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="21" id="EbN-wL-LIx"/>
                                                 <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="21" id="J97-Gf-vzP"/>
@@ -245,6 +263,7 @@
                                         </label>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4kw-rN-bfM" userLabel="addAdultButton" customClass="WotaButton">
                                             <rect key="frame" x="371" y="125" width="46" height="30"/>
+                                            <animations/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="30" id="MuJ-ke-PZ0"/>
                                                 <constraint firstAttribute="width" constant="46" id="agU-5M-hcl"/>
@@ -260,6 +279,7 @@
                                         </button>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xYZ-VE-EuC" userLabel="kidsButton" customClass="WotaButton">
                                             <rect key="frame" x="225" y="198" width="150" height="30"/>
+                                            <animations/>
                                             <constraints>
                                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="150" id="HOn-fe-wqk"/>
                                                 <constraint firstAttribute="width" constant="150" id="ake-mJ-hzq"/>
@@ -275,6 +295,7 @@
                                         </button>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wvh-AV-6KR" userLabel="checkHotelsButton" customClass="WotaButton">
                                             <rect key="frame" x="218" y="283" width="164" height="49"/>
+                                            <animations/>
                                             <constraints>
                                                 <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="49" id="Rwe-m6-PfD"/>
                                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="164" id="VgR-Rl-hzp"/>
@@ -290,6 +311,7 @@
                                             </connections>
                                         </button>
                                     </subviews>
+                                    <animations/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <constraints>
                                         <constraint firstItem="wvh-AV-6KR" firstAttribute="leading" secondItem="cQB-aV-zGP" secondAttribute="leading" constant="218" id="1L3-Jn-FGN"/>
@@ -332,6 +354,7 @@
                                     </variation>
                                 </view>
                             </subviews>
+                            <animations/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <constraints>
                                 <constraint firstItem="MJq-s4-iUb" firstAttribute="leading" secondItem="4nI-db-6ks" secondAttribute="leading" id="9Gc-RB-cYc"/>
@@ -343,6 +366,7 @@
                             </constraints>
                         </view>
                     </subviews>
+                    <animations/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <constraints>
                         <constraint firstAttribute="trailing" secondItem="YkH-Se-e5b" secondAttribute="trailing" id="55A-o2-gSX"/>
@@ -364,6 +388,7 @@
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Fmg-7K-iwe" userLabel="footerSeparator">
                             <rect key="frame" x="0.0" y="0.0" width="600" height="1"/>
+                            <animations/>
                             <color key="backgroundColor" red="0.69803921570000005" green="0.69803921570000005" blue="0.69999999999999996" alpha="1" colorSpace="calibratedRGB"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="1" id="pHr-JY-QSa"/>
@@ -374,11 +399,14 @@
                             <subviews>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="sort" translatesAutoresizingMaskIntoConstraints="NO" id="tFx-Cw-qfv" userLabel="sortImageView">
                                     <rect key="frame" x="10" y="6" width="33" height="32"/>
+                                    <animations/>
                                 </imageView>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="search_mid" translatesAutoresizingMaskIntoConstraints="NO" id="IRz-QY-jLy" userLabel="sortMapSearch">
                                     <rect key="frame" x="13" y="8" width="28" height="28"/>
+                                    <animations/>
                                 </imageView>
                             </subviews>
+                            <animations/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="59" id="muP-wL-Xv8"/>
@@ -390,6 +418,7 @@
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Qe6-an-ZYT" userLabel="footerDatesBtn">
                                     <rect key="frame" x="58" y="0.0" width="134" height="44"/>
+                                    <animations/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="134" id="VYY-LK-4kp"/>
                                         <constraint firstAttribute="height" constant="44" id="kXm-9b-5Gi"/>
@@ -402,6 +431,7 @@
                                     </connections>
                                 </button>
                             </subviews>
+                            <animations/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <constraints>
                                 <constraint firstItem="Qe6-an-ZYT" firstAttribute="centerY" secondItem="TVj-t2-YGr" secondAttribute="centerY" id="cCu-pz-KBN"/>
@@ -416,14 +446,17 @@
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" tag="1290348" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="user_silhouette" translatesAutoresizingMaskIntoConstraints="NO" id="TdF-PT-4Km" userLabel="userSilhouette">
                                             <rect key="frame" x="14" y="13" width="17" height="17"/>
+                                            <animations/>
                                         </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="22" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="f75-Xk-KXn" userLabel="tcAdultsLabels">
                                             <rect key="frame" x="26" y="7" width="30" height="30"/>
+                                            <animations/>
                                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                             <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
+                                    <animations/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="61" id="irV-nX-l60"/>
@@ -431,6 +464,7 @@
                                     </constraints>
                                 </view>
                             </subviews>
+                            <animations/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <constraints>
                                 <constraint firstItem="FQU-v1-7dj" firstAttribute="centerX" secondItem="uNX-DM-rjw" secondAttribute="centerX" id="H9D-bc-jMh"/>
@@ -445,8 +479,10 @@
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="filter" translatesAutoresizingMaskIntoConstraints="NO" id="jBr-1m-vIF">
                                             <rect key="frame" x="18" y="11" width="22" height="22"/>
+                                            <animations/>
                                         </imageView>
                                     </subviews>
+                                    <animations/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="44" id="015-9q-qEX"/>
@@ -454,6 +490,7 @@
                                     </constraints>
                                 </view>
                             </subviews>
+                            <animations/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <constraints>
                                 <constraint firstItem="aIg-6w-kig" firstAttribute="centerY" secondItem="R4y-2D-Ub7" secondAttribute="centerY" id="RkD-1W-2Lx"/>
@@ -461,6 +498,7 @@
                             </constraints>
                         </view>
                     </subviews>
+                    <animations/>
                     <color key="backgroundColor" red="0.92941176469999998" green="0.92941176469999998" blue="0.92941176469999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
                         <constraint firstItem="uNX-DM-rjw" firstAttribute="leading" secondItem="TVj-t2-YGr" secondAttribute="trailing" id="0IC-Xr-8Pk"/>
@@ -489,6 +527,7 @@
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="prd-ep-Cp9" userLabel="backContainer">
                             <rect key="frame" x="4" y="13" width="33" height="33"/>
+                            <animations/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="33" id="Dan-d5-IeV"/>
@@ -497,6 +536,7 @@
                         </view>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YAP-jL-a1X" userLabel="whereToSecondLevel">
                             <rect key="frame" x="13" y="45" width="295" height="21"/>
+                            <animations/>
                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                             <color key="textColor" red="0.69803921570000005" green="0.69803921570000005" blue="0.69803921570000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
@@ -506,11 +546,14 @@
                             <subviews>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hamburger" translatesAutoresizingMaskIntoConstraints="NO" id="djG-PH-y7q" userLabel="wmapHamburger">
                                     <rect key="frame" x="5" y="5" width="20" height="20"/>
+                                    <animations/>
                                 </imageView>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="wmap" translatesAutoresizingMaskIntoConstraints="NO" id="ScW-pp-1SN" userLabel="wmapMap">
                                     <rect key="frame" x="4" y="4" width="22" height="22"/>
+                                    <animations/>
                                 </imageView>
                             </subviews>
+                            <animations/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="30" id="Z7O-sm-lJ3"/>
@@ -519,11 +562,13 @@
                         </view>
                         <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Where are you going?" minimumFontSize="11" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="2Sz-Nr-Bsq" userLabel="whereToTextField">
                             <rect key="frame" x="6" y="16" width="552" height="30"/>
+                            <animations/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="search"/>
                         </textField>
                         <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="Z88-90-f10" userLabel="autoCompleteSpinner">
                             <rect key="frame" x="510" y="21" width="20" height="20"/>
+                            <animations/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="20" id="Vh3-Za-AXf"/>
                                 <constraint firstAttribute="height" constant="20" id="rKy-3g-oAo"/>
@@ -534,14 +579,17 @@
                             <subviews>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="search_big" translatesAutoresizingMaskIntoConstraints="NO" id="ae1-TP-P6x" userLabel="imageViewOpeningSearch">
                                     <rect key="frame" x="10" y="11" width="27" height="27"/>
+                                    <animations/>
                                 </imageView>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Where are you going?" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aJL-1t-fDZ" userLabel="labelWhereYouGoing">
                                     <rect key="frame" x="48" y="9" width="199" height="31"/>
+                                    <animations/>
                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                     <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                             </subviews>
+                            <animations/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Oxx-dH-MDe" userLabel="openingWmapCont">
@@ -549,8 +597,10 @@
                             <subviews>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="wmap_big" translatesAutoresizingMaskIntoConstraints="NO" id="N65-3W-qrZ" userLabel="wmapBigImageView">
                                     <rect key="frame" x="6" y="6" width="38" height="37"/>
+                                    <animations/>
                                 </imageView>
                             </subviews>
+                            <animations/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <constraints>
                                 <constraint firstAttribute="trailing" secondItem="N65-3W-qrZ" secondAttribute="trailing" constant="6" id="AVo-WQ-o0U" userLabel="wmapBigTrailConstr"/>
@@ -562,6 +612,7 @@
                             </constraints>
                         </view>
                     </subviews>
+                    <animations/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <constraints>
                         <constraint firstItem="bgf-nx-VIl" firstAttribute="top" secondItem="eex-Wc-CNp" secondAttribute="top" constant="16" id="17E-GZ-QGp"/>
@@ -585,14 +636,16 @@
                     </constraints>
                 </view>
                 <view autoresizesSubviews="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jvj-4L-MmQ" userLabel="wmapClicker">
-                    <rect key="frame" x="542" y="41" width="58" height="66"/>
+                    <rect key="frame" x="544" y="41" width="56" height="66"/>
+                    <animations/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="66" id="niw-Q5-gdw"/>
-                        <constraint firstAttribute="width" constant="58" id="tJg-ny-l0a"/>
+                        <constraint firstAttribute="width" constant="56" id="tJg-ny-l0a"/>
                     </constraints>
                 </view>
             </subviews>
+            <animations/>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstItem="jvj-4L-MmQ" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="41" id="3T4-0x-gAF" userLabel="wmapClickerTopConstr"/>
