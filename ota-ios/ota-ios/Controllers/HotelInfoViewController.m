@@ -109,6 +109,8 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *imageScrollerWidthConstr;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *scrollViewTopConstr;
 
+@property (nonatomic) CGFloat picPageWidth;
+
 @end
 
 @implementation HotelInfoViewController {
@@ -120,6 +122,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 - (id)init {
     if (self = [super initWithNibName:@"HotelInfoVw" bundle:nil]) {
         _sr = [[UIScreen mainScreen] bounds];
+        _picPageWidth = _sr.size.height - 68;
     }
     return self;
 }
@@ -394,16 +397,17 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 }
 
 - (void)loadupTheImageScroller {
+    _imageScrollerWidthConstr.constant = _picPageWidth;
     NSArray *ims = self.eanHotelInformationResponse.hotelImagesArray;
     for (int j = 0; j < [ims count]; j++) {
-        UIView *ivc = [[UIView alloc] initWithFrame:CGRectMake(j * 500, 0, 500.0f, 325.0f)];
+        UIView *ivc = [[UIView alloc] initWithFrame:CGRectMake(j * _picPageWidth, 0, _picPageWidth, 325.0f)];
         ivc.backgroundColor = [UIColor blackColor];
         ivc.tag = kRoomImageViewContainersStartingTag + j;
         [_imageScrollerOutlet addSubview:ivc];
         
         ImageViewHotelInfo *iv = [ImageViewHotelInfo new];
         iv.backgroundColor = [UIColor blackColor];
-        iv.center = CGPointMake(250, 212);
+        iv.center = CGPointMake(_picPageWidth/2, 212);
         iv.contentMode = UIViewContentModeScaleAspectFit;
         iv.clipsToBounds = YES;
         iv.tag = kRoomImageViewsStartingTag + j;
@@ -423,7 +427,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
     [_imageScrollerOutlet addGestureRecognizer:tgr];
     _imageScrollerOutlet.userInteractionEnabled = YES;
     
-    _imageScrollerOutlet.contentSize = CGSizeMake(500 * [ims count], 325);
+    _imageScrollerOutlet.contentSize = CGSizeMake(_picPageWidth * [ims count], 325);
     _currentPageNumber = 1;
     _totalNumberOfPages = [ims count];
     _pageNumberLabel.text = [NSString stringWithFormat:@"1/%lu", (unsigned long)[ims count]];
@@ -451,7 +455,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
                       
                       wiv.frame = [wes rectForOrient:wes.currentOrientation];
                       if (!wes.hideEffinStatusBar) {
-                          wiv.center = CGPointMake(250, 212);
+                          wiv.center = CGPointMake(wes.picPageWidth/2, 212);
                       }
                       wiv.containsPlaceholderImage = NO;
     }];
@@ -687,15 +691,16 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 }
 
 - (CGPoint)pnpo:(HI_ORIENTATION)ho {
+    CGFloat w = _sr.size.height;
     switch (ho) {
         case HI_PORTRAIT:
             return CGPointMake(-131, -150);
             break;
         case HI_LANDSCAPE_LEFT:
-            return CGPointMake(-131, -150);
+            return w == 568 ? CGPointMake(-131, -150) : w == 667 ? CGPointMake(-158, -177) : w == 736 ? CGPointMake(-177, -196) : CGPointMake(-131, -150);
             break;
         case HI_LANDSCAPE_RIGHT:
-            return CGPointMake(-251, -274);
+            return w == 568 ? CGPointMake(-251, -274) : w == 667 ? CGPointMake(-299, -322) : w == 736 ? CGPointMake(-334, -357) : CGPointMake(-251, -274);
             break;
             
         default:
@@ -738,17 +743,17 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
 - (CGRect)rectForOrient:(HI_ORIENTATION)ho {
     switch (ho) {
         case HI_PORTRAIT:
-            return CGRectMake((500 - _sr.size.width - 20)/2, 0, _sr.size.width + 20, _sr.size.height);
+            return CGRectMake((_picPageWidth - _sr.size.width - 20)/2, 0, _sr.size.width + 20, _sr.size.height);
             break;
         case HI_LANDSCAPE_LEFT:
-            return CGRectMake(10, 90, _sr.size.height, _sr.size.width + 20);
+            return CGRectMake(0, (_sr.size.height - _sr.size.width)/2, _picPageWidth, _sr.size.width);
             break;
         case HI_LANDSCAPE_RIGHT:
-            return CGRectMake(10, 90, 480, 320);
+            return CGRectMake(0, (_sr.size.height - _sr.size.width)/2, _picPageWidth, _sr.size.width);
             break;
             
         default:
-            return CGRectMake(70, 0, 360.0f, kImageScrollerPortraitHeight);
+            return CGRectMake((_picPageWidth - _sr.size.width - 20)/2, 0, _sr.size.width + 20, _sr.size.height);
             break;
     }
 }
@@ -792,6 +797,7 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
         [wes.view layoutIfNeeded];
         civ.frame = civFrame;
         overlay.alpha = 1.0f;
+        pnl.frame = CGRectMake(_sr.size.width - 60, _sr.size.height + sv.contentOffset.y + 8, 58, 21);
         [wes setNeedsStatusBarAppearanceUpdate];
     } completion:^(BOOL finished) {
         for (int j = 0; j < [[iso subviews] count]; j++) {
@@ -841,8 +847,9 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
     [UIView animateWithDuration:kHiAnimationDuration animations:^{
         [wes.view layoutIfNeeded];
         civ.frame = [wes rectForOrient:HI_PORTRAIT];
-        civ.center = CGPointMake(250, 212);
+        civ.center = CGPointMake(wes.picPageWidth/2, 212);
         overlay.alpha = 0.0f;
+        pnl.frame = CGRectMake(_sr.size.width - 60, 193, 58, 21);
         [wes setNeedsStatusBarAppearanceUpdate];
     } completion:^(BOOL finished) {
         sv.scrollEnabled = YES;
@@ -851,7 +858,7 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
             UIView *wivc = [iso viewWithTag:kRoomImageViewContainersStartingTag + j];
             UIImageView *wiv = (UIImageView *) [wivc viewWithTag:kRoomImageViewsStartingTag + j];
             wiv.frame = [wes rectForOrient:HI_PORTRAIT];
-            wiv.center = CGPointMake(250, 212);
+            wiv.center = CGPointMake(_picPageWidth/2, 212);
         }
     }];
 }
@@ -861,7 +868,7 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     // Curtesy of http://stackoverflow.com/questions/5272228/detecting-uiscrollview-page-change
     static NSInteger previousPage = 0;
-    CGFloat pageWidth = scrollView.frame.size.width;
+    CGFloat pageWidth = _picPageWidth;
     float fractionalPage = scrollView.contentOffset.x / pageWidth;
     _currentPageNumber = 1 + lround(fractionalPage);
     if (previousPage != _currentPageNumber) {
