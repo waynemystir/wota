@@ -57,7 +57,7 @@
                     <rect key="frame" x="0.0" y="64" width="600" height="536"/>
                     <subviews>
                         <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="h2d-pr-sap" userLabel="contentView">
-                            <rect key="frame" x="0.0" y="0.0" width="600" height="1083"/>
+                            <rect key="frame" x="0.0" y="0.0" width="600" height="1059"/>
                             <subviews>
                                 <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qZb-YU-y85">
                                     <rect key="frame" x="50" y="-112" width="500" height="325"/>
@@ -104,7 +104,7 @@
                                     </constraints>
                                 </view>
                                 <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hNo-FB-8Ce" userLabel="starContainer">
-                                    <rect key="frame" x="446" y="251" width="129" height="26"/>
+                                    <rect key="frame" x="446" y="227" width="129" height="26"/>
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="star" translatesAutoresizingMaskIntoConstraints="NO" id="og6-Dx-UhI" userLabel="star1">
                                             <rect key="frame" x="1" y="1" width="24" height="24"/>
@@ -156,7 +156,7 @@
                                     </constraints>
                                 </view>
                                 <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CiF-FQ-UG6" userLabel="selectRoomContainer" customClass="WotaTappableView">
-                                    <rect key="frame" x="479" y="301" width="116" height="30"/>
+                                    <rect key="frame" x="479" y="277" width="116" height="30"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Select A Room" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2Pa-6f-l2A" userLabel="selectRoomLabel">
                                             <rect key="frame" x="6" y="3" width="106" height="23"/>
@@ -172,13 +172,13 @@
                                     </constraints>
                                 </view>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RhG-Ty-vrD">
-                                    <rect key="frame" x="8" y="344" width="584" height="60"/>
+                                    <rect key="frame" x="8" y="320" width="584" height="60"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <view clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KSI-XB-sAu">
-                                    <rect key="frame" x="0.0" y="412" width="600" height="200"/>
+                                    <rect key="frame" x="0.0" y="388" width="600" height="200"/>
                                     <subviews>
                                         <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="jaI-OJ-vS8">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="200"/>
@@ -198,7 +198,7 @@
                                     </constraints>
                                 </view>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Property Amentities" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hfv-m9-P3x">
-                                    <rect key="frame" x="8" y="631" width="584" height="21"/>
+                                    <rect key="frame" x="8" y="607" width="584" height="21"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="21" id="VxZ-JF-aFh"/>
                                     </constraints>
@@ -207,25 +207,25 @@
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gYR-G7-lQl">
-                                    <rect key="frame" x="8" y="655" width="584" height="21"/>
+                                    <rect key="frame" x="8" y="631" width="584" height="21"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Dining" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZhE-7j-BPu">
-                                    <rect key="frame" x="8" y="688" width="584" height="21"/>
+                                    <rect key="frame" x="8" y="664" width="584" height="21"/>
                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9nL-Ja-fWX">
-                                    <rect key="frame" x="8" y="712" width="584" height="21"/>
+                                    <rect key="frame" x="8" y="688" width="584" height="21"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Address" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zAo-qh-w1y">
-                                    <rect key="frame" x="8" y="745" width="584" height="21"/>
+                                    <rect key="frame" x="8" y="721" width="584" height="21"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="21" id="qmL-C1-rhI"/>
                                     </constraints>
@@ -233,12 +233,12 @@
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rE6-Dn-siU">
-                                    <rect key="frame" x="8" y="769" width="584" height="21"/>
+                                    <rect key="frame" x="8" y="745" width="584" height="21"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Policies" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="l3d-9q-QmN">
-                                    <rect key="frame" x="8" y="802" width="584" height="21"/>
+                                    <rect key="frame" x="8" y="778" width="584" height="21"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="21" id="UTb-s9-aLU"/>
                                     </constraints>
@@ -246,12 +246,12 @@
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dep-RG-Bxo">
-                                    <rect key="frame" x="8" y="826" width="584" height="21"/>
+                                    <rect key="frame" x="8" y="802" width="584" height="21"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Fees" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7tl-hg-QeH">
-                                    <rect key="frame" x="8" y="859" width="584" height="21"/>
+                                    <rect key="frame" x="8" y="835" width="584" height="21"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="21" id="75j-LU-Ldb"/>
                                     </constraints>
@@ -259,16 +259,16 @@
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="299-Ry-Jfm">
-                                    <rect key="frame" x="8" y="883" width="584" height="21"/>
+                                    <rect key="frame" x="8" y="859" width="584" height="21"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SL9-jp-J6D">
-                                    <rect key="frame" x="0.0" y="916" width="600" height="105"/>
+                                    <rect key="frame" x="0.0" y="892" width="600" height="105"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
                                 <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HZP-G7-Vjx" customClass="WotaTappableView">
-                                    <rect key="frame" x="10" y="1033" width="580" height="30"/>
+                                    <rect key="frame" x="10" y="1009" width="580" height="30"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Book A Room Now" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dkC-ua-4iN">
                                             <rect key="frame" x="0.0" y="0.0" width="580" height="30"/>

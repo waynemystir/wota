@@ -43,6 +43,7 @@ NSUInteger const kImageBatchSize = 20;
 NSUInteger const kImageBatchStartNext = 13;
 NSTimeInterval const kHiAnimationDuration = 0.43;
 CGFloat const kImageScrollerStartY = -112.0f;
+CGFloat const kImageFrameCenterY = 208;
 CGFloat const kImageScrollerStartHeight = 325.0f;
 CGFloat const kImageScrollerPortraitY = 34.0f;
 CGFloat const kImageScrollerPortraitHeight = 500.0f;
@@ -405,15 +406,15 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
         ivc.tag = kRoomImageViewContainersStartingTag + j;
         [_imageScrollerOutlet addSubview:ivc];
         
-        ImageViewHotelInfo *iv = [ImageViewHotelInfo new];
+        ImageViewHotelInfo *iv = [[ImageViewHotelInfo alloc] initWithFrame:[self rectForOrient:HI_PORTRAIT]];
         iv.backgroundColor = [UIColor blackColor];
-        iv.center = CGPointMake(_picPageWidth/2, 212);
         iv.contentMode = UIViewContentModeScaleAspectFit;
         iv.clipsToBounds = YES;
         iv.tag = kRoomImageViewsStartingTag + j;
         iv.image = self.placeHolderImage;
         iv.containsPlaceholderImage = YES;
         iv.frame = [self rectForOrient:HI_PORTRAIT];
+        iv.center = CGPointMake(_picPageWidth/2, kImageFrameCenterY);
         [ivc addSubview:iv];
         
         EanHotelInfoImage *eii = [EanHotelInfoImage imageFromDict:ims[j]] ? : [EanHotelInfoImage new];
@@ -455,7 +456,7 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
                       
                       wiv.frame = [wes rectForOrient:wes.currentOrientation];
                       if (!wes.hideEffinStatusBar) {
-                          wiv.center = CGPointMake(wes.picPageWidth/2, 212);
+                          wiv.center = CGPointMake(wes.picPageWidth/2, kImageFrameCenterY);
                       }
                       wiv.containsPlaceholderImage = NO;
     }];
@@ -842,12 +843,12 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
     __weak typeof(self) wes = self;
     [wes.view layoutIfNeeded];
     wes.scrollViewTopConstr.constant = 64;
-    wes.imageScrollerTopConstr.constant = -112;
+    wes.imageScrollerTopConstr.constant = kImageScrollerStartY;
     wes.imageScrollerHeightConstr.constant = 325;
     [UIView animateWithDuration:kHiAnimationDuration animations:^{
         [wes.view layoutIfNeeded];
         civ.frame = [wes rectForOrient:HI_PORTRAIT];
-        civ.center = CGPointMake(wes.picPageWidth/2, 212);
+        civ.center = CGPointMake(wes.picPageWidth/2, kImageFrameCenterY);
         overlay.alpha = 0.0f;
         pnl.frame = CGRectMake(_sr.size.width - 60, 193, 58, 21);
         [wes setNeedsStatusBarAppearanceUpdate];
@@ -858,7 +859,7 @@ CGAffineTransform CGAffineTransformMakeRotationAt(CGFloat angle, CGPoint pt){
             UIView *wivc = [iso viewWithTag:kRoomImageViewContainersStartingTag + j];
             UIImageView *wiv = (UIImageView *) [wivc viewWithTag:kRoomImageViewsStartingTag + j];
             wiv.frame = [wes rectForOrient:HI_PORTRAIT];
-            wiv.center = CGPointMake(_picPageWidth/2, 212);
+            wiv.center = CGPointMake(_picPageWidth/2, kImageFrameCenterY);
         }
     }];
 }
