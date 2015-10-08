@@ -13,7 +13,8 @@
 @implementation PreBookConfirmView
 
 - (void)setupTheView {
-    self.frame = CGRectMake(0, 64, 320, 504);
+    CGRect sr = [[UIScreen mainScreen] bounds];
+    self.frame = CGRectMake(0, 64, sr.size.width, sr.size.height - 64);
     
     UITapGestureRecognizer *ttgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickTotalAmtLabel:)];
     ttgr.numberOfTapsRequired = ttgr.numberOfTouchesRequired = 1;

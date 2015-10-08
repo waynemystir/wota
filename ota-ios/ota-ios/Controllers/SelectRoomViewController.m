@@ -1592,10 +1592,10 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
 }
 
 - (void)setupStatePicker {
-    self.statePickerContainer = [[UIView alloc] initWithFrame:CGRectMake(0, 361, 320, 207)];
+    self.statePickerContainer = [[UIView alloc] initWithFrame:CGRectMake(0, 361, _sr.size.width, 207)];
     self.statePickerContainer.backgroundColor = [UIColor whiteColor];
     
-    self.statePickerNextBtn = [[UIButton alloc] initWithFrame:CGRectMake(242, 166, 75, 38)];
+    self.statePickerNextBtn = [[UIButton alloc] initWithFrame:CGRectMake(_sr.size.width - 75 - 3, 166, 75, 38)];
     self.statePickerNextBtn.backgroundColor = UIColorFromRGB(0xc4c4c4);
     self.statePickerNextBtn.layer.cornerRadius = 4.0f;
     self.statePickerNextBtn.layer.masksToBounds = NO;
@@ -1615,7 +1615,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     [self.statePickerNextBtn addTarget:self action:@selector(tuoExpirNext:) forControlEvents:UIControlEventTouchUpOutside];
     [self.statePickerContainer addSubview:self.statePickerNextBtn];
     
-    self.statePicker = [[StatePickerView alloc] initWithFrame:CGRectMake(0, 0, 320, 162)];
+    self.statePicker = [[StatePickerView alloc] initWithFrame:CGRectMake(0, 0, _sr.size.width, 162)];
     self.statePicker.backgroundColor = UIColorFromRGB(0xe3e3e3);;
     self.statePicker.stateDelegate = self;
     [self.statePickerContainer addSubview:self.statePicker];
@@ -2430,7 +2430,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"CVVView" owner:self options:nil];
     __weak UIView *cvvView = views.firstObject;
     cvvView.tag = kCVVViewTag;
-    cvvView.frame = CGRectMake(20, 80, 280, 230);
+    cvvView.frame = CGRectMake((_sr.size.width - 280)/2, 80, 280, 230);
     cvvView.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
     [_purchaseButton addTarget:self action:@selector(bookIt) forControlEvents:UIControlEventTouchUpInside];
     [_cancelPurchaseButton addTarget:self action:@selector(dropCVVView) forControlEvents:UIControlEventTouchUpInside];
@@ -2438,7 +2438,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     _cvvTextField.delegate = self;
     cvvView.layer.cornerRadius = WOTA_CORNER_RADIUS;
     
-    UIView *ol = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 568)];
+    UIView *ol = [[UIView alloc] initWithFrame:_sr];
     ol.tag = kCVVOverlayTag;
     ol.backgroundColor = [UIColor blackColor];
     ol.alpha = 0.0f;

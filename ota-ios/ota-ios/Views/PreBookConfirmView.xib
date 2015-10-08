@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="8191" systemVersion="15A284" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
@@ -11,104 +11,213 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Please Confirm Booking Details" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bsz-HA-kU0">
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please Confirm Booking Details" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bsz-HA-kU0">
                     <rect key="frame" x="15" y="7" width="290" height="47"/>
+                    <animations/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="290" id="G8X-tW-SXi"/>
+                        <constraint firstAttribute="height" constant="47" id="JH0-gi-Mby"/>
+                    </constraints>
                     <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Hotel Name" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" minimumScaleFactor="0.80000000000000027" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tKP-GA-quc" userLabel="hotelName">
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hotel Name" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" minimumScaleFactor="0.80000000000000027" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tKP-GA-quc" userLabel="hotelName">
                     <rect key="frame" x="25" y="55" width="270" height="51"/>
+                    <animations/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="51" id="5Nu-du-VkW"/>
+                        <constraint firstAttribute="width" constant="270" id="9Ts-DQ-ogL"/>
+                    </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Arriving December 31, 2000" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="glj-pF-Jnf" userLabel="arrivalDate">
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Arriving December 31, 2000" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="glj-pF-Jnf" userLabel="arrivalDate">
                     <rect key="frame" x="15" y="143" width="290" height="21"/>
+                    <animations/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="290" id="pJW-uJ-A90"/>
+                        <constraint firstAttribute="height" constant="21" id="rIx-q4-J3i"/>
+                    </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Departing December 31, 2000" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xWh-UP-a4U" userLabel="departDate">
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Departing December 31, 2000" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xWh-UP-a4U" userLabel="departDate">
                     <rect key="frame" x="15" y="174" width="290" height="21"/>
+                    <animations/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="290" id="IVx-Uv-4PS"/>
+                        <constraint firstAttribute="height" constant="21" id="d4t-1L-qbs"/>
+                    </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="City, State, and Country" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.70000000000000018" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="feI-Vy-pqr" userLabel="cityStateCountry">
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="City, State, and Country" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.70000000000000018" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="feI-Vy-pqr" userLabel="cityStateCountry">
                     <rect key="frame" x="15" y="109" width="290" height="24"/>
+                    <animations/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="24" id="UBp-dp-9jY"/>
+                        <constraint firstAttribute="width" constant="290" id="dNB-IA-e7I"/>
+                    </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Room Description" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" minimumScaleFactor="0.80000000000000027" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lHi-0s-mrh" userLabel="roomDescription">
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Room Description" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" minimumScaleFactor="0.80000000000000027" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lHi-0s-mrh" userLabel="roomDescription">
                     <rect key="frame" x="25" y="214" width="270" height="50"/>
+                    <animations/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="270" id="Qdx-nu-7BH"/>
+                        <constraint firstAttribute="height" constant="50" id="s5d-Rx-GwG"/>
+                    </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vn3-7m-2Ri" userLabel="confirmButton" customClass="WotaButton">
-                    <rect key="frame" x="182" y="457" width="88" height="39"/>
-                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                    <state key="normal" title="Confirm">
-                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                    </state>
-                </button>
-                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q9c-zs-zX0" userLabel="cancelButton" customClass="WotaButton">
-                    <rect key="frame" x="50" y="457" width="88" height="39"/>
-                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                    <state key="normal" title="Cancel">
-                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                    </state>
-                </button>
-                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="I3m-bA-4F5" userLabel="acknowCancelTouch" customClass="WotaTappableView">
-                    <rect key="frame" x="70" y="376" width="230" height="63"/>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                </view>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="By confirming this booking, I acknowledge that I have read and accept the cancellation policy for the selected room." lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bx2-d7-QZY" userLabel="acknowCancelLabel">
-                    <rect key="frame" x="75" y="371" width="228" height="74"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                    <nil key="highlightedColor"/>
-                </label>
-                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qp0-31-iet" userLabel="acknowButton" customClass="WotaButton">
-                    <rect key="frame" x="10" y="387" width="52" height="40"/>
-                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                    <state key="normal">
-                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                    </state>
-                </button>
-                <view userInteractionEnabled="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mSw-3F-ORH" userLabel="checkMark">
-                    <rect key="frame" x="14" y="391" width="44" height="32"/>
-                    <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                </view>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="The credit card provided will be charged immediately for the full amount of the reservation" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fMv-OP-MZd">
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The credit card provided will be charged immediately for the full amount of the reservation" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fMv-OP-MZd">
                     <rect key="frame" x="10" y="310" width="300" height="37"/>
+                    <animations/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="300" id="COb-G4-nyM"/>
+                        <constraint firstAttribute="height" constant="37" id="ZrB-Sr-0Cy"/>
+                    </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="37W-hW-GFn" userLabel="totalContainer" customClass="WotaTappableView">
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="37W-hW-GFn" userLabel="totalContainer" customClass="WotaTappableView">
                     <rect key="frame" x="5" y="281" width="310" height="30"/>
                     <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="You will be charged:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J75-uN-ueM">
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You will be charged:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J75-uN-ueM">
                             <rect key="frame" x="5" y="0.0" width="138" height="30"/>
+                            <animations/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="30" id="Axs-Wr-oqe"/>
+                                <constraint firstAttribute="width" constant="138" id="lqY-O1-PPS"/>
+                            </constraints>
                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="USD$ 17,248,290.89" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wJd-ZU-jCM" userLabel="totalCharge">
+                        <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="USD$ 17,248,290.89" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wJd-ZU-jCM" userLabel="totalCharge">
                             <rect key="frame" x="144" y="1" width="160" height="29"/>
+                            <animations/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="29" id="H6m-r3-lHE"/>
+                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="160" id="xel-0G-Mbz"/>
+                            </constraints>
                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
+                    <animations/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="30" id="1Yi-OY-iWZ"/>
+                        <constraint firstAttribute="bottom" secondItem="J75-uN-ueM" secondAttribute="bottom" id="5Xf-S5-E5R"/>
+                        <constraint firstItem="J75-uN-ueM" firstAttribute="leading" secondItem="37W-hW-GFn" secondAttribute="leading" constant="5" id="H6o-0q-tsk"/>
+                        <constraint firstItem="wJd-ZU-jCM" firstAttribute="top" secondItem="37W-hW-GFn" secondAttribute="top" constant="1" id="Hsk-dL-rzH"/>
+                        <constraint firstAttribute="bottom" secondItem="wJd-ZU-jCM" secondAttribute="bottom" id="Qct-ey-wq5"/>
+                        <constraint firstItem="J75-uN-ueM" firstAttribute="top" secondItem="37W-hW-GFn" secondAttribute="top" id="XKp-i7-EiJ"/>
+                        <constraint firstAttribute="trailing" secondItem="wJd-ZU-jCM" secondAttribute="trailing" constant="6" id="fGi-PB-ErW"/>
+                        <constraint firstItem="wJd-ZU-jCM" firstAttribute="leading" secondItem="J75-uN-ueM" secondAttribute="trailing" constant="1" id="hcw-zz-TEd"/>
+                    </constraints>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yNd-10-aZb" userLabel="acknowContainer">
+                    <rect key="frame" x="5" y="363" width="310" height="80"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="I3m-bA-4F5" userLabel="acknowCancelTouch" customClass="WotaTappableView">
+                            <rect key="frame" x="69" y="6" width="230" height="63"/>
+                            <animations/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </view>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="By confirming this booking, I acknowledge that I have read and accept the cancellation policy for the selected room." lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bx2-d7-QZY" userLabel="acknowCancelLabel">
+                            <rect key="frame" x="74" y="1" width="228" height="74"/>
+                            <animations/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qp0-31-iet" userLabel="acknowButton" customClass="WotaButton">
+                            <rect key="frame" x="9" y="17" width="52" height="40"/>
+                            <animations/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <state key="normal">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                        </button>
+                        <view userInteractionEnabled="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mSw-3F-ORH" userLabel="checkMark">
+                            <rect key="frame" x="13" y="21" width="44" height="32"/>
+                            <animations/>
+                            <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        </view>
+                    </subviews>
+                    <animations/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="310" id="JtL-1K-RSc"/>
+                        <constraint firstAttribute="height" constant="80" id="lKa-9c-6gP"/>
+                    </constraints>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pkZ-N1-X3t" userLabel="canConContainer">
+                    <rect key="frame" x="40" y="453" width="240" height="39"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vn3-7m-2Ri" userLabel="confirmButton" customClass="WotaButton">
+                            <rect key="frame" x="142" y="0.0" width="88" height="39"/>
+                            <animations/>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                            <state key="normal" title="Confirm">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q9c-zs-zX0" userLabel="cancelButton" customClass="WotaButton">
+                            <rect key="frame" x="10" y="0.0" width="88" height="39"/>
+                            <animations/>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                            <state key="normal" title="Cancel">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                        </button>
+                    </subviews>
+                    <animations/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="39" id="0hP-gf-aUu"/>
+                        <constraint firstAttribute="width" constant="240" id="kkZ-hs-59r"/>
+                    </constraints>
                 </view>
             </subviews>
+            <animations/>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="feI-Vy-pqr" firstAttribute="top" secondItem="tKP-GA-quc" secondAttribute="bottom" constant="3" id="2Ka-UQ-Jyz"/>
+                <constraint firstItem="pkZ-N1-X3t" firstAttribute="top" secondItem="yNd-10-aZb" secondAttribute="bottom" constant="10" id="31x-yI-mnO"/>
+                <constraint firstItem="lHi-0s-mrh" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="32d-qw-4vJ"/>
+                <constraint firstItem="37W-hW-GFn" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="5" id="97v-tt-DP6"/>
+                <constraint firstItem="yNd-10-aZb" firstAttribute="top" relation="greaterThanOrEqual" secondItem="fMv-OP-MZd" secondAttribute="bottom" constant="16" id="9Cb-jL-md2"/>
+                <constraint firstItem="glj-pF-Jnf" firstAttribute="top" secondItem="feI-Vy-pqr" secondAttribute="bottom" constant="10" id="9ap-g3-osE"/>
+                <constraint firstItem="bsz-HA-kU0" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="7" id="AM3-Bc-hTl"/>
+                <constraint firstItem="tKP-GA-quc" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="AfP-qM-CBb"/>
+                <constraint firstItem="xWh-UP-a4U" firstAttribute="top" secondItem="glj-pF-Jnf" secondAttribute="bottom" constant="10" id="Dp0-MT-V27"/>
+                <constraint firstItem="tKP-GA-quc" firstAttribute="top" secondItem="bsz-HA-kU0" secondAttribute="bottom" constant="1" id="Jmv-9O-0yF"/>
+                <constraint firstItem="yNd-10-aZb" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="PbA-mW-Yeh"/>
+                <constraint firstItem="xWh-UP-a4U" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="USZ-gb-oDP"/>
+                <constraint firstAttribute="bottom" secondItem="pkZ-N1-X3t" secondAttribute="bottom" constant="12" id="cs4-0C-Dkh"/>
+                <constraint firstItem="glj-pF-Jnf" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="ffF-bI-Yin"/>
+                <constraint firstItem="fMv-OP-MZd" firstAttribute="top" secondItem="lHi-0s-mrh" secondAttribute="bottom" constant="46" id="kZk-LX-Awz"/>
+                <constraint firstItem="pkZ-N1-X3t" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="mHb-Jq-a5w"/>
+                <constraint firstAttribute="trailing" secondItem="37W-hW-GFn" secondAttribute="trailing" constant="5" id="mLg-B2-gZo"/>
+                <constraint firstItem="lHi-0s-mrh" firstAttribute="top" secondItem="xWh-UP-a4U" secondAttribute="bottom" constant="19" id="n3Z-OL-cxS"/>
+                <constraint firstItem="bsz-HA-kU0" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="ora-k0-vMv"/>
+                <constraint firstItem="feI-Vy-pqr" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="qKR-RS-Wyk"/>
+                <constraint firstItem="fMv-OP-MZd" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="sUX-rj-Eyc"/>
+                <constraint firstItem="37W-hW-GFn" firstAttribute="top" secondItem="lHi-0s-mrh" secondAttribute="bottom" constant="17" id="sla-RS-HvS"/>
+            </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <nil key="simulatedTopBarMetrics"/>
             <nil key="simulatedBottomBarMetrics"/>
