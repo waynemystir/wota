@@ -75,7 +75,6 @@ extern UIColor * kTheColorOfMoney();
 /**
  * What not
  */
-extern CGAffineTransform kIpadTransform();
 extern CGFloat const WOTA_CORNER_RADIUS;
 extern NSDate * kAddDays(int days, NSDate * toDate);
 extern NSDate * kTimelessDate(NSDate * givenDate);

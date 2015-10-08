@@ -61,7 +61,7 @@
 
 - (void)clickTotalAmtLabel:(UITapGestureRecognizer *)tgr {
     if (!self.preBookDelegate) return;
-    [self.preBookDelegate clickTotalAmountLbl];
+    [self.preBookDelegate clickTotalAmountLbl:tgr];
 }
 
 - (void)clickAcknowLbl:(UITapGestureRecognizer *)tgr {

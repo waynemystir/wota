@@ -13,6 +13,7 @@
 
 - (void)loadCostSummaryView:(UIView *)superView xOffset:(CGFloat)xOffset yOffset:(CGFloat)yOffset;
 - (void)loadCostSummaryView:(UIView *)superView wx:(CGFloat)wx wy:(CGFloat)wy xOffset:(CGFloat)xOffset yOffset:(CGFloat)yOffset;
+- (void)loadCostSummaryView:(UIView *)superView wx:(CGFloat)wx wy:(CGFloat)wy fromPoint:(CGPoint)fromPoint;
 - (id)initWithFrame:(CGRect)frame room:(EanAvailabilityHotelRoomResponse *)room;
 
 @end

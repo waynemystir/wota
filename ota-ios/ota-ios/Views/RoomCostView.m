@@ -155,7 +155,8 @@
     self.xOffset = xOffset;
     self.yOffset = yOffset;
     CGRect tcf = self.totalContainer.frame;
-    self.frame = CGRectMake(wx, ((50 + wy - tcf.origin.y - tcf.size.height)/2), self.frame.size.width, tcf.origin.y + tcf.size.height);
+    CGFloat yr = [[UIScreen mainScreen] bounds].size.height == 480 ? 10 : 50;
+    self.frame = CGRectMake(wx, ((yr + wy - tcf.origin.y - tcf.size.height)/2), self.frame.size.width, tcf.origin.y + tcf.size.height);
     self.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(xOffset, yOffset), 0.001f, 0.001f);
     
     self.overlayDisable.alpha = 0.0f;
@@ -171,6 +172,10 @@
     } completion:^(BOOL finished) {
         ;
     }];
+}
+
+- (void)loadCostSummaryView:(UIView *)superView wx:(CGFloat)wx wy:(CGFloat)wy fromPoint:(CGPoint)fromPoint {
+    
 }
 
 - (void)dropCostSummaryView {

@@ -274,11 +274,6 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    CGRect sf = [[UIScreen mainScreen] bounds];
-    if (sf.size.height == 480) {
-        self.view.transform = kIpadTransform();
-    }
-    
     //**********************************************************************
     // This is needed so that this view controller (or it's nav controller?)
     // doesn't make room at the top of the table view's scroll view (I guess
@@ -436,7 +431,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
             _preparedToDropSpinner = YES;
             self.eanHrar = [EanHotelRoomAvailabilityResponse eanObjectFromApiResponseData:responseData];
             if (self.eanHrar.hotelRoomArray.count == 0) {
-                UILabel *noRooms = [[UILabel alloc] initWithFrame:CGRectMake(30, 200, 260, 200)];
+                UILabel *noRooms = [[UILabel alloc] initWithFrame:CGRectMake((_sr.size.width - 260)/2, 200, 260, 200)];
                 noRooms.numberOfLines = 3;
                 noRooms.lineBreakMode = NSLineBreakByWordWrapping;
                 noRooms.textAlignment = NSTextAlignmentCenter;
@@ -764,7 +759,8 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     [self addBottomsUpGradient:bottomsUpGradientCover];
     [borderView addSubview:bottomsUpGradientCover];
     
-    UILabel *rtd = [[UILabel alloc] initWithFrame:CGRectMake(3, 71, 190, 53)];
+    CGFloat rtdW = MAX(190, borderView.frame.size.width - 122);
+    UILabel *rtd = [[UILabel alloc] initWithFrame:CGRectMake(3, 71, rtdW, 53)];
     rtd.tag = kRoomTypeDescViewTag;
     rtd.lineBreakMode = NSLineBreakByWordWrapping;
     rtd.numberOfLines = 2;
@@ -867,7 +863,8 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     nonreundLongLabel.textAlignment = NSTextAlignmentCenter;
     [borderView addSubview:nonreundLongLabel];
     
-    UILabel *rtdL = [[UILabel alloc] initWithFrame:CGRectMake(3, 278, (w316 - 4), 82)];
+    CGFloat rtdlH = _sr.size.height == 480 ? 21 : 82;
+    UILabel *rtdL = [[UILabel alloc] initWithFrame:CGRectMake(3, 278, (w316 - 4), rtdlH)];
     rtdL.tag = kRoomTypeDescrLongTag;
     rtdL.userInteractionEnabled = YES;
     rtdL.lineBreakMode = NSLineBreakByWordWrapping;
@@ -1930,8 +1927,8 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
 
 #pragma mark PreBookConfirmDelegate methods
 
-- (void)clickTotalAmountLbl {
-    [self loadPriceDetailsPopup:nil];
+- (void)clickTotalAmountLbl:(UITapGestureRecognizer *)tgr {
+    [self loadPriceDetailsPopup:tgr];
 }
 
 - (void)clickAcknowledgeCancellationPolicyLbl {
@@ -2006,16 +2003,18 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     self.bedTypeButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/0.55)), 0.001f, 0.001f);
     self.smokingButton.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0.0f, -(tvp.frame.size.height/0.55f)), 0.001f, 0.001f);
     
+    CGFloat tvpH = _sr.size.height == 480 ? 304 : 400;
     CGFloat w316 = _sr.size.width - 4;
+    CGFloat rtdW = MAX(190, borderView.frame.size.width - 122);
     [UIView animateWithDuration:kSrAnimationDuration delay:0.0 options:kLoadDropRoomDetailsAnimationCurve animations:^{
-        tvp.frame = CGRectMake(0.0f, 64.0f, (w316 + 4), 400.0f);
+        tvp.frame = CGRectMake(0.0f, 64.0f, (w316 + 4), tvpH);
         cv.frame = CGRectMake(0, 0, tvp.bounds.size.width, tvp.bounds.size.height);
         borderView.frame = CGRectMake(2.0f, 2.0f, cv.frame.size.width - 4.0f, cv.frame.size.height - 4.0f);
         riv.frame = CGRectMake(0, 0, w316, 210);
         ivc.frame = CGRectMake(0, 210, w316, 61);
         gic.frame = CGRectMake(0, 210, w316, 30);
         cgc.frame = CGRectMake(0, 126, w316, 84);
-        rtd.frame = CGRectMake(3, 188, 190, 53);
+        rtd.frame = CGRectMake(3, 188, rtdW, 53);
         vap.frame = CGRectMake((w316 - 32), 207, 27, 27);
         vai.frame = vap.bounds;
         rtl.frame = CGRectMake((w316 - 116), 230, 112, 22);
@@ -2067,6 +2066,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     [nv animateToBack];
     
     CGFloat w316 = _sr.size.width - 4;
+    CGFloat rtdW = MAX(190, borderView.frame.size.width - 122);
     [UIView animateWithDuration:kSrAnimationDuration delay:0.0 options:kLoadDropRoomDetailsAnimationCurve animations:^{
         weakSelf.bedTypeButton.alpha = weakSelf.smokingButton.alpha = rtdl.alpha = 0.0f;
         tal.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(80.0f, -(tvp.frame.size.height/2.3f)), 0.001f, 0.001f);
@@ -2082,7 +2082,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
         gic.frame = CGRectMake(0, 0, w316, 84);
 //        cgc.alpha = 0.0f;
         cgc.frame = CGRectMake(0, 0, w316, 84);
-        rtd.frame = CGRectMake(3, 71, 190, 53);
+        rtd.frame = CGRectMake(3, 71, rtdW, 53);
         vap.frame = CGRectMake((w316 - 22), 52, 19, 19);
         vai.frame = vap.bounds;
         rtl.frame = CGRectMake((w316 - 116), 69, 112, 22);
@@ -2606,10 +2606,15 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
 }
 
 - (void)loadPriceDetailsPopup:(UIGestureRecognizer *)sender {
-    CGFloat xo = sender ? 75.0f : 0.0f;
-    CGFloat yo = sender ? 15.0f : 43.0f;
+//    CGFloat xo = sender ? 75.0f : 0.0f;
+//    CGFloat yo = sender ? 15.0f : 43.0f;
     RoomCostView *rcv = [[RoomCostView alloc] initWithFrame:CGRectMake(7, 100, 306, 368) room:[self.tableData objectAtIndex:self.expandedIndexPath.row]];
-    [rcv loadCostSummaryView:self.view xOffset:xo yOffset:yo];
+//    [rcv loadCostSummaryView:self.view xOffset:xo yOffset:yo];
+    
+    CGPoint pboCenter = [self.view convertPoint:sender.view.center fromView:sender.view.superview];
+    CGFloat fromX = pboCenter.x - rcv.center.x;
+    CGFloat fromY = pboCenter.y - rcv.center.y - 64;
+    [rcv loadCostSummaryView:self.view xOffset:fromX yOffset:fromY];
 }
 
 #pragma mark Validation methods

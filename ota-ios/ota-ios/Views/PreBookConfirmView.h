@@ -12,7 +12,7 @@
 
 @protocol PreBookConfirmDelegate <NSObject>
 
-- (void)clickTotalAmountLbl;
+- (void)clickTotalAmountLbl:(UITapGestureRecognizer *)tgr;
 - (void)clickAcknowledgeCancellationPolicyLbl;
 - (void)cancelBooking;
 - (void)confirmBooking;

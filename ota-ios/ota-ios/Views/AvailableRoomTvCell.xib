@@ -66,10 +66,10 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nWZ-sN-iUe">
-                                <rect key="frame" x="3" y="71" width="190" height="53"/>
+                                <rect key="frame" x="3" y="71" width="471" height="53"/>
                                 <animations/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="190" id="Nrm-Gi-555"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="190" id="Nrm-Gi-555"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="19"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -115,6 +115,7 @@
                             <constraint firstItem="lAo-cr-Obq" firstAttribute="leading" secondItem="3yu-pI-iS4" secondAttribute="leading" id="upa-EO-WW1"/>
                             <constraint firstAttribute="trailing" secondItem="Qox-i7-uEn" secondAttribute="trailing" constant="4" id="wV3-e4-4mh"/>
                             <constraint firstAttribute="trailing" secondItem="NUX-eg-jEz" secondAttribute="trailing" id="whS-lR-JZ0"/>
+                            <constraint firstAttribute="trailing" secondItem="nWZ-sN-iUe" secondAttribute="trailing" constant="122" id="wqG-Xg-WuD"/>
                             <constraint firstAttribute="bottom" secondItem="NUX-eg-jEz" secondAttribute="bottom" id="xf9-xL-wb0"/>
                             <constraint firstAttribute="trailing" secondItem="Tnw-0Y-hdA" secondAttribute="trailing" constant="3" id="zDb-KM-3ek"/>
                             <constraint firstItem="lAo-cr-Obq" firstAttribute="top" secondItem="Tnw-0Y-hdA" secondAttribute="bottom" constant="13" id="zOI-Bg-Xks"/>

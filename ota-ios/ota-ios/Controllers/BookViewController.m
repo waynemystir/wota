@@ -76,7 +76,7 @@ NSUInteger const kBookPriceDetailsPopupTag = 1239874;
     
     CGRect sf = [[UIScreen mainScreen] bounds];
     if (sf.size.height == 480) {
-        self.view.transform = kIpadTransform();
+        self.view.transform = CGAffineTransformMakeScale(0.845070f, 0.845070f);
     } else if (sf.size.height == 568) {
         
     } else if (sf.size.height == 667) {

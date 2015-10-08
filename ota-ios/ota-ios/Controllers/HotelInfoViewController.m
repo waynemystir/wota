@@ -167,11 +167,6 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    CGRect sf = [[UIScreen mainScreen] bounds];
-    if (sf.size.height == 480) {
-        self.view.transform = kIpadTransform();
-    }
-    
     self.currentOrientation = HI_PORTRAIT;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rotateOrNot) name:UIDeviceOrientationDidChangeNotification object:nil];
