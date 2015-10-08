@@ -615,6 +615,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
         [w removeFromSuperview];
     }
     
+    cell.priceGradientOutlet.frame = CGRectMake(0, 0, _sr.size.width, 84);
     [self addPriceGradient:cell.priceGradientOutlet];
     [self addBottomGradient:cell.bottomGradientOutlet];
     
@@ -788,7 +789,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     rateLabel.tag = kRoomRateViewTag;
     rateLabel.textColor = kTheColorOfMoney();
     rateLabel.textAlignment = NSTextAlignmentRight;
-    [rateLabel setFont:[UIFont boldSystemFontOfSize:18.0f]];
+    [rateLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:18.0f]];
     rateLabel.minimumScaleFactor = 0.5f;
     rateLabel.adjustsFontSizeToFitWidth = YES;
     [borderView addSubview:rateLabel];
@@ -1621,10 +1622,10 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
 }
 
 - (void)setupCountryPicker {
-    self.countryPickerContainer = [[UIView alloc] initWithFrame:CGRectMake(0, 361, 320, 207)];
+    self.countryPickerContainer = [[UIView alloc] initWithFrame:CGRectMake(0, 361, _sr.size.width, 207)];
     self.countryPickerContainer.backgroundColor = [UIColor whiteColor];
     
-    self.countryPickerNextBtn = [[UIButton alloc] initWithFrame:CGRectMake(242, 166, 75, 38)];
+    self.countryPickerNextBtn = [[UIButton alloc] initWithFrame:CGRectMake(_sr.size.width - 75 - 3, 166, 75, 38)];
     self.countryPickerNextBtn.backgroundColor = UIColorFromRGB(0xc4c4c4);
     self.countryPickerNextBtn.layer.cornerRadius = 4.0f;
     self.countryPickerNextBtn.layer.masksToBounds = NO;
@@ -1644,7 +1645,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     [self.countryPickerNextBtn addTarget:self action:@selector(tuoExpirNext:) forControlEvents:UIControlEventTouchUpOutside];
     [self.countryPickerContainer addSubview:self.countryPickerNextBtn];
     
-    self.countryPicker = [[CountryPicker alloc] initWithFrame:CGRectMake(0, 0, 320, 162)];
+    self.countryPicker = [[CountryPicker alloc] initWithFrame:CGRectMake(0, 0, _sr.size.width, 162)];
     self.countryPicker.backgroundColor = UIColorFromRGB(0xe3e3e3);;
     self.countryPicker.delegate = self;
     [self.countryPickerContainer addSubview:self.countryPicker];
@@ -1730,10 +1731,10 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
 }
 
 - (void)setupExpirationPicker {
-    self.expirationInputView = [[UIView alloc] initWithFrame:CGRectMake(0, 340, 320, 228)];
+    self.expirationInputView = [[UIView alloc] initWithFrame:CGRectMake(0, 340, _sr.size.width, 228)];
     self.expirationInputView.backgroundColor = [UIColor whiteColor];
     
-    self.expirationNext = [[UIButton alloc] initWithFrame:CGRectMake(242, 187, 75, 38)];
+    self.expirationNext = [[UIButton alloc] initWithFrame:CGRectMake(_sr.size.width - 75 - 3, 187, 75, 38)];
     self.expirationNext.backgroundColor = UIColorFromRGB(0xc4c4c4);
     self.expirationNext.layer.cornerRadius = 4.0f;
     self.expirationNext.layer.masksToBounds = NO;
@@ -1753,7 +1754,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     [self.expirationNext addTarget:self action:@selector(tuoExpirNext:) forControlEvents:UIControlEventTouchUpOutside];
     [self.expirationInputView addSubview:self.expirationNext];
     
-    self.expirationPicker = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 20, 320, 162)];
+    self.expirationPicker = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 20, _sr.size.width, 162)];
     self.expirationPicker.backgroundColor = UIColorFromRGB(0xe3e3e3);
     [self.expirationInputView addSubview:self.expirationPicker];
     self.expirationPicker.dataSource = self;
@@ -2917,7 +2918,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     gradientLayer.frame = view.bounds;
     gradientLayer.colors = self.priceGradientColors;
     gradientLayer.startPoint = CGPointMake(0.65f, 0.45f);
-    gradientLayer.endPoint = CGPointMake(0.75f, 0.88f);
+    gradientLayer.endPoint = CGPointMake(0.95f, 0.88f);
 //    iv.layer.mask = gradientLayer;
     [view.layer addSublayer:gradientLayer];
 }
