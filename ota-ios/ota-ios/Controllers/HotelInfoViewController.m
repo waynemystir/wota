@@ -105,8 +105,6 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *mapContainerHeightConstr;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *mapContainerBottomConstr;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *imageScrollerTopConstr;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *imageScrollerBottomConstr1;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *imageScrollerBottomConstr2;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *imageScrollerHeightConstr;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *imageScrollerWidthConstr;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *scrollViewTopConstr;

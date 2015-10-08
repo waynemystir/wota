@@ -146,11 +146,15 @@
 }
 
 - (void)loadCostSummaryView:(UIView *)superView xOffset:(CGFloat)xOffset yOffset:(CGFloat)yOffset {
+    CGFloat wx = ([[UIScreen mainScreen] bounds].size.width - self.frame.size.width)/2;
+    CGFloat wy = [[UIScreen mainScreen] bounds].size.height;
+    [self loadCostSummaryView:superView wx:wx wy:wy xOffset:xOffset yOffset:yOffset];
+}
+
+- (void)loadCostSummaryView:(UIView *)superView wx:(CGFloat)wx wy:(CGFloat)wy xOffset:(CGFloat)xOffset yOffset:(CGFloat)yOffset {
     self.xOffset = xOffset;
     self.yOffset = yOffset;
     CGRect tcf = self.totalContainer.frame;
-    CGFloat wx = ([[UIScreen mainScreen] bounds].size.width - self.frame.size.width)/2;
-    CGFloat wy = [[UIScreen mainScreen] bounds].size.height;
     self.frame = CGRectMake(wx, ((50 + wy - tcf.origin.y - tcf.size.height)/2), self.frame.size.width, tcf.origin.y + tcf.size.height);
     self.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(xOffset, yOffset), 0.001f, 0.001f);
     

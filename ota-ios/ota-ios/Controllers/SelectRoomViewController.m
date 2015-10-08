@@ -2712,7 +2712,10 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
 }
 
 - (void)validateCreditCardNumber:(NSString *)cardNumber {
-    if ([[PTKCardNumber cardNumberWithString:cardNumber] isValid]) {
+    if (allowTestCreditCard && [cardNumber isEqualToString:@"5401999999999999"]) {
+        self.ccNumberOutlet.backgroundColor = [UIColor whiteColor];
+        self.isValidCreditCard = YES;
+    } else if ([[PTKCardNumber cardNumberWithString:cardNumber] isValid]) {
         self.ccNumberOutlet.backgroundColor = [UIColor whiteColor];
         self.isValidCreditCard = YES;
     } else if ([[PTKCardNumber cardNumberWithString:cardNumber] isGreaterThanOrEqualValidLength]) {

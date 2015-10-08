@@ -27,6 +27,8 @@ extern BOOL inProductionMode();
 extern BOOL inTestFlightMode();
 extern void TrotterLog(NSString *format, ...);
 
+extern BOOL const allowTestCreditCard;
+
 /**
  * Google stuff
  */

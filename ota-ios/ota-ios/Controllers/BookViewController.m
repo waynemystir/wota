@@ -77,6 +77,12 @@ NSUInteger const kBookPriceDetailsPopupTag = 1239874;
     CGRect sf = [[UIScreen mainScreen] bounds];
     if (sf.size.height == 480) {
         self.view.transform = kIpadTransform();
+    } else if (sf.size.height == 568) {
+        
+    } else if (sf.size.height == 667) {
+        self.view.transform = CGAffineTransformMakeScale(1.171875f, 1.174295f);
+    } else if (sf.size.height == 736) {
+        self.view.transform = CGAffineTransformMakeScale(1.29375f, 1.295774f);
     }
 }
 
@@ -94,7 +100,7 @@ NSUInteger const kBookPriceDetailsPopupTag = 1239874;
 
 - (void)loadDaSpinner {
     AppDelegate *ad = [[UIApplication sharedApplication] delegate];
-    [ad loadDaSpinnerWithFrame:CGRectMake(0, 0, 320, 568)];
+    [ad loadDaSpinnerWithFrame:[[UIScreen mainScreen] bounds]];
 }
 
 - (void)dropDaSpinner {
@@ -454,7 +460,8 @@ NSUInteger const kBookPriceDetailsPopupTag = 1239874;
 
 - (void)loadPriceDetailsPopup:(UIGestureRecognizer *)sender {
     RoomCostView *rcv = [[RoomCostView alloc] initWithFrame:CGRectMake(7, 100, 306, 368) room:_room];
-    [rcv loadCostSummaryView:self.view xOffset:0.0f yOffset:-193.0f];
+    [rcv loadCostSummaryView:self.view wx:7 wy:568 xOffset:0.0f yOffset:-193.0f];
+//    [rcv loadCostSummaryView:self.view xOffset:0.0f yOffset:-193.0f];
 }
 
 @end

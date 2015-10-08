@@ -36,6 +36,8 @@ void TrotterLog(NSString *format, ...) {
     va_end(args);
 }
 
+BOOL const allowTestCreditCard = YES;
+
 NSString * GoogleApiKey() {
     if (inProductionMode()) {
         return @"AIzaSyBDkctJozElMNtbgYC_1J9saPsHBzFeC2w"; // project name: trotter-production
