@@ -48,9 +48,6 @@ NSString * analyticsUrlString() {
     NSURLSession *session = [NSURLSession sessionWithConfiguration:urlconfig];
     
     [[session dataTaskWithRequest:[self daReq:body] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        NSString *rs = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        NSString *err = error ? error.localizedDescription : @"NO ERROR";
-        NSLog(@"PERFORM_POST RESPONSE:%@ ERR:%@", rs, err);
     }] resume];
 }
 

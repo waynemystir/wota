@@ -10,15 +10,19 @@
             <connections>
                 <outlet property="addAdultOutlet" destination="4kw-rN-bfM" id="Xlt-K3-MWh"/>
                 <outlet property="adultsLabel" destination="g8E-Vh-Y33" id="iGL-rM-jmX"/>
+                <outlet property="arrivalArrowTopConstr" destination="yZR-J3-jrV" id="xIe-hU-QmQ"/>
                 <outlet property="arrivalDateOutlet" destination="R73-ve-uPC" id="3rv-Od-MkX"/>
+                <outlet property="arrivalDateTopConstr" destination="cNi-qm-GIq" id="n40-wf-VgZ"/>
                 <outlet property="autoCompleteSpinner" destination="Z88-90-f10" id="INa-Xu-b4S"/>
                 <outlet property="backContainer" destination="prd-ep-Cp9" id="6eS-B4-A5A"/>
                 <outlet property="backContainerLeadConstr" destination="CqE-iP-euy" id="CqE-vZ-4Dt"/>
+                <outlet property="checkHotelTopConstr" destination="dlQ-vZ-ffj" id="5EO-oM-otS"/>
                 <outlet property="checkHotelsOutlet" destination="wvh-AV-6KR" id="jHh-rP-f1A"/>
                 <outlet property="containerView" destination="aes-gI-1UL" id="YU3-Xu-dT6"/>
                 <outlet property="containerViewBottomConstraint" destination="Pqy-np-r1j" id="192-OB-I6m"/>
                 <outlet property="containerViewTopConstraint" destination="Shw-SC-zOW" id="vUg-oH-8hO"/>
                 <outlet property="cupHolder" destination="4nI-db-6ks" id="uSe-hz-MhK"/>
+                <outlet property="daCupHolderHeightConstr" destination="iVF-xU-UkU" id="2iW-Vk-4iH"/>
                 <outlet property="filterContainer" destination="aIg-6w-kig" id="Ipz-ht-1Od"/>
                 <outlet property="footerContainer" destination="V9L-ES-Vyh" id="i3d-sY-iNJ"/>
                 <outlet property="footerDatesBtn" destination="Qe6-an-ZYT" id="kM7-Ab-d7W"/>

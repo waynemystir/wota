@@ -169,6 +169,10 @@ NSUInteger const kAcknowledgemenTag = 1917157;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *wmapBigLeadConstr;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *wmapBigBottomConstr;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *wmapBigTopConstr;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *daCupHolderHeightConstr;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *checkHotelTopConstr;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *arrivalDateTopConstr;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *arrivalArrowTopConstr;
 
 
 #pragma mark IBActions
@@ -401,6 +405,13 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     [self.menuContainer addGestureRecognizer:menuTgr];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(animateTableViewExpansion:) name:UIKeyboardWillShowNotification object:nil];
+    
+    if (_screenRect.size.height == 480) {
+        _daCupHolderHeightConstr.constant = 310;
+        _checkHotelTopConstr.constant = 25;
+        _arrivalDateTopConstr.constant = 15;
+        _arrivalArrowTopConstr.constant = 22;
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
