@@ -187,6 +187,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
 @property (weak, nonatomic) IBOutlet WotaButton *purchaseButton;
 @property (weak, nonatomic) IBOutlet WotaButton *cancelPurchaseButton;
 @property (nonatomic) CGRect sr;
+@property (nonatomic) CGFloat rtdWidth;
 
 @property (nonatomic, strong) NSTimer *selectRoomLifeTimer;
 
@@ -199,6 +200,11 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
 - (id)init {
     if (self = [super initWithNibName:@"SelectRoomView" bundle:nil]) {
         _sr = [[UIScreen mainScreen] bounds];
+        if (_sr.size.width == 320) {
+            _rtdWidth = 190;
+        } else {
+            _rtdWidth = _sr.size.width - 4 - 122;
+        }
         _bottomGradientColors = [NSArray arrayWithObjects:(id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:1].CGColor, nil];
         _bottomsUpGradientColors = [NSArray arrayWithObjects:(id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.1f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.2].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.3f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.4f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.5f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.6f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.7f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.8f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.9f].CGColor, (id)[UIColor colorWithWhite:1 alpha:1.0f].CGColor, nil];
         _priceGradientColors = [NSArray arrayWithObjects:(id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.1f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.2].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.3f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.4f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.5f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.6f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.7f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.8f].CGColor, (id)[UIColor colorWithWhite:1 alpha:0.9f].CGColor, (id)[UIColor colorWithWhite:1 alpha:1.0f].CGColor, nil];
@@ -560,13 +566,10 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     cell.borderViewOutlet.layer.masksToBounds = YES;
     
     EanAvailabilityHotelRoomResponse *room = [self.tableData objectAtIndex:indexPath.row];
-    
+
+    cell.rtdWidthConstr.constant = _rtdWidth;
     cell.roomTypeDescriptionOutlet.text = room.roomType.roomTypeDescrition;
-    if ([cell.roomTypeDescriptionOutlet.text length] > 32) {
-        cell.roomTypeDescriptionOutlet.font = [UIFont boldSystemFontOfSize:18.0f];
-    } else {
-        cell.roomTypeDescriptionOutlet.font = [UIFont boldSystemFontOfSize:19.0f];
-    }
+    cell.roomTypeDescriptionOutlet.font = [UIFont boldSystemFontOfSize:19.0f];
     
     if (room.valueAddArray.count > 0) {
         cell.valueAddOutlet.hidden = NO;
@@ -655,11 +658,6 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     
     UILabel *rtd = (UILabel *) [_tableViewPopOut viewWithTag:kRoomTypeDescViewTag];
     rtd.text = room.roomType.roomTypeDescrition;
-    if ([rtd.text length] > 32) {
-        rtd.font = [UIFont boldSystemFontOfSize:18.0f];
-    } else {
-        rtd.font = [UIFont boldSystemFontOfSize:19.0f];
-    }
     
     UIImageView *valueAdd = (UIImageView *) [_tableViewPopOut viewWithTag:kRoomValueAddTag];
     if (room.valueAddArray.count > 0) {
@@ -759,8 +757,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     [self addBottomsUpGradient:bottomsUpGradientCover];
     [borderView addSubview:bottomsUpGradientCover];
     
-    CGFloat rtdW = MAX(190, borderView.frame.size.width - 122);
-    UILabel *rtd = [[UILabel alloc] initWithFrame:CGRectMake(3, 71, rtdW, 53)];
+    UILabel *rtd = [[UILabel alloc] initWithFrame:CGRectMake(3, 71, _rtdWidth, 53)];
     rtd.tag = kRoomTypeDescViewTag;
     rtd.lineBreakMode = NSLineBreakByWordWrapping;
     rtd.numberOfLines = 2;
@@ -2005,7 +2002,6 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     
     CGFloat tvpH = _sr.size.height == 480 ? 304 : 400;
     CGFloat w316 = _sr.size.width - 4;
-    CGFloat rtdW = MAX(190, borderView.frame.size.width - 122);
     [UIView animateWithDuration:kSrAnimationDuration delay:0.0 options:kLoadDropRoomDetailsAnimationCurve animations:^{
         tvp.frame = CGRectMake(0.0f, 64.0f, (w316 + 4), tvpH);
         cv.frame = CGRectMake(0, 0, tvp.bounds.size.width, tvp.bounds.size.height);
@@ -2014,7 +2010,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
         ivc.frame = CGRectMake(0, 210, w316, 61);
         gic.frame = CGRectMake(0, 210, w316, 30);
         cgc.frame = CGRectMake(0, 126, w316, 84);
-        rtd.frame = CGRectMake(3, 188, rtdW, 53);
+        rtd.frame = CGRectMake(3, 188, _rtdWidth, 53);
         vap.frame = CGRectMake((w316 - 32), 207, 27, 27);
         vai.frame = vap.bounds;
         rtl.frame = CGRectMake((w316 - 116), 230, 112, 22);
@@ -2066,7 +2062,6 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     [nv animateToBack];
     
     CGFloat w316 = _sr.size.width - 4;
-    CGFloat rtdW = MAX(190, borderView.frame.size.width - 122);
     [UIView animateWithDuration:kSrAnimationDuration delay:0.0 options:kLoadDropRoomDetailsAnimationCurve animations:^{
         weakSelf.bedTypeButton.alpha = weakSelf.smokingButton.alpha = rtdl.alpha = 0.0f;
         tal.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(80.0f, -(tvp.frame.size.height/2.3f)), 0.001f, 0.001f);
@@ -2082,7 +2077,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
         gic.frame = CGRectMake(0, 0, w316, 84);
 //        cgc.alpha = 0.0f;
         cgc.frame = CGRectMake(0, 0, w316, 84);
-        rtd.frame = CGRectMake(3, 71, rtdW, 53);
+        rtd.frame = CGRectMake(3, 71, _rtdWidth, 53);
         vap.frame = CGRectMake((w316 - 22), 52, 19, 19);
         vai.frame = vap.bounds;
         rtl.frame = CGRectMake((w316 - 116), 69, 112, 22);

@@ -19,5 +19,6 @@
 @property (weak, nonatomic) IBOutlet UIView *bottomGradientOutlet;
 @property (weak, nonatomic) IBOutlet UILabel *perNightOutlet;
 @property (weak, nonatomic) IBOutlet UIImageView *valueAddOutlet;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *rtdWidthConstr;
 
 @end
