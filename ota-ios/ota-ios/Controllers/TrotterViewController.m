@@ -2087,6 +2087,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
     tf.layer.borderColor = UIColorFromRGB(0xcccccc).CGColor;
     tf.layer.borderWidth = 0.5f;
     tf.placeholder = @"Hotel name";
+    tf.font = [UIFont systemFontOfSize:15.0f];
     tf.clearButtonMode = UITextFieldViewModeWhileEditing;
     tf.autocorrectionType = UITextAutocorrectionTypeNo;
     tf.autocapitalizationType = UITextAutocapitalizationTypeWords;

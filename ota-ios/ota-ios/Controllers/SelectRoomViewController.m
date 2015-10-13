@@ -1001,7 +1001,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
             existingBvc = YES;
             break;
         }
-    bvc = bvc ? : [[BookViewController alloc] initWithRoom:self.selectedRoom];
+    bvc = bvc ? : [[BookViewController alloc] initWithRoom:self.selectedRoom checkInInstructions:self.eanHrar.checkInInstructionsStripped];
     
     NSUUID *aci = [NSUUID UUID];
     bvc.affiliateConfirmationId = aci;
@@ -1049,6 +1049,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
                                    arrivalDate:sc.arrivalDateEanString
                                     departDate:sc.returnDateEanString
                                 chargeableRate:[self.selectedRoom.rateInfo.chargeableRateInfo.total floatValue]
+                                  currencyCode:self.selectedRoom.rateInfo.chargeableRateInfo.currencyCode
                                          email:gi.apiEmail
                                      homePhone:gi.apiPhoneNumber
                                        rateKey:self.selectedRoom.rateInfo.roomGroup.rateKey

@@ -14,6 +14,6 @@
 
 @property (nonatomic, strong) NSUUID *affiliateConfirmationId;
 
-- (id)initWithRoom:(EanAvailabilityHotelRoomResponse *)room;
+- (id)initWithRoom:(EanAvailabilityHotelRoomResponse *)room checkInInstructions:(NSString *)checkInInstructions;
 
 @end

@@ -59,6 +59,7 @@ NSString * analyticsUrlString() {
                             arrivalDate:(NSString *)arrivalDate
                              departDate:(NSString *)departDate
                          chargeableRate:(float)chargeableRate
+                           currencyCode:(NSString *)currencyCode
                                   email:(NSString *)email
                               homePhone:(NSString *)homePhone
                                 rateKey:(NSString *)rateKey
@@ -82,6 +83,7 @@ NSString * analyticsUrlString() {
                                 @"arrivalDate":arrivalDate,
                                 @"departDate":departDate,
                                 @"chargeableRate":@(chargeableRate),
+                                @"currencyCode":currencyCode,
                                 @"email":email,
                                 @"homePhone":homePhone,
                                 @"rateKey":rateKey,

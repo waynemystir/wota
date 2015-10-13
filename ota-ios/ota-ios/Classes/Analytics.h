@@ -18,6 +18,7 @@
                             arrivalDate:(NSString *)arrivalDate
                              departDate:(NSString *)departDate
                          chargeableRate:(float)chargeableRate
+                           currencyCode:(NSString *)currencyCode
                                   email:(NSString *)email
                               homePhone:(NSString *)homePhone
                                 rateKey:(NSString *)rateKey

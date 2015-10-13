@@ -20,18 +20,23 @@
 #import "EanItinerary.h"
 #import "EanHotelConfirmation.h"
 #import "SelectRoomViewController.h"
+#import <AudioToolbox/AudioToolbox.h>
 #import "RoomCostView.h"
 #import "AppEnvironment.h"
 #import "Analytics.h"
 
 NSUInteger const kBookPriceDetailsPopupTag = 1239874;
+NSUInteger const kCheckInInstrPopupTag = 5917431;
+NSUInteger const kOverlayDisableTag = 7146398;
 
 @interface BookViewController ()
 
 @property (nonatomic, strong) EanAvailabilityHotelRoomResponse *room;
+@property (nonatomic, strong) NSString *checkInInstructions;
 @property (weak, nonatomic) IBOutlet UITextView *ItineraryTextView;
 @property (weak, nonatomic) IBOutlet UITextView *confirmTextView;
 @property (weak, nonatomic) IBOutlet UILabel *totalChargesLbl;
+@property (weak, nonatomic) IBOutlet UILabel *checkInInstructionsLbl;
 @property (weak, nonatomic) IBOutlet WotaTappableView *returnMenuView;
 @property (weak, nonatomic) IBOutlet WotaTappableView *viewOrCancelView;
 @property (weak, nonatomic) IBOutlet UIView *problemOverlay;
@@ -54,9 +59,10 @@ NSUInteger const kBookPriceDetailsPopupTag = 1239874;
     int numberOfPriceMismatchRecalls;
 }
 
-- (id)initWithRoom:(EanAvailabilityHotelRoomResponse *)room {
+- (id)initWithRoom:(EanAvailabilityHotelRoomResponse *)room checkInInstructions:(NSString *)checkInInstructions {
     if (self = [self init]) {
         _room = room;
+        _checkInInstructions = checkInInstructions;
     }
     return self;
 }
@@ -276,6 +282,11 @@ NSUInteger const kBookPriceDetailsPopupTag = 1239874;
     tapper.cancelsTouchesInView = NO;
     [self.totalChargesLbl addGestureRecognizer:tapper];
     
+    UITapGestureRecognizer *cit = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(loadCheckInInstructionsPopup:)];
+    cit.numberOfTapsRequired = cit.numberOfTouchesRequired = 1;
+    self.checkInInstructionsLbl.userInteractionEnabled = YES;
+    [self.checkInInstructionsLbl addGestureRecognizer:cit];
+    
     UITapGestureRecognizer *tgr1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickReturnToMenu:)];
     tgr1.numberOfTapsRequired = tgr1.numberOfTouchesRequired = 1;
     [self.returnMenuView addGestureRecognizer:tgr1];
@@ -462,6 +473,104 @@ NSUInteger const kBookPriceDetailsPopupTag = 1239874;
     RoomCostView *rcv = [[RoomCostView alloc] initWithFrame:CGRectMake(7, 100, 306, 368) room:_room];
     [rcv loadCostSummaryView:self.view wx:7 wy:568 xOffset:0.0f yOffset:-193.0f];
 //    [rcv loadCostSummaryView:self.view xOffset:0.0f yOffset:-193.0f];
+}
+
+- (void)loadCheckInInstructionsPopup:(UITapGestureRecognizer *)sender {
+    AudioServicesPlaySystemSound(0x450);
+    __block UIView *wayne = [[UIView alloc] initWithFrame:CGRectMake(10, 100, 300, 356)];
+    
+    UIView *ov = sender.view;
+    wayne.tag = kCheckInInstrPopupTag;
+    wayne.backgroundColor = [UIColor whiteColor];
+    wayne.layer.cornerRadius = 8.0f;
+    wayne.layer.borderColor = [UIColor blackColor].CGColor;
+    wayne.layer.borderWidth = 3.0f;
+    
+    UIView *old = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 568)];
+    old.backgroundColor = [UIColor blackColor];
+    old.alpha = 0.0f;
+    old.tag = kOverlayDisableTag;
+    
+    UILabel *l = [[UILabel alloc] initWithFrame:CGRectMake(13, 12, 200, 30)];
+    l.text = @"Check-in Instructions";
+    l.textColor = [UIColor blackColor];
+    l.textAlignment = NSTextAlignmentLeft;
+    l.backgroundColor = [UIColor clearColor];
+    l.font = [UIFont boldSystemFontOfSize:19.0f];
+    [wayne addSubview:l];
+    
+    WotaButton *b = [WotaButton wbWithFrame:CGRectMake(244, 6, 50, 30)];
+    [b setTitle:@"Done" forState:UIControlStateNormal];
+    [b addTarget:self action:@selector(dropInfoDetailsPopup) forControlEvents:UIControlEventTouchUpInside];
+    [wayne addSubview:b];
+    
+    UITextView *wv = [[UITextView alloc] initWithFrame:CGRectMake(10, 45, 280, 100)];
+    wv.editable = NO;
+    wv.showsVerticalScrollIndicator = NO;
+    wv.layer.borderWidth = 1.0f;
+    wv.layer.borderColor = [UIColor blackColor].CGColor;
+    wv.layer.cornerRadius = 8.0f;
+    wv.font = [UIFont systemFontOfSize:17.0f];
+    
+    wv.text = self.checkInInstructions;
+    
+    wv.textColor = [UIColor blackColor];
+    wv.backgroundColor = [UIColor whiteColor];
+    
+    CGFloat fixedWidth = wv.frame.size.width;
+    CGSize newSize = [wv sizeThatFits:CGSizeMake(fixedWidth, MAXFLOAT)];
+    CGRect newFrame = wv.frame;
+    newFrame.size = CGSizeMake(fixedWidth, fminf(newSize.height + 2, 384));
+    wv.frame = newFrame;
+    
+    CGFloat abc = wv.frame.origin.y + wv.frame.size.height + 10;
+    CGFloat wx = (320 - 300)/2;
+    wayne.frame = CGRectMake(wx, ((64 + 568 - abc)/2), 300, abc);
+    
+    [wayne addSubview:wv];
+    
+    CGFloat fromX = ov.center.x - wayne.center.x;
+    CGFloat fromY = ov.center.y - wayne.center.y + 64;
+    wayne.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(fromX, fromY), 0.001f, 0.001f);
+    
+    //    wayne.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 65), 0.001f, 0.001f);
+    
+    self.navigationController.navigationBar.clipsToBounds = NO;
+    [self.view addSubview:old];
+    [self.view bringSubviewToFront:old];
+    [self.view addSubview:wayne];
+    [self.view bringSubviewToFront:wayne];
+    
+    [self.view endEditing:YES];
+    __weak typeof(self) weakSelf = self;
+    [UIView animateWithDuration:0.4 animations:^{
+        old.alpha = 0.8f;
+        weakSelf.navigationController.navigationBar.alpha = 0.3f;
+        wayne.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+    } completion:^(BOOL finished) {
+        ;
+    }];
+}
+
+- (void)dropInfoDetailsPopup {
+    __weak typeof(self) weakSelf = self;
+    __weak UIView *w = [self.view viewWithTag:kCheckInInstrPopupTag];
+    
+    __weak UIView *originatingView = self.checkInInstructionsLbl;
+    __weak UIView *old = [self.view viewWithTag:kOverlayDisableTag];
+    
+    CGFloat toX = originatingView.center.x - w.center.x;
+    CGFloat toY = originatingView.center.y - w.center.y + 64;
+    __block CGAffineTransform toTransform = CGAffineTransformScale(CGAffineTransformMakeTranslation(toX, toY), 0.001f, 0.001f);
+    
+    [UIView animateWithDuration:0.4 animations:^{
+        old.alpha = 0.0f;
+        weakSelf.navigationController.navigationBar.alpha = 1.0f;
+        w.transform = toTransform;
+    } completion:^(BOOL finished) {
+        [old removeFromSuperview];
+        [w removeFromSuperview];
+    }];
 }
 
 @end
