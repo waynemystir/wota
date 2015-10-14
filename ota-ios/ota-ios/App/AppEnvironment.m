@@ -12,7 +12,7 @@
  * General
  */
 
-ENVIRONMENT_MODE environmentMode = PRODUCTION_MODE;
+ENVIRONMENT_MODE environmentMode = DEVELOPMENT_MODE;
 
 BOOL inProductionMode() {
     return environmentMode == PRODUCTION_MODE;
