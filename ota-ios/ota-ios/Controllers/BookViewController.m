@@ -530,7 +530,7 @@ NSUInteger const kOverlayDisableTag = 7146398;
     [wayne addSubview:wv];
     
     CGFloat fromX = ov.center.x - wayne.center.x;
-    CGFloat fromY = ov.center.y - wayne.center.y + 64;
+    CGFloat fromY = ov.center.y - wayne.center.y;
     wayne.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(fromX, fromY), 0.001f, 0.001f);
     
     //    wayne.transform = CGAffineTransformScale(CGAffineTransformMakeTranslation(0, 65), 0.001f, 0.001f);
@@ -560,7 +560,7 @@ NSUInteger const kOverlayDisableTag = 7146398;
     __weak UIView *old = [self.view viewWithTag:kOverlayDisableTag];
     
     CGFloat toX = originatingView.center.x - w.center.x;
-    CGFloat toY = originatingView.center.y - w.center.y + 64;
+    CGFloat toY = originatingView.center.y - w.center.y;
     __block CGAffineTransform toTransform = CGAffineTransformScale(CGAffineTransformMakeTranslation(toX, toY), 0.001f, 0.001f);
     
     [UIView animateWithDuration:0.4 animations:^{

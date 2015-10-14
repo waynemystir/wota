@@ -13,6 +13,7 @@
 @protocol PreBookConfirmDelegate <NSObject>
 
 - (void)clickTotalAmountLbl:(UITapGestureRecognizer *)tgr;
+- (void)clickTermsAndConditionsLbl:(UITapGestureRecognizer *)tgr;
 - (void)clickAcknowledgeCancellationPolicyLbl;
 - (void)cancelBooking;
 - (void)confirmBooking;
@@ -37,6 +38,12 @@
 @property (weak, nonatomic) IBOutlet UIView *checkMark;
 @property (weak, nonatomic) IBOutlet WotaTappableView *acknowCancelTouch;
 @property (weak, nonatomic) IBOutlet WotaTappableView *totalContainer;
+@property (weak, nonatomic) IBOutlet UILabel *termsAndConditionsLbl;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *roomDescHeightConstr;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *canConfContainerBottomConstr;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *hotelNameHeightConstr;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *headerLabelHeightConstr;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *headerLabelTopConstr;
 
 - (void)setupTheView;
 

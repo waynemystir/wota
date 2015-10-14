@@ -16,9 +16,21 @@
     CGRect sr = [[UIScreen mainScreen] bounds];
     self.frame = CGRectMake(0, 64, sr.size.width, sr.size.height - 64);
     
+    if (sr.size.height == 480) {
+        self.canConfContainerBottomConstr.constant = 0.0f;
+        self.roomDescHeightConstr.constant = 19.0f;
+        self.hotelNameHeightConstr.constant = 19.0f;
+        self.headerLabelHeightConstr.constant = 29.0f;
+        self.headerLabelTopConstr.constant = 0.0f;
+    }
+    
     UITapGestureRecognizer *ttgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickTotalAmtLabel:)];
     ttgr.numberOfTapsRequired = ttgr.numberOfTouchesRequired = 1;
     [_totalContainer addGestureRecognizer:ttgr];
+    
+    UITapGestureRecognizer *tncTgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickTermsAndConditionsLabel:)];
+    tncTgr.numberOfTouchesRequired = tncTgr.numberOfTapsRequired = 1;
+    [_termsAndConditionsLbl addGestureRecognizer:tncTgr];
     
     UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickAcknowLbl:)];
     tgr.numberOfTapsRequired = tgr.numberOfTouchesRequired = 1;
@@ -62,6 +74,11 @@
 - (void)clickTotalAmtLabel:(UITapGestureRecognizer *)tgr {
     if (!self.preBookDelegate) return;
     [self.preBookDelegate clickTotalAmountLbl:tgr];
+}
+
+- (void)clickTermsAndConditionsLabel:(UITapGestureRecognizer *)tgr {
+    if (!self.preBookDelegate) return;
+    [self.preBookDelegate clickTermsAndConditionsLbl:tgr];
 }
 
 - (void)clickAcknowLbl:(UITapGestureRecognizer *)tgr {

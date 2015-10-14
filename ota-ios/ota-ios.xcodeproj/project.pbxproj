@@ -1510,8 +1510,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Wayne Small (2NJ5Q295LN)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Wayne Small (2NJ5Q295LN)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Trotter Travel LLC (H79RMRJ42R)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Trotter Travel LLC (H79RMRJ42R)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1522,7 +1522,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.wota.travel.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Trotter;
-				PROVISIONING_PROFILE = "1989b82b-8d55-439c-9508-b8ddce9c0d39";
+				PROVISIONING_PROFILE = "2e357c97-e8ab-4d97-ba7a-e0350ea4e5ef";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "ota-ios/Classes/ota-ios-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "$(SWIFT_MODULE_NAME)-Swift.h";
@@ -1536,8 +1536,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Wayne Small (2NJ5Q295LN)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Wayne Small (2NJ5Q295LN)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Trotter Travel LLC (H79RMRJ42R)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Trotter Travel LLC (H79RMRJ42R)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1548,7 +1548,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.wota.travel.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Trotter;
-				PROVISIONING_PROFILE = "1989b82b-8d55-439c-9508-b8ddce9c0d39";
+				PROVISIONING_PROFILE = "2e357c97-e8ab-4d97-ba7a-e0350ea4e5ef";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "ota-ios/Classes/ota-ios-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "$(SWIFT_MODULE_NAME)-Swift.h";

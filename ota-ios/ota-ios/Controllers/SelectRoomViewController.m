@@ -1929,6 +1929,68 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
     [self loadPriceDetailsPopup:tgr];
 }
 
+- (void)clickTermsAndConditionsLbl:(UITapGestureRecognizer *)tgr {
+    
+    UIView *old = [[UIView alloc] initWithFrame:_sr];
+    old.backgroundColor = [UIColor blackColor];
+    old.alpha = 0.0f;
+    old.userInteractionEnabled = YES;
+    old.tag = 19827377;
+    
+    UIView *wvc = [[UIView alloc] initWithFrame:CGRectMake(12, 72, _sr.size.width - 24, _sr.size.height - 80)];
+    wvc.backgroundColor = [UIColor whiteColor];
+    wvc.tag = 19827361;
+    wvc.layer.cornerRadius = 8.0f;
+    
+    UIWebView *wv = [[UIWebView alloc] initWithFrame:CGRectMake(6, 45, wvc.frame.size.width - 12, wvc.frame.size.height - 51)];
+    wv.layer.cornerRadius = 8.0f;
+    wv.layer.borderColor = [UIColor blackColor].CGColor;
+    wv.layer.borderWidth = 1.0f;
+    NSURLRequest *req = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://travel.ian.com/index.jsp?pageName=userAgreement&locale=en_US&cid=482231"]];
+    [wv loadRequest:req];
+    [wvc addSubview:wv];
+    
+    UILabel *l = [[UILabel alloc] initWithFrame:CGRectMake(13, 12, 200, 30)];
+    l.text = @"Terms & Conditions";
+    l.textColor = [UIColor blackColor];
+    l.textAlignment = NSTextAlignmentLeft;
+    l.backgroundColor = [UIColor clearColor];
+    l.font = [UIFont boldSystemFontOfSize:19.0f];
+    [wvc addSubview:l];
+    
+    WotaButton *b = [WotaButton wbWithFrame:CGRectMake(wvc.frame.size.width - 50 - 6, 6, 50, 30)];
+    [b setTitle:@"Done" forState:UIControlStateNormal];
+    [b addTarget:self action:@selector(dropTermsAndConditions) forControlEvents:UIControlEventTouchUpInside];
+    [wvc addSubview:b];
+    
+    wvc.transform = CGAffineTransformMakeScale(0.001f, 0.001);
+    
+    [self.view addSubview:old];
+    [self.view bringSubviewToFront:old];
+    [self.view addSubview:wvc];
+    [self.view bringSubviewToFront:wvc];
+    
+    [UIView animateWithDuration:kSrAnimationDuration animations:^{
+        old.alpha = 0.7f;
+        wvc.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+    } completion:^(BOOL finished) {
+        ;
+    }];
+}
+
+- (void)dropTermsAndConditions {
+    __weak UIView *wvc = [self.view viewWithTag:19827361];
+    __weak UIView *old = [self.view viewWithTag:19827377];
+    
+    [UIView animateWithDuration:kSrAnimationDuration animations:^{
+        old.alpha = 0.0f;
+        wvc.transform = CGAffineTransformMakeScale(0.001f, 0.001f);
+    } completion:^(BOOL finished) {
+        [old removeFromSuperview];
+        [wvc removeFromSuperview];
+    }];
+}
+
 - (void)clickAcknowledgeCancellationPolicyLbl {
     __weak UIView *nrl = [self.view viewWithTag:kRoomNonRefundLongTag];
     [self loadInfoDetailsPopup:nrl.gestureRecognizers.firstObject];
@@ -2300,6 +2362,11 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
         [[paymentDetailsView subviews] makeObjectsPerformSelector:@selector(setBackgroundColor:) withObject:(id)[UIColor whiteColor]];
     } completion:^(BOOL finished) {
         [wes.ccNumberOutlet becomeFirstResponder];
+        
+        if ([[UIScreen mainScreen] bounds].size.height == 480) {
+            CGRect pf = self.postalTextField.frame;
+            self.postalTextField.frame = CGRectMake(151, 180, pf.size.width, pf.size.height);
+        }
     }];
 }
 
