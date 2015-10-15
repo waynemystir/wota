@@ -109,7 +109,7 @@ NSUInteger const kRightCheckMarkView = 4921743;
         [self addSubview:_leftView];
         
         _rightView = [[UIView alloc] initWithFrame:CGRectMake(ww - 44, 20, 44, 44)];
-        if (!inProductionMode()) _rightView.backgroundColor = [UIColor redColor];
+        if (headerHighlight()) _rightView.backgroundColor = [UIColor redColor];
         [self addSubview:_rightView];
     }
     return self;

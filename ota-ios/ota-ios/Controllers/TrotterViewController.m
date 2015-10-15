@@ -413,7 +413,7 @@ NSUInteger const kAcknowledgemenTag = 1917157;
         _arrivalArrowTopConstr.constant = 22;
     }
     
-    if (!inProductionMode()) self.whereToContainer.backgroundColor = [UIColor redColor];
+    if (headerHighlight()) self.whereToContainer.backgroundColor = [UIColor redColor];
 }
 
 - (void)viewWillAppear:(BOOL)animated {

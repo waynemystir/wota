@@ -25,6 +25,7 @@ typedef NS_ENUM(NSUInteger, ENVIRONMENT_MODE) {
 extern ENVIRONMENT_MODE environmentMode;
 extern BOOL inProductionMode();
 extern BOOL inTestFlightMode();
+extern BOOL headerHighlight();
 extern void TrotterLog(NSString *format, ...);
 
 extern BOOL const allowTestCreditCard;
