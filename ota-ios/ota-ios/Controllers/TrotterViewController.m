@@ -783,6 +783,15 @@ NSUInteger const kAcknowledgemenTag = 1917157;
                         
                         NSArray *ia = [[NSBundle mainBundle] loadNibNamed:@"ImageDisclaimerView" owner:nil options:nil];
                         wes.hotelsTableView.tableFooterView = ia.firstObject;
+                        
+                        SelectionCriteria *sc = [SelectionCriteria singleton];
+                        [Analytics postHotelSearch:sc.selectedPlace.placeName
+                                           placeId:sc.selectedPlace.placeId
+                                       displayName:sc.selectedPlace.formattedWhereToFirst
+                                          latitude:sc.latitude
+                                         longitude:sc.longitude
+                                        zoomRadius:sc.zoomRadius
+                                     numberResults:(int)ehlr.hotelList.count];
                     }
                 });
             });

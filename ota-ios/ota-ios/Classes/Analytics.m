@@ -1,4 +1,4 @@
-//
+ //
 //  Analytics.m
 //  ota-ios
 //
@@ -8,8 +8,11 @@
 
 #import "Analytics.h"
 #import "AppEnvironment.h"
+#import "AppDelegate.h"
+#import "EanCredentials.h"
 
 NSString * const API_KEY = @"AIzaSyDOdThZQk931Sx7EQnMDA8spwSXk0NHw0E";
+static BOOL verboseAnalytics = YES;
 
 NSString * projectString() {
     if (inProductionMode()) {
@@ -48,7 +51,105 @@ NSString * analyticsUrlString() {
     NSURLSession *session = [NSURLSession sessionWithConfiguration:urlconfig];
     
     [[session dataTaskWithRequest:[self daReq:body] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        
+        if (!data || [self handleError:error] || [self handleResponse:response]) return;
+        
+        NSString *sd = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"WESP:%@", sd);
+        
+        NSError *err = nil;
+        id respDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&err];
+        if (error != nil) {
+            TrotterLog(@"%s ERROR trying to deserialize Analytics data:%@", __PRETTY_FUNCTION__, error);
+            return;
+        }
+        
+        if (respDict && [respDict isKindOfClass:[NSDictionary class]]) {
+            id result = [respDict objectForKey:@"result"];
+            if (result && [result isKindOfClass:[NSDictionary class]]) {
+                id va = [result objectForKey:@"verboseAnalytics"];
+                verboseAnalytics = va ? [va boolValue] : YES;
+            }
+        }
+        
     }] resume];
+}
+
++ (BOOL)handleError:(NSError *)error {
+    if (!error) return NO;
+    
+    switch (error.code) {
+        case NSURLErrorCancelled: break;
+        case NSURLErrorTimedOut: break;
+        case NSURLErrorNotConnectedToInternet: break;
+        default: break;
+    }
+    
+    return YES;
+}
+
++ (BOOL)handleResponse:(NSURLResponse *)response {
+    if (((NSHTTPURLResponse *)response).statusCode == 200) return NO;
+    return YES;
+}
+
++ (void)postLaunch:(NSString *)ipAddress {
+    NSNumber *newInstall = [NSNumber numberWithBool:NO];
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    BOOL alreadyInstalled = [ud boolForKey:@"trotterinstalled"];
+    if (!alreadyInstalled) {
+        newInstall = [NSNumber numberWithBool:YES];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"trotterinstalled"];
+    }
+    
+    NSString *osVersion = [[UIDevice currentDevice] systemVersion];
+    NSString *deviceType = [[UIDevice currentDevice] model];
+    
+    NSDictionary *d = @{@"jsonrpc":@"2.0",
+                        @"method":@"wanalytics.postLaunch",
+                        @"id":@"gtl_1",
+                        @"params":@{
+                                @"apiKey":API_KEY,
+                                @"ipAddress":ipAddress,
+                                @"osType":@"iOS",
+                                @"osVersion":osVersion,
+                                @"deviceType":deviceType,
+                                @"newInstall":newInstall
+                                },
+                        @"apiVersion":@"v1"
+                        };
+    
+    [self performPost:d];
+}
+
++ (void)postHotelSearch:(NSString *)placeName
+                placeId:(NSString *)placeId
+            displayName:(NSString *)displayName
+               latitude:(double)latitude
+              longitude:(double)longitude
+             zoomRadius:(double)zoomRadius
+          numberResults:(int)numberResults {
+    
+    if (!verboseAnalytics) return;
+    
+    NSDictionary *d = @{@"jsonrpc":@"2.0",
+                        @"method":@"wanalytics.postHotelSearch",
+                        @"id":@"gtl_1",
+                        @"params":@{
+                                @"apiKey":API_KEY,
+                                @"ipAddress":[AppDelegate externalIP],
+                                @"placeName":placeName ? : @"",
+                                @"placeId":placeId ? : @"",
+                                @"displayName":displayName ? : @"",
+                                @"latitude":@(latitude),
+                                @"longitude":@(longitude),
+                                @"zoomRadius":@(zoomRadius),
+                                @"numberResults":@(numberResults)
+                                },
+                        @"apiVersion":@"v1"
+                        };
+    
+    [self performPost:d];
 }
 
 + (void)postBookingRequestWithAffConfId:(NSString *)affiliateConfirmationId
@@ -93,7 +194,9 @@ NSString * analyticsUrlString() {
                                 @"bedTypeId":bedTypeId,
                                 @"smokingPref":smokingPref,
                                 @"nonrefundable":nonrefundable,
-                                @"customerSessionId":customerSessionId
+                                @"customerSessionId":customerSessionId,
+                                @"ipAddress":[AppDelegate externalIP],
+                                @"eanCid":[EanCredentials CID]
                                 },
                         @"apiVersion":@"v1"
                         };
@@ -119,7 +222,9 @@ NSString * analyticsUrlString() {
                                 @"processedWithConfirmation":processedWithConfirmation,
                                 @"reservationStatusCode":reservationStatusCode,
                                 @"nonrefundable":nonrefundable,
-                                @"customerSessionId":customerSessionId
+                                @"customerSessionId":customerSessionId,
+                                @"ipAddress":[AppDelegate externalIP],
+                                @"eanCid":[EanCredentials CID]
                                 },
                         @"apiVersion":@"v1"
                         };

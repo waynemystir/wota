@@ -435,8 +435,8 @@
     self.closeBtn.frame = CGRectMake(curX, 5, buttonWidth, buttonHeight);
     curX+=buttonWidth+5;
     self.clearBtn.frame = CGRectMake(curX, 5, buttonWidth, buttonHeight);
-    curX+=buttonWidth+5;
-    //    self.okBtn.frame = CGRectMake(curX, 5, buttonWidth, buttonHeight);
+//    curX+=buttonWidth+5;
+//    self.okBtn.frame = CGRectMake(curX, 5, buttonWidth, buttonHeight);
     if (_clearAsToday) {
         [self.clearBtn setImage:nil forState:UIControlStateNormal];
         [self.clearBtn setTitle:NSLocalizedString(@"TODAY", @"Customize this for your language") forState:UIControlStateNormal];
@@ -453,8 +453,8 @@
     int buttonWidth = (width-15)/2;
     int curX = (width - buttonWidth*2 - 5)/2;
     self.closeBtn.frame = CGRectMake(curX, 5, buttonWidth, buttonHeight);
-    curX+=buttonWidth+5;
-    //    self.okBtn.frame = CGRectMake(curX, 5, buttonWidth, buttonHeight);
+//    curX+=buttonWidth+5;
+//    self.okBtn.frame = CGRectMake(curX, 5, buttonWidth, buttonHeight);
 }
 
 #pragma mark - Date Utils

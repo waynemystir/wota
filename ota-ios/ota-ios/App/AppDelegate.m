@@ -202,6 +202,7 @@ static BOOL _ipSearchCompleted = NO;
             _externalIP = ip1;
             _ipSearchCompleted = YES;
             _currentlySearchingForExternalIP = NO;
+            [Analytics postLaunch:_externalIP];
             
         } else {
             
@@ -216,6 +217,7 @@ static BOOL _ipSearchCompleted = NO;
                     _externalIP = ip2;
                     _ipSearchCompleted = YES;
                     _currentlySearchingForExternalIP = NO;
+                    [Analytics postLaunch:_externalIP];
                     
                 } else {
                     
@@ -237,6 +239,7 @@ static BOOL _ipSearchCompleted = NO;
                         
                         _ipSearchCompleted = YES;
                         _currentlySearchingForExternalIP = NO;
+                        [Analytics postLaunch:_externalIP ? : @""];
                         
                     }] resume];
                     

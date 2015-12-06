@@ -10,6 +10,24 @@
 
 @interface Analytics : NSObject
 
++ (void)postLaunch:(NSString *)ipAddress;
+
++ (void)postHotelSearch:(NSString *)placeName
+                placeId:(NSString *)placeId
+            displayName:(NSString *)displayName
+               latitude:(double)latitude
+              longitude:(double)longitude
+             zoomRadius:(double)zoomRadius
+          numberResults:(int)numberResults;
+
++ (void)postHotelInfo:(NSString *)ipAddress
+              hotelId:(NSString *)hotelId
+            hotelName:(NSString *)hotelName;
+
++ (void)postRooms:(NSString *)ipAddress
+          hotelId:(NSString *)hotelId
+        hotelName:(NSString *)hotelName;
+
 + (void)postBookingRequestWithAffConfId:(NSString *)affiliateConfirmationId
                          room1FirstName:(NSString *)room1FirstName
                           room1LastName:(NSString *)room1LastName

@@ -12,7 +12,7 @@
  * General
  */
 
-ENVIRONMENT_MODE environmentMode = BETA_MODE;
+ENVIRONMENT_MODE environmentMode = DEVELOPMENT_MODE;
 
 BOOL inProductionMode() {
     return environmentMode == PRODUCTION_MODE;
@@ -23,7 +23,7 @@ BOOL inTestFlightMode() {
 }
 
 BOOL headerHighlight() {
-    return !inProductionMode();
+    return NO;// !inProductionMode();
 }
 
 BOOL const isLogging = NO;

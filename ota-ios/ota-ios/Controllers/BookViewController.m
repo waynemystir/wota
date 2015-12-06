@@ -340,15 +340,15 @@ NSUInteger const kOverlayDisableTag = 7146398;
 - (void)handleProblems:(NSString *)message {
     [self handleProblems:message titleMsg:nil];
     
-    NSString *vm = @"";
+//    NSString *vm = @"";
     
     NSString *sourceString = [[NSThread callStackSymbols] objectAtIndex:1];
     NSCharacterSet *separatorSet = [NSCharacterSet characterSetWithCharactersInString:@" -[]+?.,"];
     NSMutableArray *array = [NSMutableArray arrayWithArray:[sourceString  componentsSeparatedByCharactersInSet:separatorSet]];
     [array removeObject:@""];
     
-    if (array.count >= 5)
-        vm = [NSString stringWithFormat:@"%@.%@", [array objectAtIndex:3], [array objectAtIndex:4]];
+//    if (array.count >= 5)
+//        vm = [NSString stringWithFormat:@"%@.%@", [array objectAtIndex:3], [array objectAtIndex:4]];
     
     [Analytics postTrotterProblemWithCategory:@"BOOKING_PROBLEM" shortMessage:[NSString stringWithFormat:@"From:%s", __PRETTY_FUNCTION__] verboseMessage:[NSString stringWithFormat:@"EAN message:%@", message]];
 }
