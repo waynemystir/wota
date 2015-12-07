@@ -25,6 +25,7 @@
 #import <MapKit/MapKit.h>
 #import "NetworkProblemResponder.h"
 #import "ImageViewHotelInfo.h"
+#import "Analytics.h"
 
 #define degreesToRadians(x) (M_PI * x / 180.0)
 #define METERS_PER_MILE 1609.344
@@ -149,6 +150,8 @@ NSUInteger const kRoomImageViewsStartingTag = 1917151311;
             });
             
         }];
+        
+        [Analytics postHotelInfo:[eanHotel.hotelId stringValue] hotelName:eanHotel.hotelName];
     }
     return self;
 }

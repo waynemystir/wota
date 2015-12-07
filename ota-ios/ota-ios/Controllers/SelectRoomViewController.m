@@ -467,6 +467,7 @@ NSUInteger const kPickerContainerDisclaimer = 171741;
                 [wes addSubview:fv];
                 [wes addSubview:iv];
                 self.roomsTableViewOutlet.tableFooterView = wes;
+                [Analytics postRooms:self.eanHrar.hotelId hotelName:self.eanHrar.hotelName numberRooms:(int)self.tableData.count];
             }
             [self dropDaSpinner];
             break;

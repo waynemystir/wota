@@ -11,7 +11,10 @@
 #import "AppDelegate.h"
 #import "EanCredentials.h"
 
-NSString * const API_KEY = @"AIzaSyDOdThZQk931Sx7EQnMDA8spwSXk0NHw0E";
+static NSString * const API_KEY = @"AIzaSyDOdThZQk931Sx7EQnMDA8spwSXk0NHw0E";
+static NSString * const kNotAvailStr = @"nwa";
+static const double kNotAvailDbl = -41.4141;
+static const int kNotAvailInt = -41;
 static BOOL verboseAnalytics = YES;
 
 NSString * projectString() {
@@ -33,7 +36,7 @@ NSString * analyticsUrlString() {
 + (NSMutableURLRequest *)daReq:(NSDictionary *)body {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:analyticsUrlString()]];
     
-    [request setTimeoutInterval:60];
+    [request setTimeoutInterval:30];
     [request setHTTPMethod:@"POST"];
     
     if (body) [request setHTTPBody:[NSJSONSerialization dataWithJSONObject:body options:0 error:nil]];
@@ -44,7 +47,8 @@ NSString * analyticsUrlString() {
     return request;
 }
 
-+ (void)performPost:(NSDictionary *)body {NSURLSessionConfiguration *urlconfig = [NSURLSessionConfiguration defaultSessionConfiguration];
++ (void)performPost:(NSDictionary *)body {
+    NSURLSessionConfiguration *urlconfig = [NSURLSessionConfiguration defaultSessionConfiguration];
     urlconfig.timeoutIntervalForRequest = 30;
     urlconfig.timeoutIntervalForResource = 30;
     
@@ -59,8 +63,8 @@ NSString * analyticsUrlString() {
         
         NSError *err = nil;
         id respDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&err];
-        if (error != nil) {
-            TrotterLog(@"%s ERROR trying to deserialize Analytics data:%@", __PRETTY_FUNCTION__, error);
+        if (err != nil) {
+            TrotterLog(@"%s ERROR trying to deserialize Analytics data:%@", __PRETTY_FUNCTION__, err);
             return;
         }
         
@@ -99,7 +103,7 @@ NSString * analyticsUrlString() {
     BOOL alreadyInstalled = [ud boolForKey:@"trotterinstalled"];
     if (!alreadyInstalled) {
         newInstall = [NSNumber numberWithBool:YES];
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"trotterinstalled"];
+        [ud setBool:YES forKey:@"trotterinstalled"];
     }
     
     NSString *osVersion = [[UIDevice currentDevice] systemVersion];
@@ -110,10 +114,10 @@ NSString * analyticsUrlString() {
                         @"id":@"gtl_1",
                         @"params":@{
                                 @"apiKey":API_KEY,
-                                @"ipAddress":ipAddress,
+                                @"ipAddress":ipAddress ? : kNotAvailStr,
                                 @"osType":@"iOS",
-                                @"osVersion":osVersion,
-                                @"deviceType":deviceType,
+                                @"osVersion":osVersion ? : kNotAvailStr,
+                                @"deviceType":deviceType ? : kNotAvailStr,
                                 @"newInstall":newInstall
                                 },
                         @"apiVersion":@"v1"
@@ -138,13 +142,52 @@ NSString * analyticsUrlString() {
                         @"params":@{
                                 @"apiKey":API_KEY,
                                 @"ipAddress":[AppDelegate externalIP],
-                                @"placeName":placeName ? : @"",
-                                @"placeId":placeId ? : @"",
-                                @"displayName":displayName ? : @"",
-                                @"latitude":@(latitude),
-                                @"longitude":@(longitude),
-                                @"zoomRadius":@(zoomRadius),
-                                @"numberResults":@(numberResults)
+                                @"placeName":placeName ? : kNotAvailStr,
+                                @"placeId":placeId ? : kNotAvailStr,
+                                @"displayName":displayName ? : kNotAvailStr,
+                                @"latitude":@(latitude) ? : @(kNotAvailDbl),
+                                @"longitude":@(longitude) ? : @(kNotAvailDbl),
+                                @"zoomRadius":@(zoomRadius) ? : @(kNotAvailDbl),
+                                @"numberResults":@(numberResults) ? : @(kNotAvailInt)
+                                },
+                        @"apiVersion":@"v1"
+                        };
+    
+    [self performPost:d];
+}
+
++ (void)postHotelInfo:(NSString *)hotelId hotelName:(NSString *)hotelName {
+    
+    if (!verboseAnalytics) return;
+    
+    NSDictionary *d = @{@"jsonrpc":@"2.0",
+                        @"method":@"wanalytics.postHotelInfo",
+                        @"id":@"gtl_1",
+                        @"params":@{
+                                @"apiKey":API_KEY,
+                                @"ipAddress":[AppDelegate externalIP],
+                                @"hotelId":hotelId ? : kNotAvailStr,
+                                @"hotelName":hotelName ? : kNotAvailStr
+                                },
+                        @"apiVersion":@"v1"
+                        };
+    
+    [self performPost:d];
+}
+
++ (void)postRooms:(NSString *)hotelId hotelName:(NSString *)hotelName numberRooms:(int)numberRooms {
+    
+    if (!verboseAnalytics) return;
+    
+    NSDictionary *d = @{@"jsonrpc":@"2.0",
+                        @"method":@"wanalytics.postRooms",
+                        @"id":@"gtl_1",
+                        @"params":@{
+                                @"apiKey":API_KEY,
+                                @"ipAddress":[AppDelegate externalIP],
+                                @"hotelId":hotelId ? : kNotAvailStr,
+                                @"hotelName":hotelName ? : kNotAvailStr,
+                                @"numberRooms":@(numberRooms) ? : @(kNotAvailInt)
                                 },
                         @"apiVersion":@"v1"
                         };
@@ -177,26 +220,26 @@ NSString * analyticsUrlString() {
                         @"params":@{
                                 @"apiKey":API_KEY,
                                 @"room1LastName":room1LastName,
-                                @"affiliateConfirmationId":affiliateConfirmationId,
+                                @"affiliateConfirmationId":affiliateConfirmationId ? : kNotAvailStr,
                                 @"room1FirstName":room1FirstName,
-                                @"hotelId":hotelId,
-                                @"hotelName":hotelName,
-                                @"arrivalDate":arrivalDate,
-                                @"departDate":departDate,
-                                @"chargeableRate":@(chargeableRate),
-                                @"currencyCode":currencyCode,
+                                @"hotelId":hotelId ? : kNotAvailStr,
+                                @"hotelName":hotelName ? : kNotAvailStr,
+                                @"arrivalDate":arrivalDate ? : kNotAvailStr,
+                                @"departDate":departDate ? : kNotAvailStr,
+                                @"chargeableRate":@(chargeableRate) ? : @(kNotAvailDbl),
+                                @"currencyCode":currencyCode ? : kNotAvailStr,
                                 @"email":email,
                                 @"homePhone":homePhone,
-                                @"rateKey":rateKey,
-                                @"roomTypeCode":roomTypeCode,
-                                @"rateCode":rateCode,
-                                @"roomDescription":roomDescription,
-                                @"bedTypeId":bedTypeId,
-                                @"smokingPref":smokingPref,
-                                @"nonrefundable":nonrefundable,
-                                @"customerSessionId":customerSessionId,
+                                @"rateKey":rateKey ? : kNotAvailStr,
+                                @"roomTypeCode":roomTypeCode ? : kNotAvailStr,
+                                @"rateCode":rateCode ? : kNotAvailStr,
+                                @"roomDescription":roomDescription ? : kNotAvailStr,
+                                @"bedTypeId":bedTypeId ? : kNotAvailStr,
+                                @"smokingPref":smokingPref ? : kNotAvailStr,
+                                @"nonrefundable":nonrefundable ? : kNotAvailStr,
+                                @"customerSessionId":customerSessionId ? : kNotAvailStr,
                                 @"ipAddress":[AppDelegate externalIP],
-                                @"eanCid":[EanCredentials CID]
+                                @"eanCid":[EanCredentials CID] ? : kNotAvailStr
                                 },
                         @"apiVersion":@"v1"
                         };
@@ -216,15 +259,15 @@ NSString * analyticsUrlString() {
                         @"id":@"gtl_1",
                         @"params":@{
                                 @"apiKey":API_KEY,
-                                @"itineraryId":@(itineraryId),
-                                @"affiliateConfirmationId":affiliateConfirmationId,
-                                @"confirmationId":@(confirmationId),
-                                @"processedWithConfirmation":processedWithConfirmation,
-                                @"reservationStatusCode":reservationStatusCode,
-                                @"nonrefundable":nonrefundable,
-                                @"customerSessionId":customerSessionId,
+                                @"itineraryId":@(itineraryId) ? : @(kNotAvailInt),
+                                @"affiliateConfirmationId":affiliateConfirmationId ? : kNotAvailStr,
+                                @"confirmationId":@(confirmationId) ? : @(kNotAvailInt),
+                                @"processedWithConfirmation":processedWithConfirmation ? : kNotAvailStr,
+                                @"reservationStatusCode":reservationStatusCode ? : kNotAvailStr,
+                                @"nonrefundable":nonrefundable ? : kNotAvailStr,
+                                @"customerSessionId":customerSessionId ? : kNotAvailStr,
                                 @"ipAddress":[AppDelegate externalIP],
-                                @"eanCid":[EanCredentials CID]
+                                @"eanCid":[EanCredentials CID] ? : kNotAvailStr
                                 },
                         @"apiVersion":@"v1"
                         };
@@ -243,11 +286,11 @@ NSString * analyticsUrlString() {
                         @"id":@"gtl_1",
                         @"params":@{
                                 @"apiKey":API_KEY,
-                                @"itineraryId":@(itineraryId),
-                                @"verboseMessage":verboseMessage,
-                                @"handling":handling,
-                                @"category":category,
-                                @"presentationMessage":presentationMessage
+                                @"itineraryId":@(itineraryId) ? : @(kNotAvailInt),
+                                @"verboseMessage":verboseMessage ? : kNotAvailStr,
+                                @"handling":handling ? : kNotAvailStr,
+                                @"category":category ? : kNotAvailStr,
+                                @"presentationMessage":presentationMessage ? : kNotAvailStr
                                 },
                         @"apiVersion":@"v1"
                         };
@@ -264,9 +307,9 @@ NSString * analyticsUrlString() {
                         @"id":@"gtl_1",
                         @"params":@{
                                 @"apiKey":API_KEY,
-                                @"verboseMessage":verboseMessage,
-                                @"category":category,
-                                @"shortMessage":shortMessage
+                                @"verboseMessage":verboseMessage ? : kNotAvailStr,
+                                @"category":category ? : kNotAvailStr,
+                                @"shortMessage":shortMessage ? : kNotAvailStr
                                 },
                         @"apiVersion":@"v1"
                         };

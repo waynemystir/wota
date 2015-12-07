@@ -20,13 +20,12 @@
              zoomRadius:(double)zoomRadius
           numberResults:(int)numberResults;
 
-+ (void)postHotelInfo:(NSString *)ipAddress
-              hotelId:(NSString *)hotelId
++ (void)postHotelInfo:(NSString *)hotelId
             hotelName:(NSString *)hotelName;
 
-+ (void)postRooms:(NSString *)ipAddress
-          hotelId:(NSString *)hotelId
-        hotelName:(NSString *)hotelName;
++ (void)postRooms:(NSString *)hotelId
+        hotelName:(NSString *)hotelName
+      numberRooms:(int)numberRooms;
 
 + (void)postBookingRequestWithAffConfId:(NSString *)affiliateConfirmationId
                          room1FirstName:(NSString *)room1FirstName
