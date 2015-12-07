@@ -58,9 +58,6 @@ NSString * analyticsUrlString() {
         
         if (!data || [self handleError:error] || [self handleResponse:response]) return;
         
-        NSString *sd = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        NSLog(@"WESP:%@", sd);
-        
         NSError *err = nil;
         id respDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&err];
         if (err != nil) {
@@ -236,7 +233,7 @@ NSString * analyticsUrlString() {
                                 @"roomDescription":roomDescription ? : kNotAvailStr,
                                 @"bedTypeId":bedTypeId ? : kNotAvailStr,
                                 @"smokingPref":smokingPref ? : kNotAvailStr,
-                                @"nonrefundable":nonrefundable ? : kNotAvailStr,
+                                @"nonrefundable":nonrefundable ? : @(0),
                                 @"customerSessionId":customerSessionId ? : kNotAvailStr,
                                 @"ipAddress":[AppDelegate externalIP],
                                 @"eanCid":[EanCredentials CID] ? : kNotAvailStr
@@ -262,9 +259,9 @@ NSString * analyticsUrlString() {
                                 @"itineraryId":@(itineraryId) ? : @(kNotAvailInt),
                                 @"affiliateConfirmationId":affiliateConfirmationId ? : kNotAvailStr,
                                 @"confirmationId":@(confirmationId) ? : @(kNotAvailInt),
-                                @"processedWithConfirmation":processedWithConfirmation ? : kNotAvailStr,
+                                @"processedWithConfirmation":processedWithConfirmation ? : @(0),
                                 @"reservationStatusCode":reservationStatusCode ? : kNotAvailStr,
-                                @"nonrefundable":nonrefundable ? : kNotAvailStr,
+                                @"nonrefundable":nonrefundable ? : @(0),
                                 @"customerSessionId":customerSessionId ? : kNotAvailStr,
                                 @"ipAddress":[AppDelegate externalIP],
                                 @"eanCid":[EanCredentials CID] ? : kNotAvailStr
