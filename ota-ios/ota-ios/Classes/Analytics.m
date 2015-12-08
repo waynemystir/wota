@@ -10,6 +10,7 @@
 #import "AppEnvironment.h"
 #import "AppDelegate.h"
 #import "EanCredentials.h"
+#import <AdSupport/AdSupport.h>
 
 static NSString * const API_KEY = @"AIzaSyDOdThZQk931Sx7EQnMDA8spwSXk0NHw0E";
 static NSString * const kNotAvailStr = @"nwa";
@@ -105,6 +106,10 @@ NSString * analyticsUrlString() {
     
     NSString *osVersion = [[UIDevice currentDevice] systemVersion];
     NSString *deviceType = [[UIDevice currentDevice] model];
+    NSString *idfa = [[[ASIdentifierManager sharedManager] advertisingIdentifier] UUIDString];
+    NSString *bundleId = [[NSBundle mainBundle] bundleIdentifier];
+    NSString *bundleVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
+    NSString *appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
     
     NSDictionary *d = @{@"jsonrpc":@"2.0",
                         @"method":@"wanalytics.postLaunch",
@@ -115,7 +120,11 @@ NSString * analyticsUrlString() {
                                 @"osType":@"iOS",
                                 @"osVersion":osVersion ? : kNotAvailStr,
                                 @"deviceType":deviceType ? : kNotAvailStr,
-                                @"newInstall":newInstall
+                                @"newInstall":newInstall,
+                                @"iosIdfa":idfa ? : kNotAvailStr,
+                                @"bundleId":bundleId ? : kNotAvailStr,
+                                @"bundleVersion":bundleVersion ? : kNotAvailStr,
+                                @"appVersion":appVersion ? : kNotAvailStr
                                 },
                         @"apiVersion":@"v1"
                         };
