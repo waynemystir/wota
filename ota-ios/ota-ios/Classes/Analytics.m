@@ -107,6 +107,7 @@ NSString * analyticsUrlString() {
     NSString *osVersion = [[UIDevice currentDevice] systemVersion];
     NSString *deviceType = [[UIDevice currentDevice] model];
     NSString *idfa = [[[ASIdentifierManager sharedManager] advertisingIdentifier] UUIDString];
+    BOOL lat = [ASIdentifierManager sharedManager].advertisingTrackingEnabled;
     NSString *bundleId = [[NSBundle mainBundle] bundleIdentifier];
     NSString *bundleVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
     NSString *appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
@@ -122,6 +123,7 @@ NSString * analyticsUrlString() {
                                 @"deviceType":deviceType ? : kNotAvailStr,
                                 @"newInstall":newInstall,
                                 @"iosIdfa":idfa ? : kNotAvailStr,
+                                @"limitAdTracking":[NSNumber numberWithBool:lat],
                                 @"bundleId":bundleId ? : kNotAvailStr,
                                 @"bundleVersion":bundleVersion ? : kNotAvailStr,
                                 @"appVersion":appVersion ? : kNotAvailStr
